@@ -1,6 +1,8 @@
 import React from "react";
 import PageBanner from "@/components/Common/PageBanner";
 
+export const dynamic = 'force-dynamic';
+
 const TermsCondition = () => {
     return (
     <>
