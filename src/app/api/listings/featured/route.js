@@ -12,9 +12,7 @@ export async function GET(request) {
 		if (category === "all") {
 			listings = await prisma.listing.findMany({
 				where: {
-					status: {
-						in: ["Approved", "Pending"], // Show both approved and pending listings
-					},
+					status: "Approved", // Only show approved listings on home page
 				},
 				orderBy: {
 					created_at: "desc",
@@ -25,9 +23,7 @@ export async function GET(request) {
 			listings = await prisma.listing.findMany({
 				where: {
 					category: category,
-					status: {
-						in: ["Approved", "Pending"], // Show both approved and pending listings
-					},
+					status: "Approved", // Only show approved listings on home page
 				},
 				orderBy: {
 					created_at: "desc",

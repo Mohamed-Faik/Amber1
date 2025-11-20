@@ -1,10 +1,11 @@
 "use client";
 import React, { useState } from "react";
-import { Shield, LayoutGrid, Users, Star, FileText } from "lucide-react";
+import { Shield, LayoutGrid, Users, Star, FileText, FileEdit } from "lucide-react";
 import ListingsSection from "./ListingsSection";
 import UsersSection from "./UsersSection";
 import ReviewsSection from "./ReviewsSection";
 import BlogsSection from "./BlogsSection";
+import ContentSection from "./ContentSection";
 
 const AdministratorPanel = ({
 	listings = [],
@@ -19,6 +20,7 @@ const AdministratorPanel = ({
 		{ id: "users", label: "Users", icon: Users, count: users?.length || 0 },
 		{ id: "reviews", label: "Reviews", icon: Star, count: reviews?.length || 0 },
 		{ id: "blogs", label: "Blogs", icon: FileText, count: blogPosts?.length || 0 },
+		{ id: "content", label: "Content", icon: FileEdit, count: null },
 	];
 
 	return (
@@ -189,6 +191,7 @@ const AdministratorPanel = ({
 					{activeTab === "users" && <UsersSection users={users} />}
 					{activeTab === "reviews" && <ReviewsSection reviews={reviews} />}
 					{activeTab === "blogs" && <BlogsSection blogPosts={blogPosts} />}
+					{activeTab === "content" && <ContentSection />}
 				</div>
 			</div>
 		</div>

@@ -10,8 +10,9 @@ import StatusFilter from "@/components/Dashboard/StatusFilter";
 
 const page = async ({ searchParams }) => {
 	const currentUser = await getCurrentUser();
-	const isAdmin = currentUser?.role === "ADMIN";
-	if (!isAdmin) {
+	const { isModerator } = await import("@/utils/checkRole");
+	
+	if (!isModerator(currentUser)) {
 		redirect("/");
 	}
 

@@ -11,8 +11,9 @@ export const dynamic = 'force-dynamic';
 const page = async () => {
 	const reviews = await getReviews();
 	const currentUser = await getCurrentUser();
-	const isAdmin = currentUser?.role === "ADMIN";
-	if (!isAdmin) {
+	const { isModerator } = await import("@/utils/checkRole");
+	
+	if (!isModerator(currentUser)) {
 		redirect("/");
 	}
 	return (

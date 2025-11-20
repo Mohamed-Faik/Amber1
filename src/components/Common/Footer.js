@@ -40,6 +40,8 @@ const Footer = () => {
 		<footer
 			ref={footerRef}
 			id="main-footer"
+			role="contentinfo"
+			aria-label="Site footer"
 			style={{
 				backgroundColor: "#1a1a1a",
 				color: "#ffffff",

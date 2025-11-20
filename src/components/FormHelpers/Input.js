@@ -22,6 +22,7 @@ const Input = ({
 		<div className="form-group">
 			{label && (
 				<label
+					htmlFor={id}
 					style={{
 						display: "block",
 						fontSize: "14px",
@@ -31,7 +32,7 @@ const Input = ({
 					}}
 				>
 					{label}
-					{required && <span style={{ color: "#FF385C", marginLeft: "4px" }}>*</span>}
+					{required && <span style={{ color: "#FF385C", marginLeft: "4px" }} aria-label="required">*</span>}
 				</label>
 			)}
 			<input
@@ -45,6 +46,9 @@ const Input = ({
                 ${errors[id] ? "is-invalid" : ""}
             `}
 				disabled={disabled}
+				aria-invalid={errors[id] ? "true" : "false"}
+				aria-describedby={errors[id] ? `${id}-error` : undefined}
+				aria-required={required}
 				style={{
 					width: "100%",
 					padding: "12px 16px",
@@ -71,6 +75,9 @@ const Input = ({
 			/>
 			{errors[id] && (
 				<div
+					role="alert"
+					aria-live="polite"
+					id={`${id}-error`}
 					style={{
 						marginTop: "6px",
 						fontSize: "13px",

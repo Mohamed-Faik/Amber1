@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import prisma from "@/libs/prismadb";
 import { getCurrentUser } from "@/actions/getCurrentUser";
 import { slugify } from "@/utils/slugify";
+import { isModerator } from "@/utils/checkRole";
 
 export async function POST(request) {
 	try {
@@ -89,6 +90,9 @@ export async function POST(request) {
 			return isNaN(parsed) ? null : parsed;
 		};
 
+		// Determine listing status: Moderators and Admins get auto-approved
+		const listingStatus = isModerator(currentUser) ? "Approved" : "Pending";
+
 		const listingData = {
 			title,
 			slug,
@@ -102,7 +106,7 @@ export async function POST(request) {
 			latitude: location.latlng[0],
 			longitude: location.latlng[1],
 			userId: currentUser.id,
-			status: "Pending", // Explicitly set to Pending - requires admin approval
+			status: listingStatus, // Auto-approved for moderators/admins, Pending for regular users
 			area: parseOptionalInt(area),
 			bedrooms: parseOptionalInt(bedrooms),
 			bathrooms: parseOptionalInt(bathrooms),

@@ -11,9 +11,9 @@ export const dynamic = "force-dynamic";
 
 const AdministratorPage = async () => {
 	const currentUser = await getCurrentUser();
-	const isAdmin = currentUser?.role === "ADMIN";
-
-	if (!isAdmin) {
+	const { hasAdminAccess } = await import("@/utils/checkRole");
+	
+	if (!hasAdminAccess(currentUser)) {
 		redirect("/");
 	}
 

@@ -6,6 +6,8 @@ export default async function getListings(params) {
 			category,
 			location_value,
 			title,
+			min_price,
+			max_price,
 			page = 1,
 			pageSize = 9,
 			status, // For admin filtering
@@ -33,10 +35,27 @@ export default async function getListings(params) {
 			whereClause.location_value = location_value;
 		}
 
+		// Price filter
+		if (min_price || max_price) {
+			whereClause.price = {};
+			if (min_price) {
+				const minPrice = parseInt(min_price, 10);
+				if (!isNaN(minPrice)) {
+					whereClause.price.gte = minPrice;
+				}
+			}
+			if (max_price) {
+				const maxPrice = parseInt(max_price, 10);
+				if (!isNaN(maxPrice)) {
+					whereClause.price.lte = maxPrice;
+				}
+			}
+		}
+
 		// Status filter - only show approved for public, unless admin wants to see all
-		// For public users, show Approved and Pending listings by default
+		// For public users, only show Approved listings
 		if (!showAll && !status) {
-			whereClause.status = { in: ["Approved", "Pending"] };
+			whereClause.status = "Approved"; // Only show approved listings to public users
 		} else if (status) {
 			// Admin filtering by specific status
 			whereClause.status = status;

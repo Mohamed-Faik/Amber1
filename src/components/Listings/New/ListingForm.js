@@ -11,6 +11,8 @@ import { categories } from "@/libs/Categories";
 import Button from "@/components/FormHelpers/Button";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { isModerator } from "@/utils/checkRole";
 import dynamic from "next/dynamic";
 const RichTextEditor = dynamic(() => import("@mantine/rte"), {
 	ssr: false,
@@ -18,9 +20,19 @@ const RichTextEditor = dynamic(() => import("@mantine/rte"), {
 });
 import RTEControls from "@/utils/RTEControls";
 
-const ListingForm = () => {
+const ListingForm = ({ currentUser }) => {
 	const [isLoading, setIsLoading] = useState(false);
 	const router = useRouter();
+	const { data: session } = useSession();
+	
+	// Get effective user from session or prop
+	const effectiveUser = session?.user ? {
+		id: session.user.id,
+		email: session.user.email,
+		name: session.user.name,
+		image: session.user.image,
+		role: session.user.role || currentUser?.role,
+	} : currentUser;
 
 	const setCustomValue = (id, value) => {
 		setValue(id, value, {
@@ -102,7 +114,12 @@ const ListingForm = () => {
 		axios
 			.post("/api/listings/create", submitData)
 			.then((response) => {
-				toast.success("Listing created! It is pending admin approval and will be visible once approved.");
+				// Check if user is moderator/admin for auto-approval message
+				const userIsModerator = isModerator(effectiveUser);
+				const successMessage = userIsModerator
+					? "Listing created and approved! It is now visible on the website."
+					: "Listing created! It is pending admin approval and will be visible once approved.";
+				toast.success(successMessage);
 				router.push("/listings/my-listings");
 				reset();
 			})

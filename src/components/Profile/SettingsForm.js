@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import Input from "../FormHelpers/Input";
 import Button from "../FormHelpers/Button";
 import ImageUpload from "../FormHelpers/ImageUpload";
@@ -11,6 +12,7 @@ import ImageUpload from "../FormHelpers/ImageUpload";
 const SettingsForm = ({ currentUser }) => {
 	const [isLoading, setIsLoading] = useState(false);
 	const router = useRouter();
+	const { update: updateSession } = useSession();
 
 	const setCustomValue = (id, value) => {
 		setValue(id, value, {
@@ -41,8 +43,11 @@ const SettingsForm = ({ currentUser }) => {
 		setIsLoading(true);
 		axios
 			.post("/api/profile/settings", data)
-			.then((response) => {
+			.then(async (response) => {
 				toast.success("Profile Updated");
+				// Update the session to reflect the new image
+				await updateSession();
+				// Refresh the page to show updated profile picture everywhere
 				router.refresh();
 			})
 			.catch((error) => {

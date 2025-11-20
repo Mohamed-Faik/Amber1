@@ -134,14 +134,15 @@ model PasswordResetToken {
 }
 
 model user {
-  id             Int       @id @default(autoincrement())
+  id             Int         @id @default(autoincrement())
   name           String?
-  email          String?   @unique(map: "User_email_key")
+  email          String?     @unique(map: "User_email_key")
   emailVerified  DateTime?
   image          String?
   hashedPassword String?
-  role           user_role @default(USER)
-  created_at     DateTime  @default(now())
+  role           user_role   @default(USER)
+  status         user_status @default(Active)
+  created_at     DateTime    @default(now())
   updated_at     DateTime
   accounts       account[]
   listings       listing[]
@@ -157,9 +158,25 @@ enum subscription_is_subscribe {
 enum user_role {
   USER
   ADMIN
+  SUPPORT
+  MODERATOR
+}
+
+enum user_status {
+  Active
+  Inactive
 }
 
 enum listing_status {
   Pending
   Approved
+}
+
+model content_page {
+  id         Int      @id @default(autoincrement())
+  slug       String   @unique
+  title      String
+  content    String   @db.Text
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now())
 }

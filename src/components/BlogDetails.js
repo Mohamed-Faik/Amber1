@@ -27,6 +27,7 @@ const BlogDetails = ({ post }) => {
 											height={25}
 											alt="user"
 											className="me-2"
+											unoptimized
 										/>
 									</Link>
 									By{" "}

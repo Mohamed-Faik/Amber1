@@ -1,7 +1,9 @@
 import React, { Suspense } from "react";
 import ListingForm from "@/components/Listings/New/ListingForm";
+import { getCurrentUser } from "@/actions/getCurrentUser";
 
-const page = () => {
+const page = async () => {
+	const currentUser = await getCurrentUser();
 	return (
 		<div style={{
 			backgroundColor: "#FAFAFA",
@@ -57,7 +59,7 @@ const page = () => {
 				</div>
 			}>
 				<div style={{ position: "relative", zIndex: 1 }}>
-					<ListingForm />
+					<ListingForm currentUser={currentUser} />
 				</div>
 			</Suspense>
 		</div>

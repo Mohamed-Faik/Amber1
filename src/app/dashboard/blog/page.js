@@ -9,8 +9,9 @@ import { getCurrentUser } from "@/actions/getCurrentUser";
 const page = async () => {
 	const blogPosts = await getBlogPosts();
 	const currentUser = await getCurrentUser();
-	const isAdmin = currentUser?.role === "ADMIN";
-	if (!isAdmin) {
+	const { hasAdminAccess } = await import("@/utils/checkRole");
+	
+	if (!hasAdminAccess(currentUser)) {
 		redirect("/");
 	}
 	return (

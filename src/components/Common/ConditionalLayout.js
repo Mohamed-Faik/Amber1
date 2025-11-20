@@ -2,6 +2,7 @@
 import { usePathname } from "next/navigation";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
+import CookieConsent from "@/components/GDPR/CookieConsent";
 
 export default function ConditionalLayout({ currentUser, children }) {
   const pathname = usePathname();
@@ -12,8 +13,11 @@ export default function ConditionalLayout({ currentUser, children }) {
   return (
     <>
       {!isAuthPage && <Navbar currentUser={currentUser} />}
-      {children}
+      <main role="main">
+        {children}
+      </main>
       {!isAuthPage && <Footer key="main-footer" />}
+      {!isAuthPage && <CookieConsent />}
     </>
   );
 }

@@ -15,6 +15,8 @@ const Banner = () => {
 	const [category, setCategory] = useState("");
 	const [location, setLocation] = useState("");
 	const [street, setStreet] = useState("");
+	const [minPrice, setMinPrice] = useState("");
+	const [maxPrice, setMaxPrice] = useState("");
 	const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
 	const [showSaleTypeDropdown, setShowSaleTypeDropdown] = useState(false);
 	const [locations, setLocations] = useState([]);
@@ -29,6 +31,8 @@ const Banner = () => {
 		const params = new URLSearchParams();
 		if (category) params.append("category", category);
 		if (location) params.append("location_value", location);
+		if (minPrice) params.append("min_price", minPrice);
+		if (maxPrice) params.append("max_price", maxPrice);
 		router.push(`/listings?${params.toString()}`);
 	};
 
@@ -197,9 +201,9 @@ const Banner = () => {
 						<p
 							style={{
 								fontSize: "clamp(32px, 5vw, 64px)",
-								fontWeight: "400",
+								fontWeight: "600",
 								color: "#FFFFFF",
-								fontFamily: "'Dancing Script', 'Brush Script MT', 'Lucida Handwriting', cursive",
+								fontFamily: "var(--font-inter), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
 								lineHeight: "1.2",
 								textShadow: "0 2px 8px rgba(0, 0, 0, 0.3)",
 								margin: 0,
@@ -530,7 +534,7 @@ const Banner = () => {
 								className="banner-form-bottom-row"
 								style={{
 									display: "grid",
-									gridTemplateColumns: "1fr 1fr auto",
+									gridTemplateColumns: "1fr 1fr 1fr 1fr auto",
 									gap: "16px",
 									alignItems: "end",
 								}}
@@ -583,13 +587,19 @@ const Banner = () => {
 									)}
 								</div>
 
-								{/* Street */}
+								{/* Min Price */}
 								<div style={{ position: "relative" }}>
 									<input
-										type="text"
-										placeholder="Street"
-										value={street}
-										onChange={(e) => setStreet(e.target.value)}
+										type="number"
+										placeholder="Min Price (MAD)"
+										value={minPrice}
+										onChange={(e) => {
+											const value = e.target.value;
+											if (value === "" || (!isNaN(value) && parseInt(value) >= 0)) {
+												setMinPrice(value);
+											}
+										}}
+										min="0"
 										style={{
 											width: "100%",
 											padding: "14px 16px 14px 44px",
@@ -618,7 +628,56 @@ const Banner = () => {
 											pointerEvents: "none",
 										}}
 									>
-										<Navigation size={18} color="#717171" />
+										<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#717171" strokeWidth="2">
+											<path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+										</svg>
+									</div>
+								</div>
+
+								{/* Max Price */}
+								<div style={{ position: "relative" }}>
+									<input
+										type="number"
+										placeholder="Max Price (MAD)"
+										value={maxPrice}
+										onChange={(e) => {
+											const value = e.target.value;
+											if (value === "" || (!isNaN(value) && parseInt(value) >= 0)) {
+												setMaxPrice(value);
+											}
+										}}
+										min="0"
+										style={{
+											width: "100%",
+											padding: "14px 16px 14px 44px",
+											border: "1px solid #E0E0E0",
+											borderRadius: "12px",
+											backgroundColor: "#F7F7F7",
+											fontSize: "14px",
+											outline: "none",
+											transition: "all 0.2s ease",
+										}}
+										onFocus={(e) => {
+											e.currentTarget.style.borderColor = "#FF385C";
+											e.currentTarget.style.backgroundColor = "#FFFFFF";
+										}}
+										onBlur={(e) => {
+											e.currentTarget.style.borderColor = "#E0E0E0";
+											e.currentTarget.style.backgroundColor = "#F7F7F7";
+										}}
+									/>
+									<div
+										style={{
+											position: "absolute",
+											left: "16px",
+											top: "50%",
+											transform: "translateY(-50%)",
+											pointerEvents: "none",
+										}}
+									>
+										<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#717171" strokeWidth="2">
+											<path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+										</svg>
 									</div>
 								</div>
 
