@@ -6,7 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { formatDateBlog } from "@/utils/formatDate";
 
-const page = () => {
+const Page = () => {
 	const [blogPosts, setBlogPosts] = useState([]);
 	const [loading, setLoading] = useState(true);
 
@@ -432,4 +432,4 @@ const page = () => {
 	);
 };
 
-export default page;
+export default Page;
