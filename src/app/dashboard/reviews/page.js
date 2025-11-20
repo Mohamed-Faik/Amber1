@@ -6,6 +6,8 @@ import getReviews from "@/actions/getReviews";
 import ReviewCard from "./ReviewCard";
 import LeftSidebar from "@/components/Dashboard/LeftSidebar";
 
+export const dynamic = 'force-dynamic';
+
 const page = async () => {
 	const reviews = await getReviews();
 	const currentUser = await getCurrentUser();
