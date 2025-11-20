@@ -39,13 +39,13 @@ const Index = ({ currentUser, listing, reviews }) => {
 
 				{/* Main Content Layout */}
 				<div
+					className="listing-content-grid"
 					style={{
 						display: "grid",
 						gridTemplateColumns: "minmax(0, 1fr) 400px",
 						gap: "80px",
 						marginTop: "48px",
 					}}
-					className="listing-content-grid"
 				>
 					{/* Left Column - Main Content */}
 					<div>

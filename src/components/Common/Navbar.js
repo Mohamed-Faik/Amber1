@@ -13,6 +13,19 @@ const Navbar = ({ currentUser }) => {
   const router = useRouter();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Detect mobile screen size - only show mobile nav on actual phones/tablets
+  useEffect(() => {
+    const checkMobile = () => {
+      // Use 992px breakpoint - laptops will show desktop nav
+      setIsMobile(window.innerWidth < 992);
+    };
+    
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -69,6 +82,7 @@ const Navbar = ({ currentUser }) => {
         }}
       >
         {/* Desktop Navbar */}
+        {!isMobile && (
         <div
           className="desktop-nav"
           style={{
@@ -79,7 +93,9 @@ const Navbar = ({ currentUser }) => {
             alignItems: "center",
             justifyContent: "space-between",
             height: "80px",
+            minHeight: "80px",
           }}
+          data-desktop-nav="true"
         >
           {/* Left: Logo */}
           <div style={{ flexShrink: 0, display: "flex", alignItems: "center", height: "100%" }}>
@@ -95,7 +111,7 @@ const Navbar = ({ currentUser }) => {
             >
               <div
                 style={{
-                  fontSize: "22px",
+                  fontSize: "24px",
                   fontWeight: "700",
                   background: "linear-gradient(135deg, #FF385C 0%, #E61E4D 50%, #D70466 100%)",
                   WebkitBackgroundClip: "text",
@@ -130,9 +146,9 @@ const Navbar = ({ currentUser }) => {
                   key={link.href}
                   href={link.href}
                   style={{
-                    padding: "10px 16px",
+                    padding: "12px 20px",
                     borderRadius: "22px",
-                    fontSize: "14px",
+                    fontSize: "15px",
                     fontWeight: "600",
                     color: isActive ? "#000000" : "#000000",
                     textDecoration: "none",
@@ -140,7 +156,7 @@ const Navbar = ({ currentUser }) => {
                     transition: "all 0.2s ease",
                     display: "flex",
                     alignItems: "center",
-                    gap: "6px",
+                    gap: "8px",
                   }}
                   onMouseEnter={(e) => {
                     if (!isActive) {
@@ -176,9 +192,9 @@ const Navbar = ({ currentUser }) => {
             <Link
               href="/listings/new"
               style={{
-                padding: "12px 20px",
+                padding: "14px 24px",
                 borderRadius: "22px",
-                fontSize: "14px",
+                fontSize: "15px",
                 fontWeight: "600",
                 color: "#222222",
                 textDecoration: "none",
@@ -186,6 +202,9 @@ const Navbar = ({ currentUser }) => {
                 display: "flex",
                 alignItems: "center",
                 height: "100%",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = "#F7F7F7";
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.backgroundColor = "transparent";
@@ -201,17 +220,22 @@ const Navbar = ({ currentUser }) => {
             </div>
           </div>
         </div>
+        )}
 
         {/* Mobile/Tablet Navbar */}
+        {isMobile && (
         <div
           className="mobile-nav"
           style={{
-            display: "none",
-            padding: "0 24px",
-            height: "80px",
+            display: "flex",
+            padding: "0 16px",
+            height: "70px",
             alignItems: "center",
             justifyContent: "space-between",
+            gap: "12px",
+            width: "100%",
           }}
+          data-mobile-nav="true"
         >
           <Link 
             href="/" 
@@ -220,11 +244,12 @@ const Navbar = ({ currentUser }) => {
               display: "flex",
               alignItems: "center",
               height: "100%",
+              flexShrink: 0,
             }}
           >
             <div
               style={{
-                fontSize: "20px",
+                fontSize: "18px",
                 fontWeight: "700",
                 background: "linear-gradient(135deg, #FF385C 0%, #E61E4D 50%, #D70466 100%)",
                 WebkitBackgroundClip: "text",
@@ -233,19 +258,21 @@ const Navbar = ({ currentUser }) => {
                 letterSpacing: "-0.5px",
                 display: "flex",
                 alignItems: "center",
+                whiteSpace: "nowrap",
               }}
             >
               AmberHomes
             </div>
           </Link>
           
-          <div style={{ display: "flex", alignItems: "center", gap: "12px", height: "100%" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px", height: "100%", flexShrink: 0 }}>
             <Link
               href="/listings/new"
+              className="mobile-host-link"
               style={{
-                padding: "10px 16px",
-                borderRadius: "22px",
-                fontSize: "13px",
+                padding: "8px 12px",
+                borderRadius: "20px",
+                fontSize: "12px",
                 fontWeight: "600",
                 color: "#222222",
                 textDecoration: "none",
@@ -253,7 +280,7 @@ const Navbar = ({ currentUser }) => {
                 transition: "all 0.2s ease",
                 display: "flex",
                 alignItems: "center",
-                height: "100%",
+                whiteSpace: "nowrap",
               }}
             >
               Host
@@ -266,44 +293,42 @@ const Navbar = ({ currentUser }) => {
             <button
               type="button"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="mobile-menu-button"
               style={{
-                padding: "10px",
+                padding: "8px",
                 border: "1px solid #E0E0E0",
-                borderRadius: "22px",
+                borderRadius: "20px",
                 backgroundColor: "#FFFFFF",
                 cursor: "pointer",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 transition: "all 0.2s ease",
-                height: "42px",
-                width: "42px",
+                height: "40px",
+                width: "40px",
+                flexShrink: 0,
               }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = "#F7F7F7";
-                e.currentTarget.style.borderColor = "#222222";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = "#FFFFFF";
-                e.currentTarget.style.borderColor = "#E0E0E0";
-              }}
+              aria-label="Toggle menu"
             >
               {isMobileMenuOpen ? (
-                <X size={20} color="#222222" strokeWidth={2} />
+                <X size={18} color="#222222" strokeWidth={2} />
               ) : (
-                <Menu size={20} color="#222222" strokeWidth={2} />
+                <Menu size={18} color="#222222" strokeWidth={2} />
               )}
             </button>
           </div>
         </div>
+        )}
+
       </div>
 
       {/* Mobile Menu Overlay */}
       {isMobileMenuOpen && (
         <div
+          className="mobile-menu-overlay"
           style={{
             position: "fixed",
-            top: "80px",
+            top: "70px",
             left: 0,
             right: 0,
             bottom: 0,
@@ -317,23 +342,25 @@ const Navbar = ({ currentUser }) => {
 
       {/* Mobile Menu Drawer */}
       <div
+        className="mobile-menu-drawer"
         style={{
           position: "fixed",
-          top: "80px",
+          top: "70px",
           right: isMobileMenuOpen ? 0 : "-100%",
-          width: "320px",
-          maxWidth: "85vw",
-          height: "calc(100vh - 80px)",
+          width: "100%",
+          maxWidth: "400px",
+          height: "calc(100vh - 70px)",
           backgroundColor: "#FFFFFF",
           zIndex: 1000,
           boxShadow: "-4px 0 24px rgba(0, 0, 0, 0.15)",
-          transition: "right 0.3s ease",
+          transition: "right 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
           overflowY: "auto",
+          WebkitOverflowScrolling: "touch",
         }}
       >
-        <div style={{ padding: "24px" }}>
+        <div style={{ padding: "20px 16px" }}>
           {/* Mobile Navigation Links */}
-          <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
             {navLinks.map((link) => {
               const IconComponent = link.icon;
               const isActive = pathname === link.href;
@@ -342,10 +369,11 @@ const Navbar = ({ currentUser }) => {
                   key={link.href}
                   href={link.href}
                   onClick={() => setIsMobileMenuOpen(false)}
+                  className="mobile-nav-link"
                   style={{
-                    padding: "16px 20px",
+                    padding: "14px 16px",
                     borderRadius: "12px",
-                    fontSize: "15px",
+                    fontSize: "16px",
                     fontWeight: "600",
                     color: isActive ? "#222222" : "#717171",
                     textDecoration: "none",
@@ -355,18 +383,8 @@ const Navbar = ({ currentUser }) => {
                     alignItems: "center",
                     gap: "12px",
                     border: isActive ? "1px solid #E0E0E0" : "1px solid transparent",
-                  }}
-                  onMouseEnter={(e) => {
-                    if (!isActive) {
-                      e.currentTarget.style.backgroundColor = "#F7F7F7";
-                      e.currentTarget.style.color = "#222222";
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (!isActive) {
-                      e.currentTarget.style.backgroundColor = "transparent";
-                      e.currentTarget.style.color = "#717171";
-                    }
+                    minHeight: "48px",
+                    WebkitTapHighlightColor: "transparent",
                   }}
                 >
                   <IconComponent 
@@ -385,7 +403,7 @@ const Navbar = ({ currentUser }) => {
             style={{
               height: "1px",
               backgroundColor: "#E0E0E0",
-              margin: "24px 0",
+              margin: "20px 0",
             }}
           />
 
@@ -394,10 +412,11 @@ const Navbar = ({ currentUser }) => {
             <Link
               href="/listings/new"
               onClick={() => setIsMobileMenuOpen(false)}
+              className="mobile-host-button"
               style={{
-                padding: "16px 20px",
+                padding: "14px 20px",
                 borderRadius: "12px",
-                fontSize: "15px",
+                fontSize: "16px",
                 fontWeight: "600",
                 color: "#FFFFFF",
                 textDecoration: "none",
@@ -405,14 +424,11 @@ const Navbar = ({ currentUser }) => {
                 textAlign: "center",
                 transition: "all 0.2s ease",
                 boxShadow: "0 4px 12px rgba(255, 56, 92, 0.3)",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = "translateY(-2px)";
-                e.currentTarget.style.boxShadow = "0 6px 16px rgba(255, 56, 92, 0.4)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = "translateY(0)";
-                e.currentTarget.style.boxShadow = "0 4px 12px rgba(255, 56, 92, 0.3)";
+                minHeight: "48px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                WebkitTapHighlightColor: "transparent",
               }}
             >
               Become a Host
@@ -433,8 +449,8 @@ const Navbar = ({ currentUser }) => {
           }
         }
 
-        /* Tablet: 768px - 1128px */
-        @media (max-width: 1128px) {
+        /* Tablet and Mobile: < 992px */
+        @media (max-width: 991px) {
           .desktop-nav {
             display: none !important;
           }
@@ -446,18 +462,61 @@ const Navbar = ({ currentUser }) => {
         /* Mobile: < 768px */
         @media (max-width: 767px) {
           .mobile-nav {
-            padding: 0 16px !important;
+            padding: 0 12px !important;
+            height: 64px !important;
+          }
+
+          .mobile-host-link {
+            display: none !important;
+          }
+
+          .mobile-menu-drawer {
+            top: 64px !important;
+            height: calc(100vh - 64px) !important;
+            max-width: 100% !important;
+          }
+
+          .mobile-menu-overlay {
+            top: 64px !important;
           }
         }
 
-        /* Desktop: > 1128px */
-        @media (min-width: 1129px) {
+        /* Small Mobile: < 480px */
+        @media (max-width: 480px) {
+          .mobile-nav {
+            padding: 0 12px !important;
+            height: 60px !important;
+          }
+
+          .mobile-menu-drawer {
+            top: 60px !important;
+            height: calc(100vh - 60px) !important;
+          }
+
+          .mobile-menu-overlay {
+            top: 60px !important;
+          }
+        }
+
+        /* Desktop and Laptop: >= 992px */
+        @media (min-width: 992px) {
           .desktop-nav {
             display: flex !important;
           }
           .mobile-nav {
             display: none !important;
           }
+        }
+
+        /* Touch improvements */
+        .mobile-nav-link:active,
+        .mobile-host-button:active {
+          opacity: 0.8;
+          transform: scale(0.98);
+        }
+
+        .mobile-menu-button:active {
+          transform: scale(0.95);
         }
       `}</style>
     </>

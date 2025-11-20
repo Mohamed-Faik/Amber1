@@ -137,16 +137,6 @@ Please provide more information.`;
 							}}
 						>
 							{formattedPrice(listing.price)}
-							<span
-								style={{
-									fontSize: "16px",
-									fontWeight: "400",
-									color: "#717171",
-								}}
-							>
-								{" "}
-								/ property
-							</span>
 						</div>
 					</div>
 					<HeartButton currentUser={currentUser} listingId={listing.id} />

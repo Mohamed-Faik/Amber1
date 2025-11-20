@@ -47,6 +47,7 @@ const Featured = ({ currentUser }) => {
 
 	return (
 		<div
+			className="featured-section"
 			style={{
 				backgroundColor: "#FFFFFF",
 				paddingTop: "40px",
@@ -54,6 +55,7 @@ const Featured = ({ currentUser }) => {
 			}}
 		>
 			<div
+				className="featured-container"
 				style={{
 					maxWidth: "1760px",
 					margin: "0 auto",
@@ -85,6 +87,7 @@ const Featured = ({ currentUser }) => {
 
 						{/* Grid Layout */}
 						<div
+							className="featured-grid"
 							style={{
 								display: "grid",
 								gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",

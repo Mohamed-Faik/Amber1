@@ -13,7 +13,7 @@ export default function ConditionalLayout({ currentUser, children }) {
     <>
       {!isAuthPage && <Navbar currentUser={currentUser} />}
       {children}
-      {!isAuthPage && <Footer />}
+      {!isAuthPage && <Footer key="main-footer" />}
     </>
   );
 }

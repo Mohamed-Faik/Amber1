@@ -18,7 +18,7 @@ const page = async ({ searchParams }) => {
 	const currentUser = await getCurrentUser();
 
 	return (
-		<div style={{
+		<div className="listings-page-container" style={{
 			backgroundColor: "#FAFAFA",
 			minHeight: "100vh",
 			position: "relative",
@@ -49,24 +49,24 @@ const page = async ({ searchParams }) => {
 			<div style={{ height: "80px" }} />
 			
 			{/* Search Form Section - Styled */}
-			<div style={{
+			<div className="listings-search-section" style={{
 				position: "relative",
 				zIndex: 1,
 				marginBottom: "48px",
 			}}>
-				<div style={{
+				<div className="listings-search-wrapper" style={{
 					maxWidth: "1760px",
 					margin: "0 auto",
 					padding: "0 80px",
 				}}>
-					<div style={{
+					<div className="listings-search-card" style={{
 						backgroundColor: "#FFFFFF",
 						borderRadius: "16px",
 						padding: "40px",
 						boxShadow: "0 2px 12px rgba(0, 0, 0, 0.08)",
 						border: "1px solid #E0E0E0",
 					}}>
-						<div style={{
+						<div className="listings-search-header" style={{
 							display: "flex",
 							alignItems: "center",
 							gap: "16px",
@@ -111,17 +111,17 @@ const page = async ({ searchParams }) => {
 			</div>
 
 			{/* Listings Section */}
-			<div style={{
+			<div className="listings-results-section" style={{
 				position: "relative",
 				zIndex: 1,
 				paddingBottom: "48px",
 			}}>
-				<div style={{
+				<div className="listings-results-wrapper" style={{
 					maxWidth: "1760px",
 					margin: "0 auto",
 					padding: "0 80px",
 				}}>
-					<div style={{
+					<div className="listings-results-card" style={{
 						backgroundColor: "#FFFFFF",
 						borderRadius: "16px",
 						padding: "40px",
@@ -171,7 +171,6 @@ const page = async ({ searchParams }) => {
 					</div>
 				</div>
 			</div>
-
 		</div>
 	);
 };

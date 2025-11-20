@@ -55,7 +55,7 @@ model listing {
   title          String
   slug           String
   description    String         @db.Text
-  imageSrc       String
+  imageSrc       String         @db.Text
   address        String
   features       String         @db.Text
   created_at     DateTime       @default(now())
@@ -65,6 +65,11 @@ model listing {
   latitude       Float
   longitude      Float
   category       String
+  area           Int?
+  bathrooms      Int?
+  bedrooms       Int?
+  user           user           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  reviews        review[]
 
   @@index([userId], map: "Listing_userId_idx")
 }
@@ -81,6 +86,7 @@ model profile {
   facebook String?
   linkedin String?
   youtube  String?
+  user     user    @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model review {
@@ -90,6 +96,8 @@ model review {
   userId     Int
   listingId  Int
   created_at DateTime @default(now())
+  user       user     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  listing    listing  @relation(fields: [listingId], references: [id], onDelete: Cascade)
 
   @@index([userId, listingId], map: "Review_userId_listingId_idx")
 }
@@ -136,6 +144,9 @@ model user {
   created_at     DateTime  @default(now())
   updated_at     DateTime
   accounts       account[]
+  listings       listing[]
+  reviews        review[]
+  profile        profile?
 }
 
 enum subscription_is_subscribe {
