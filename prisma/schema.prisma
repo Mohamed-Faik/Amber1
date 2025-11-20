@@ -1,0 +1,154 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+model account {
+  id                Int     @id @default(autoincrement())
+  userId            Int
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+  user              user    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId], map: "Account_provider_providerAccountId_key")
+  @@index([userId], map: "Account_userId_idx")
+}
+
+model blog {
+  id         Int      @id @default(autoincrement())
+  title      String
+  slug       String
+  content    String   @db.Text
+  imageSrc   String
+  category   String
+  userId     Int
+  created_at DateTime @default(now())
+
+  @@index([userId], map: "Blog_userId_idx")
+}
+
+model favourite {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  listingId  Int
+  created_at DateTime @default(now())
+
+  @@index([userId, listingId], map: "Favourite_userId_listingId_idx")
+}
+
+model listing {
+  id             Int            @id @default(autoincrement())
+  userId         Int
+  title          String
+  slug           String
+  description    String         @db.Text
+  imageSrc       String
+  address        String
+  features       String         @db.Text
+  created_at     DateTime       @default(now())
+  location_value String
+  price          Int
+  status         listing_status @default(Pending)
+  latitude       Float
+  longitude      Float
+  category       String
+
+  @@index([userId], map: "Listing_userId_idx")
+}
+
+model profile {
+  id       Int     @id @default(autoincrement())
+  userId   Int     @unique(map: "Profile_userId_key")
+  bio      String?
+  gender   String?
+  address  String?
+  phone    String?
+  website  String?
+  twitter  String?
+  facebook String?
+  linkedin String?
+  youtube  String?
+}
+
+model review {
+  id         Int      @id @default(autoincrement())
+  rating     Int
+  comment    String?  @db.Text
+  userId     Int
+  listingId  Int
+  created_at DateTime @default(now())
+
+  @@index([userId, listingId], map: "Review_userId_listingId_idx")
+}
+
+model subscription {
+  id           Int                       @id @default(autoincrement())
+  email        String
+  is_subscribe subscription_is_subscribe @default(Enable)
+  created_at   DateTime                  @default(now())
+}
+
+model otp {
+  id         Int      @id @default(autoincrement())
+  email      String
+  code       String
+  expiresAt  DateTime
+  used       Boolean  @default(false)
+  created_at DateTime @default(now())
+
+  @@index([email])
+  @@index([code])
+}
+
+model PasswordResetToken {
+  id         Int      @id @default(autoincrement())
+  email      String
+  token      String   @unique
+  expiresAt  DateTime
+  used       Boolean  @default(false)
+  created_at DateTime @default(now())
+
+  @@index([email])
+  @@index([token])
+}
+
+model user {
+  id             Int       @id @default(autoincrement())
+  name           String?
+  email          String?   @unique(map: "User_email_key")
+  emailVerified  DateTime?
+  image          String?
+  hashedPassword String?
+  role           user_role @default(USER)
+  created_at     DateTime  @default(now())
+  updated_at     DateTime
+  accounts       account[]
+}
+
+enum subscription_is_subscribe {
+  Enable
+  Disabled
+}
+
+enum user_role {
+  USER
+  ADMIN
+}
+
+enum listing_status {
+  Pending
+  Approved
+}

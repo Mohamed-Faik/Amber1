@@ -1,0 +1,56 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches: [ main ]
+    tags:
+      - 'v*'
+
+jobs:
+  deploy:
+    name: Deploy Application
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18.x'
+          cache: 'npm'
+          cache-dependency-path: teor/package-lock.json
+      
+      - name: Install dependencies
+        working-directory: ./teor
+        run: npm ci
+      
+      - name: Run tests
+        working-directory: ./teor
+        run: npm test -- --watchAll=false
+      
+      - name: Build application
+        working-directory: ./teor
+        run: npm run build
+        env:
+          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+          NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      
+      # Add your deployment steps here
+      # Examples:
+      # - Deploy to Vercel
+      # - Deploy to AWS
+      # - Deploy to your own server
+      
+      - name: Deployment placeholder
+        run: |
+          echo "🚀 Ready to deploy!"
+          echo "Add your deployment commands here"
+          echo "Examples:"
+          echo "  - Vercel: vercel --prod"
+          echo "  - AWS: aws s3 sync ..."
+          echo "  - Docker: docker push ..."
+
