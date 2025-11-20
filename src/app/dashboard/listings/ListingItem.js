@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { formatDateWithMonth } from "@/utils/formatDate";
@@ -21,6 +21,25 @@ const ListingItem = ({
 }) => {
 	const router = useRouter();
 	const mainImage = getListingImage(imageSrc);
+	const [showStatusDropdown, setShowStatusDropdown] = useState(false);
+	const dropdownRef = useRef(null);
+
+	// Close dropdown when clicking outside
+	useEffect(() => {
+		const handleClickOutside = (event) => {
+			if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+				setShowStatusDropdown(false);
+			}
+		};
+
+		if (showStatusDropdown) {
+			document.addEventListener("mousedown", handleClickOutside);
+		}
+
+		return () => {
+			document.removeEventListener("mousedown", handleClickOutside);
+		};
+	}, [showStatusDropdown]);
 
 	const handleStatusChange = async (newStatus) => {
 		try {
@@ -28,6 +47,7 @@ const ListingItem = ({
 				status: newStatus,
 			});
 			toast.success(`Listing ${newStatus.toLowerCase()} successfully!`);
+			setShowStatusDropdown(false);
 			router.refresh();
 		} catch (error) {
 			toast.error("Failed to update listing status");
@@ -46,6 +66,12 @@ const ListingItem = ({
 		}
 		return null;
 	};
+
+	const statusOptions = [
+		{ value: "Pending", label: "Pending", color: "#F59E0B" },
+		{ value: "Approved", label: "Approved", color: "#10B981" },
+		{ value: "Canceled", label: "Canceled", color: "#EF4444" },
+	];
 
 	return (
 		<div className="col-md-6 col-xl-4 mb-4">
@@ -85,25 +111,127 @@ const ListingItem = ({
 							View Details
 						</Link>
 
-						{status === "Pending" && (
-							<>
-								<button
-									className="btn btn-success btn-sm"
-									onClick={() => handleStatusChange("Approved")}
-								>
-									Approve
-								</button>
-							</>
-						)}
-
-						{status === "Approved" && (
+						{/* Status Dropdown */}
+						<div style={{ position: "relative" }} ref={dropdownRef}>
 							<button
-								className="btn btn-warning btn-sm"
-								onClick={() => handleStatusChange("Pending")}
+								className="btn btn-secondary btn-sm"
+								onClick={(e) => {
+									e.preventDefault();
+									e.stopPropagation();
+									setShowStatusDropdown(!showStatusDropdown);
+								}}
+								style={{
+									display: "flex",
+									alignItems: "center",
+									gap: "6px",
+									position: "relative",
+									zIndex: 1,
+								}}
 							>
-								Set Pending
+								Change Status
+								<svg
+									width="14"
+									height="14"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									strokeWidth="2"
+									style={{
+										transform: showStatusDropdown
+											? "rotate(180deg)"
+											: "rotate(0deg)",
+										transition: "transform 0.2s ease",
+									}}
+								>
+									<polyline points="6 9 12 15 18 9"></polyline>
+								</svg>
 							</button>
-						)}
+
+							{showStatusDropdown && (
+								<div
+									style={{
+										position: "absolute",
+										top: "100%",
+										left: 0,
+										marginTop: "4px",
+										backgroundColor: "#ffffff",
+										border: "1px solid #e5e7eb",
+										borderRadius: "8px",
+										boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+										minWidth: "160px",
+										zIndex: 1000,
+										overflow: "hidden",
+									}}
+								>
+									{statusOptions.map((option) => (
+										<button
+											key={option.value}
+											onClick={(e) => {
+												e.preventDefault();
+												e.stopPropagation();
+												if (option.value !== status) {
+													handleStatusChange(option.value);
+												}
+											}}
+											style={{
+												width: "100%",
+												padding: "10px 16px",
+												border: "none",
+												backgroundColor:
+													option.value === status
+														? "#F3F4F6"
+														: "transparent",
+												color: "#111827",
+												fontSize: "14px",
+												textAlign: "left",
+												cursor:
+													option.value === status
+														? "default"
+														: "pointer",
+												display: "flex",
+												alignItems: "center",
+												gap: "8px",
+												transition: "background-color 0.2s ease",
+											}}
+											onMouseEnter={(e) => {
+												if (option.value !== status) {
+													e.currentTarget.style.backgroundColor =
+														"#F9FAFB";
+												}
+											}}
+											onMouseLeave={(e) => {
+												if (option.value !== status) {
+													e.currentTarget.style.backgroundColor =
+														"transparent";
+												}
+											}}
+											disabled={option.value === status}
+										>
+											<div
+												style={{
+													width: "8px",
+													height: "8px",
+													borderRadius: "50%",
+													backgroundColor: option.color,
+												}}
+											/>
+											{option.label}
+											{option.value === status && (
+												<span
+													style={{
+														marginLeft: "auto",
+														fontSize: "12px",
+														color: "#6B7280",
+													}}
+												>
+													✓
+												</span>
+											)}
+										</button>
+									))}
+								</div>
+							)}
+						</div>
 
 						<button
 							className="btn btn-danger btn-delete btn-sm"

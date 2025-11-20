@@ -17,6 +17,9 @@ const FeaturedItem = ({
 	created_at,
 	currentUser,
 	rating,
+	area,
+	bedrooms,
+	bathrooms,
 }) => {
 	const mainImage = getListingImage(imageSrc);
 	const displayPrice = formattedPrice(price);
@@ -35,6 +38,9 @@ const FeaturedItem = ({
 		}
 	}, [id, imageSrc, mainImage]);
 
+	// Check if listing is new (created within last 30 days)
+	const isNew = created_at ? (new Date() - new Date(created_at)) / (1000 * 60 * 60 * 24) < 30 : false;
+
 	return (
 		<div
 			style={{
@@ -43,18 +49,24 @@ const FeaturedItem = ({
 				cursor: "pointer",
 			}}
 		>
-			<Link href={`/listing/${id}/${slug}`}>
+			<Link href={`/listing/${id}/${slug}`} style={{ textDecoration: "none", color: "inherit" }}>
 				<div
 					style={{
 						position: "relative",
 						width: "100%",
-						transition: "transform 0.2s ease",
+						backgroundColor: "#FFFFFF",
+						borderRadius: "12px",
+						overflow: "hidden",
+						boxShadow: "0 2px 8px rgba(0, 0, 0, 0.08)",
+						transition: "all 0.3s ease",
 					}}
 					onMouseEnter={(e) => {
-						e.currentTarget.style.transform = "scale(1.02)";
+						e.currentTarget.style.transform = "translateY(-4px)";
+						e.currentTarget.style.boxShadow = "0 8px 24px rgba(0, 0, 0, 0.12)";
 					}}
 					onMouseLeave={(e) => {
-						e.currentTarget.style.transform = "scale(1)";
+						e.currentTarget.style.transform = "translateY(0)";
+						e.currentTarget.style.boxShadow = "0 2px 8px rgba(0, 0, 0, 0.08)";
 					}}
 				>
 					{/* Image Container */}
@@ -63,9 +75,7 @@ const FeaturedItem = ({
 							position: "relative",
 							width: "100%",
 							paddingTop: "75%",
-							borderRadius: "12px",
 							overflow: "hidden",
-							marginBottom: "12px",
 							backgroundColor: "#f0f0f0",
 						}}
 					>
@@ -101,36 +111,25 @@ const FeaturedItem = ({
 							</div>
 						)}
 
-						{/* Guest Favorite Badge (optional - can be based on rating) */}
-						{parseFloat(displayRating) >= 4.9 && (
+						{/* NEW Badge - Pink rounded rectangle overlay */}
+						{isNew && (
 							<div
 								style={{
 									position: "absolute",
-									top: "12px",
-									left: "12px",
-									backgroundColor: "#FFFFFF",
-									padding: "6px 10px",
-									borderRadius: "6px",
-									display: "flex",
-									alignItems: "center",
-									gap: "4px",
-									fontSize: "12px",
-									fontWeight: "600",
-									color: "#222222",
+									bottom: "16px",
+									left: "16px",
+									backgroundColor: "#FF385C",
+									color: "#FFFFFF",
+									padding: "6px 14px",
+									borderRadius: "20px",
+									fontSize: "13px",
+									fontWeight: "700",
+									letterSpacing: "0.5px",
 									zIndex: 5,
-									boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+									boxShadow: "0 2px 8px rgba(255, 56, 92, 0.4)",
 								}}
 							>
-								<svg
-									width="14"
-									height="14"
-									viewBox="0 0 24 24"
-									fill="#FF385C"
-									stroke="none"
-								>
-									<path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-								</svg>
-								Guest favorite
+								NEW
 							</div>
 						)}
 
@@ -151,77 +150,146 @@ const FeaturedItem = ({
 						</div>
 					</div>
 
-					{/* Content */}
-					<div>
-						{/* Property Type and Location */}
-						<div style={{ marginBottom: "6px" }}>
-							<div
+					{/* Content Section */}
+					<div style={{ padding: "16px" }}>
+						{/* FOR SALE and Price Row */}
+						<div
+							style={{
+								display: "flex",
+								justifyContent: "space-between",
+								alignItems: "center",
+								marginBottom: "12px",
+							}}
+						>
+							<span
 								style={{
-									fontSize: "15px",
-									fontWeight: "600",
+									fontSize: "16px",
+									fontWeight: "700",
 									color: "#222222",
-									marginBottom: "4px",
-									lineHeight: "1.3",
-									overflow: "hidden",
-									textOverflow: "ellipsis",
-									whiteSpace: "nowrap",
+									letterSpacing: "0.3px",
 								}}
 							>
-								{category || "Property"} in {location_value || "Location"}
-							</div>
-							<div
+								FOR SALE
+							</span>
+							<span
 								style={{
-									fontSize: "15px",
-									color: "#717171",
-									marginBottom: "4px",
-									overflow: "hidden",
-									textOverflow: "ellipsis",
-									whiteSpace: "nowrap",
+									fontSize: "18px",
+									fontWeight: "700",
+									color: "#FF385C",
 								}}
 							>
-								{title}
-							</div>
+								{displayPrice}
+							</span>
 						</div>
 
-						{/* Price */}
+						{/* Property Type */}
 						<div
 							style={{
 								fontSize: "15px",
-								color: "#222222",
-								marginBottom: "6px",
 								fontWeight: "500",
+								color: "#222222",
+								marginBottom: "8px",
 							}}
 						>
-							{displayPrice} <span style={{ fontWeight: "400" }}>night</span>
+							{category || "Property"}
 						</div>
 
-						{/* Rating */}
+						{/* Location with Pin Icon */}
 						<div
 							style={{
 								display: "flex",
 								alignItems: "center",
-								gap: "4px",
+								gap: "6px",
+								marginBottom: "12px",
+								fontSize: "14px",
+								color: "#717171",
 							}}
 						>
 							<svg
-								width="12"
-								height="12"
+								width="16"
+								height="16"
 								viewBox="0 0 24 24"
-								fill="#222222"
-								stroke="none"
+								fill="none"
+								stroke="#717171"
+								strokeWidth="2"
 							>
-								<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+								<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+								<circle cx="12" cy="10" r="3"></circle>
 							</svg>
-							<span
+							<span>{location_value || "Location"}</span>
+						</div>
+
+						{/* Property Metrics */}
+						{(area || bedrooms || bathrooms) && (
+							<div
 								style={{
-									fontSize: "14px",
-									fontWeight: "600",
-									color: "#222222",
+									display: "flex",
+									alignItems: "center",
+									gap: "20px",
+									paddingTop: "12px",
+									borderTop: "1px solid #E0E0E0",
+									fontSize: "13px",
+									color: "#717171",
 								}}
 							>
-								{displayRating}
-							</span>
-						</div>
+								{/* Area - Square Meters Icon */}
+								{area && (
+									<div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+										<svg
+											width="18"
+											height="18"
+											viewBox="0 0 24 24"
+											fill="none"
+											stroke="#717171"
+											strokeWidth="2"
+											style={{ flexShrink: 0 }}
+										>
+											<rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+											<path d="M9 9h6v6H9z"></path>
+										</svg>
+										<span style={{ fontWeight: "500" }}>{area} m²</span>
+									</div>
+								)}
+
+								{/* Bedrooms - Bed Icon */}
+								{bedrooms && (
+									<div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+										<svg
+											width="18"
+											height="18"
+											viewBox="0 0 24 24"
+											fill="none"
+											stroke="#717171"
+											strokeWidth="2"
+											style={{ flexShrink: 0 }}
+										>
+											<path d="M2 4v16M22 4v16M4 4h16M4 8h16M4 12h16M4 16h16"></path>
+											<path d="M6 4v4M18 4v4"></path>
+										</svg>
+										<span style={{ fontWeight: "500" }}>{bedrooms}</span>
+									</div>
+								)}
+
+								{/* Plot Size / Garden - Tree Icon */}
+								{area && (
+									<div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+										<svg
+											width="18"
+											height="18"
+											viewBox="0 0 24 24"
+											fill="none"
+											stroke="#717171"
+											strokeWidth="2"
+											style={{ flexShrink: 0 }}
+										>
+											<path d="M12 2C8 2 4 4 4 8c0 4 4 6 8 8 4-2 8-4 8-8 0-4-4-6-8-6z"></path>
+											<path d="M12 16v6"></path>
+										</svg>
+										<span style={{ fontWeight: "500" }}>{Math.round(area * 4.2)} m²</span>
+									</div>
+								)}
+							</div>
+						)}
 					</div>
 				</div>
 			</Link>

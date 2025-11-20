@@ -37,6 +37,25 @@ if (process.env.FACEBOOK_CLIENT_ID && process.env.FACEBOOK_CLIENT_SECRET) {
 		FacebookProvider({
 			clientId: process.env.FACEBOOK_CLIENT_ID,
 			clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
+			// Only request public_profile (no advanced access needed)
+			// Email will be optional - we'll generate a placeholder if not available
+			authorization: {
+				params: {
+					scope: "public_profile",
+				},
+			},
+			profile(profile) {
+				// Generate email from Facebook ID if email is not provided
+				// This allows login without requiring email permission
+				const email = profile.email || `facebook_${profile.id}@facebook.local`;
+				
+				return {
+					id: profile.id,
+					name: profile.name || (profile.first_name && profile.last_name ? `${profile.first_name} ${profile.last_name}` : "Facebook User"),
+					email: email,
+					image: profile.picture?.data?.url || profile.picture,
+				};
+			},
 		})
 	);
 }
@@ -137,9 +156,28 @@ export const authHandler = NextAuth({
 		async signIn({ user, account, profile }) {
 			// Allow OAuth sign-ins - PrismaAdapter will handle user creation
 			if (account?.provider === "google" || account?.provider === "github" || account?.provider === "facebook") {
-				// Ensure user has required fields
+				// For Facebook, generate email if not provided (no advanced access needed)
+				if (account?.provider === "facebook") {
+					if (!user.email) {
+						// Generate a unique email from Facebook ID
+						user.email = `facebook_${account.providerAccountId}@facebook.local`;
+					}
+					// Log for debugging
+					if (process.env.NODE_ENV === "development") {
+						console.log("Facebook signIn callback:", { 
+							userEmail: user.email, 
+							facebookId: account.providerAccountId,
+							hasProfile: !!profile 
+						});
+					}
+				}
+				
+				// Ensure user has required fields (email should always be set now)
 				if (!user.email) {
-					console.error("OAuth user missing email:", user);
+					console.error("OAuth user missing email. Provider:", account?.provider, {
+						user: { id: user.id, name: user.name, email: user.email },
+						profile: profile ? { email: profile.email, name: profile.name } : null,
+					});
 					return false;
 				}
 				return true;

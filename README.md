@@ -101,6 +101,8 @@ Before you begin, ensure you have the following installed:
    GITHUB_SECRET="your-github-client-secret"
    GOOGLE_CLIENT_ID="your-google-client-id"
    GOOGLE_CLIENT_SECRET="your-google-client-secret"
+   FACEBOOK_CLIENT_ID="your-facebook-app-id"
+   FACEBOOK_CLIENT_SECRET="your-facebook-app-secret"
    ```
    
    **⚠️ Without a valid DATABASE_URL, the application will not work!**
@@ -222,6 +224,8 @@ npx prisma studio
 | `GITHUB_SECRET` | GitHub OAuth secret | No |
 | `GOOGLE_CLIENT_ID` | Google OAuth client ID | No |
 | `GOOGLE_CLIENT_SECRET` | Google OAuth secret | No |
+| `FACEBOOK_CLIENT_ID` | Facebook OAuth App ID | No |
+| `FACEBOOK_CLIENT_SECRET` | Facebook OAuth App Secret | No |
 
 ## 🗄️ Database Schema
 

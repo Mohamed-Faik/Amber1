@@ -42,6 +42,8 @@ services:
       - GITHUB_SECRET=${GITHUB_SECRET:-}
       - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID:-}
       - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET:-}
+      - FACEBOOK_CLIENT_ID=${FACEBOOK_CLIENT_ID:-}
+      - FACEBOOK_CLIENT_SECRET=${FACEBOOK_CLIENT_SECRET:-}
     volumes:
       - ./public/uploads:/app/public/uploads
       - ./prisma:/app/prisma

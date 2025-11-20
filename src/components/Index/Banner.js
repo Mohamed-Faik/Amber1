@@ -106,10 +106,11 @@ const Banner = () => {
 
 	return (
 		<div
+			className="hero-banner-container"
 			style={{
 				position: "relative",
 				height: "660px",
-				overflow: "hidden",
+				overflow: "visible",
 			}}
 		>
 			{/* Hero Background Video */}
@@ -173,9 +174,11 @@ const Banner = () => {
 					alignItems: "center",
 					justifyContent: "flex-end",
 					paddingBottom: "40px",
+					overflow: "visible",
 				}}
 			>
 				<div
+					className="banner-content-wrapper"
 					style={{
 						maxWidth: "1000px",
 						width: "100%",
@@ -211,17 +214,21 @@ const Banner = () => {
 
 					{/* Search Form Container */}
 					<div
+						className="banner-search-form"
 						style={{
 							backgroundColor: "#FFFFFF",
 							borderRadius: "29px",
 							padding: "24px",
 							boxShadow: "0 8px 32px rgba(0, 0, 0, 0.15)",
 							width: "100%",
+							position: "relative",
+							zIndex: 1000,
 						}}
 					>
 						<form onSubmit={handleSearch}>
 							{/* Top Row */}
 							<div
+								className="banner-form-top-row"
 								style={{
 									display: "grid",
 									gridTemplateColumns: "1fr 1fr",
@@ -230,16 +237,17 @@ const Banner = () => {
 								}}
 							>
 								{/* For Sale Dropdown */}
-								<div style={{ position: "relative" }} ref={saleTypeInputRef}>
+								<div style={{ position: "relative", zIndex: showSaleTypeDropdown ? 1001 : 1 }} ref={saleTypeInputRef}>
 									<div
 										onClick={handleSaleTypeClick}
 										style={{
 											width: "100%",
 											padding: "14px 16px 14px 44px",
-											border: "1px solid #E0E0E0",
+											border: showSaleTypeDropdown ? "2px solid #FF385C" : "1px solid #E0E0E0",
 											borderRadius: "12px",
-											backgroundColor: "#F7F7F7",
+											backgroundColor: showSaleTypeDropdown ? "#FFFFFF" : "#F7F7F7",
 											fontSize: "14px",
+											fontWeight: "500",
 											outline: "none",
 											cursor: "pointer",
 											display: "flex",
@@ -247,20 +255,25 @@ const Banner = () => {
 											justifyContent: "space-between",
 											color: saleType ? "#222222" : "#717171",
 											transition: "all 0.2s ease",
+											boxShadow: showSaleTypeDropdown ? "0 4px 12px rgba(255, 56, 92, 0.15)" : "none",
 										}}
 										onMouseEnter={(e) => {
-											e.currentTarget.style.borderColor = "#FF385C";
-											e.currentTarget.style.backgroundColor = "#FFFFFF";
+											if (!showSaleTypeDropdown) {
+												e.currentTarget.style.borderColor = "#FF385C";
+												e.currentTarget.style.backgroundColor = "#FFFFFF";
+											}
 										}}
 										onMouseLeave={(e) => {
-											e.currentTarget.style.borderColor = "#E0E0E0";
-											e.currentTarget.style.backgroundColor = "#F7F7F7";
+											if (!showSaleTypeDropdown) {
+												e.currentTarget.style.borderColor = "#E0E0E0";
+												e.currentTarget.style.backgroundColor = "#F7F7F7";
+											}
 										}}
 									>
 										<span>{saleType}</span>
 										<ChevronDown 
 											size={18} 
-											color="#717171"
+											color={showSaleTypeDropdown ? "#FF385C" : "#717171"}
 											style={{
 												transform: showSaleTypeDropdown ? "rotate(180deg)" : "rotate(0deg)",
 												transition: "transform 0.2s ease",
@@ -274,67 +287,97 @@ const Banner = () => {
 											top: "50%",
 											transform: "translateY(-50%)",
 											pointerEvents: "none",
+											zIndex: 1,
 										}}
 									>
-										<Home size={18} color="#717171" />
+										<Home size={18} color={showSaleTypeDropdown ? "#FF385C" : "#717171"} />
 									</div>
 									{/* Sale Type Dropdown */}
-									{showSaleTypeDropdown && (
-										<div
-											ref={saleTypeDropdownRef}
-											style={{
-												position: "absolute",
-												top: "calc(100% + 8px)",
-												left: 0,
-												right: 0,
-												backgroundColor: "#ffffff",
-												border: "1px solid #e0e0e0",
-												borderRadius: "12px",
-												boxShadow: "0 8px 24px rgba(0, 0, 0, 0.15)",
-												zIndex: 10000,
-												overflow: "hidden",
-											}}
-										>
-											{saleTypes.map((type, index) => (
-												<div
-													key={type}
-													onClick={() => handleSaleTypeSelect(type)}
-													style={{
-														padding: "14px 20px",
-														cursor: "pointer",
-														borderBottom:
-															index !== saleTypes.length - 1
-																? "1px solid #f5f5f5"
-																: "none",
-														transition: "all 0.2s ease",
+									<div
+										ref={saleTypeDropdownRef}
+										style={{
+											position: "absolute",
+											top: "calc(100% + 8px)",
+											left: 0,
+											right: 0,
+											backgroundColor: "#ffffff",
+											border: "1px solid #E0E0E0",
+											borderRadius: "12px",
+											boxShadow: "0 12px 32px rgba(0, 0, 0, 0.2), 0 4px 8px rgba(0, 0, 0, 0.1)",
+											zIndex: 1002,
+											overflow: "hidden",
+											marginTop: "4px",
+											opacity: showSaleTypeDropdown ? 1 : 0,
+											transform: showSaleTypeDropdown ? "translateY(0)" : "translateY(-10px)",
+											visibility: showSaleTypeDropdown ? "visible" : "hidden",
+											transition: "opacity 0.2s ease-out, transform 0.2s ease-out, visibility 0.2s ease-out",
+											pointerEvents: showSaleTypeDropdown ? "auto" : "none",
+										}}
+									>
+										{saleTypes.map((type, index) => (
+											<div
+												key={type}
+												onClick={() => handleSaleTypeSelect(type)}
+												style={{
+													padding: "16px 20px",
+													cursor: "pointer",
+													borderBottom:
+														index !== saleTypes.length - 1
+															? "1px solid #F0F0F0"
+															: "none",
+														transition: "all 0.15s ease",
 														fontSize: "14px",
-														color: "#222222",
+														fontWeight: saleType === type ? "600" : "400",
+														color: saleType === type ? "#FF385C" : "#222222",
+														backgroundColor: saleType === type ? "#FFF5F7" : "#ffffff",
+														display: "flex",
+														alignItems: "center",
+														gap: "8px",
 													}}
 													onMouseEnter={(e) => {
-														e.currentTarget.style.backgroundColor = "#F7F7F7";
+														if (saleType !== type) {
+															e.currentTarget.style.backgroundColor = "#F7F7F7";
+														}
 													}}
 													onMouseLeave={(e) => {
-														e.currentTarget.style.backgroundColor = "#ffffff";
+														if (saleType !== type) {
+															e.currentTarget.style.backgroundColor = "#ffffff";
+														} else {
+															e.currentTarget.style.backgroundColor = "#FFF5F7";
+														}
 													}}
 												>
-													{type}
+													{saleType === type && (
+														<svg
+															width="16"
+															height="16"
+															viewBox="0 0 24 24"
+															fill="none"
+															stroke="#FF385C"
+															strokeWidth="3"
+															style={{ flexShrink: 0 }}
+														>
+															<polyline points="20 6 9 17 4 12"></polyline>
+														</svg>
+													)}
+													<span>{type}</span>
 												</div>
 											))}
 										</div>
-									)}
 								</div>
 
 								{/* What Type Dropdown */}
-								<div style={{ position: "relative" }} ref={categoryInputRef}>
+								<div style={{ position: "relative", zIndex: showCategoryDropdown ? 1001 : 1 }} ref={categoryInputRef}>
 									<div
 										onClick={handleCategoryClick}
 										style={{
 											width: "100%",
 											padding: "14px 16px 14px 44px",
-											border: "1px solid #E0E0E0",
+											border: showCategoryDropdown ? "2px solid #FF385C" : "1px solid #E0E0E0",
 											borderRadius: "12px",
-											backgroundColor: "#F7F7F7",
+											backgroundColor: showCategoryDropdown ? "#FFFFFF" : "#F7F7F7",
 											fontSize: "14px",
+											fontWeight: "500",
 											outline: "none",
 											cursor: "pointer",
 											display: "flex",
@@ -342,20 +385,25 @@ const Banner = () => {
 											justifyContent: "space-between",
 											color: category ? "#222222" : "#717171",
 											transition: "all 0.2s ease",
+											boxShadow: showCategoryDropdown ? "0 4px 12px rgba(255, 56, 92, 0.15)" : "none",
 										}}
 										onMouseEnter={(e) => {
-											e.currentTarget.style.borderColor = "#FF385C";
-											e.currentTarget.style.backgroundColor = "#FFFFFF";
+											if (!showCategoryDropdown) {
+												e.currentTarget.style.borderColor = "#FF385C";
+												e.currentTarget.style.backgroundColor = "#FFFFFF";
+											}
 										}}
 										onMouseLeave={(e) => {
-											e.currentTarget.style.borderColor = "#E0E0E0";
-											e.currentTarget.style.backgroundColor = "#F7F7F7";
+											if (!showCategoryDropdown) {
+												e.currentTarget.style.borderColor = "#E0E0E0";
+												e.currentTarget.style.backgroundColor = "#F7F7F7";
+											}
 										}}
 									>
 										<span>{category || "What type are you looking for?"}</span>
 										<ChevronDown 
 											size={18} 
-											color="#717171"
+											color={showCategoryDropdown ? "#FF385C" : "#717171"}
 											style={{
 												transform: showCategoryDropdown ? "rotate(180deg)" : "rotate(0deg)",
 												transition: "transform 0.2s ease",
@@ -369,90 +417,117 @@ const Banner = () => {
 											top: "50%",
 											transform: "translateY(-50%)",
 											pointerEvents: "none",
+											zIndex: 1,
 										}}
 									>
-										<Home size={18} color="#717171" />
+										<Home size={18} color={showCategoryDropdown ? "#FF385C" : "#717171"} />
 									</div>
 									{/* Category Dropdown */}
-									{showCategoryDropdown && allCategories && allCategories.length > 0 && (
-										<div
-											ref={dropdownRef}
-											style={{
-												position: "absolute",
-												top: "calc(100% + 8px)",
-												left: 0,
-												right: 0,
-												backgroundColor: "#ffffff",
-												border: "1px solid #e0e0e0",
-												borderRadius: "12px",
-												boxShadow: "0 8px 24px rgba(0, 0, 0, 0.15)",
-												zIndex: 10000,
-												overflow: "hidden",
-												maxHeight: "300px",
-												overflowY: "auto",
-											}}
-										>
-											{allCategories.map((cat, index) => (
+									<div
+										ref={dropdownRef}
+										style={{
+											position: "absolute",
+											top: "calc(100% + 8px)",
+											left: 0,
+											right: 0,
+											backgroundColor: "#ffffff",
+											border: "1px solid #E0E0E0",
+											borderRadius: "12px",
+											boxShadow: "0 12px 32px rgba(0, 0, 0, 0.2), 0 4px 8px rgba(0, 0, 0, 0.1)",
+											zIndex: 1002,
+											overflow: "hidden",
+											maxHeight: "300px",
+											overflowY: "auto",
+											marginTop: "4px",
+											opacity: showCategoryDropdown ? 1 : 0,
+											transform: showCategoryDropdown ? "translateY(0)" : "translateY(-10px)",
+											visibility: showCategoryDropdown ? "visible" : "hidden",
+											transition: "opacity 0.2s ease-out, transform 0.2s ease-out, visibility 0.2s ease-out",
+											pointerEvents: showCategoryDropdown ? "auto" : "none",
+										}}
+									>
+										{allCategories && allCategories.length > 0 && allCategories.map((cat, index) => (
+											<div
+												key={cat.value}
+												onClick={() => handleCategorySelect(cat.label)}
+												style={{
+													padding: "16px 20px",
+													cursor: "pointer",
+													borderBottom:
+														index !== allCategories.length - 1
+															? "1px solid #F0F0F0"
+															: "none",
+													transition: "all 0.15s ease",
+													display: "flex",
+													alignItems: "center",
+													gap: "12px",
+													backgroundColor: category === cat.label ? "#FFF5F7" : "#ffffff",
+												}}
+												onMouseEnter={(e) => {
+													if (category !== cat.label) {
+														e.currentTarget.style.backgroundColor = "#F7F7F7";
+													}
+												}}
+												onMouseLeave={(e) => {
+													if (category !== cat.label) {
+														e.currentTarget.style.backgroundColor = "#ffffff";
+													} else {
+														e.currentTarget.style.backgroundColor = "#FFF5F7";
+													}
+												}}
+											>
 												<div
-													key={cat.value}
-													onClick={() => handleCategorySelect(cat.label)}
 													style={{
-														padding: "14px 20px",
-														cursor: "pointer",
-														borderBottom:
-															index !== allCategories.length - 1
-																? "1px solid #f5f5f5"
-																: "none",
-														transition: "all 0.2s ease",
+														width: "32px",
+														height: "32px",
+														borderRadius: "6px",
+														backgroundColor: "#f0f4f8",
 														display: "flex",
 														alignItems: "center",
-														gap: "12px",
-													}}
-													onMouseEnter={(e) => {
-														e.currentTarget.style.backgroundColor = "#F7F7F7";
-													}}
-													onMouseLeave={(e) => {
-														e.currentTarget.style.backgroundColor = "#ffffff";
+														justifyContent: "center",
+														flexShrink: 0,
 													}}
 												>
-													<div
-														style={{
-															width: "32px",
-															height: "32px",
-															borderRadius: "6px",
-															backgroundColor: "#f0f4f8",
-															display: "flex",
-															alignItems: "center",
-															justifyContent: "center",
-															flexShrink: 0,
-														}}
-													>
-														<Image
-															src={cat.imageSrc}
-															width={20}
-															height={20}
-															alt={cat.label}
-															style={{ objectFit: "contain" }}
-														/>
-													</div>
-													<div
-														style={{
-															fontSize: "14px",
-															fontWeight: "500",
-															color: "#222222",
-														}}
-													>
-														{cat.label}
-													</div>
+													<Image
+														src={cat.imageSrc}
+														width={20}
+														height={20}
+														alt={cat.label}
+														style={{ objectFit: "contain" }}
+													/>
 												</div>
-											))}
-										</div>
-									)}
+												<div
+													style={{
+														fontSize: "14px",
+														fontWeight: category === cat.label ? "600" : "500",
+														color: category === cat.label ? "#FF385C" : "#222222",
+														flex: 1,
+													}}
+												>
+													{cat.label}
+												</div>
+												{category === cat.label && (
+													<svg
+														width="16"
+														height="16"
+														viewBox="0 0 24 24"
+														fill="none"
+														stroke="#FF385C"
+														strokeWidth="3"
+														style={{ flexShrink: 0 }}
+													>
+														<polyline points="20 6 9 17 4 12"></polyline>
+													</svg>
+												)}
+											</div>
+										))}
+									</div>
 								</div>
 							</div>
 
 							{/* Bottom Row */}
 							<div
+								className="banner-form-bottom-row"
 								style={{
 									display: "grid",
 									gridTemplateColumns: "1fr 1fr auto",

@@ -36,6 +36,7 @@ const page = async () => {
 				>
 					{/* Layout Grid */}
 					<div
+						className="dashboard-layout-grid"
 						style={{
 							display: "grid",
 							gridTemplateColumns: "220px 1fr",
@@ -47,6 +48,7 @@ const page = async () => {
 					>
 						{/* Left Sidebar Navigation */}
 						<aside
+							className="dashboard-sidebar"
 							style={{
 								borderRight: "1px solid #EBEBEB",
 								paddingRight: "24px",
@@ -64,6 +66,7 @@ const page = async () => {
 
 						{/* Main Content Area */}
 						<main
+							className="dashboard-main"
 							style={{
 								paddingLeft: "24px",
 								maxWidth: "1000px",

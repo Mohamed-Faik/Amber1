@@ -26,6 +26,7 @@ const page = async ({ searchParams }) => {
 	return (
 		<>
 			<div
+				className="dashboard-listings-page"
 				style={{
 					backgroundColor: "#F9FAFB",
 					minHeight: "100vh",
@@ -35,6 +36,7 @@ const page = async ({ searchParams }) => {
 			>
 				<div className="container">
 					<div
+						className="dashboard-listings-grid"
 						style={{
 							display: "grid",
 							gridTemplateColumns: "280px 1fr",

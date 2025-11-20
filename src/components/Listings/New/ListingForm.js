@@ -107,7 +107,9 @@ const ListingForm = () => {
 				reset();
 			})
 			.catch((error) => {
-				toast.error("Something went wrong.");
+				console.error("Error creating listing:", error);
+				const errorMessage = error.response?.data?.message || error.message || "Something went wrong. Please try again.";
+				toast.error(errorMessage);
 			})
 			.finally(() => {
 				setIsLoading(false);
@@ -116,13 +118,14 @@ const ListingForm = () => {
 
 	return (
 		<div
+			className="listing-form-container"
 			style={{
 				paddingTop: "40px",
 				paddingBottom: "80px",
 				width: "100%",
 			}}
 		>
-			<div className="container" style={{ maxWidth: "1400px", margin: "0 auto", paddingLeft: "24px", paddingRight: "24px", boxSizing: "border-box" }}>
+			<div className="listing-form-wrapper" style={{ maxWidth: "1400px", margin: "0 auto", paddingLeft: "24px", paddingRight: "24px", boxSizing: "border-box" }}>
 				{/* Header */}
 				<div style={{ marginBottom: "48px", width: "100%" }}>
 					<h1

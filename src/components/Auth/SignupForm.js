@@ -268,11 +268,29 @@ const SignupForm = () => {
   const handleFacebookLogin = async () => {
     setIsSocialLoading(true);
     try {
-      await signIn("facebook", {
-        callbackUrl: "/dashboard",
+      const result = await signIn("facebook", {
+        callbackUrl: window.location.origin,
+        redirect: false,
       });
+      
+      if (result?.error) {
+        if (result.error === "OAuthSignin" || result.error === "Configuration") {
+          toast.error("Facebook sign-in is not configured. Please add FACEBOOK_CLIENT_ID and FACEBOOK_CLIENT_SECRET to your .env file and restart the server.");
+        } else if (result.error === "AccessDenied") {
+          toast.error("Facebook login was denied. Please make sure you grant email permission and that your Facebook app is configured correctly.");
+        } else {
+          toast.error(`Facebook login failed: ${result.error}`);
+        }
+        setIsSocialLoading(false);
+      } else if (result?.ok) {
+        // Success - redirect will happen automatically
+        toast.success("Account created successfully!");
+        router.refresh();
+        window.location.href = result.url || window.location.origin;
+      }
     } catch (error) {
-      toast.error("Facebook login failed. Please try again.");
+      console.error("Facebook login error:", error);
+      toast.error("Facebook login failed. Please check your FACEBOOK_CLIENT_ID and FACEBOOK_CLIENT_SECRET in .env file and restart the server.");
       setIsSocialLoading(false);
     }
   };
@@ -463,7 +481,7 @@ const SignupForm = () => {
       minHeight: "100vh",
       display: "grid",
       gridTemplateColumns: "1fr 1fr",
-    }}>
+    }} className="signup-container">
       {/* Left Side - Form */}
       <div style={{
         backgroundColor: "#FFFFFF",
@@ -1238,7 +1256,7 @@ const SignupForm = () => {
         position: "relative",
         overflow: "hidden",
         height: "100vh",
-      }}>
+      }} className="signup-image">
         <img 
           src="https://www.fresha.com/assets/_next/static/images/Image5-db2e8204dd7d58aedfee81f58fb0c570.webp"
           alt="AmberHomes"
@@ -1250,6 +1268,27 @@ const SignupForm = () => {
           }}
         />
       </div>
+      <style jsx>{`
+        /* Tablet: 768px - 991px */
+        @media (max-width: 991px) {
+          .signup-container {
+            grid-template-columns: 1fr !important;
+          }
+          .signup-image {
+            display: none !important;
+          }
+        }
+
+        /* Mobile: < 768px */
+        @media (max-width: 767px) {
+          .signup-container {
+            grid-template-columns: 1fr !important;
+          }
+          .signup-image {
+            display: none !important;
+          }
+        }
+      `}</style>
     </div>
   );
 };
