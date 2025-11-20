@@ -69,6 +69,7 @@ const ReviewsSection = ({ reviews }) => {
 						width: "300px",
 						outline: "none",
 					}}
+					className="reviews-search"
 					onFocus={(e) => {
 						e.currentTarget.style.borderColor = "#222222";
 					}}
@@ -85,6 +86,7 @@ const ReviewsSection = ({ reviews }) => {
 					gridTemplateColumns: "repeat(auto-fill, minmax(400px, 1fr))",
 					gap: "16px",
 				}}
+				className="reviews-grid"
 			>
 				{filteredReviews?.map((review) => (
 					<div
@@ -213,6 +215,27 @@ const ReviewsSection = ({ reviews }) => {
 					</p>
 				</div>
 			)}
+			<style jsx>{`
+				/* Tablet: 768px - 991px */
+				@media (max-width: 991px) {
+					.reviews-grid {
+						grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)) !important;
+					}
+					.reviews-search {
+						width: 250px !important;
+					}
+				}
+
+				/* Mobile: < 768px */
+				@media (max-width: 767px) {
+					.reviews-search {
+						width: 100% !important;
+					}
+					.reviews-grid {
+						grid-template-columns: 1fr !important;
+					}
+				}
+			`}</style>
 		</div>
 	);
 };

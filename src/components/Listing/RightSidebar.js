@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { formattedPrice } from "@/utils/formattedPrice";
 import userImg from "../../../public/images/listing-details-img/user.jpg";
 import HeartButton from "../HeartButton";
@@ -75,7 +76,7 @@ Please provide more information.`;
 						{user?.image ? (
 							<Image
 								src={user.image}
-								alt="AdverIQ User"
+								alt={user?.name || user?.email || "Property Owner"}
 								fill
 								style={{ objectFit: "cover" }}
 								unoptimized
@@ -83,7 +84,7 @@ Please provide more information.`;
 						) : (
 							<Image
 								src={userImg}
-								alt="AdverIQ User"
+								alt={user?.name || user?.email || "Property Owner"}
 								fill
 								style={{ objectFit: "cover" }}
 								unoptimized
@@ -91,16 +92,57 @@ Please provide more information.`;
 						)}
 					</div>
 					<div style={{ flex: 1 }}>
-						<h3
-							style={{
-								fontSize: "18px",
-								fontWeight: "600",
-								color: "#222222",
-								marginBottom: "4px",
-							}}
-						>
-							AdverIQ User
-						</h3>
+						{user?.id ? (
+							<Link
+								href={`/author/${user.id}`}
+								style={{
+									textDecoration: "none",
+									color: "inherit",
+								}}
+							>
+								<h3
+									style={{
+										fontSize: "18px",
+										fontWeight: "600",
+										color: "#222222",
+										marginBottom: "4px",
+										cursor: "pointer",
+										transition: "color 0.2s ease",
+									}}
+									onMouseEnter={(e) => {
+										e.currentTarget.style.color = "#FF385C";
+									}}
+									onMouseLeave={(e) => {
+										e.currentTarget.style.color = "#222222";
+									}}
+								>
+									{user?.name || user?.email || "Property Owner"}
+								</h3>
+							</Link>
+						) : (
+							<h3
+								style={{
+									fontSize: "18px",
+									fontWeight: "600",
+									color: "#222222",
+									marginBottom: "4px",
+								}}
+							>
+								{user?.name || user?.email || "Property Owner"}
+							</h3>
+						)}
+						{user?.email && (
+							<p
+								style={{
+									fontSize: "13px",
+									color: "#717171",
+									margin: "0 0 4px 0",
+									lineHeight: "1.4",
+								}}
+							>
+								{user.email}
+							</p>
+						)}
 						{user?.profile?.bio && (
 							<p
 								style={{

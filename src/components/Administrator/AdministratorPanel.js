@@ -38,9 +38,10 @@ const AdministratorPanel = ({
 					margin: "0 auto",
 					padding: "0 80px",
 				}}
+				className="admin-container"
 			>
 				{/* Header */}
-				<div style={{ marginBottom: "48px" }}>
+				<div style={{ marginBottom: "48px" }} className="admin-header">
 					<div style={{
 						display: "flex",
 						alignItems: "center",
@@ -56,7 +57,7 @@ const AdministratorPanel = ({
 							alignItems: "center",
 							justifyContent: "center",
 							boxShadow: "0 8px 24px rgba(255, 56, 92, 0.25)",
-						}}>
+						}} className="admin-icon">
 							<Shield size={28} color="#FFFFFF" strokeWidth={2.5} />
 						</div>
 						<div>
@@ -69,6 +70,7 @@ const AdministratorPanel = ({
 									lineHeight: "1.1",
 									letterSpacing: "-0.5px",
 								}}
+								className="admin-title"
 							>
 								Admin Portal
 							</h1>
@@ -91,6 +93,7 @@ const AdministratorPanel = ({
 							lineHeight: "1.6",
 							margin: "0",
 						}}
+						className="admin-description"
 					>
 						Manage listings, users, reviews, and blog posts with full administrative control.
 					</p>
@@ -108,6 +111,7 @@ const AdministratorPanel = ({
 						boxShadow: "0 2px 8px rgba(0, 0, 0, 0.04)",
 						border: "1px solid #E0E0E0",
 					}}
+					className="admin-tabs"
 				>
 					{tabs.map((tab) => {
 						const IconComponent = tab.icon;
@@ -184,6 +188,7 @@ const AdministratorPanel = ({
 						boxShadow: "0 2px 12px rgba(0, 0, 0, 0.08)",
 						border: "1px solid #E0E0E0",
 					}}
+					className="admin-content"
 				>
 					{activeTab === "listings" && (
 						<ListingsSection listings={listings} />
@@ -194,6 +199,68 @@ const AdministratorPanel = ({
 					{activeTab === "content" && <ContentSection />}
 				</div>
 			</div>
+			<style jsx>{`
+				/* Tablet: 768px - 991px */
+				@media (max-width: 991px) {
+					.admin-container {
+						padding: 0 40px !important;
+					}
+					.admin-title {
+						font-size: 28px !important;
+					}
+					.admin-tabs {
+						flex-wrap: wrap !important;
+					}
+					.admin-content {
+						padding: 24px !important;
+					}
+				}
+
+				/* Mobile: < 768px */
+				@media (max-width: 767px) {
+					.admin-container {
+						padding: 0 20px !important;
+					}
+					.admin-header {
+						margin-bottom: 32px !important;
+					}
+					.admin-icon {
+						width: 48px !important;
+						height: 48px !important;
+					}
+					.admin-title {
+						font-size: 24px !important;
+					}
+					.admin-description {
+						font-size: 14px !important;
+					}
+					.admin-tabs {
+						flex-direction: column !important;
+						gap: 8px !important;
+					}
+					.admin-tabs button {
+						width: 100% !important;
+						justify-content: flex-start !important;
+					}
+					.admin-content {
+						padding: 20px 16px !important;
+						border-radius: 12px !important;
+					}
+				}
+
+				/* Small Mobile: < 480px */
+				@media (max-width: 480px) {
+					.admin-container {
+						padding: 0 16px !important;
+					}
+					.admin-title {
+						font-size: 20px !important;
+					}
+					.admin-content {
+						padding: 16px 12px !important;
+					}
+				}
+			`}</style>
 		</div>
 	);
 };

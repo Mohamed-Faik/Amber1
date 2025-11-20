@@ -280,6 +280,33 @@ const ListingItem = ({
 						</span>
 					</div>
 
+					<Link
+						href={`/listings/${id}/edit`}
+						style={{
+							width: "100%",
+							padding: "10px 16px",
+							borderRadius: "8px",
+							border: "1px solid #222222",
+							backgroundColor: "#ffffff",
+							color: "#222222",
+							fontSize: "14px",
+							fontWeight: "600",
+							textAlign: "center",
+							textDecoration: "none",
+							transition: "all 0.2s ease",
+						}}
+						onMouseEnter={(e) => {
+							e.target.style.backgroundColor = "#222222";
+							e.target.style.color = "#ffffff";
+						}}
+						onMouseLeave={(e) => {
+							e.target.style.backgroundColor = "#ffffff";
+							e.target.style.color = "#222222";
+						}}
+					>
+						Edit Listing
+					</Link>
+
 					{/* Cancel button - only show if not already canceled */}
 					{status !== "Canceled" && (
 						<button

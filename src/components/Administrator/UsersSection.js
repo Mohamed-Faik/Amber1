@@ -118,6 +118,7 @@ const UsersSection = ({ users }) => {
 						width: "300px",
 						outline: "none",
 					}}
+					className="users-search"
 					onFocus={(e) => {
 						e.currentTarget.style.borderColor = "#222222";
 					}}
@@ -134,6 +135,7 @@ const UsersSection = ({ users }) => {
 					gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
 					gap: "16px",
 				}}
+				className="users-grid"
 			>
 				{filteredUsers?.map((user) => (
 					<div
@@ -381,6 +383,27 @@ const UsersSection = ({ users }) => {
 					</p>
 				</div>
 			)}
+			<style jsx>{`
+				/* Tablet: 768px - 991px */
+				@media (max-width: 991px) {
+					.users-grid {
+						grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)) !important;
+					}
+					.users-search {
+						width: 250px !important;
+					}
+				}
+
+				/* Mobile: < 768px */
+				@media (max-width: 767px) {
+					.users-search {
+						width: 100% !important;
+					}
+					.users-grid {
+						grid-template-columns: 1fr !important;
+					}
+				}
+			`}</style>
 		</div>
 	);
 };

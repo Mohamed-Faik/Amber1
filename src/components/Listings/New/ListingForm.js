@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Select from "react-select";
 import { toast } from "react-hot-toast";
 import { useForm, useController, Controller } from "react-hook-form";
@@ -8,31 +8,82 @@ import Input from "@/components/FormHelpers/Input";
 import MultiImageUpload from "@/components/FormHelpers/MultiImageUpload";
 import CountrySelect from "@/components/FormHelpers/CountrySelect";
 import { categories } from "@/libs/Categories";
-import Button from "@/components/FormHelpers/Button";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
-import { isModerator } from "@/utils/checkRole";
 import dynamic from "next/dynamic";
+import useCountries from "@/hooks/useCountries";
 const RichTextEditor = dynamic(() => import("@mantine/rte"), {
 	ssr: false,
 	loading: () => null,
 });
 import RTEControls from "@/utils/RTEControls";
 
-const ListingForm = ({ currentUser }) => {
+const parseImages = (value) => {
+	if (!value) return [];
+	if (Array.isArray(value)) {
+		return value;
+	}
+	if (typeof value === "string") {
+		try {
+			const parsed = JSON.parse(value);
+			if (Array.isArray(parsed)) {
+				return parsed;
+			}
+		} catch (error) {
+			if (value.trim() !== "") {
+				return [value];
+			}
+		}
+	}
+	return [];
+};
+
+const ListingForm = ({ initialData = null }) => {
 	const [isLoading, setIsLoading] = useState(false);
 	const router = useRouter();
-	const { data: session } = useSession();
-	
-	// Get effective user from session or prop
-	const effectiveUser = session?.user ? {
-		id: session.user.id,
-		email: session.user.email,
-		name: session.user.name,
-		image: session.user.image,
-		role: session.user.role || currentUser?.role,
-	} : currentUser;
+	const isEditMode = Boolean(initialData);
+	const { getAll } = useCountries();
+	const countryOptions = getAll();
+
+	const defaultValues = useMemo(() => {
+		if (!initialData) {
+			return {
+				title: "",
+				description: "",
+				imageSrc: [],
+				address: "",
+				features: "",
+				category: "",
+				location: null,
+				price: 1,
+				area: "",
+				bedrooms: "",
+				bathrooms: "",
+			};
+		}
+
+		const images = parseImages(initialData.imageSrc);
+		const locationOption =
+			countryOptions.find(
+				(option) =>
+					option.label === initialData.location_value ||
+					option.value === initialData.location_value
+			) || null;
+
+		return {
+			title: initialData.title || "",
+			description: initialData.description || "",
+			imageSrc: images,
+			address: initialData.address || "",
+			features: initialData.features || "",
+			category: initialData.category || "",
+			location: locationOption,
+			price: initialData.price ?? 1,
+			area: initialData.area ?? "",
+			bedrooms: initialData.bedrooms ?? "",
+			bathrooms: initialData.bathrooms ?? "",
+		};
+	}, [initialData, countryOptions]);
 
 	const setCustomValue = (id, value) => {
 		setValue(id, value, {
@@ -52,20 +103,12 @@ const ListingForm = ({ currentUser }) => {
 		reset,
 		control,
 	} = useForm({
-		defaultValues: {
-			title: "",
-			description: "",
-			imageSrc: [],
-			address: "",
-			features: "",
-			category: "",
-			location: null,
-			price: 1,
-			area: "",
-			bedrooms: "",
-			bathrooms: "",
-		},
+		defaultValues,
 	});
+
+	useEffect(() => {
+		reset(defaultValues);
+	}, [defaultValues, reset]);
 
 	const {
 		field: { value: catValue, onChange: catOnChange, ...restCategoryField },
@@ -111,20 +154,24 @@ const ListingForm = ({ currentUser }) => {
 		};
 
 		setIsLoading(true);
-		axios
-			.post("/api/listings/create", submitData)
-			.then((response) => {
-				// Check if user is moderator/admin for auto-approval message
-				const userIsModerator = isModerator(effectiveUser);
-				const successMessage = userIsModerator
-					? "Listing created and approved! It is now visible on the website."
-					: "Listing created! It is pending admin approval and will be visible once approved.";
-				toast.success(successMessage);
+		const request = isEditMode
+			? axios.patch(`/api/listings/${initialData.id}`, submitData)
+			: axios.post("/api/listings/create", submitData);
+
+		setIsLoading(true);
+		request
+			.then(() => {
+				toast.success(
+					isEditMode
+						? "Listing updated! Changes will be reviewed before going live."
+						: "Listing created! It is pending admin approval and will be visible once approved."
+				);
 				router.push("/listings/my-listings");
-				reset();
+				router.refresh();
+				reset(defaultValues);
 			})
 			.catch((error) => {
-				console.error("Error creating listing:", error);
+				console.error("Error saving listing:", error);
 				const errorMessage = error.response?.data?.message || error.message || "Something went wrong. Please try again.";
 				toast.error(errorMessage);
 			})
@@ -155,7 +202,7 @@ const ListingForm = ({ currentUser }) => {
 							lineHeight: "1.3",
 						}}
 					>
-						Create a New Listing
+						{isEditMode ? "Edit Listing" : "Create a New Listing"}
 					</h1>
 					<p
 						style={{
@@ -165,7 +212,9 @@ const ListingForm = ({ currentUser }) => {
 							lineHeight: "1.5",
 						}}
 					>
-						Share your property with potential buyers. All listings require admin approval.
+						{isEditMode
+							? "Update your listing details. Changes to published listings will move back to admin review."
+							: "Share your property with potential buyers. All listings require admin approval."}
 					</p>
 				</div>
 
@@ -272,7 +321,7 @@ const ListingForm = ({ currentUser }) => {
 									<Controller
 										name="description"
 										control={control}
-										defaultValue=""
+										defaultValue={defaultValues.description}
 										render={({ field }) => (
 											<RichTextEditor
 												controls={RTEControls}
@@ -459,7 +508,7 @@ const ListingForm = ({ currentUser }) => {
 									<Controller
 										name="features"
 										control={control}
-										defaultValue=""
+										defaultValue={defaultValues.features}
 										render={({ field }) => (
 											<RichTextEditor
 												controls={RTEControls}
@@ -564,7 +613,13 @@ const ListingForm = ({ currentUser }) => {
 								}
 							}}
 						>
-							{isLoading ? "Creating..." : "Create Listing"}
+							{isLoading
+								? isEditMode
+									? "Saving..."
+									: "Creating..."
+								: isEditMode
+								? "Save Changes"
+								: "Create Listing"}
 						</button>
 					</div>
 				</form>

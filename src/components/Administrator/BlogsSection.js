@@ -80,6 +80,7 @@ const BlogsSection = ({ blogPosts }) => {
 						width: "300px",
 						outline: "none",
 					}}
+					className="blogs-search"
 					onFocus={(e) => {
 						e.currentTarget.style.borderColor = "#222222";
 					}}
@@ -96,6 +97,7 @@ const BlogsSection = ({ blogPosts }) => {
 					gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))",
 					gap: "24px",
 				}}
+				className="blogs-grid"
 			>
 				{filteredBlogs?.map((blog) => {
 					const blogImage = getBlogImage(blog.imageSrc);
@@ -274,6 +276,29 @@ const BlogsSection = ({ blogPosts }) => {
 					</p>
 				</div>
 			)}
+			<style jsx>{`
+				/* Tablet: 768px - 991px */
+				@media (max-width: 991px) {
+					.blogs-grid {
+						grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)) !important;
+						gap: 20px !important;
+					}
+					.blogs-search {
+						width: 250px !important;
+					}
+				}
+
+				/* Mobile: < 768px */
+				@media (max-width: 767px) {
+					.blogs-search {
+						width: 100% !important;
+					}
+					.blogs-grid {
+						grid-template-columns: 1fr !important;
+						gap: 16px !important;
+					}
+				}
+			`}</style>
 		</div>
 	);
 };

@@ -7,10 +7,6 @@ export const config = {
 		"/listings/favourites",
 		"/profile/edit-my-info",
 		"/profile/settings",
-		"/dashboard/blog",
-		"/dashboard/blog/new",
-		"/dashboard/listings",
-		"/dashboard/reviews",
-		"/dashboard/users",
+		"/administrator",
 	],
 };

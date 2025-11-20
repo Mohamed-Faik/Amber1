@@ -106,7 +106,10 @@ const ListingsSection = ({ listings: initialListings }) => {
 					justifyContent: "space-between",
 					alignItems: "center",
 					marginBottom: "24px",
+					flexWrap: "wrap",
+					gap: "16px",
 				}}
+				className="listings-header"
 			>
 				<h2
 					style={{
@@ -115,12 +118,13 @@ const ListingsSection = ({ listings: initialListings }) => {
 						color: "#222222",
 						margin: 0,
 					}}
+					className="listings-title"
 				>
 					Manage Listings
 				</h2>
 
 				{/* Status Filter */}
-				<div style={{ display: "flex", gap: "8px" }}>
+				<div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }} className="listings-filters">
 					{["all", "Pending", "Approved", "Canceled"].map((status) => (
 						<button
 							key={status}
@@ -161,6 +165,7 @@ const ListingsSection = ({ listings: initialListings }) => {
 					gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))",
 					gap: "24px",
 				}}
+				className="listings-grid"
 			>
 				{filteredListings?.map((listing) => {
 					const mainImage = getListingImage(listing.imageSrc);
@@ -388,6 +393,51 @@ const ListingsSection = ({ listings: initialListings }) => {
 					</p>
 				</div>
 			)}
+			<style jsx>{`
+				/* Tablet: 768px - 991px */
+				@media (max-width: 991px) {
+					.listings-grid {
+						grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)) !important;
+						gap: 20px !important;
+					}
+					.listings-title {
+						font-size: 20px !important;
+					}
+				}
+
+				/* Mobile: < 768px */
+				@media (max-width: 767px) {
+					.listings-header {
+						flex-direction: column !important;
+						align-items: flex-start !important;
+					}
+					.listings-title {
+						font-size: 18px !important;
+					}
+					.listings-filters {
+						width: 100% !important;
+					}
+					.listings-filters button {
+						flex: 1 !important;
+						min-width: 80px !important;
+					}
+					.listings-grid {
+						grid-template-columns: 1fr !important;
+						gap: 16px !important;
+					}
+				}
+
+				/* Small Mobile: < 480px */
+				@media (max-width: 480px) {
+					.listings-title {
+						font-size: 16px !important;
+					}
+					.listings-filters button {
+						font-size: 12px !important;
+						padding: 6px 12px !important;
+					}
+				}
+			`}</style>
 		</div>
 	);
 };
