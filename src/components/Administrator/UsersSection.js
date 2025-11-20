@@ -32,9 +32,52 @@ const UsersSection = ({ users }) => {
 				router.refresh();
 			}
 		} catch (error) {
-			toast.error(
-				error.response?.data?.message || "Failed to delete user"
-			);
+			console.error("Error deleting user:", error);
+			const errorMessage = error.response?.data?.message || error.response?.data?.error || error.message || "Failed to delete user";
+			toast.error(errorMessage);
+		}
+	};
+
+	const handleStatusToggle = async (userId, currentStatus, userName) => {
+		const newStatus = currentStatus === "Active" ? "Inactive" : "Active";
+		const action = newStatus === "Active" ? "activate" : "deactivate";
+		
+		if (!confirm(`Are you sure you want to ${action} user "${userName}"?`)) {
+			return;
+		}
+
+		try {
+			await axios.patch(`/api/users/${userId}`, {
+				status: newStatus,
+			});
+			toast.success(`User ${action}d successfully!`);
+			if (typeof window !== "undefined") {
+				router.refresh();
+			}
+		} catch (error) {
+			console.error("Error toggling user status:", error);
+			const errorMessage = error.response?.data?.message || error.response?.data?.error || error.message || `Failed to ${action} user`;
+			toast.error(errorMessage);
+		}
+	};
+
+	const handleRoleChange = async (userId, newRole, userName) => {
+		if (!confirm(`Change role of "${userName}" to ${newRole}?`)) {
+			return;
+		}
+
+		try {
+			await axios.patch(`/api/users/${userId}`, {
+				role: newRole,
+			});
+			toast.success(`User role updated to ${newRole}!`);
+			if (typeof window !== "undefined") {
+				router.refresh();
+			}
+		} catch (error) {
+			console.error("Error updating user role:", error);
+			const errorMessage = error.response?.data?.message || error.response?.data?.error || error.message || "Failed to update user role";
+			toast.error(errorMessage);
 		}
 	};
 
@@ -188,26 +231,111 @@ const UsersSection = ({ users }) => {
 							</p>
 
 							{/* Role Badge */}
-							<div
-								style={{
-									display: "inline-block",
-									padding: "4px 12px",
-									borderRadius: "20px",
-									fontSize: "12px",
-									fontWeight: "600",
-									backgroundColor:
-										user.role === "ADMIN"
-											? "#FF385C"
-											: "#222222",
-									color: "#FFFFFF",
-									marginBottom: "12px",
-								}}
-							>
-								{user.role}
+							<div style={{ display: "flex", gap: "8px", marginBottom: "12px", flexWrap: "wrap" }}>
+								<div
+									style={{
+										display: "inline-block",
+										padding: "4px 12px",
+										borderRadius: "20px",
+										fontSize: "12px",
+										fontWeight: "600",
+										backgroundColor:
+											user.role === "ADMIN"
+												? "#FF385C"
+												: user.role === "MODERATOR"
+												? "#8B5CF6"
+												: user.role === "SUPPORT"
+												? "#3B82F6"
+												: "#222222",
+										color: "#FFFFFF",
+									}}
+								>
+									{user.role}
+								</div>
+								{/* Status Badge */}
+								<div
+									style={{
+										display: "inline-block",
+										padding: "4px 12px",
+										borderRadius: "20px",
+										fontSize: "12px",
+										fontWeight: "600",
+										backgroundColor:
+											user.status === "Active"
+												? "#10B981"
+												: "#EF4444",
+										color: "#FFFFFF",
+									}}
+								>
+									{user.status || "Active"}
+								</div>
 							</div>
 
 							{/* Actions */}
-							<div style={{ display: "flex", gap: "8px" }}>
+							<div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+								{/* Activate/Deactivate Button */}
+								<button
+									onClick={() => handleStatusToggle(user.id, user.status || "Active", user.name || user.email)}
+									style={{
+										padding: "8px 16px",
+										backgroundColor: user.status === "Active" ? "#FFFFFF" : "#10B981",
+										color: user.status === "Active" ? "#EF4444" : "#FFFFFF",
+										border: `1px solid ${user.status === "Active" ? "#EF4444" : "#10B981"}`,
+										borderRadius: "8px",
+										fontSize: "14px",
+										fontWeight: "500",
+										cursor: "pointer",
+										transition: "all 0.2s ease",
+									}}
+									onMouseEnter={(e) => {
+										if (user.status === "Active") {
+											e.currentTarget.style.backgroundColor = "#EF4444";
+											e.currentTarget.style.color = "#FFFFFF";
+										} else {
+											e.currentTarget.style.backgroundColor = "#059669";
+										}
+									}}
+									onMouseLeave={(e) => {
+										if (user.status === "Active") {
+											e.currentTarget.style.backgroundColor = "#FFFFFF";
+											e.currentTarget.style.color = "#EF4444";
+										} else {
+											e.currentTarget.style.backgroundColor = "#10B981";
+										}
+									}}
+								>
+									{user.status === "Active" ? "Deactivate" : "Activate"}
+								</button>
+
+								{/* Role Change Dropdown */}
+								<select
+									value={user.role || "USER"}
+									onChange={(e) => handleRoleChange(user.id, e.target.value, user.name || user.email)}
+									style={{
+										padding: "8px 16px",
+										border: "1px solid #DDDDDD",
+										borderRadius: "8px",
+										fontSize: "14px",
+										fontWeight: "500",
+										cursor: "pointer",
+										backgroundColor: "#FFFFFF",
+										color: "#222222",
+										outline: "none",
+									}}
+									onFocus={(e) => {
+										e.currentTarget.style.borderColor = "#FF385C";
+									}}
+									onBlur={(e) => {
+										e.currentTarget.style.borderColor = "#DDDDDD";
+									}}
+								>
+									<option value="USER">USER</option>
+									<option value="MODERATOR">MODERATOR</option>
+									<option value="SUPPORT">SUPPORT</option>
+									<option value="ADMIN">ADMIN</option>
+								</select>
+
+								{/* Delete Button */}
 								<button
 									onClick={() => handleDelete(user.id, user.name || user.email)}
 									style={{

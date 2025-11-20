@@ -6,7 +6,8 @@ export async function PATCH(request, { params }) {
 	const currentUser = await getCurrentUser();
 	
 	// Check if user is admin
-	if (!currentUser || currentUser.role !== "ADMIN") {
+	const { isModerator } = await import("@/utils/checkRole");
+	if (!isModerator(currentUser)) {
 		return NextResponse.json(
 			{ message: "Unauthorized! Admin access required." },
 			{ status: 401 }

@@ -13,6 +13,7 @@ const ReviewItem = ({ id, rating, comment, created_at, user }) => {
 				alt="Image"
 				width={80}
 				height={80}
+				unoptimized
 			/>
 			<h4>
 				{user?.name} <span>{formatDateWithMonth(created_at)}</span>

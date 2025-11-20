@@ -6,8 +6,9 @@ import { getCurrentUser } from "@/actions/getCurrentUser";
 const AdminLoginPage = async () => {
 	const currentUser = await getCurrentUser();
 	
-	// If already logged in as admin, redirect to admin panel
-	if (currentUser && currentUser.role === "ADMIN") {
+	// If already logged in with admin access, redirect to admin panel
+	const { hasAdminAccess } = await import("@/utils/checkRole");
+	if (hasAdminAccess(currentUser)) {
 		redirect("/administrator");
 	}
 	

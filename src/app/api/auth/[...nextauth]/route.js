@@ -87,7 +87,19 @@ export const authHandler = NextAuth({
 
 				// console.log('####', user)
 
-				if (!user || !user?.hashedPassword) {
+				// First check if user exists
+				if (!user) {
+					throw new Error("Invalid credentials");
+				}
+
+				// Check if user is active BEFORE checking password
+				// This way we show "Account deactivated" instead of "Invalid credentials"
+				if (user.status === "Inactive") {
+					throw new Error("Account deactivated");
+				}
+
+				// Check if user has password (for OAuth users)
+				if (!user?.hashedPassword) {
 					throw new Error("Invalid credentials");
 				}
 
@@ -165,17 +177,31 @@ export const authHandler = NextAuth({
 				};
 			}
 
-			// On subsequent requests, fetch fresh user data from database if needed
-			if (token?.user?.email && !token.user.role) {
+			// On subsequent requests, fetch fresh user data from database
+			if (token?.user?.email) {
 				try {
 					const dbUser = await prisma.user.findUnique({
 						where: { email: token.user.email },
+						select: {
+							id: true,
+							email: true,
+							name: true,
+							image: true,
+							role: true,
+						},
 					});
 					if (dbUser) {
-						token.user.role = dbUser.role || "USER";
+						// Update token with latest user data from database
+						token.user = {
+							id: dbUser.id,
+							email: dbUser.email,
+							name: dbUser.name,
+							image: dbUser.image,
+							role: dbUser.role || "USER",
+						};
 					}
 				} catch (error) {
-					console.error("Error fetching user role in JWT:", error);
+					console.error("Error fetching user data in JWT:", error);
 				}
 			}
 

@@ -33,9 +33,133 @@ Default Style
 ============================*/
 body {
   font-size: 16px;
-  font-family: var(--font-readex-pro);
+  font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   color: #848484;
   font-weight: 400;
+}
+
+/* Hide number input spinners for cleaner look */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+/* ============================================
+   ACCESSIBILITY (WCAG 2.1 AA Compliance)
+   ============================================ */
+
+/* Skip to main content link */
+.skip-to-content {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: #FF385C;
+  color: #FFFFFF;
+  padding: 12px 24px;
+  text-decoration: none;
+  font-weight: 600;
+  z-index: 10000;
+  border-radius: 0 0 8px 0;
+  transition: top 0.3s ease;
+}
+
+.skip-to-content:focus {
+  top: 0;
+  outline: 3px solid #FFFFFF;
+  outline-offset: 2px;
+}
+
+/* Focus indicators for keyboard navigation */
+*:focus {
+  outline: 2px solid #FF385C;
+  outline-offset: 2px;
+}
+
+*:focus:not(:focus-visible) {
+  outline: none;
+}
+
+*:focus-visible {
+  outline: 2px solid #FF385C;
+  outline-offset: 2px;
+}
+
+/* Enhanced focus for interactive elements */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid #FF385C;
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* Remove focus outline for mouse users (but keep for keyboard) */
+.js-focus-visible *:focus:not(.focus-visible) {
+  outline: none;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  *:focus-visible {
+    outline: 3px solid #000000;
+    outline-offset: 3px;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ARIA landmarks */
+[role="banner"] {
+  position: relative;
+}
+
+[role="main"] {
+  position: relative;
+}
+
+[role="contentinfo"] {
+  position: relative;
+}
+
+/* Screen reader only text */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.sr-only-focusable:focus {
+  position: static;
+  width: auto;
+  height: auto;
+  padding: inherit;
+  margin: inherit;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
 }
 
 a {
@@ -327,9 +451,9 @@ Section Title Area Style*/
 }
 
 .section-title .top-title.font-style {
-  font-family: var(--font-dancing-script);
+  font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   font-size: 36px;
-  font-weight: 400;
+  font-weight: 500;
   margin-bottom: 10px;
 }
 
@@ -1388,7 +1512,7 @@ Banner Area Style
 }
 
 .banner-content.style-three .top-title {
-  font-family: var(--font-dancing-script);
+  font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   font-size: 30px;
   color: #ffc039;
   margin-bottom: 15px;
@@ -2176,7 +2300,7 @@ Favourite Area Style
 }
 
 .favourite-content .top-title {
-  font-family: var(--font-dancing-script);
+  font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   font-size: 20px;
   color: #FF385C;
   display: block;

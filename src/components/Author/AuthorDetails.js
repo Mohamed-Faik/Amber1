@@ -55,6 +55,7 @@ const AuthorDetails = ({ user }) => {
 								fill
 								style={{ objectFit: "cover", objectPosition: "center" }}
 								sizes="240px"
+								unoptimized
 							/>
 						</div>
 

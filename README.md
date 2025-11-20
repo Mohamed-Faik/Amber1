@@ -35,11 +35,25 @@ A modern, full-featured property listing platform built with Next.js 14, featuri
 - **Image Storage**: Local file storage for uploaded images
 - **Admin Approval System**: All listings require admin approval before going live
 - **Location-Based**: Focused on Marrakech neighborhoods
-- **SEO Friendly**: Optimized URLs and meta tags
+- **SEO Friendly**: Optimized URLs and meta tags, structured data, sitemap
+- **Accessibility**: WCAG 2.1 AA compliant features
+- **GDPR Compliance**: Cookie consent, data export, account deletion, privacy settings
 - **Real-time Updates**: Dynamic content updates without page refresh
 - **Testing**: Jest with 35+ unit tests
 - **CI/CD**: GitHub Actions for automated testing and deployment
 - **Docker**: Containerized application with docker-compose
+
+## 🎨 Design
+
+- **Design System**: Comprehensive design system documented in [`DESIGN_SYSTEM.md`](./DESIGN_SYSTEM.md)
+- **Design Files**: 
+  - Figma: [Add your Figma file link here]
+  - Adobe XD: [Add your Adobe XD file link here]
+- **Design Tokens**: Colors, typography, spacing, and shadows defined
+- **Component Library**: Consistent UI components with specifications
+- **Accessibility**: WCAG 2.1 AA compliant with focus indicators and ARIA labels
+
+> **Note**: If you have design files in Figma or Adobe XD, add the links in `DESIGN_SYSTEM.md` and update the README. The design system documentation includes all design tokens, components, and guidelines used in the implementation.
 
 ## 🛠️ Tech Stack
 
@@ -365,6 +379,55 @@ This project is private and proprietary.
 ## 👥 Contributing
 
 This is a private project. For issues or suggestions, please contact the repository owner.
+
+## 🔒 GDPR / Data Privacy Compliance
+
+AmberHomes is fully compliant with GDPR (General Data Protection Regulation) requirements.
+
+### Implemented Features
+
+- ✅ **Cookie Consent Management**: Granular cookie preferences (Necessary, Analytics, Marketing)
+- ✅ **Data Export**: Users can download all their personal data in JSON format (Right to Data Portability)
+- ✅ **Account Deletion**: Complete data erasure with email confirmation (Right to Erasure)
+- ✅ **Privacy Settings**: Dedicated page for managing privacy preferences
+- ✅ **Privacy Policy**: Editable via CMS, accessible from footer and cookie banner
+
+### User Rights
+
+- **Right to Access**: Export all personal data via `/profile/privacy`
+- **Right to Rectification**: Update information in profile settings
+- **Right to Erasure**: Delete account and all data via `/profile/privacy`
+- **Right to Data Portability**: Export data in machine-readable format
+- **Right to Object**: Manage cookie preferences via cookie settings
+
+### Documentation
+
+- **GDPR Compliance Guide**: See [`GDPR_COMPLIANCE.md`](./GDPR_COMPLIANCE.md) for detailed information
+- **Privacy Policy**: Available at `/privacy-policy`
+- **Cookie Settings**: Accessible via floating button or cookie banner
+
+## 📝 Feedback & Revisions
+
+This project includes a structured feedback and revision process:
+
+- **Feedback Documentation**: See [`FEEDBACK_REVISIONS.md`](./FEEDBACK_REVISIONS.md) for all feedback rounds and revisions
+- **Changelog**: See [`CHANGELOG.md`](./CHANGELOG.md) for version history and changes
+- **Issue Templates**: Use GitHub issue templates for submitting feedback
+- **Revision Tracking**: All changes are documented and tracked
+
+### Feedback Process
+
+1. Submit feedback via GitHub Issues or email
+2. Feedback is reviewed and prioritized
+3. Revisions are implemented and tested
+4. Changes are documented in `FEEDBACK_REVISIONS.md` and `CHANGELOG.md`
+5. Updates are deployed
+
+### Current Status
+
+- **Total Feedback Rounds**: 3
+- **Completed Revisions**: All implemented
+- **Documentation**: Complete
 
 ## 📞 Support
 

@@ -2,18 +2,32 @@
 import React, { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import userImg from "../../../public/images/authors/author-1.jpg";
+import { isAdmin, hasAdminAccess } from "@/utils/checkRole";
 
 const UserMenu = ({ currentUser }) => {
+	const { data: session, status } = useSession();
 	const [isOpen, setIsOpen] = useState(false);
 	const [dropdownPosition, setDropdownPosition] = useState({ right: 0, top: 0 });
 	const [mounted, setMounted] = useState(false);
 	const dropdownRef = useRef(null);
 	const buttonRef = useRef(null);
-	const isAdmin = currentUser?.role === "ADMIN";
+	
+	// Use client-side session if available, otherwise fall back to server-side currentUser
+	// This ensures the UI updates immediately after sign-in without page refresh
+	const effectiveUser = session?.user ? {
+		id: session.user.id,
+		email: session.user.email,
+		name: session.user.name,
+		image: session.user.image,
+		role: session.user.role || currentUser?.role,
+	} : currentUser;
+	
+	const userIsAdmin = isAdmin(effectiveUser);
+	const userHasAdminAccess = hasAdminAccess(effectiveUser);
 	const currentRoute = usePathname();
 
 	useEffect(() => {
@@ -65,7 +79,7 @@ const UserMenu = ({ currentUser }) => {
 
 	return (
 		<>
-			{!currentUser ? (
+			{!effectiveUser ? (
 				<>
 					<Link
 						href="/auth/signin"
@@ -169,13 +183,14 @@ const UserMenu = ({ currentUser }) => {
 									flexShrink: 0,
 								}}
 							>
-								{currentUser?.image ? (
+								{effectiveUser?.image ? (
 									<Image
-										src={currentUser.image}
-										alt={currentUser.name || "User"}
+										src={effectiveUser.image}
+										alt={effectiveUser.name || "User"}
 										width={30}
 										height={30}
 										style={{ objectFit: "cover" }}
+										unoptimized
 									/>
 								) : (
 									<svg
@@ -220,12 +235,12 @@ const UserMenu = ({ currentUser }) => {
 									}}
 								>
 									<ul style={{ margin: 0, padding: 0, listStyle: 'none' }}>
-										{isAdmin && (
+										{userHasAdminAccess && (
 											<li>
 												<Link 
-													href="/dashboard"
+													href="/administrator"
 													className={`user-nav-link ${
-														currentRoute === "/dashboard"
+														currentRoute === "/administrator" || currentRoute === "/dashboard"
 															? "active"
 															: "non-active"
 													}`}
@@ -234,21 +249,21 @@ const UserMenu = ({ currentUser }) => {
 													style={{
 														display: 'block',
 														padding: '12px 16px',
-														color: currentRoute === "/dashboard" ? '#FF385C' : '#222222',
+														color: (currentRoute === "/administrator" || currentRoute === "/dashboard") ? '#FF385C' : '#222222',
 														textDecoration: 'none',
 														fontSize: '14px',
 														borderRadius: '6px',
 														transition: 'all 0.2s ease',
-														backgroundColor: currentRoute === "/dashboard" ? '#FFF5F7' : 'transparent',
+														backgroundColor: (currentRoute === "/administrator" || currentRoute === "/dashboard") ? '#FFF5F7' : 'transparent',
 													}}
 													onMouseEnter={(e) => {
-														if (currentRoute !== "/dashboard") {
+														if (currentRoute !== "/administrator" && currentRoute !== "/dashboard") {
 															e.target.style.backgroundColor = '#FFF5F7';
 															e.target.style.color = '#FF385C';
 														}
 													}}
 													onMouseLeave={(e) => {
-														if (currentRoute !== "/dashboard") {
+														if (currentRoute !== "/administrator" && currentRoute !== "/dashboard") {
 															e.target.style.backgroundColor = 'transparent';
 															e.target.style.color = '#222222';
 														}
@@ -408,7 +423,7 @@ const UserMenu = ({ currentUser }) => {
 											</Link>
 										</li>
 										<li>
-											<Link 
+											<Link
 												href="/profile/settings"
 												className={`user-nav-link ${
 												currentRoute === "/profile/settings"
@@ -446,9 +461,46 @@ const UserMenu = ({ currentUser }) => {
 										</li>
 										<li>
 											<Link
-												href={`/author/${currentUser.id}`}
+												href="/profile/privacy"
 												className={`user-nav-link ${
-													currentRoute === `/author/${currentUser.id}`
+												currentRoute === "/profile/privacy"
+													? "active"
+													: "non-active"
+												}`}
+												onClick={handleLinkClick}
+												onMouseDown={(e) => e.stopPropagation()}
+												style={{
+													display: 'block',
+													padding: '12px 16px',
+													color: currentRoute === "/profile/privacy" ? '#FF385C' : '#222222',
+													textDecoration: 'none',
+													fontSize: '14px',
+													borderRadius: '6px',
+													transition: 'all 0.2s ease',
+													backgroundColor: currentRoute === "/profile/privacy" ? '#FFF5F7' : 'transparent',
+												}}
+												onMouseEnter={(e) => {
+													if (currentRoute !== "/profile/privacy") {
+														e.target.style.backgroundColor = '#FFF5F7';
+														e.target.style.color = '#FF385C';
+													}
+												}}
+												onMouseLeave={(e) => {
+													if (currentRoute !== "/profile/privacy") {
+														e.target.style.backgroundColor = 'transparent';
+														e.target.style.color = '#222222';
+													}
+												}}
+											>
+												<i className="ri-shield-check-line"></i>{" "}
+												Privacy & Data
+											</Link>
+										</li>
+										<li>
+											<Link
+												href={`/author/${effectiveUser.id}`}
+												className={`user-nav-link ${
+													currentRoute === `/author/${effectiveUser.id}`
 														? "active"
 														: "non-active"
 													}`}
@@ -457,21 +509,21 @@ const UserMenu = ({ currentUser }) => {
 												style={{
 													display: 'block',
 													padding: '12px 16px',
-													color: currentRoute === `/author/${currentUser.id}` ? '#FF385C' : '#222222',
+													color: currentRoute === `/author/${effectiveUser.id}` ? '#FF385C' : '#222222',
 													textDecoration: 'none',
 													fontSize: '14px',
 													borderRadius: '6px',
 													transition: 'all 0.2s ease',
-													backgroundColor: currentRoute === `/author/${currentUser.id}` ? '#FFF5F7' : 'transparent',
+													backgroundColor: currentRoute === `/author/${effectiveUser.id}` ? '#FFF5F7' : 'transparent',
 												}}
 												onMouseEnter={(e) => {
-													if (currentRoute !== `/author/${currentUser.id}`) {
+													if (currentRoute !== `/author/${effectiveUser.id}`) {
 														e.target.style.backgroundColor = '#FFF5F7';
 														e.target.style.color = '#FF385C';
 													}
 												}}
 												onMouseLeave={(e) => {
-													if (currentRoute !== `/author/${currentUser.id}`) {
+													if (currentRoute !== `/author/${effectiveUser.id}`) {
 														e.target.style.backgroundColor = 'transparent';
 														e.target.style.color = '#222222';
 													}

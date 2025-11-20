@@ -65,7 +65,7 @@ const Navbar = ({ currentUser }) => {
   ];
 
   return (
-    <>
+    <nav role="navigation" aria-label="Main navigation">
       <div
         style={{
           position: "sticky",
@@ -308,12 +308,14 @@ const Navbar = ({ currentUser }) => {
                 width: "40px",
                 flexShrink: 0,
               }}
-              aria-label="Toggle menu"
+              aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
+              aria-expanded={isMobileMenuOpen}
+              aria-controls="mobile-menu"
             >
               {isMobileMenuOpen ? (
-                <X size={18} color="#222222" strokeWidth={2} />
+                <X size={18} color="#222222" strokeWidth={2} aria-hidden="true" />
               ) : (
-                <Menu size={18} color="#222222" strokeWidth={2} />
+                <Menu size={18} color="#222222" strokeWidth={2} aria-hidden="true" />
               )}
             </button>
           </div>
@@ -342,7 +344,11 @@ const Navbar = ({ currentUser }) => {
 
       {/* Mobile Menu Drawer */}
       <div
+        id="mobile-menu"
         className="mobile-menu-drawer"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Mobile navigation menu"
         style={{
           position: "fixed",
           top: "70px",
@@ -519,7 +525,7 @@ const Navbar = ({ currentUser }) => {
           transform: scale(0.95);
         }
       `}</style>
-    </>
+    </nav>
   );
 };
 

@@ -9,8 +9,9 @@ import LeftSidebar from "@/components/Dashboard/LeftSidebar";
 const page = async () => {
 	const users = await getAllUsers();
 	const currentUser = await getCurrentUser();
-	const isAdmin = currentUser?.role === "ADMIN";
-	if (!isAdmin) {
+	const { isAdmin } = await import("@/utils/checkRole");
+	
+	if (!isAdmin(currentUser)) {
 		redirect("/");
 	}
 	return (

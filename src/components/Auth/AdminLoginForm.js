@@ -39,14 +39,16 @@ const AdminLoginForm = () => {
 				return;
 			}
 
-			// Wait a moment for session to update, then check if user is admin
+			// Wait a moment for session to update, then check if user has admin access
 			await new Promise((resolve) => setTimeout(resolve, 500));
 			
 			const response = await fetch("/api/auth/session");
 			const session = await response.json();
 			
-			if (session?.user?.role !== "ADMIN") {
-				// Sign out the user if they're not admin
+			// Check if user has admin-level access (ADMIN, MODERATOR, or SUPPORT)
+			const allowedRoles = ["ADMIN", "MODERATOR", "SUPPORT"];
+			if (!allowedRoles.includes(session?.user?.role)) {
+				// Sign out the user if they don't have admin access
 				await signOut({ redirect: false });
 				toast.error("Access denied. Admin privileges required.");
 				setIsLoading(false);
