@@ -55,7 +55,7 @@ const AdminLoginForm = () => {
 				return;
 			}
 
-			toast.success("Welcome back, Admin!");
+			toast.success("Welcome back, Admin");
 			router.refresh();
 			router.push("/administrator");
 		} catch (error) {
