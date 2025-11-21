@@ -612,16 +612,36 @@ Section Title Area Style*/
 
 .section-title-wrap .section-title-rights {
   margin-bottom: 50px;
+  position: relative;
+  z-index: 1;
 }
 
 .section-title-wrap .section-title-rights .form-control {
   width: 300px;
   color: #646464;
   height: 64px;
+  position: relative;
+  z-index: 1;
 }
 
 .section-title-wrap .section-title-rights .form-control:focus {
   border-color: #e5e5e5;
+  z-index: 1;
+}
+
+/* Fix for native select dropdown overlapping text above */
+.section-title-rights .form-select {
+  position: relative;
+  z-index: 1;
+}
+
+.section-title-rights .form-select:focus {
+  z-index: 1;
+}
+
+/* Ensure dropdown options don't overlap elements above */
+.section-title-rights {
+  isolation: isolate;
 }
 
 /*

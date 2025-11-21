@@ -443,15 +443,20 @@ const ListingForm = ({ initialData = null }) => {
 									/>
 								</div>
 
-								<div>
-									<label className="form-label-custom">
+								<div style={{ position: "relative", zIndex: 1 }}>
+									<label className="form-label-custom" style={{ position: "relative", zIndex: 2 }}>
 										Category <span style={{ color: "#FF385C" }}>*</span>
 									</label>
+									<div style={{ position: "relative", zIndex: 1 }}>
 									<Select
 										id="react-select-2-live-region"
 										className="select-input"
+										classNamePrefix="select"
 										placeholder="Select Category"
 										isClearable
+										isSearchable
+										menuPortalTarget={typeof document !== "undefined" ? document.body : null}
+										menuPosition="fixed"
 										options={categories}
 										value={
 											catValue
@@ -467,18 +472,90 @@ const ListingForm = ({ initialData = null }) => {
 										}
 										{...restCategoryField}
 										styles={{
-											control: (base) => ({
+											control: (base, state) => ({
 												...base,
-												border: "1px solid #e0e0e0",
+												border: state.isFocused ? "2px solid #FF385C" : "1px solid #e0e0e0",
 												borderRadius: "8px",
 												padding: "4px",
-												boxShadow: "none",
+												boxShadow: state.isFocused ? "0 0 0 3px rgba(255, 56, 92, 0.1)" : "none",
+												minHeight: "48px",
 												"&:hover": {
-													borderColor: "#222222",
+													borderColor: state.isFocused ? "#FF385C" : "#222222",
+												},
+											}),
+											placeholder: (base) => ({
+												...base,
+												color: "#717171",
+												fontSize: "14px",
+											}),
+											singleValue: (base) => ({
+												...base,
+												color: "#222222",
+												fontSize: "14px",
+											}),
+											menu: (base) => ({
+												...base,
+												borderRadius: "8px",
+												boxShadow: "0 8px 24px rgba(0, 0, 0, 0.15), 0 2px 8px rgba(0, 0, 0, 0.1)",
+												border: "1px solid #e0e0e0",
+												zIndex: 9999,
+											}),
+											menuPortal: (base) => ({
+												...base,
+												zIndex: 9999,
+											}),
+											menuList: (base) => ({
+												...base,
+												padding: "4px",
+											}),
+											option: (base, state) => ({
+												...base,
+												backgroundColor: state.isSelected
+													? "#FF385C"
+													: state.isFocused
+													? "#FFF5F7"
+													: "white",
+												color: state.isSelected ? "white" : "#222222",
+												padding: "12px 16px",
+												fontSize: "14px",
+												cursor: "pointer",
+												borderRadius: "6px",
+												margin: "2px 0",
+												"&:hover": {
+													backgroundColor: state.isSelected ? "#FF385C" : "#FFF5F7",
+												},
+											}),
+											indicatorSeparator: () => ({
+												display: "none",
+											}),
+											dropdownIndicator: (base) => ({
+												...base,
+												color: "#717171",
+												"&:hover": {
+													color: "#FF385C",
+												},
+											}),
+											clearIndicator: (base) => ({
+												...base,
+												color: "#717171",
+												"&:hover": {
+													color: "#FF385C",
 												},
 											}),
 										}}
+										theme={(theme) => ({
+											...theme,
+											borderRadius: 8,
+											colors: {
+												...theme.colors,
+												primary: "#FF385C",
+												primary25: "#FFF5F7",
+												primary50: "#FFE5EA",
+												primary75: "#FFB8C5",
+											},
+										})}
 									/>
+									</div>
 								</div>
 
 								<Input
