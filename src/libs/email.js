@@ -124,7 +124,7 @@ export async function sendPasswordResetEmail(email, resetToken) {
 		}
 
 		const fromEmail = process.env.SMTP_FROM || process.env.SMTP_USER;
-		const resetUrl = `${process.env.NEXTAUTH_URL || process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/auth/reset-password/${resetToken}`;
+		const resetUrl = `${process.env.NEXTAUTH_URL || process.env.NEXT_PUBLIC_APP_URL || "https://amberhomes-liart.vercel.app/"}/auth/reset-password/${resetToken}`;
 		
 		const mailOptions = {
 			from: `"AmberHomes" <${fromEmail}>`,
