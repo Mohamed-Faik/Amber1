@@ -76,7 +76,7 @@ const ListStyle = ({
 							flex: 1,
 						}}
 					>
-					{/* Image */}
+						{/* Image */}
 					<div
 						style={{
 							position: "relative",
@@ -265,8 +265,8 @@ const ListStyle = ({
 							</span>
 						</div>
 					</div>
-				</div>
-			</Link>
+					</div>
+				</Link>
 			
 			{/* Contact Buttons - Outside Link */}
 			<div style={{ padding: "12px 20px 20px 20px", borderTop: "1px solid #f7f7f7" }}>

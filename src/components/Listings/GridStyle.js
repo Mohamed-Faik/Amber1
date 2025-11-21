@@ -68,7 +68,7 @@ const GridStyle = ({
 							flex: 1,
 						}}
 					>
-					{/* Image Container */}
+						{/* Image Container */}
 					<div
 						style={{
 							position: "relative",
@@ -258,8 +258,8 @@ const GridStyle = ({
 							</span>
 						</div>
 					</div>
-				</div>
-			</Link>
+					</div>
+				</Link>
 			
 			{/* Contact Buttons - Outside Link */}
 			<div style={{ padding: "12px 16px 16px 16px", borderTop: "1px solid #f7f7f7" }}>
