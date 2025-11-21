@@ -93,7 +93,11 @@ const ListStyle = ({
 								height: "100%",
 							}}
 						>
-							<ListingImageCarousel imageSrc={imageSrc} title={title} />
+							<ListingImageCarousel 
+								imageSrc={imageSrc} 
+								title={title}
+								listing={{ id, slug, title, location_value, price }}
+							/>
 						</div>
 						<div
 							style={{
