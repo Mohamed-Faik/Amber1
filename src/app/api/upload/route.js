@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import { writeFile, mkdir } from "fs/promises";
 import { join } from "path";
 import { existsSync } from "fs";
-import { put } from "@vercel/blob";
 
 export async function POST(request) {
 	try {
@@ -48,46 +47,31 @@ export async function POST(request) {
 		const prefix = uploadType === "profile" ? "profile" : "listing";
 		const filename = `${prefix}-${timestamp}-${randomString}.${fileExtension}`;
 
-		// Check if we're on Vercel (use Blob Storage) or localhost (use filesystem)
-		if (process.env.VERCEL === "1" || process.env.NODE_ENV === "production") {
-			// Use Vercel Blob Storage for production/Vercel
-			const blob = await put(`uploads/${folder}/${filename}`, buffer, {
-				access: "public",
-				contentType: file.type,
-			});
-
-			console.log("File uploaded successfully to Vercel Blob:", blob.url);
-
-			return NextResponse.json({
-				url: blob.url,
-				filename: filename,
-			});
-		} else {
-			// Use local filesystem for development
-			const uploadsDir = join(process.cwd(), "public", "uploads", folder);
-			if (!existsSync(uploadsDir)) {
-				await mkdir(uploadsDir, { recursive: true });
-			}
-
-			// Save file to disk
-			const filepath = join(uploadsDir, filename);
-			await writeFile(filepath, buffer);
-
-			// Return the public URL
-			const publicUrl = /uploads/${folder}/${filename};
-
-			console.log("File uploaded successfully:", publicUrl);
-
-			return NextResponse.json({
-				url: publicUrl,
-				filename: filename,
-			});
+		// Create uploads directory if it doesn't exist
+		const uploadsDir = join(process.cwd(), "public", "uploads", folder);
+		if (!existsSync(uploadsDir)) {
+			await mkdir(uploadsDir, { recursive: true });
 		}
+
+		// Save file to disk
+		const filepath = join(uploadsDir, filename);
+		await writeFile(filepath, buffer);
+
+		// Return the public URL
+		const publicUrl = `/uploads/${folder}/${filename}`;
+
+		console.log("File uploaded successfully:", publicUrl);
+
+		return NextResponse.json({
+			url: publicUrl,
+			filename: filename,
+		});
 	} catch (error) {
 		console.error("Upload error:", error);
 		return NextResponse.json(
 			{ error: error.message || "Upload failed" },
-			{ status: 500 }
+			{ status: 500 }
 		);
 	}
 }
+
