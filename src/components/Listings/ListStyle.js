@@ -273,6 +273,7 @@ const ListStyle = ({
 				<ContactButtons listing={{ id, slug, title, location_value, price }} />
 			</div>
 		</div>
+		</div>
 	);
 };
 
