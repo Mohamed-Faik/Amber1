@@ -13,7 +13,7 @@ const HeartButton = ({ currentUser, listingId }) => {
 			type="button"
 			onClick={toggleFavourite}
 			style={{
-				width: "32px",
+				width: "33px",
 				height: "32px",
 				borderRadius: "50%",
 				backgroundColor: "#ffffff",
