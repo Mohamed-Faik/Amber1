@@ -4,6 +4,7 @@ import Image from "next/image";
 import { formattedPrice } from "@/utils/formattedPrice";
 import { getListingImage } from "@/utils/getListingImage";
 import HeartButton from "../HeartButton";
+import ContactButtons from "../Listing/ContactButtons";
 import rulerIcon from "../../../public/images/icon/ruler.svg";
 import bedIcon from "../../../public/images/icon/bed.svg";
 import bathroomIcon from "../../../public/images/icon/bathroom.svg";
@@ -49,7 +50,6 @@ const FeaturedItem = ({
 			style={{
 				position: "relative",
 				width: "100%",
-				cursor: "pointer",
 			}}
 		>
 			<Link href={`/listing/${id}/${slug}`} style={{ textDecoration: "none", color: "inherit" }}>
@@ -286,6 +286,11 @@ const FeaturedItem = ({
 					</div>
 				</div>
 			</Link>
+			
+			{/* Contact Buttons - Outside Link to prevent navigation */}
+			<div style={{ padding: "12px 16px 16px 16px", backgroundColor: "#FFFFFF", borderRadius: "0 0 12px 12px" }}>
+				<ContactButtons listing={{ id, slug, title, location_value, price }} />
+			</div>
 		</div>
 	);
 };

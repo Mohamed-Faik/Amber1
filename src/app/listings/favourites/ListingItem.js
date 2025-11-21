@@ -9,6 +9,7 @@ import { formatDate } from "@/utils/formatDate";
 import { formattedPrice } from "@/utils/formattedPrice";
 import { getListingImage } from "@/utils/getListingImage";
 import HeartButton from "@/components/HeartButton";
+import ContactButtons from "@/components/Listing/ContactButtons";
 
 const ListingItem = ({
 	listing,
@@ -221,6 +222,9 @@ const ListingItem = ({
 						{formattedPrice(price)}
 					</span>
 				</div>
+				
+				{/* Contact Buttons */}
+				<ContactButtons listing={{ id, slug, title, location_value, price }} />
 			</div>
 		</div>
 	);

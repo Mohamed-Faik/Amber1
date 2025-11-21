@@ -5,6 +5,7 @@ import { formatDate } from "@/utils/formatDate";
 import { formattedPrice } from "@/utils/formattedPrice";
 import { getListingImage } from "@/utils/getListingImage";
 import HeartButton from "@/components/HeartButton";
+import ContactButtons from "@/components/Listing/ContactButtons";
 import locationSvg from "../../../public/images/icon/location-pin.svg";
 import clockSvg from "../../../public/images/icon/clock.svg";
 import profileSvg from "../../../public/images/icon/profile.svg";
@@ -213,6 +214,9 @@ const ListingItem = ({
 						{formattedPrice(price)}
 					</span>
 				</div>
+				
+				{/* Contact Buttons */}
+				<ContactButtons listing={{ id, slug, title, location_value, price }} />
 			</div>
 		</div>
 	);

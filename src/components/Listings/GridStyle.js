@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { formattedPrice } from "@/utils/formattedPrice";
 import { getListingImage } from "@/utils/getListingImage";
 import HeartButton from "../HeartButton";
+import ContactButtons from "../Listing/ContactButtons";
 import rulerIcon from "../../../public/images/icon/ruler.svg";
 import bedIcon from "../../../public/images/icon/bed.svg";
 import bathroomIcon from "../../../public/images/icon/bathroom.svg";
@@ -37,28 +38,36 @@ const GridStyle = ({
 
 	return (
 		<div className="col-lg-4 col-md-6" style={{ marginBottom: "32px" }}>
-			<Link href={`/listing/${id}/${slug}`} style={{ textDecoration: "none", color: "inherit" }}>
-				<div
-					style={{
-						position: "relative",
-						width: "100%",
-						borderRadius: "12px",
-						overflow: "hidden",
-						backgroundColor: "#ffffff",
-						boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-						transition: "all 0.3s ease",
-						cursor: "pointer",
-					}}
-					onMouseEnter={(e) => {
-						e.currentTarget.style.transform = "translateY(-4px)";
-						e.currentTarget.style.boxShadow =
-							"0 8px 24px rgba(0,0,0,0.15)";
-					}}
-					onMouseLeave={(e) => {
-						e.currentTarget.style.transform = "translateY(0)";
-						e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.1)";
-					}}
-				>
+			<div
+				style={{
+					position: "relative",
+					width: "100%",
+					borderRadius: "12px",
+					overflow: "hidden",
+					backgroundColor: "#ffffff",
+					boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+					transition: "all 0.3s ease",
+					display: "flex",
+					flexDirection: "column",
+				}}
+				onMouseEnter={(e) => {
+					e.currentTarget.style.transform = "translateY(-4px)";
+					e.currentTarget.style.boxShadow =
+						"0 8px 24px rgba(0,0,0,0.15)";
+				}}
+				onMouseLeave={(e) => {
+					e.currentTarget.style.transform = "translateY(0)";
+					e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.1)";
+				}}
+			>
+				<Link href={`/listing/${id}/${slug}`} style={{ textDecoration: "none", color: "inherit", flex: 1, display: "flex", flexDirection: "column" }}>
+					<div
+						style={{
+							position: "relative",
+							width: "100%",
+							flex: 1,
+						}}
+					>
 					{/* Image Container */}
 					<div
 						style={{
@@ -251,6 +260,11 @@ const GridStyle = ({
 					</div>
 				</div>
 			</Link>
+			
+			{/* Contact Buttons - Outside Link */}
+			<div style={{ padding: "12px 16px 16px 16px", borderTop: "1px solid #f7f7f7" }}>
+				<ContactButtons listing={{ id, slug, title, location_value, price }} />
+			</div>
 		</div>
 	);
 };
