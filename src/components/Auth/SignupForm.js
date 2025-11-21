@@ -285,7 +285,6 @@ const SignupForm = () => {
       } else if (result?.ok) {
         // Success - redirect will happen automatically
         toast.success("Account created successfully!");
-        router.refresh();
         window.location.href = result.url || window.location.origin;
       }
     } catch (error) {

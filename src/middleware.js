@@ -10,6 +10,7 @@ export default withAuth(
 		callbacks: {
 			authorized: ({ token, req }) => {
 				// Allow access if token exists (user is authenticated)
+				// withAuth will automatically redirect to signIn page if token is missing
 				return !!token;
 			},
 		},

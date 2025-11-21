@@ -37,6 +37,11 @@ const Index = ({ currentUser, listing, reviews }) => {
 				{/* Image Gallery */}
 				<DetailsImages imageSrc={listing.imageSrc} />
 
+				{/* Mobile Booking Box - Shows only on mobile, after images */}
+				<div className="mobile-booking-box" style={{ display: "none" }}>
+					<RightSidebar listing={listing} user={listing.user} currentUser={currentUser} />
+				</div>
+
 				{/* Main Content Layout */}
 				<div
 					className="listing-content-grid"
@@ -135,12 +140,40 @@ const Index = ({ currentUser, listing, reviews }) => {
 						)}
 					</div>
 
-					{/* Right Column - Sticky Sidebar */}
-					<div>
+					{/* Right Column - Sticky Sidebar (Desktop only) */}
+					<div className="desktop-booking-box">
 						<RightSidebar listing={listing} user={listing.user} currentUser={currentUser} />
 					</div>
 				</div>
 			</div>
+
+			<style jsx>{`
+				/* Mobile: Show mobile booking box, hide desktop sidebar */
+				@media (max-width: 767px) {
+					.mobile-booking-box {
+						display: block !important;
+						margin-top: 32px;
+						margin-bottom: 32px;
+					}
+					.desktop-booking-box {
+						display: none !important;
+					}
+					.listing-content-grid {
+						grid-template-columns: 1fr !important;
+						gap: 32px !important;
+					}
+				}
+
+				/* Desktop: Hide mobile booking box, show desktop sidebar */
+				@media (min-width: 768px) {
+					.mobile-booking-box {
+						display: none !important;
+					}
+					.desktop-booking-box {
+						display: block !important;
+					}
+				}
+			`}</style>
 		</div>
 	);
 };

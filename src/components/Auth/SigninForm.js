@@ -42,8 +42,8 @@ const SigninForm = () => {
         toast.error("Invalid email or password");
       } else {
         toast.success("Logged in successfully!");
-        router.refresh();
-        router.push("/");
+        // Force a full page reload to update navbar with new session
+        window.location.href = "/";
       }
     } catch (error) {
       toast.error("Login failed. Please try again.");
@@ -100,7 +100,6 @@ const SigninForm = () => {
       } else if (result?.ok) {
         // Success - redirect will happen automatically
         toast.success("Logged in successfully!");
-        router.refresh();
         window.location.href = result.url || window.location.origin;
       }
     } catch (error) {
