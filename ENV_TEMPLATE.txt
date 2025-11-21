@@ -8,5 +8,5 @@ SMTP_FROM=your-email@gmail.com
 # Twilio SMS Configuration
 TWILIO_ACCOUNT_SID=your-twilio-account-sid
 TWILIO_AUTH_TOKEN=your-twilio-auth-token
-TWILIO_PHONE_NUMBER=+1234567890
+TWILIO_VERIFY_SERVICE_SID=your-twilio-verify-service-sid
 

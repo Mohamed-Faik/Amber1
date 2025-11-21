@@ -1,9 +1,15 @@
 import React, { Suspense } from "react";
+import { redirect } from "next/navigation";
 import ListingForm from "@/components/Listings/New/ListingForm";
 import { getCurrentUser } from "@/actions/getCurrentUser";
 
 const page = async () => {
 	const currentUser = await getCurrentUser();
+	
+	// Only redirect if user is NOT authenticated
+	if (!currentUser) {
+		redirect("/auth/signin");
+	}
 	return (
 		<div style={{
 			backgroundColor: "#FAFAFA",

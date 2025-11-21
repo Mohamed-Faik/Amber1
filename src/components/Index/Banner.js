@@ -169,6 +169,7 @@ const Banner = () => {
 
 			{/* Content Container */}
 			<div
+				className="banner-content-container"
 				style={{
 					position: "relative",
 					zIndex: 3,
@@ -192,9 +193,11 @@ const Banner = () => {
 				>
 					{/* Quote Text */}
 					<div
+						className="banner-quote-text"
 						style={{
 							textAlign: "center",
 							marginBottom: "32px",
+							marginTop: "0",
 							width: "100%",
 						}}
 					>
@@ -534,7 +537,7 @@ const Banner = () => {
 								className="banner-form-bottom-row"
 								style={{
 									display: "grid",
-									gridTemplateColumns: "1fr 1fr 1fr 1fr auto",
+									gridTemplateColumns: "1fr 1fr auto",
 									gap: "16px",
 									alignItems: "end",
 								}}
@@ -587,97 +590,106 @@ const Banner = () => {
 									)}
 								</div>
 
-								{/* Min Price */}
-								<div style={{ position: "relative" }}>
-									<input
-										type="number"
-										placeholder="Min Price (MAD)"
-										value={minPrice}
-										onChange={(e) => {
-											const value = e.target.value;
-											if (value === "" || (!isNaN(value) && parseInt(value) >= 0)) {
-												setMinPrice(value);
-											}
-										}}
-										min="0"
-										style={{
-											width: "100%",
-											padding: "14px 16px 14px 44px",
-											border: "1px solid #E0E0E0",
-											borderRadius: "12px",
-											backgroundColor: "#F7F7F7",
-											fontSize: "14px",
-											outline: "none",
-											transition: "all 0.2s ease",
-										}}
-										onFocus={(e) => {
-											e.currentTarget.style.borderColor = "#FF385C";
-											e.currentTarget.style.backgroundColor = "#FFFFFF";
-										}}
-										onBlur={(e) => {
-											e.currentTarget.style.borderColor = "#E0E0E0";
-											e.currentTarget.style.backgroundColor = "#F7F7F7";
-										}}
-									/>
-									<div
-										style={{
-											position: "absolute",
-											left: "16px",
-											top: "50%",
-											transform: "translateY(-50%)",
-											pointerEvents: "none",
-										}}
-									>
-										<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#717171" strokeWidth="2">
-											<path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
-										</svg>
+								{/* Price Inputs Container - Side by Side */}
+								<div 
+									className="banner-price-inputs"
+									style={{
+										display: "flex",
+										gap: "12px",
+									}}
+								>
+									{/* Min Price */}
+									<div style={{ position: "relative", flex: "1" }}>
+										<input
+											type="number"
+											placeholder="Min Price (MAD)"
+											value={minPrice}
+											onChange={(e) => {
+												const value = e.target.value;
+												if (value === "" || (!isNaN(value) && parseInt(value) >= 0)) {
+													setMinPrice(value);
+												}
+											}}
+											min="0"
+											style={{
+												width: "100%",
+												padding: "14px 16px 14px 44px",
+												border: "1px solid #E0E0E0",
+												borderRadius: "12px",
+												backgroundColor: "#F7F7F7",
+												fontSize: "14px",
+												outline: "none",
+												transition: "all 0.2s ease",
+											}}
+											onFocus={(e) => {
+												e.currentTarget.style.borderColor = "#FF385C";
+												e.currentTarget.style.backgroundColor = "#FFFFFF";
+											}}
+											onBlur={(e) => {
+												e.currentTarget.style.borderColor = "#E0E0E0";
+												e.currentTarget.style.backgroundColor = "#F7F7F7";
+											}}
+										/>
+										<div
+											style={{
+												position: "absolute",
+												left: "16px",
+												top: "50%",
+												transform: "translateY(-50%)",
+												pointerEvents: "none",
+											}}
+										>
+											<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#717171" strokeWidth="2">
+												<path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+											</svg>
+										</div>
 									</div>
-								</div>
 
-								{/* Max Price */}
-								<div style={{ position: "relative" }}>
-									<input
-										type="number"
-										placeholder="Max Price (MAD)"
-										value={maxPrice}
-										onChange={(e) => {
-											const value = e.target.value;
-											if (value === "" || (!isNaN(value) && parseInt(value) >= 0)) {
-												setMaxPrice(value);
-											}
-										}}
-										min="0"
-										style={{
-											width: "100%",
-											padding: "14px 16px 14px 44px",
-											border: "1px solid #E0E0E0",
-											borderRadius: "12px",
-											backgroundColor: "#F7F7F7",
-											fontSize: "14px",
-											outline: "none",
-											transition: "all 0.2s ease",
-										}}
-										onFocus={(e) => {
-											e.currentTarget.style.borderColor = "#FF385C";
-											e.currentTarget.style.backgroundColor = "#FFFFFF";
-										}}
-										onBlur={(e) => {
-											e.currentTarget.style.borderColor = "#E0E0E0";
-											e.currentTarget.style.backgroundColor = "#F7F7F7";
-										}}
-									/>
-									<div
-										style={{
-											position: "absolute",
-											left: "16px",
-											top: "50%",
-											transform: "translateY(-50%)",
-											pointerEvents: "none",
-										}}
-									>
-										<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#717171" strokeWidth="2">
-											<path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
-										</svg>
+									{/* Max Price */}
+									<div style={{ position: "relative", flex: "1" }}>
+										<input
+											type="number"
+											placeholder="Max Price (MAD)"
+											value={maxPrice}
+											onChange={(e) => {
+												const value = e.target.value;
+												if (value === "" || (!isNaN(value) && parseInt(value) >= 0)) {
+													setMaxPrice(value);
+												}
+											}}
+											min="0"
+											style={{
+												width: "100%",
+												padding: "14px 16px 14px 44px",
+												border: "1px solid #E0E0E0",
+												borderRadius: "12px",
+												backgroundColor: "#F7F7F7",
+												fontSize: "14px",
+												outline: "none",
+												transition: "all 0.2s ease",
+											}}
+											onFocus={(e) => {
+												e.currentTarget.style.borderColor = "#FF385C";
+												e.currentTarget.style.backgroundColor = "#FFFFFF";
+											}}
+											onBlur={(e) => {
+												e.currentTarget.style.borderColor = "#E0E0E0";
+												e.currentTarget.style.backgroundColor = "#F7F7F7";
+											}}
+										/>
+										<div
+											style={{
+												position: "absolute",
+												left: "16px",
+												top: "50%",
+												transform: "translateY(-50%)",
+												pointerEvents: "none",
+											}}
+										>
+											<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#717171" strokeWidth="2">
+												<path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+											</svg>
+										</div>
 									</div>
 								</div>
 
@@ -729,6 +741,188 @@ const Banner = () => {
 					</div>
 				</div>
 			</div>
+
+			{/* Responsive Styles */}
+			<style jsx>{`
+				/* Tablet: 768px - 991px */
+				@media (max-width: 991px) {
+					.hero-banner-container {
+						height: auto !important;
+						min-height: 700px !important;
+					}
+
+					.banner-content-container {
+						justify-content: center !important;
+						padding-bottom: 40px !important;
+						padding-top: 40px !important;
+					}
+
+					.banner-quote-text {
+						margin-top: 40px !important;
+						margin-bottom: 32px !important;
+					}
+
+					.banner-content-wrapper {
+						padding: 0 40px !important;
+					}
+
+					.banner-search-form {
+						padding: 20px !important;
+					}
+
+					.banner-form-top-row {
+						grid-template-columns: 1fr !important;
+						gap: 12px !important;
+					}
+
+					.banner-form-bottom-row {
+						grid-template-columns: 1fr !important;
+						gap: 12px !important;
+					}
+
+					.banner-form-bottom-row button {
+						grid-column: 1 !important;
+						width: 100% !important;
+						justify-content: center !important;
+					}
+
+					/* Price inputs container stays side by side on tablet */
+					.banner-price-inputs {
+						display: flex !important;
+						gap: 12px !important;
+					}
+				}
+
+				/* Mobile: < 768px */
+				@media (max-width: 767px) {
+					.hero-banner-container {
+						height: auto !important;
+						min-height: 600px !important;
+					}
+
+					.banner-content-container {
+						justify-content: center !important;
+						padding-bottom: 32px !important;
+						padding-top: 32px !important;
+					}
+
+					.banner-quote-text {
+						margin-top: 60px !important;
+						margin-bottom: 32px !important;
+					}
+
+					.banner-content-wrapper {
+						padding: 0 16px !important;
+					}
+
+					.banner-search-form {
+						padding: 16px !important;
+						border-radius: 20px !important;
+					}
+
+					.banner-form-top-row {
+						grid-template-columns: 1fr !important;
+						gap: 12px !important;
+						margin-bottom: 12px !important;
+					}
+
+					.banner-form-bottom-row {
+						grid-template-columns: 1fr !important;
+						gap: 12px !important;
+					}
+
+					.banner-form-bottom-row button {
+						grid-column: 1 !important;
+						width: 100% !important;
+						justify-content: center !important;
+						margin-top: 4px !important;
+					}
+
+					/* Price inputs stay side by side on mobile */
+					.banner-price-inputs {
+						display: flex !important;
+						gap: 10px !important;
+						flex-direction: row !important;
+					}
+
+					/* Quote text adjustments */
+					p[style*="fontSize: \"clamp(32px, 5vw, 64px)\""] {
+						font-size: clamp(24px, 6vw, 40px) !important;
+						margin-bottom: 24px !important;
+					}
+				}
+
+				/* Small Mobile: < 480px */
+				@media (max-width: 480px) {
+					.hero-banner-container {
+						min-height: 550px !important;
+					}
+
+					.banner-content-container {
+						justify-content: center !important;
+						padding-bottom: 24px !important;
+						padding-top: 24px !important;
+					}
+
+					.banner-quote-text {
+						margin-top: 50px !important;
+						margin-bottom: 28px !important;
+					}
+
+					.banner-content-wrapper {
+						padding: 0 12px !important;
+					}
+
+					.banner-search-form {
+						padding: 12px !important;
+						border-radius: 16px !important;
+					}
+
+					.banner-form-top-row,
+					.banner-form-bottom-row {
+						gap: 10px !important;
+					}
+
+					/* Input field adjustments */
+					.banner-form-top-row input,
+					.banner-form-top-row div[style*="padding"],
+					.banner-form-bottom-row input {
+						padding: 12px 14px 12px 40px !important;
+						font-size: 13px !important;
+					}
+
+					/* Icon adjustments */
+					.banner-form-top-row svg,
+					.banner-form-bottom-row svg {
+						width: 16px !important;
+						height: 16px !important;
+					}
+
+					/* Button adjustments */
+					.banner-form-bottom-row button {
+						padding: 12px 24px !important;
+						font-size: 14px !important;
+					}
+
+					/* Quote text smaller on small mobile */
+					p[style*="fontSize: \"clamp(32px, 5vw, 64px)\""] {
+						font-size: clamp(20px, 5vw, 32px) !important;
+						margin-bottom: 20px !important;
+					}
+				}
+
+				/* Dropdown responsive adjustments */
+				@media (max-width: 767px) {
+					div[style*="position: \"absolute\""][style*="top: \"calc(100% + 8px)\""] {
+						position: fixed !important;
+						left: 16px !important;
+						right: 16px !important;
+						width: auto !important;
+						max-height: 50vh !important;
+						overflow-y: auto !important;
+					}
+				}
+			`}</style>
 		</div>
 	);
 };

@@ -266,6 +266,7 @@ const Navbar = ({ currentUser }) => {
           </Link>
           
           <div style={{ display: "flex", alignItems: "center", gap: "8px", height: "100%", flexShrink: 0 }}>
+            {/* Host button - show for all users */}
             <Link
               href="/listings/new"
               className="mobile-host-link"
@@ -286,9 +287,32 @@ const Navbar = ({ currentUser }) => {
               Host
             </Link>
             
-            <div style={{ display: "flex", alignItems: "center", height: "100%" }}>
-              <UserMenu currentUser={currentUser} />
-            </div>
+            {/* UserMenu or Log in button */}
+            {currentUser ? (
+              <div style={{ display: "flex", alignItems: "center", height: "100%" }}>
+                <UserMenu currentUser={currentUser} />
+              </div>
+            ) : (
+              <Link
+                href="/auth/signin"
+                className="mobile-login-link"
+                style={{
+                  padding: "8px 12px",
+                  borderRadius: "20px",
+                  fontSize: "12px",
+                  fontWeight: "600",
+                  color: "#222222",
+                  textDecoration: "none",
+                  backgroundColor: "#F7F7F7",
+                  transition: "all 0.2s ease",
+                  display: "flex",
+                  alignItems: "center",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                Log in
+              </Link>
+            )}
             
             <button
               type="button"
@@ -415,31 +439,87 @@ const Navbar = ({ currentUser }) => {
 
           {/* Additional Mobile Actions */}
           <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-            <Link
-              href="/listings/new"
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="mobile-host-button"
-              style={{
-                padding: "14px 20px",
-                borderRadius: "12px",
-                fontSize: "16px",
-                fontWeight: "600",
-                color: "#FFFFFF",
-                textDecoration: "none",
-                background: "linear-gradient(135deg, #FF385C 0%, #E61E4D 50%, #D70466 100%)",
-                textAlign: "center",
-                transition: "all 0.2s ease",
-                boxShadow: "0 4px 12px rgba(255, 56, 92, 0.3)",
-                minHeight: "48px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                WebkitTapHighlightColor: "transparent",
-              }}
-            >
-              Become a Host
-            </Link>
+            {/* Show auth buttons if user is NOT logged in */}
+            {!currentUser && (
+              <>
+                <Link
+                  href="/auth/signin"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="mobile-login-button"
+                  style={{
+                    padding: "14px 20px",
+                    borderRadius: "12px",
+                    fontSize: "16px",
+                    fontWeight: "600",
+                    color: "#222222",
+                    textDecoration: "none",
+                    backgroundColor: "#F7F7F7",
+                    textAlign: "center",
+                    transition: "all 0.2s ease",
+                    border: "1px solid #E0E0E0",
+                    minHeight: "48px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    WebkitTapHighlightColor: "transparent",
+                  }}
+                >
+                  Log in
+                </Link>
+                <Link
+                  href="/auth/signup"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="mobile-signup-button"
+                  style={{
+                    padding: "14px 20px",
+                    borderRadius: "12px",
+                    fontSize: "16px",
+                    fontWeight: "600",
+                    color: "#FFFFFF",
+                    textDecoration: "none",
+                    background: "linear-gradient(135deg, #FF385C 0%, #E61E4D 50%, #D70466 100%)",
+                    textAlign: "center",
+                    transition: "all 0.2s ease",
+                    boxShadow: "0 4px 12px rgba(255, 56, 92, 0.3)",
+                    minHeight: "48px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    WebkitTapHighlightColor: "transparent",
+                  }}
+                >
+                  Sign up
+                </Link>
+              </>
+            )}
 
+            {/* Show Become a Host button if user IS logged in */}
+            {currentUser && (
+              <Link
+                href="/listings/new"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="mobile-host-button"
+                style={{
+                  padding: "14px 20px",
+                  borderRadius: "12px",
+                  fontSize: "16px",
+                  fontWeight: "600",
+                  color: "#FFFFFF",
+                  textDecoration: "none",
+                  background: "linear-gradient(135deg, #FF385C 0%, #E61E4D 50%, #D70466 100%)",
+                  textAlign: "center",
+                  transition: "all 0.2s ease",
+                  boxShadow: "0 4px 12px rgba(255, 56, 92, 0.3)",
+                  minHeight: "48px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  WebkitTapHighlightColor: "transparent",
+                }}
+              >
+                Become a Host
+              </Link>
+            )}
           </div>
         </div>
       </div>
@@ -472,7 +552,7 @@ const Navbar = ({ currentUser }) => {
             height: 64px !important;
           }
 
-          .mobile-host-link {
+          .mobile-login-link {
             display: none !important;
           }
 
@@ -504,6 +584,13 @@ const Navbar = ({ currentUser }) => {
           }
         }
 
+        /* Tablet: 768px - 991px */
+        @media (min-width: 768px) and (max-width: 991px) {
+          .desktop-nav {
+            padding: 0 40px !important;
+          }
+        }
+
         /* Desktop and Laptop: >= 992px */
         @media (min-width: 992px) {
           .desktop-nav {
@@ -511,6 +598,13 @@ const Navbar = ({ currentUser }) => {
           }
           .mobile-nav {
             display: none !important;
+          }
+        }
+
+        /* Large Desktop: >= 1400px */
+        @media (min-width: 1400px) {
+          .desktop-nav {
+            padding: 0 80px !important;
           }
         }
 

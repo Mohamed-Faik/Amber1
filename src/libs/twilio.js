@@ -19,25 +19,26 @@ function createTwilioClient() {
 	return twilio(accountSid, authToken);
 }
 
-// Send OTP using Twilio Verify v2 API
+// Send OTP using Twilio Verify v2 API via SMS
 export async function sendOTPSMS(phoneNumber, otpCode, isSignup = false) {
+	// Get verifyServiceSid outside try block so it's accessible in catch block
+	const verifyServiceSid = process.env.TWILIO_VERIFY_SERVICE_SID;
+	
 	try {
 		const client = createTwilioClient();
 		if (!client) {
 			throw new Error("Twilio credentials not configured. Please set TWILIO_ACCOUNT_SID and TWILIO_AUTH_TOKEN environment variables.");
 		}
-
-		const verifyServiceSid = process.env.TWILIO_VERIFY_SERVICE_SID;
 		
 		if (!verifyServiceSid) {
 			throw new Error("TWILIO_VERIFY_SERVICE_SID not configured. Please set it in your environment variables.");
 		}
 
-		console.log(`📤 Sending OTP via Twilio Verify to: ${phoneNumber}`);
+		console.log(`📤 Sending OTP via SMS (Twilio Verify) to: ${phoneNumber}`);
 		console.log(`   Using Verify Service: ${verifyServiceSid.substring(0, 5)}***`);
 		
 		// Use Twilio Verify v2 API with timeout handling
-		// Note: Twilio Verify generates its own OTP and sends it
+		// Note: Twilio Verify generates its own OTP and sends it via SMS
 		const verificationPromise = client.verify.v2
 			.services(verifyServiceSid)
 			.verifications
@@ -55,7 +56,7 @@ export async function sendOTPSMS(phoneNumber, otpCode, isSignup = false) {
 
 		const verification = await Promise.race([verificationPromise, timeoutPromise]);
 
-		console.log("✅ Twilio Verify OTP sent successfully!");
+		console.log("✅ Twilio Verify OTP sent successfully via SMS!");
 		console.log("   Verification SID:", verification.sid);
 		console.log("   Status:", verification.status);
 		
@@ -71,7 +72,7 @@ export async function sendOTPSMS(phoneNumber, otpCode, isSignup = false) {
 			verificationSid: verification.sid,
 		};
 	} catch (error) {
-		console.error("❌ Error sending SMS via Twilio Verify:");
+		console.error("❌ Error sending SMS OTP via Twilio Verify:");
 		console.error("   Error message:", error.message);
 		console.error("   Error code:", error.code || error.errno || "UNKNOWN");
 		console.error("   Error status:", error.status || "N/A");
@@ -88,9 +89,27 @@ export async function sendOTPSMS(phoneNumber, otpCode, isSignup = false) {
 		} else if (error.code === 21608 || error.status === 403) {
 			// Twilio trial account limitation
 			console.error("   ⚠️  Twilio Trial Account Limitation");
-			console.error("   💡 Trial accounts can only send SMS to verified phone numbers");
+			console.error("   💡 Trial accounts can only send SMS messages to verified phone numbers");
 			console.error("   📝 Verify your phone number at: https://www.twilio.com/console/phone-numbers/verified");
-			console.error("   💰 Upgrade your Twilio account to send SMS to any number");
+			console.error("   💰 Upgrade your Twilio account to send SMS messages to any number");
+		} else if (error.code === 60223) {
+			// SMS channel disabled in Twilio Verify service
+			console.error("   ⚠️  SMS Channel Not Enabled");
+			console.error("   💡 SMS is not enabled in your Twilio Verify service");
+			console.error("   📝 To enable SMS:");
+			console.error("      1. Go to: https://www.twilio.com/console/verify/services");
+			if (verifyServiceSid) {
+				console.error("      2. Click on your Verify Service (SID: " + verifyServiceSid.substring(0, 5) + "***)");
+				console.error("      3. Go to 'Channels' section");
+				console.error("      4. Enable 'SMS' channel");
+				console.error("      5. Save the changes");
+				console.error("   🔗 Direct link: https://www.twilio.com/console/verify/services/" + verifyServiceSid);
+			} else {
+				console.error("      2. Click on your Verify Service");
+				console.error("      3. Go to 'Channels' section");
+				console.error("      4. Enable 'SMS' channel");
+				console.error("      5. Save the changes");
+			}
 		}
 
 		return {

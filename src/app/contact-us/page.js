@@ -446,12 +446,78 @@ const page = () => {
 			</div>
 
 			<style jsx>{`
-				@media (max-width: 1128px) {
+				/* Tablet: 768px - 991px */
+				@media (max-width: 991px) {
 					div[style*="1760px"] {
 						padding: 0 24px !important;
 					}
 					div[style*="gridTemplateColumns: \"repeat(2, 1fr)\""] {
 						grid-template-columns: 1fr !important;
+					}
+					div[style*="padding: \"40px\""] {
+						padding: 32px 24px !important;
+					}
+					h1[style*="fontSize: \"36px\""] {
+						font-size: 28px !important;
+					}
+					h2[style*="fontSize: \"28px\""] {
+						font-size: 24px !important;
+					}
+				}
+
+				/* Mobile: < 768px */
+				@media (max-width: 767px) {
+					div[style*="1760px"] {
+						padding: 0 16px !important;
+					}
+					div[style*="padding: \"48px 0\""] {
+						padding: 32px 0 !important;
+					}
+					div[style*="marginBottom: \"48px\""] {
+						margin-bottom: 32px !important;
+					}
+					div[style*="padding: \"40px\""] {
+						padding: 20px !important;
+					}
+					h1[style*="fontSize: \"36px\""] {
+						font-size: 24px !important;
+					}
+					h2[style*="fontSize: \"28px\""] {
+						font-size: 20px !important;
+					}
+					p[style*="fontSize: \"16px\""] {
+						font-size: 14px !important;
+					}
+					div[style*="width: \"56px\""] {
+						width: 48px !important;
+						height: 48px !important;
+					}
+					div[style*="width: \"44px\""] {
+						width: 40px !important;
+						height: 40px !important;
+					}
+					button[style*="padding: \"16px 32px\""] {
+						width: 100% !important;
+						justify-content: center !important;
+					}
+				}
+
+				/* Small Mobile: < 480px */
+				@media (max-width: 480px) {
+					div[style*="1760px"] {
+						padding: 0 12px !important;
+					}
+					div[style*="padding: \"48px 0\""] {
+						padding: 24px 0 !important;
+					}
+					div[style*="padding: \"40px\""] {
+						padding: 16px !important;
+					}
+					h1[style*="fontSize: \"36px\""] {
+						font-size: 22px !important;
+					}
+					h2[style*="fontSize: \"28px\""] {
+						font-size: 18px !important;
 					}
 				}
 			`}</style>

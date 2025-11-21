@@ -1,4 +1,5 @@
 import React, { Suspense } from "react";
+import { redirect } from "next/navigation";
 import getMyFavourites from "@/actions/getFavourites";
 import { getCurrentUser } from "@/actions/getCurrentUser";
 import ListingCard from "./ListingCard";
@@ -6,8 +7,14 @@ import ListingCard from "./ListingCard";
 export const dynamic = "force-dynamic";
 
 const page = async () => {
-	const favourites = await getMyFavourites();
 	const currentUser = await getCurrentUser();
+	
+	// Only redirect if user is NOT authenticated
+	if (!currentUser) {
+		redirect("/auth/signin");
+	}
+	
+	const favourites = await getMyFavourites();
 
 	return (
 		<div style={{

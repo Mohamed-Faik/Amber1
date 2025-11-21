@@ -66,60 +66,62 @@ export async function POST(request) {
 			console.warn("⚠️  Could not delete old OTPs (continuing):", dbError.message);
 		}
 
-		// Send OTP SMS via Twilio Verify (Twilio generates the code)
+		// Send OTP via SMS using Twilio Verify
+		// Note: Twilio Verify generates its own OTP code
 		const smsResult = await sendOTPSMS(phoneNumber, null, forSignup);
 
 		if (!smsResult.success) {
-			console.error("❌ SMS sending failed!");
+			console.error("❌ SMS OTP sending failed!");
 			console.error("   Error:", smsResult.error);
 			console.error("   Code:", smsResult.code);
 
-			// For development: still return OTP if SMS fails
-			const isDevelopment = process.env.NODE_ENV === "development";
-
-			if (isDevelopment) {
-				console.warn("⚠️  SMS sending failed in development mode.");
-				console.warn("   Check server logs above for SMS error details");
-				
-				// Check if it's a Twilio trial account error
-				const isTrialError = smsResult.code === 21608 || smsResult.status === 403;
-				
-				if (isTrialError) {
-					return NextResponse.json({
-						success: true,
-						message: "OTP sending failed - Twilio trial account limitation",
-						warning: "Trial accounts can only send SMS to verified phone numbers",
-						error: smsResult.error,
-						trialAccountError: true,
-						helpUrl: "https://www.twilio.com/console/phone-numbers/verified",
-					});
-				}
-				
+			// Check for specific Twilio errors
+			if (smsResult.code === 60223) {
 				return NextResponse.json({
-					success: true,
-					message: "OTP sending failed - check server logs",
-					warning: "SMS not sent - check Twilio configuration",
+					success: false,
+					message: "SMS channel not enabled in Twilio Verify service",
 					error: smsResult.error,
+					instructions: [
+						"1. Go to: https://www.twilio.com/console/verify/services",
+						"2. Click on your Verify Service",
+						"3. Go to 'Channels' section",
+						"4. Enable 'SMS' channel",
+						"5. Save the changes"
+					],
+					helpUrl: "https://www.twilio.com/console/verify/services",
+				});
+			}
+
+			if (smsResult.code === 21608 || smsResult.status === 403) {
+				return NextResponse.json({
+					success: false,
+					message: "Trial account limitation - verify phone number first",
+					error: smsResult.error,
+					instructions: [
+						"1. Go to: https://www.twilio.com/console/phone-numbers/verified",
+						"2. Add and verify the recipient phone number",
+						"3. Or upgrade your Twilio account to send to any number"
+					],
+					helpUrl: "https://www.twilio.com/console/phone-numbers/verified",
 				});
 			}
 
 			return NextResponse.json(
 				{
-					error: "Failed to send OTP SMS. Please try again.",
+					error: "Failed to send OTP via SMS. Please try again.",
 					details: process.env.NODE_ENV === "development" ? smsResult.error : undefined,
 				},
 				{ status: 500 }
 			);
 		}
 
-		// Note: Twilio Verify generates its own OTP code
-		// We don't return the code since Twilio handles generation
-		// Store verification SID for tracking if needed (optional - skip if DB fails)
+		// Store verification SID in database for tracking
+		// Note: Twilio Verify generates its own OTP, so we store the verification SID
 		try {
 			await prisma.otp.create({
 				data: {
 					email: phoneNumber, // Store phone in email field
-					code: smsResult.verificationSid || "pending", // Store verification SID
+					code: smsResult.verificationSid || smsResult.sid || "pending", // Store verification SID
 					expiresAt: new Date(Date.now() + 10 * 60 * 1000), // 10 minutes
 				},
 			});
@@ -130,8 +132,10 @@ export async function POST(request) {
 
 		return NextResponse.json({
 			success: true,
-			message: "OTP sent to your phone number",
-			verificationSid: smsResult.verificationSid,
+			message: "OTP sent to your phone",
+			requestId: smsResult.verificationSid || smsResult.sid,
+			verificationSid: smsResult.verificationSid || smsResult.sid,
+			status: smsResult.status,
 		});
 	} catch (error) {
 		console.error("❌ Error in send-phone-otp route:");

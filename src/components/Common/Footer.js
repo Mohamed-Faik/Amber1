@@ -383,7 +383,8 @@ const Footer = () => {
 
 			<style dangerouslySetInnerHTML={{
 				__html: `
-					@media (max-width: 968px) {
+					/* Tablet: 768px - 991px */
+					@media (max-width: 991px) {
 						.footer-container {
 							padding: 0 24px !important;
 						}
@@ -393,7 +394,8 @@ const Footer = () => {
 						}
 					}
 
-					@media (max-width: 640px) {
+					/* Mobile: < 768px */
+					@media (max-width: 767px) {
 						.footer-container {
 							padding: 0 16px !important;
 						}
@@ -401,11 +403,23 @@ const Footer = () => {
 							grid-template-columns: 1fr !important;
 							gap: 32px !important;
 						}
+						footer[style*="paddingTop: \"64px\""] {
+							padding-top: 48px !important;
+							padding-bottom: 24px !important;
+						}
 					}
 
+					/* Small Mobile: < 480px */
 					@media (max-width: 480px) {
 						.footer-container {
 							padding: 0 12px !important;
+						}
+						footer[style*="paddingTop: \"64px\""] {
+							padding-top: 40px !important;
+							padding-bottom: 20px !important;
+						}
+						.footer-content-grid {
+							gap: 24px !important;
 						}
 					}
 				`

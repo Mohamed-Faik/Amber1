@@ -351,6 +351,36 @@ const SignupForm = () => {
     }
   };
 
+  // Handle resend Phone OTP
+  const handleResendPhoneOtp = async () => {
+    if (!phone) {
+      toast.error("Please enter a valid phone number");
+      return;
+    }
+
+    setIsLoading(true);
+    setPhoneOtpError("");
+    setPhoneOtp(["", "", "", "", "", ""]);
+
+    try {
+      const response = await axios.post("/api/auth/send-phone-otp", {
+        phoneNumber: phone,
+        forSignup: true,
+      });
+
+      if (response.data.success) {
+        localStorage.setItem("signup_phone_otp_time", Date.now().toString());
+        toast.success("OTP resent to your phone!");
+        setTimeout(() => phoneOtpRefs.current[0]?.focus(), 100);
+      }
+    } catch (error) {
+      const errorMessage = error.response?.data?.error || "Failed to resend OTP. Please try again.";
+      toast.error(errorMessage);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   // Handle phone OTP input change
   const handlePhoneOtpChange = (index, value) => {
     if (value && !/^\d$/.test(value)) return;
@@ -928,7 +958,7 @@ const SignupForm = () => {
                 />
 
                 {/* Phone Number with OTP Verification */}
-                <div style={{ marginBottom: "16px" }}>
+                <div style={{ marginBottom: "16px", position: "relative" }}>
                   <PhoneInput
                     international
                     defaultCountry="US"
@@ -942,6 +972,7 @@ const SignupForm = () => {
                     numberInputProps={{
                       style: {
                         padding: "14px 16px",
+                        paddingRight: showPhoneOtp && !phoneVerified ? "100px" : "16px",
                         border: phoneVerified ? "2px solid #10b981" : "1px solid #E0E0E0",
                         borderRadius: "8px",
                         fontSize: "16px",
@@ -964,13 +995,81 @@ const SignupForm = () => {
                       },
                     }}
                   />
+                  {showPhoneOtp && !phoneVerified && (
+                    <div
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        e.stopImmediatePropagation();
+                      }}
+                      onMouseDown={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        e.stopImmediatePropagation();
+                      }}
+                      style={{
+                        position: "absolute",
+                        right: "8px",
+                        top: "50%",
+                        transform: "translateY(-50%)",
+                        zIndex: 10,
+                      }}
+                    >
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          e.stopImmediatePropagation();
+                          handleResendPhoneOtp();
+                          return false;
+                        }}
+                        onMouseDown={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          e.stopImmediatePropagation();
+                          return false;
+                        }}
+                        disabled={isLoading}
+                        style={{
+                          padding: "6px 12px",
+                          backgroundColor: "transparent",
+                          border: "none",
+                          borderRadius: "6px",
+                          color: "#E61E4D",
+                          fontSize: "13px",
+                          fontWeight: "600",
+                          cursor: isLoading ? "not-allowed" : "pointer",
+                          opacity: isLoading ? 0.5 : 1,
+                          transition: "all 0.2s",
+                          whiteSpace: "nowrap",
+                        }}
+                        onMouseEnter={(e) => {
+                          if (!isLoading) {
+                            e.target.style.backgroundColor = "#FEE2E2";
+                          }
+                        }}
+                        onMouseLeave={(e) => {
+                          if (!isLoading) {
+                            e.target.style.backgroundColor = "transparent";
+                          }
+                        }}
+                      >
+                        {isLoading ? "Sending..." : "Resend"}
+                      </button>
+                    </div>
+                  )}
                   
                   {!phoneVerified && phone && (
                     <div style={{ marginTop: "12px" }}>
                       {!showPhoneOtp ? (
                         <button
                           type="button"
-                          onClick={handleSendPhoneOtp}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            handleSendPhoneOtp();
+                          }}
                           disabled={isLoading}
                           style={{
                             width: "100%",
@@ -998,7 +1097,7 @@ const SignupForm = () => {
                             }
                           }}
                         >
-                          {isLoading ? "Sending..." : "Send OTP"}
+                          {isLoading ? "Sending..." : "Send OTP Code"}
                         </button>
                       ) : (
                         <div>
@@ -1057,7 +1156,11 @@ const SignupForm = () => {
                           )}
                           <button
                             type="button"
-                            onClick={() => handleVerifyPhoneOtp()}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              handleVerifyPhoneOtp();
+                            }}
                             disabled={isLoading || phoneOtp.join("").length !== 6}
                             style={{
                               width: "100%",
@@ -1181,24 +1284,34 @@ const SignupForm = () => {
                 {/* Submit Button */}
                 <button
                   type="submit"
-                  disabled={isLoading}
+                  disabled={isLoading || !phoneVerified}
                   style={{
                     width: "100%",
                     padding: "14px 20px",
-                    background: "linear-gradient(to right, #E61E4D 0%, #E31C5F 50%, #D70466 100%)",
+                    background: phoneVerified 
+                      ? "linear-gradient(to right, #E61E4D 0%, #E31C5F 50%, #D70466 100%)"
+                      : "linear-gradient(to right, #CCCCCC 0%, #BBBBBB 50%, #AAAAAA 100%)",
                     color: "#FFFFFF",
                     border: "none",
                     borderRadius: "8px",
                     fontSize: "16px",
                     fontWeight: "600",
-                    cursor: isLoading ? "not-allowed" : "pointer",
-                    opacity: isLoading ? 0.5 : 1,
+                    cursor: (isLoading || !phoneVerified) ? "not-allowed" : "pointer",
+                    opacity: (isLoading || !phoneVerified) ? 0.5 : 1,
                     transition: "all 0.2s",
                   }}
-                  onMouseOver={(e) => !isLoading && (e.currentTarget.style.background = "linear-gradient(to right, #D01346 0%, #C7124D 50%, #B0035C 100%)")}
-                  onMouseOut={(e) => !isLoading && (e.currentTarget.style.background = "linear-gradient(to right, #E61E4D 0%, #E31C5F 50%, #D70466 100%)")}
+                  onMouseOver={(e) => {
+                    if (!isLoading && phoneVerified) {
+                      e.currentTarget.style.background = "linear-gradient(to right, #D01346 0%, #C7124D 50%, #B0035C 100%)";
+                    }
+                  }}
+                  onMouseOut={(e) => {
+                    if (!isLoading && phoneVerified) {
+                      e.currentTarget.style.background = "linear-gradient(to right, #E61E4D 0%, #E31C5F 50%, #D70466 100%)";
+                    }
+                  }}
                 >
-                  {isLoading ? "Creating Account..." : "Create Account"}
+                  {isLoading ? "Creating Account..." : phoneVerified ? "Create Account" : "Verify Phone to Continue"}
                 </button>
               </form>
             </>

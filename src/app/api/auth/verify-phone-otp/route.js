@@ -14,37 +14,30 @@ export async function POST(request) {
 			);
 		}
 
-		// Verify using Twilio Verify API
-		const verifyResult = await verifyOTPCode(phoneNumber, otp);
+		// Verify OTP using Twilio Verify API
+		const verificationResult = await verifyOTPCode(phoneNumber, otp);
 
-		if (!verifyResult.success) {
+		if (!verificationResult.success) {
 			return NextResponse.json(
-				{ error: verifyResult.error || "Invalid or expired OTP" },
+				{ error: "Invalid or expired OTP. Please request a new one." },
 				{ status: 400 }
 			);
 		}
 
-		// Mark OTP record as used if exists (optional - verification already done via Twilio)
+		// Mark any existing OTP records for this phone as used
 		try {
-			const otpRecord = await prisma.otp.findFirst({
+			await prisma.otp.updateMany({
 				where: {
 					email: phoneNumber, // Phone is stored in email field
 					used: false,
 				},
-				orderBy: {
-					created_at: "desc",
+				data: {
+					used: true,
 				},
 			});
-
-			if (otpRecord) {
-				await prisma.otp.update({
-					where: { id: otpRecord.id },
-					data: { used: true },
-				});
-			}
 		} catch (dbError) {
-			// Database error - log but continue (verification was successful via Twilio)
-			console.warn("⚠️  Could not update OTP record (verification was successful):", dbError.message);
+			// Database error - log but continue (verification was successful)
+			console.warn("⚠️  Could not update OTP records in database (verification was successful):", dbError.message);
 		}
 
 		return NextResponse.json({

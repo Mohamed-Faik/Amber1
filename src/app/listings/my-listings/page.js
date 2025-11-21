@@ -1,4 +1,5 @@
 import React, { Suspense } from "react";
+import { redirect } from "next/navigation";
 import ListingCard from "@/components/Listings/MyListings/ListingCard";
 import getMyListings from "@/actions/getMyListings";
 import { getCurrentUser } from "@/actions/getCurrentUser";
@@ -6,8 +7,14 @@ import { getCurrentUser } from "@/actions/getCurrentUser";
 export const dynamic = "force-dynamic";
 
 const page = async () => {
-	const listings = await getMyListings();
 	const currentUser = await getCurrentUser();
+	
+	// Only redirect if user is NOT authenticated
+	if (!currentUser) {
+		redirect("/auth/signin");
+	}
+	
+	const listings = await getMyListings();
 
 	return (
 		<div style={{

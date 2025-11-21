@@ -1,4 +1,5 @@
 import React, { Suspense } from "react";
+import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/actions/getCurrentUser";
 import SettingsForm from "@/components/Profile/SettingsForm";
 
@@ -6,6 +7,11 @@ export const dynamic = "force-dynamic";
 
 const page = async () => {
 	const currentUser = await getCurrentUser();
+	
+	// Only redirect if user is NOT authenticated
+	if (!currentUser) {
+		redirect("/auth/signin");
+	}
 
 	return (
 		<div style={{

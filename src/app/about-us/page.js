@@ -130,13 +130,18 @@ const page = () => {
 						border: "1px solid #E0E0E0",
 						marginBottom: "64px",
 					}}>
-						<div style={{
+						<div className="about-content-grid" style={{
 							display: "grid",
 							gridTemplateColumns: "1fr 1fr",
 							gap: "48px",
 							alignItems: "center",
 						}}>
-							<div>
+							{/* Text Content - First */}
+							<div className="about-text-content" style={{ 
+								order: 1,
+								display: "block",
+								width: "100%",
+							}}>
 								<h2 style={{
 									fontSize: "32px",
 									fontWeight: "700",
@@ -197,7 +202,11 @@ const page = () => {
 									Be A Trusted User
 								</Link>
 							</div>
-							<div style={{
+							{/* Image - Second */}
+							<div className="about-image-content" style={{
+								order: 2,
+								display: "block",
+								width: "100%",
 								borderRadius: "16px",
 								overflow: "hidden",
 								boxShadow: "0 8px 24px rgba(0, 0, 0, 0.12)",
@@ -309,18 +318,18 @@ const page = () => {
 					</div>
 
 					{/* How It Works Section */}
-					<div style={{
+					<div className="how-it-works-section" style={{
 						backgroundColor: "#FFFFFF",
 						borderRadius: "16px",
 						padding: "48px 40px",
 						boxShadow: "0 2px 12px rgba(0, 0, 0, 0.08)",
 						border: "1px solid #E0E0E0",
 					}}>
-						<div style={{
+						<div className="how-it-works-header" style={{
 							textAlign: "center",
 							marginBottom: "48px",
 						}}>
-							<h2 style={{
+							<h2 className="how-it-works-title" style={{
 								fontSize: "32px",
 								fontWeight: "700",
 								color: "#222222",
@@ -329,7 +338,7 @@ const page = () => {
 							}}>
 								How AmberHomes Works For You
 							</h2>
-							<p style={{
+							<p className="how-it-works-subtitle" style={{
 								fontSize: "16px",
 								color: "#767676",
 								margin: "0",
@@ -338,7 +347,7 @@ const page = () => {
 							</p>
 						</div>
 
-						<div style={{
+						<div className="how-it-works-grid" style={{
 							display: "grid",
 							gridTemplateColumns: "repeat(3, 1fr)",
 							gap: "40px",
@@ -456,15 +465,222 @@ const page = () => {
 			</div>
 
 			<style jsx>{`
-				@media (max-width: 1128px) {
+				/* Ensure text comes first, image second on all screen sizes */
+				.about-content-grid {
+					display: grid !important;
+				}
+				.about-text-content {
+					order: 1 !important;
+					width: 100% !important;
+				}
+				.about-image-content {
+					order: 2 !important;
+					width: 100% !important;
+				}
+
+				/* Tablet: 768px - 991px */
+				@media (max-width: 991px) {
 					div[style*="1760px"] {
 						padding: 0 24px !important;
 					}
+					.about-content-grid {
+						grid-template-columns: 1fr !important;
+						gap: 32px !important;
+					}
 					div[style*="gridTemplateColumns: \"1fr 1fr\""] {
 						grid-template-columns: 1fr !important;
+						gap: 32px !important;
 					}
 					div[style*="gridTemplateColumns: \"repeat(3, 1fr)\""] {
 						grid-template-columns: 1fr !important;
+						gap: 32px !important;
+					}
+					
+					/* How It Works Section - Tablet */
+					.how-it-works-grid {
+						grid-template-columns: 1fr !important;
+						gap: 32px !important;
+					}
+					.how-it-works-section {
+						padding: 32px 24px !important;
+					}
+					.how-it-works-header {
+						margin-bottom: 32px !important;
+					}
+					.how-it-works-title {
+						font-size: 24px !important;
+					}
+					.how-it-works-subtitle {
+						font-size: 15px !important;
+					}
+					
+					div[style*="padding: \"48px 40px\""] {
+						padding: 32px 24px !important;
+					}
+					div[style*="padding: \"40px\""] {
+						padding: 24px !important;
+					}
+					h1[style*="fontSize: \"36px\""] {
+						font-size: 28px !important;
+					}
+					h2[style*="fontSize: \"32px\""] {
+						font-size: 24px !important;
+					}
+				}
+
+				/* Mobile: < 768px */
+				@media (max-width: 767px) {
+					div[style*="1760px"] {
+						padding: 0 16px !important;
+					}
+					div[style*="padding: \"48px 0\""] {
+						padding: 32px 0 !important;
+					}
+					div[style*="marginBottom: \"64px\""] {
+						margin-bottom: 40px !important;
+					}
+					div[style*="padding: \"40px\""] {
+						padding: 20px !important;
+					}
+					div[style*="padding: \"48px 40px\""] {
+						padding: 24px 20px !important;
+					}
+					div[style*="padding: \"32px\""] {
+						padding: 20px !important;
+					}
+					
+					/* Force grid to single column on mobile */
+					.about-content-grid {
+						grid-template-columns: 1fr !important;
+						gap: 24px !important;
+						display: grid !important;
+					}
+					.about-text-content {
+						order: 1 !important;
+						width: 100% !important;
+						margin-bottom: 0 !important;
+					}
+					.about-image-content {
+						order: 2 !important;
+						width: 100% !important;
+						margin-top: 0 !important;
+					}
+					
+					/* How It Works Section - Mobile */
+					.how-it-works-grid {
+						grid-template-columns: 1fr !important;
+						gap: 32px !important;
+					}
+					.how-it-works-section {
+						padding: 24px 20px !important;
+					}
+					.how-it-works-header {
+						margin-bottom: 32px !important;
+					}
+					.how-it-works-title {
+						font-size: 22px !important;
+						margin-bottom: 12px !important;
+					}
+					.how-it-works-subtitle {
+						font-size: 14px !important;
+					}
+					
+					/* Step items on mobile */
+					.how-it-works-grid > div {
+						padding: 0 !important;
+					}
+					.how-it-works-grid h3[style*="fontSize: \"22px\""] {
+						font-size: 18px !important;
+					}
+					.how-it-works-grid p[style*="fontSize: \"15px\""] {
+						font-size: 14px !important;
+					}
+					
+					h1[style*="fontSize: \"36px\""] {
+						font-size: 24px !important;
+					}
+					h2[style*="fontSize: \"32px\""] {
+						font-size: 22px !important;
+					}
+					h3[style*="fontSize: \"22px\""] {
+						font-size: 18px !important;
+					}
+					h3[style*="fontSize: \"20px\""] {
+						font-size: 18px !important;
+					}
+					p[style*="fontSize: \"16px\""] {
+						font-size: 14px !important;
+					}
+					div[style*="gridTemplateColumns: \"repeat(auto-fit, minmax(280px, 1fr))\""] {
+						grid-template-columns: 1fr !important;
+					}
+					div[style*="width: \"56px\""] {
+						width: 48px !important;
+						height: 48px !important;
+					}
+					div[style*="width: \"80px\""] {
+						width: 64px !important;
+						height: 64px !important;
+					}
+				}
+
+				/* Small Mobile: < 480px */
+				@media (max-width: 480px) {
+					div[style*="1760px"] {
+						padding: 0 12px !important;
+					}
+					div[style*="padding: \"48px 0\""] {
+						padding: 24px 0 !important;
+					}
+					div[style*="padding: \"40px\""] {
+						padding: 16px !important;
+					}
+					
+					/* Ensure grid stacks properly on small mobile */
+					.about-content-grid {
+						grid-template-columns: 1fr !important;
+						gap: 20px !important;
+					}
+					.about-text-content {
+						order: 1 !important;
+						width: 100% !important;
+					}
+					.about-image-content {
+						order: 2 !important;
+						width: 100% !important;
+					}
+					
+					/* How It Works Section - Small Mobile */
+					.how-it-works-grid {
+						grid-template-columns: 1fr !important;
+						gap: 28px !important;
+					}
+					.how-it-works-section {
+						padding: 20px 16px !important;
+					}
+					.how-it-works-header {
+						margin-bottom: 28px !important;
+					}
+					.how-it-works-title {
+						font-size: 20px !important;
+						margin-bottom: 10px !important;
+					}
+					.how-it-works-subtitle {
+						font-size: 13px !important;
+					}
+					
+					/* Step items on small mobile */
+					.how-it-works-grid h3[style*="fontSize: \"22px\""] {
+						font-size: 17px !important;
+					}
+					.how-it-works-grid p[style*="fontSize: \"15px\""] {
+						font-size: 13px !important;
+					}
+					h1[style*="fontSize: \"36px\""] {
+						font-size: 22px !important;
+					}
+					h2[style*="fontSize: \"32px\""] {
+						font-size: 20px !important;
 					}
 				}
 			`}</style>
