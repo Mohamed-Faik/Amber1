@@ -6,8 +6,10 @@ import { toast } from "react-hot-toast";
 import { useForm, useController, Controller } from "react-hook-form";
 import Input from "@/components/FormHelpers/Input";
 import MultiImageUpload from "@/components/FormHelpers/MultiImageUpload";
-import CountrySelect from "@/components/FormHelpers/CountrySelect";
+import MoroccanCitySelect from "@/components/FormHelpers/MoroccanCitySelect";
+import MoroccanNeighborhoodSelect from "@/components/FormHelpers/MoroccanNeighborhoodSelect";
 import { categories } from "@/libs/Categories";
+import { formatLocationValue, moroccanCities } from "@/libs/moroccanCities";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
@@ -54,7 +56,8 @@ const ListingForm = ({ initialData = null }) => {
 				address: "",
 				features: "",
 				category: "",
-				location: null,
+				city: null,
+				neighborhood: null,
 				price: 1,
 				area: "",
 				bedrooms: "",
@@ -63,12 +66,33 @@ const ListingForm = ({ initialData = null }) => {
 		}
 
 		const images = parseImages(initialData.imageSrc);
-		const locationOption =
-			countryOptions.find(
-				(option) =>
-					option.label === initialData.location_value ||
-					option.value === initialData.location_value
-			) || null;
+		// Try to parse city and neighborhood from location_value
+		// Format: "Neighborhood, City" or just "City"
+		let cityOption = null;
+		let neighborhoodOption = null;
+		
+		if (initialData.location_value) {
+			const parts = initialData.location_value.split(",").map(p => p.trim());
+			if (parts.length >= 2) {
+				// Has neighborhood and city (format: "Neighborhood, City")
+				const cityName = parts[parts.length - 1]; // Last part is city
+				const neighborhoodName = parts.slice(0, -1).join(", "); // Everything before last part is neighborhood
+				// Try to find city and neighborhood
+				cityOption = moroccanCities.find(c => 
+					c.label.toLowerCase() === cityName.toLowerCase()
+				);
+				if (cityOption) {
+					neighborhoodOption = cityOption.neighborhoods.find(n => 
+						n.label.toLowerCase() === neighborhoodName.toLowerCase()
+					);
+				}
+			} else if (parts.length === 1) {
+				// Just city
+				cityOption = moroccanCities.find(c => 
+					c.label.toLowerCase() === parts[0].toLowerCase()
+				);
+			}
+		}
 
 		return {
 			title: initialData.title || "",
@@ -77,13 +101,14 @@ const ListingForm = ({ initialData = null }) => {
 			address: initialData.address || "",
 			features: initialData.features || "",
 			category: initialData.category || "",
-			location: locationOption,
+			city: cityOption ? { value: cityOption.value, label: cityOption.label, latlng: cityOption.latlng } : null,
+			neighborhood: neighborhoodOption ? { value: neighborhoodOption.value, label: neighborhoodOption.label, city: cityOption?.label, latlng: cityOption?.latlng } : null,
 			price: initialData.price ?? 1,
 			area: initialData.area ?? "",
 			bedrooms: initialData.bedrooms ?? "",
 			bathrooms: initialData.bathrooms ?? "",
 		};
-	}, [initialData, countryOptions]);
+	}, [initialData]);
 
 	const setCustomValue = (id, value) => {
 		setValue(id, value, {
@@ -114,14 +139,33 @@ const ListingForm = ({ initialData = null }) => {
 		field: { value: catValue, onChange: catOnChange, ...restCategoryField },
 	} = useController({ name: "category", control });
 
-	const location = watch("location");
+	const city = watch("city");
+	const neighborhood = watch("neighborhood");
 	const imageSrc = watch("imageSrc");
 	const category = watch("category");
+
+	// Clear neighborhood when city changes
+	useEffect(() => {
+		if (city && neighborhood) {
+			// Check if neighborhood belongs to current city
+			const cityData = moroccanCities.find(c => c.value === city.value);
+			if (cityData && neighborhood.city !== cityData.label) {
+				setCustomValue("neighborhood", null);
+			}
+		}
+	}, [city, neighborhood, setCustomValue]);
 
 	const onSubmit = (data) => {
 		// Ensure imageSrc is an array and has at least one image
 		if (!data.imageSrc || !Array.isArray(data.imageSrc) || data.imageSrc.length === 0) {
 			toast.error("Please upload at least one image");
+			return;
+		}
+
+		// Validate city selection
+		if (!data.city || !data.city.value) {
+			toast.error("Please select a city");
+			setError("city", { type: "required", message: "City is required" });
 			return;
 		}
 
@@ -147,10 +191,19 @@ const ListingForm = ({ initialData = null }) => {
 			}
 		}
 
+		// Format location value from city and neighborhood
+		const locationValue = formatLocationValue(data.city, data.neighborhood);
+		const locationLatlng = data.neighborhood?.latlng || data.city?.latlng || [31.6295, -7.9811];
+
 		// Convert imageSrc array to JSON string for storage
 		const submitData = {
 			...data,
 			imageSrc: JSON.stringify(data.imageSrc),
+			location: {
+				label: locationValue,
+				value: locationValue,
+				latlng: locationLatlng,
+			},
 		};
 
 		setIsLoading(true);
@@ -363,12 +416,29 @@ const ListingForm = ({ initialData = null }) => {
 							<div className="form-field-group">
 								<div>
 									<label className="form-label-custom">
-										Location <span style={{ color: "#FF385C" }}>*</span>
+										City <span style={{ color: "#FF385C" }}>*</span>
 									</label>
-									<CountrySelect
-										value={location}
+									<MoroccanCitySelect
+										value={city}
+										onChange={(value) => {
+											setCustomValue("city", value);
+											// Clear neighborhood when city changes
+											if (!value || (value && city && value.value !== city.value)) {
+												setCustomValue("neighborhood", null);
+											}
+										}}
+									/>
+								</div>
+
+								<div>
+									<label className="form-label-custom">
+										Neighborhood
+									</label>
+									<MoroccanNeighborhoodSelect
+										city={city}
+										value={neighborhood}
 										onChange={(value) =>
-											setCustomValue("location", value)
+											setCustomValue("neighborhood", value)
 										}
 									/>
 								</div>
