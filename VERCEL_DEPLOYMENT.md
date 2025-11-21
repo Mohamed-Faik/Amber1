@@ -24,9 +24,42 @@ Make sure you have these environment variables set in your Vercel project settin
 2. Add/verify these variables:
 
 ```env
+# Required: Database Connection
+DATABASE_URL=mysql://username:password@host:port/database_name
+
+# Required: NextAuth Configuration
 NEXTAUTH_URL=https://your-domain.vercel.app
 NEXTAUTH_SECRET=your-secret-key-here
+
+# Optional: File Upload (Vercel Blob Storage)
+BLOB_READ_WRITE_TOKEN=your-blob-token-here
 ```
+
+**⚠️ CRITICAL: DATABASE_URL Setup**
+
+The most common issue when deploying to Vercel is that listings don't display on the home page. This is almost always because `DATABASE_URL` is not set in Vercel.
+
+**To fix:**
+1. Go to Vercel Dashboard → Your Project → Settings → Environment Variables
+2. Add `DATABASE_URL` with your MySQL connection string:
+   ```
+   DATABASE_URL=mysql://username:password@your-host:3306/database_name
+   ```
+3. For remote MySQL (e.g., Hostinger):
+   ```
+   DATABASE_URL=mysql://username:password@193.203.168.240:3306/database_name
+   ```
+4. **IMPORTANT:** After adding/updating `DATABASE_URL`:
+   - Go to Deployments tab
+   - Click "..." on the latest deployment
+   - Select "Redeploy"
+   - **Uncheck "Use existing Build Cache"** (this is critical!)
+   - Click "Redeploy"
+
+**Verifying DATABASE_URL is set correctly:**
+- After redeploying, check Vercel Function Logs
+- Look for database connection errors
+- The API route `/api/listings/featured` should return listings, not errors
 
 **IMPORTANT:**
 - `NEXTAUTH_URL` must be your **exact Vercel deployment URL** (e.g., `https://amberhomes-liart.vercel.app`)
@@ -85,6 +118,53 @@ If the issue persists, you can enable debug logging:
 
 ## Common Issues
 
+### Issue: "No properties found" on Home Page (Listings Not Displaying)
+
+**Symptoms:**
+- Listings display correctly on localhost
+- On Vercel deployment, you see "No properties found" message
+- Home page appears empty
+
+**Root Cause:**
+This is almost always because `DATABASE_URL` environment variable is not set in Vercel, or the database connection is failing.
+
+**Solution:**
+
+1. **Check if DATABASE_URL is set:**
+   - Go to Vercel Dashboard → Your Project → Settings → Environment Variables
+   - Verify `DATABASE_URL` exists and is correct
+   - The format should be: `mysql://username:password@host:port/database_name`
+
+2. **Check Vercel Function Logs:**
+   - Go to Vercel Dashboard → Your Project → Functions tab
+   - Look for errors related to `/api/listings/featured`
+   - Common errors you might see:
+     - "DATABASE_URL environment variable is not set"
+     - "Can't reach database server" (P1001 error)
+     - "Database connection failed"
+
+3. **Verify Database Connection:**
+   - Ensure your database host allows connections from Vercel IPs
+   - Check if your database requires SSL connections
+   - Verify username, password, and database name are correct
+
+4. **Redeploy After Fixing:**
+   - After setting/updating `DATABASE_URL`, redeploy your project
+   - Go to Deployments tab → Click "..." → Select "Redeploy"
+   - **IMPORTANT:** Uncheck "Use existing Build Cache"
+   - Wait for deployment to complete
+
+5. **Test the API Directly:**
+   - After redeploying, visit: `https://your-domain.vercel.app/api/listings/featured`
+   - You should see JSON data with listings (not an error message)
+   - If you see an error, check the error message for specific details
+
+**Additional Debugging:**
+- Open browser DevTools → Console tab
+- Look for error messages when the page loads
+- The updated code now shows specific error messages for database issues
+- Check Network tab → Look at the request to `/api/listings/featured` → Check the response
+
 ### Issue: Still redirecting after setting NEXTAUTH_URL
 **Solution:** 
 - Make sure `NEXTAUTH_URL` matches your deployment URL exactly
@@ -95,6 +175,7 @@ If the issue persists, you can enable debug logging:
 **Solution:**
 - This is usually because `NEXTAUTH_URL` is set to `http://localhost:3000` in Vercel
 - Update it to your Vercel URL
+- **OR** if it's about listings not displaying, check `DATABASE_URL` is set correctly
 
 ### Issue: Cookies not being set
 **Solution:**

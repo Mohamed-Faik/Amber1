@@ -13,10 +13,31 @@ const Featured = ({ currentUser }) => {
 				console.log("📡 Fetching all listings...");
 				// Fetch all listings without category filter
 				const response = await axios.get(`/api/listings/featured?category=all`);
-				const allListings = response.data || [];
+				
+				// Check if response is an error object
+				if (response.data && response.data.error) {
+					console.error("❌ API returned error:", response.data);
+					console.error("   Error message:", response.data.message);
+					
+					// Show specific error message to user
+					if (response.data.message?.includes("DATABASE_URL")) {
+						toast.error("Database configuration error. Please check server configuration.");
+					} else if (response.data.message?.includes("connection")) {
+						toast.error("Database connection failed. Please check your database settings.");
+					} else {
+						toast.error(response.data.message || "Failed to load listings. Please try again.");
+					}
+					
+					setSections([]);
+					return;
+				}
+				
+				const allListings = Array.isArray(response.data) ? response.data : [];
 				
 				console.log("✅ Received listings:", allListings.length);
-				console.log("📋 Sample listing:", allListings[0]);
+				if (allListings.length > 0) {
+					console.log("📋 Sample listing:", allListings[0]);
+				}
 
 				if (allListings.length === 0) {
 					console.warn("⚠️  No listings found in response");
@@ -36,7 +57,20 @@ const Featured = ({ currentUser }) => {
 			} catch (error) {
 				console.error("❌ Error fetching listings:", error);
 				console.error("   Error response:", error.response?.data);
-				toast.error("Failed to load listings. Please try again.");
+				console.error("   Error status:", error.response?.status);
+				
+				// Handle different error types
+				if (error.response?.status === 503) {
+					toast.error("Database connection failed. Please check your database settings in Vercel.");
+				} else if (error.response?.status === 500) {
+					const errorMsg = error.response?.data?.message || "Server error. Please contact support.";
+					toast.error(errorMsg);
+				} else if (error.response?.data?.error) {
+					toast.error(error.response.data.message || "Failed to load listings.");
+				} else {
+					toast.error("Failed to load listings. Please try again.");
+				}
+				
 				setSections([]);
 			}
 		};
