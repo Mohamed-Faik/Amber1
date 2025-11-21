@@ -26,7 +26,7 @@ This guide explains how to run the Teor application using Docker and Docker Comp
    ```
 
 4. **Access the application**:
-   - Application: http://localhost:3000
+   - Application: https://amberhomes-liart.vercel.app/
    - MySQL: localhost:3306
 
 ## Docker Commands
@@ -98,7 +98,7 @@ MYSQL_PASSWORD=teor_password
 # Application
 DATABASE_URL=mysql://teor_user:teor_password@mysql:3306/teor_db
 NEXTAUTH_SECRET=your-secret-key-here
-NEXTAUTH_URL=http://localhost:3000
+NEXTAUTH_URL=https://amberhomes-liart.vercel.app/
 
 # OAuth (Optional)
 GITHUB_ID=your-github-id

@@ -108,7 +108,7 @@ Before you begin, ensure you have the following installed:
    
    # REQUIRED: Generate a secret key for NextAuth (use: openssl rand -base64 32)
    NEXTAUTH_SECRET="your-secret-key-here"
-   NEXTAUTH_URL="http://localhost:3000"
+   NEXTAUTH_URL="https://amberhomes-liart.vercel.app/"
    
    # Optional: OAuth Providers
    GITHUB_ID="your-github-client-id"
@@ -145,7 +145,7 @@ Before you begin, ensure you have the following installed:
 
 6. **Open your browser**
    
-   Navigate to [http://localhost:3000](http://localhost:3000)
+   Navigate to [https://amberhomes-liart.vercel.app/](https://amberhomes-liart.vercel.app/)
 
 ## 📁 Project Structure
 
@@ -312,7 +312,7 @@ docker-compose up -d
 ```
 
 ### Access
-- Application: http://localhost:3000
+- Application: https://amberhomes-liart.vercel.app/
 - MySQL: localhost:3306
 
 See [DOCKER_SETUP.md](./DOCKER_SETUP.md) for detailed instructions.

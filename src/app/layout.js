@@ -25,14 +25,14 @@ export const metadata = {
   authors: [{ name: "AmberHomes" }],
   creator: "AmberHomes",
   publisher: "AmberHomes",
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://amberhomes-liart.vercel.app/"),
   alternates: {
     canonical: "/",
   },
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000",
+    url: process.env.NEXT_PUBLIC_SITE_URL || "https://amberhomes-liart.vercel.app/",
     siteName: "AmberHomes",
     title: "AmberHomes - Classified Ads & Directory Listing",
     description: "Find the perfect property in Morocco. Browse classified ads for real estate, rentals, and property listings.",
