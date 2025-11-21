@@ -2,7 +2,7 @@ import prisma from "@/libs/prismadb";
 
 export default async function getBlogPosts(params) {
 	try {
-		const { limit } = params || false;
+		const { limit } = params || {};
 
 		let blogPosts;
 

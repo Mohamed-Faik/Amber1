@@ -17,48 +17,78 @@ const AdministratorPage = async () => {
 		redirect("/");
 	}
 
-	// Fetch all data
-	const { listings } = await getListings({ showAll: true });
-	const users = await getAllUsers();
-	const blogPosts = await getBlogPosts();
+	// Fetch all data with error handling
+	let listings = [];
+	let users = [];
+	
+	try {
+		const listingsData = await getListings({ showAll: true });
+		listings = listingsData?.listings || [];
+	} catch (error) {
+		console.error("Error fetching listings:", error);
+		listings = [];
+	}
+	
+	try {
+		users = await getAllUsers() || [];
+	} catch (error) {
+		console.error("Error fetching users:", error);
+		users = [];
+	}
+	
+	// Fetch blog posts with error handling
+	let blogPosts = [];
+	try {
+		blogPosts = await getBlogPosts({}) || [];
+	} catch (error) {
+		console.error("Error fetching blog posts:", error);
+		blogPosts = [];
+	}
 	
 	// Fetch reviews and manually join with user and listing data
-	const reviewsData = await prisma.review.findMany({
-		orderBy: {
-			created_at: "desc",
-		},
-	});
+	let reviews = [];
+	try {
+		const reviewsData = await prisma.review.findMany({
+			orderBy: {
+				created_at: "desc",
+			},
+		});
 
-	// Get unique user IDs and listing IDs
-	const userIds = [...new Set(reviewsData.map((r) => r.userId))];
-	const listingIds = [...new Set(reviewsData.map((r) => r.listingId))];
+		// Get unique user IDs and listing IDs
+		const userIds = [...new Set(reviewsData.map((r) => r.userId))];
+		const listingIds = [...new Set(reviewsData.map((r) => r.listingId))];
 
-	// Fetch users and listings
-	const reviewUsers = await prisma.user.findMany({
-		where: { id: { in: userIds } },
-		select: {
-			id: true,
-			name: true,
-			email: true,
-			image: true,
-		},
-	});
+		// Fetch users and listings
+		const [reviewUsers, reviewListings] = await Promise.all([
+			userIds.length > 0 ? prisma.user.findMany({
+				where: { id: { in: userIds } },
+				select: {
+					id: true,
+					name: true,
+					email: true,
+					image: true,
+				},
+			}) : [],
+			listingIds.length > 0 ? prisma.listing.findMany({
+				where: { id: { in: listingIds } },
+				select: {
+					id: true,
+					title: true,
+					slug: true,
+				},
+			}) : [],
+		]);
 
-	const reviewListings = await prisma.listing.findMany({
-		where: { id: { in: listingIds } },
-		select: {
-			id: true,
-			title: true,
-			slug: true,
-		},
-	});
-
-	// Combine reviews with user and listing data
-	const reviews = reviewsData.map((review) => ({
-		...review,
-		user: reviewUsers.find((u) => u.id === review.userId) || null,
-		listing: reviewListings.find((l) => l.id === review.listingId) || null,
-	}));
+		// Combine reviews with user and listing data
+		reviews = reviewsData.map((review) => ({
+			...review,
+			user: reviewUsers.find((u) => u.id === review.userId) || null,
+			listing: reviewListings.find((l) => l.id === review.listingId) || null,
+		}));
+	} catch (error) {
+		console.error("Error fetching reviews:", error);
+		reviews = [];
+	}
 
 	return (
 		<div style={{
