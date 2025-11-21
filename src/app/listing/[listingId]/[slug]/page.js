@@ -17,7 +17,7 @@ export async function generateMetadata({ params }) {
 		};
 	}
 
-	const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+	const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://amberhomes-liart.vercel.app/";
 	const listingUrl = `${siteUrl}/listing/${listing.id}/${listing.slug}`;
 	const imageUrl = getListingImage(listing.imageSrc) 
 		? `${siteUrl}${getListingImage(listing.imageSrc)}`

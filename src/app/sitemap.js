@@ -2,7 +2,7 @@ import prisma from "@/libs/prismadb";
 import getListings from "@/actions/getListings";
 
 export default async function sitemap() {
-	const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+	const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://amberhomes-liart.vercel.app/";
 
 	// Static pages
 	const staticPages = [
