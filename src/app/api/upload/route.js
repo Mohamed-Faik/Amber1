@@ -51,7 +51,7 @@ export async function POST(request) {
 		// Check if we're on Vercel (use Blob Storage) or localhost (use filesystem)
 		if (process.env.VERCEL === "1" || process.env.NODE_ENV === "production") {
 			// Use Vercel Blob Storage for production/Vercel
-			const blob = await put(uploads/${folder}/${filename}, buffer, {
+			const blob = await put(`uploads/${folder}/${filename}`, buffer, {
 				access: "public",
 				contentType: file.type,
 			});
