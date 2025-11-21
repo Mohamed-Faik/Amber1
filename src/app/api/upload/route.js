@@ -46,7 +46,7 @@ export async function POST(request) {
 		const randomString = Math.random().toString(36).substring(2, 15);
 		const fileExtension = file.name.split(".").pop() || "jpg";
 		const prefix = uploadType === "profile" ? "profile" : "listing";
-		const filename = ${prefix}-${timestamp}-${randomString}.${fileExtension};
+		const filename = `${prefix}-${timestamp}-${randomString}.${fileExtension}`;
 
 		// Check if we're on Vercel (use Blob Storage) or localhost (use filesystem)
 		if (process.env.VERCEL === "1" || process.env.NODE_ENV === "production") {
