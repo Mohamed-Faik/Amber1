@@ -177,7 +177,7 @@ const ListingItem = ({
 								height="16"
 								alt="user"
 							/>
-							<span>{user.name}</span>
+							<span>AmberHomes-User</span>
 						</div>
 					)}
 				</div>

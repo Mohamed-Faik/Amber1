@@ -4,6 +4,9 @@ import Image from "next/image";
 import { formattedPrice } from "@/utils/formattedPrice";
 import { getListingImage } from "@/utils/getListingImage";
 import HeartButton from "../HeartButton";
+import rulerIcon from "../../../public/images/icon/ruler.svg";
+import bedIcon from "../../../public/images/icon/bed.svg";
+import bathroomIcon from "../../../public/images/icon/bathroom.svg";
 
 const FeaturedItem = ({
 	id,
@@ -225,28 +228,24 @@ const FeaturedItem = ({
 								style={{
 									display: "flex",
 									alignItems: "center",
-									gap: "20px",
+									gap: "16px",
 									paddingTop: "12px",
 									borderTop: "1px solid #E0E0E0",
 									fontSize: "13px",
-									color: "#717171",
+									color: "#222222",
+									flexWrap: "wrap",
 								}}
 							>
-								{/* Area - Square Meters Icon */}
+								{/* Area - Ruler Icon */}
 								{area && (
 									<div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-										<svg
-											width="18"
-											height="18"
-											viewBox="0 0 24 24"
-											fill="none"
-											stroke="#717171"
-											strokeWidth="2"
-											style={{ flexShrink: 0 }}
-										>
-											<rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-											<path d="M9 9h6v6H9z"></path>
-										</svg>
+										<Image
+											src={rulerIcon}
+											alt="Area"
+											width={18}
+											height={18}
+											style={{ flexShrink: 0, opacity: 0.7 }}
+										/>
 										<span style={{ fontWeight: "500" }}>{area} m²</span>
 									</div>
 								)}
@@ -254,38 +253,32 @@ const FeaturedItem = ({
 								{/* Bedrooms - Bed Icon */}
 								{bedrooms && (
 									<div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-										<svg
-											width="18"
-											height="18"
-											viewBox="0 0 24 24"
-											fill="none"
-											stroke="#717171"
-											strokeWidth="2"
-											style={{ flexShrink: 0 }}
-										>
-											<path d="M2 4v16M22 4v16M4 4h16M4 8h16M4 12h16M4 16h16"></path>
-											<path d="M6 4v4M18 4v4"></path>
-										</svg>
-										<span style={{ fontWeight: "500" }}>{bedrooms}</span>
+										<Image
+											src={bedIcon}
+											alt="Bedrooms"
+											width={18}
+											height={18}
+											style={{ flexShrink: 0, opacity: 0.7 }}
+										/>
+										<span style={{ fontWeight: "500" }}>
+											{bedrooms} {bedrooms === 1 ? "Chambre" : "Chambres"}
+										</span>
 									</div>
 								)}
 
-								{/* Plot Size / Garden - Tree Icon */}
-								{area && (
+								{/* Bathrooms - Bathroom Icon */}
+								{bathrooms && (
 									<div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-										<svg
-											width="18"
-											height="18"
-											viewBox="0 0 24 24"
-											fill="none"
-											stroke="#717171"
-											strokeWidth="2"
-											style={{ flexShrink: 0 }}
-										>
-											<path d="M12 2C8 2 4 4 4 8c0 4 4 6 8 8 4-2 8-4 8-8 0-4-4-6-8-6z"></path>
-											<path d="M12 16v6"></path>
-										</svg>
-										<span style={{ fontWeight: "500" }}>{Math.round(area * 4.2)} m²</span>
+										<Image
+											src={bathroomIcon}
+											alt="Bathrooms"
+											width={18}
+											height={18}
+											style={{ flexShrink: 0, opacity: 0.7 }}
+										/>
+										<span style={{ fontWeight: "500" }}>
+											{bathrooms} {bathrooms === 1 ? "Salle de bain" : "Salles de bain"}
+										</span>
 									</div>
 								)}
 							</div>

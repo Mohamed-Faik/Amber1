@@ -1,8 +1,12 @@
 "use client";
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { formattedPrice } from "@/utils/formattedPrice";
 import SahreAndSave from "./SahreAndSave";
+import rulerIcon from "../../../public/images/icon/ruler.svg";
+import bedIcon from "../../../public/images/icon/bed.svg";
+import bathroomIcon from "../../../public/images/icon/bathroom.svg";
 
 const DetailsHead = ({
 	title,
@@ -11,6 +15,9 @@ const DetailsHead = ({
 	category,
 	currentUser,
 	listingId,
+	area,
+	bedrooms,
+	bathrooms,
 }) => {
 	return (
 		<div style={{ marginBottom: "24px" }}>
@@ -33,6 +40,7 @@ const DetailsHead = ({
 						alignItems: "center",
 						gap: "8px",
 						flexWrap: "wrap",
+						marginBottom: "16px",
 					}}
 				>
 					<Link
@@ -70,6 +78,89 @@ const DetailsHead = ({
 						{location_value}
 					</span>
 				</div>
+
+				{/* Property Details: Area, Bedrooms, Bathrooms */}
+				{(area || bedrooms || bathrooms) && (
+					<div
+						style={{
+							display: "flex",
+							alignItems: "center",
+							gap: "24px",
+							flexWrap: "wrap",
+							marginTop: "12px",
+						}}
+					>
+						{/* Area - Ruler Icon */}
+						{area && (
+							<div
+								style={{
+									display: "flex",
+									alignItems: "center",
+									gap: "8px",
+									fontSize: "14px",
+									color: "#222222",
+								}}
+							>
+								<Image
+									src={rulerIcon}
+									alt="Area"
+									width={20}
+									height={20}
+									style={{ flexShrink: 0 }}
+								/>
+								<span style={{ fontWeight: "500" }}>{area} m²</span>
+							</div>
+						)}
+
+						{/* Bedrooms - Bed Icon */}
+						{bedrooms && (
+							<div
+								style={{
+									display: "flex",
+									alignItems: "center",
+									gap: "8px",
+									fontSize: "14px",
+									color: "#222222",
+								}}
+							>
+								<Image
+									src={bedIcon}
+									alt="Bedrooms"
+									width={20}
+									height={20}
+									style={{ flexShrink: 0 }}
+								/>
+								<span style={{ fontWeight: "500" }}>
+									{bedrooms} {bedrooms === 1 ? "Chambre" : "Chambres"}
+								</span>
+							</div>
+						)}
+
+						{/* Bathrooms - Bathroom Icon */}
+						{bathrooms && (
+							<div
+								style={{
+									display: "flex",
+									alignItems: "center",
+									gap: "8px",
+									fontSize: "14px",
+									color: "#222222",
+								}}
+							>
+								<Image
+									src={bathroomIcon}
+									alt="Bathrooms"
+									width={20}
+									height={20}
+									style={{ flexShrink: 0 }}
+								/>
+								<span style={{ fontWeight: "500" }}>
+									{bathrooms} {bathrooms === 1 ? "Salle de bain" : "Salles de bain"}
+								</span>
+							</div>
+						)}
+					</div>
+				)}
 			</div>
 
 			{/* Share and Save buttons */}

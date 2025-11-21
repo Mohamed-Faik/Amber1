@@ -25,7 +25,7 @@ const UserListing = ({ listings, user, currentUser }) => {
 							lineHeight: "1.3",
 						}}
 					>
-						{user}'s Listings
+						AmberHomes-User's Listings
 					</h1>
 					<p
 						style={{
@@ -36,8 +36,8 @@ const UserListing = ({ listings, user, currentUser }) => {
 						}}
 					>
 						{listings.length > 0
-							? `${user} has ${listings.length} ${listings.length === 1 ? "listing" : "listings"}`
-							: `${user} hasn't created any listings yet`}
+							? `AmberHomes-User has ${listings.length} ${listings.length === 1 ? "listing" : "listings"}`
+							: `AmberHomes-User hasn't created any listings yet`}
 					</p>
 				</div>
 

@@ -76,7 +76,7 @@ Please provide more information.`;
 						{user?.image ? (
 							<Image
 								src={user.image}
-								alt={user?.name || user?.email || "Property Owner"}
+								alt="AmberHomes-User"
 								fill
 								style={{ objectFit: "cover" }}
 								unoptimized
@@ -84,7 +84,7 @@ Please provide more information.`;
 						) : (
 							<Image
 								src={userImg}
-								alt={user?.name || user?.email || "Property Owner"}
+								alt="AmberHomes-User"
 								fill
 								style={{ objectFit: "cover" }}
 								unoptimized
@@ -116,7 +116,7 @@ Please provide more information.`;
 										e.currentTarget.style.color = "#222222";
 									}}
 								>
-									{user?.name || user?.email || "Property Owner"}
+									AmberHomes-User
 								</h3>
 							</Link>
 						) : (
@@ -128,34 +128,8 @@ Please provide more information.`;
 									marginBottom: "4px",
 								}}
 							>
-								{user?.name || user?.email || "Property Owner"}
+								AmberHomes-User
 							</h3>
-						)}
-						{user?.email && (
-							<p
-								style={{
-									fontSize: "13px",
-									color: "#717171",
-									margin: "0 0 4px 0",
-									lineHeight: "1.4",
-								}}
-							>
-								{user.email}
-							</p>
-						)}
-						{user?.profile?.bio && (
-							<p
-								style={{
-									fontSize: "14px",
-									color: "#717171",
-									margin: 0,
-									lineHeight: "1.4",
-								}}
-							>
-								{user.profile.bio.length > 60
-									? `${user.profile.bio.substring(0, 60)}...`
-									: user.profile.bio}
-							</p>
 						)}
 					</div>
 				</div>

@@ -55,6 +55,9 @@ export async function GET(request) {
 			address: listing.address,
 			created_at: listing.created_at,
 			userId: listing.userId,
+			area: listing.area,
+			bedrooms: listing.bedrooms,
+			bathrooms: listing.bathrooms,
 			// Add default rating if not available (can be calculated from reviews later)
 			rating: null,
 		}));

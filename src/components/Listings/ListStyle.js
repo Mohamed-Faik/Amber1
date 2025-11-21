@@ -7,6 +7,9 @@ import { useRouter } from "next/navigation";
 import { formattedPrice } from "@/utils/formattedPrice";
 import { getListingImage } from "@/utils/getListingImage";
 import HeartButton from "../HeartButton";
+import rulerIcon from "../../../public/images/icon/ruler.svg";
+import bedIcon from "../../../public/images/icon/bed.svg";
+import bathroomIcon from "../../../public/images/icon/bathroom.svg";
 
 const ListStyle = ({
 	id,
@@ -19,6 +22,9 @@ const ListStyle = ({
 	price,
 	created_at,
 	currentUser,
+	area,
+	bedrooms,
+	bathrooms,
 }) => {
 	const router = useRouter();
 	const mainImage = getListingImage(imageSrc);
@@ -174,6 +180,67 @@ const ListStyle = ({
 									{category}
 								</button>
 							</div>
+
+							{/* Property Details: Area, Bedrooms, Bathrooms */}
+							{(area || bedrooms || bathrooms) && (
+								<div
+									style={{
+										display: "flex",
+										alignItems: "center",
+										gap: "16px",
+										marginTop: "8px",
+										fontSize: "13px",
+										color: "#222222",
+										flexWrap: "wrap",
+									}}
+								>
+									{/* Area - Ruler Icon */}
+									{area && (
+										<div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+											<Image
+												src={rulerIcon}
+												alt="Area"
+												width={16}
+												height={16}
+												style={{ flexShrink: 0, opacity: 0.7 }}
+											/>
+											<span style={{ fontWeight: "500" }}>{area} m²</span>
+										</div>
+									)}
+
+									{/* Bedrooms - Bed Icon */}
+									{bedrooms && (
+										<div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+											<Image
+												src={bedIcon}
+												alt="Bedrooms"
+												width={16}
+												height={16}
+												style={{ flexShrink: 0, opacity: 0.7 }}
+											/>
+											<span style={{ fontWeight: "500" }}>
+												{bedrooms} {bedrooms === 1 ? "Chambre" : "Chambres"}
+											</span>
+										</div>
+									)}
+
+									{/* Bathrooms - Bathroom Icon */}
+									{bathrooms && (
+										<div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+											<Image
+												src={bathroomIcon}
+												alt="Bathrooms"
+												width={16}
+												height={16}
+												style={{ flexShrink: 0, opacity: 0.7 }}
+											/>
+											<span style={{ fontWeight: "500" }}>
+												{bathrooms} {bathrooms === 1 ? "Salle de bain" : "Salles de bain"}
+											</span>
+										</div>
+									)}
+								</div>
+							)}
 						</div>
 
 						{/* Price */}
