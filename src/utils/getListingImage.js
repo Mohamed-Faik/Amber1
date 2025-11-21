@@ -3,6 +3,27 @@
  * Supports both old format (single string) and new format (JSON array)
  */
 export function getListingImage(imageSrc) {
+	// Helper function to format image URL (handles both local paths and full URLs)
+	const formatImageUrl = (url) => {
+		if (!url || url === "" || url === "null" || url === "undefined") {
+			return null;
+		}
+		const trimmedUrl = url.trim();
+		
+		// If it's already a full URL (http/https), return as-is
+		if (trimmedUrl.startsWith("http://") || trimmedUrl.startsWith("https://")) {
+			return trimmedUrl;
+		}
+		
+		// If it's a relative path starting with /, return as-is
+		if (trimmedUrl.startsWith("/")) {
+			return trimmedUrl;
+		}
+		
+		// Otherwise, add / prefix for relative paths
+		return `/${trimmedUrl}`;
+	};
+
 	// Handle null, undefined, or empty values
 	if (!imageSrc || imageSrc === "" || imageSrc === "[]" || imageSrc === "null" || imageSrc === "undefined") {
 		return null;
@@ -11,10 +32,7 @@ export function getListingImage(imageSrc) {
 	// If it's already an array (shouldn't happen from DB, but handle it)
 	if (Array.isArray(imageSrc)) {
 		if (imageSrc.length > 0 && imageSrc[0]) {
-			const img = String(imageSrc[0]).trim();
-			if (img && img !== "" && img !== "null" && img !== "undefined") {
-				return img.startsWith("/") ? img : `/${img}`;
-			}
+			return formatImageUrl(String(imageSrc[0]));
 		}
 		return null;
 	}
@@ -43,22 +61,23 @@ export function getListingImage(imageSrc) {
 			if (Array.isArray(parsed) && parsed.length > 0) {
 				const firstImage = parsed[0];
 				if (firstImage && typeof firstImage === "string") {
-					const imagePath = firstImage.trim();
-					if (imagePath && imagePath !== "" && imagePath !== "null" && imagePath !== "undefined") {
-						return imagePath.startsWith("/") ? imagePath : `/${imagePath}`;
-					}
+					return formatImageUrl(firstImage);
 				}
 			}
 		} catch (parseError) {
 			// JSON parse failed - might be truncated or malformed
-			// Use regex to extract first image path: ["/path/to/image", ...]
+			// Use regex to extract first image path: ["/path/to/image", ...] or ["https://...", ...]
 			try {
+				// First try to match full URLs (Vercel Blob Storage)
+				const fullUrlMatch = trimmed.match(/\["(https?:\/\/[^"]+)"\s*,?/);
+				if (fullUrlMatch && fullUrlMatch[1]) {
+					return formatImageUrl(fullUrlMatch[1]);
+				}
+				
+				// Fallback to local paths
 				const match = trimmed.match(/\["([^"]+)"\s*,?/);
 				if (match && match[1]) {
-					const imagePath = match[1].trim();
-					if (imagePath && imagePath !== "" && imagePath !== "null" && imagePath !== "undefined") {
-						return imagePath.startsWith("/") ? imagePath : `/${imagePath}`;
-					}
+					return formatImageUrl(match[1]);
 				}
 			} catch (regexError) {
 				// If regex also fails, return null
@@ -71,8 +90,7 @@ export function getListingImage(imageSrc) {
 
 	// Not a JSON array, treat as single image string
 	if (trimmed !== "" && trimmed !== "null" && trimmed !== "undefined") {
-		// Make sure it starts with / for relative paths
-		return trimmed.startsWith("/") ? trimmed : `/${trimmed}`;
+		return formatImageUrl(trimmed);
 	}
 
 	return null;
@@ -92,15 +110,34 @@ export function getAllListingImages(imageSrc) {
 		return [];
 	}
 
+	// Helper function to format image URL (handles both local paths and full URLs)
+	const formatImageUrl = (url) => {
+		if (!url || url === "" || url === "null" || url === "undefined") {
+			return null;
+		}
+		const trimmedUrl = url.trim();
+		
+		// If it's already a full URL (http/https), return as-is
+		if (trimmedUrl.startsWith("http://") || trimmedUrl.startsWith("https://")) {
+			return trimmedUrl;
+		}
+		
+		// If it's a relative path starting with /, return as-is
+		if (trimmedUrl.startsWith("/")) {
+			return trimmedUrl;
+		}
+		
+		// Otherwise, add / prefix for relative paths
+		return `/${trimmedUrl}`;
+	};
+
 	// If it's already an array
 	if (Array.isArray(imageSrc)) {
 		console.log("[getAllListingImages] Already an array, length:", imageSrc.length);
 		const filtered = imageSrc
 			.filter(img => img && typeof img === "string" && img.trim() !== "" && img !== "null" && img !== "undefined")
-			.map(img => {
-				const trimmedImg = img.trim();
-				return trimmedImg.startsWith("/") ? trimmedImg : `/${trimmedImg}`;
-			});
+			.map(img => formatImageUrl(img))
+			.filter(img => img !== null);
 		console.log("[getAllListingImages] Filtered array:", filtered);
 		return filtered;
 	}
@@ -135,10 +172,8 @@ export function getAllListingImages(imageSrc) {
 				if (Array.isArray(parsed) && parsed.length > 0) {
 					const result = parsed
 						.filter(img => img && typeof img === "string" && img.trim() !== "" && img !== "null" && img !== "undefined")
-						.map(img => {
-							const trimmedImg = img.trim();
-							return trimmedImg.startsWith("/") ? trimmedImg : `/${trimmedImg}`;
-						});
+						.map(img => formatImageUrl(img))
+						.filter(img => img !== null);
 					console.log("[getAllListingImages] Final result:", result);
 					return result;
 				} else {
@@ -149,16 +184,34 @@ export function getAllListingImages(imageSrc) {
 				console.log("[getAllListingImages] JSON parse error (might be truncated):", parseError.message);
 				
 				// Try to extract image paths using regex even if JSON is incomplete
-				// Pattern: "/uploads/listings/filename.jpg" or "/uploads/listing..."
+				// Pattern: "/uploads/listings/filename.jpg" or "https://..." (Vercel Blob Storage URLs)
+				// First try to match full URLs (Vercel Blob Storage)
+				const fullUrlRegex = /"(https?:\/\/[^"]+)"/gi;
+				const fullUrlMatches = [];
+				let fullUrlMatch;
+				while ((fullUrlMatch = fullUrlRegex.exec(trimmed)) !== null) {
+					if (fullUrlMatch[1]) {
+						const formattedUrl = formatImageUrl(fullUrlMatch[1]);
+						if (formattedUrl) {
+							fullUrlMatches.push(formattedUrl);
+						}
+					}
+				}
+				if (fullUrlMatches.length > 0) {
+					console.log("[getAllListingImages] Extracted full URLs from truncated JSON:", fullUrlMatches);
+					return fullUrlMatches;
+				}
+				
+				// Fallback to local path pattern
 				const imagePathRegex = /"(\/uploads\/listings?\/[^"]+\.(jpg|jpeg|png|gif|webp))"/gi;
 				const matches = [];
 				let match;
 				
 				while ((match = imagePathRegex.exec(trimmed)) !== null) {
 					if (match[1]) {
-						const imgPath = match[1].trim();
-						if (imgPath && imgPath !== "null" && imgPath !== "undefined") {
-							matches.push(imgPath.startsWith("/") ? imgPath : `/${imgPath}`);
+						const formattedUrl = formatImageUrl(match[1]);
+						if (formattedUrl) {
+							matches.push(formattedUrl);
 						}
 					}
 				}
@@ -169,15 +222,28 @@ export function getAllListingImages(imageSrc) {
 				}
 				
 				// If regex didn't work, try a simpler approach - extract all paths that look like image paths
-				const simplePathRegex = /\/uploads\/listings?\/[^\s",\[\]]+\.(jpg|jpeg|png|gif|webp)/gi;
+				// Handles both local paths and full URLs (Vercel Blob Storage)
+				// First try full URLs
+				const fullUrlSimpleRegex = /https?:\/\/[^\s",\[\]]+/gi;
 				const simpleMatches = [];
 				let simpleMatch;
 				
-				while ((simpleMatch = simplePathRegex.exec(trimmed)) !== null) {
+				while ((simpleMatch = fullUrlSimpleRegex.exec(trimmed)) !== null) {
 					if (simpleMatch[0]) {
-						const imgPath = simpleMatch[0].trim();
-						if (imgPath && !simpleMatches.includes(imgPath)) {
-							simpleMatches.push(imgPath.startsWith("/") ? imgPath : `/${imgPath}`);
+						const formattedUrl = formatImageUrl(simpleMatch[0]);
+						if (formattedUrl && !simpleMatches.includes(formattedUrl)) {
+							simpleMatches.push(formattedUrl);
+						}
+					}
+				}
+				
+				// Then try local paths
+				const localPathRegex = /\/uploads\/listings?\/[^\s",\[\]]+\.(jpg|jpeg|png|gif|webp)/gi;
+				while ((simpleMatch = localPathRegex.exec(trimmed)) !== null) {
+					if (simpleMatch[0]) {
+						const formattedUrl = formatImageUrl(simpleMatch[0]);
+						if (formattedUrl && !simpleMatches.includes(formattedUrl)) {
+							simpleMatches.push(formattedUrl);
 						}
 					}
 				}
@@ -191,18 +257,24 @@ export function getAllListingImages(imageSrc) {
 			// Not a JSON array, treat as single image string
 			console.log("[getAllListingImages] Not a JSON array, treating as single image");
 			if (trimmed !== "" && trimmed !== "null" && trimmed !== "undefined") {
-				const result = [trimmed.startsWith("/") ? trimmed : `/${trimmed}`];
-				console.log("[getAllListingImages] Single image result:", result);
-				return result;
+				const formattedUrl = formatImageUrl(trimmed);
+				if (formattedUrl) {
+					const result = [formattedUrl];
+					console.log("[getAllListingImages] Single image result:", result);
+					return result;
+				}
 			}
 		}
 	} catch (e) {
 		// JSON parse failed, treat as single image string
 		console.log("[getAllListingImages] Outer catch - error:", e.message);
 		if (trimmed !== "" && trimmed !== "null" && trimmed !== "undefined" && !trimmed.startsWith("[")) {
-			const result = [trimmed.startsWith("/") ? trimmed : `/${trimmed}`];
-			console.log("[getAllListingImages] Fallback single image:", result);
-			return result;
+			const formattedUrl = formatImageUrl(trimmed);
+			if (formattedUrl) {
+				const result = [formattedUrl];
+				console.log("[getAllListingImages] Fallback single image:", result);
+				return result;
+			}
 		}
 	}
 
