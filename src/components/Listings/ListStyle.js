@@ -8,6 +8,7 @@ import { formattedPrice } from "@/utils/formattedPrice";
 import { getListingImage } from "@/utils/getListingImage";
 import HeartButton from "../HeartButton";
 import ContactButtons from "../Listing/ContactButtons";
+import ListingImageCarousel from "../Listing/ListingImageCarousel";
 import rulerIcon from "../../../public/images/icon/ruler.svg";
 import bedIcon from "../../../public/images/icon/bed.svg";
 import bathroomIcon from "../../../public/images/icon/bathroom.svg";
@@ -76,7 +77,7 @@ const ListStyle = ({
 							flex: 1,
 						}}
 					>
-						{/* Image */}
+						{/* Image with Carousel */}
 					<div
 						style={{
 							position: "relative",
@@ -85,22 +86,15 @@ const ListStyle = ({
 							overflow: "hidden",
 						}}
 					>
-						{mainImage ? (
-							<Image
-								src={mainImage}
-								alt={title}
-								fill
-								style={{
-									objectFit: "cover",
-								}}
-								sizes="200px"
-								unoptimized
-							/>
-						) : (
-							<div style={{ width: "100%", height: "100%", backgroundColor: "#f0f0f0", display: "flex", alignItems: "center", justifyContent: "center", color: "#999" }}>
-								No Image Available
-							</div>
-						)}
+						<div
+							style={{
+								position: "relative",
+								width: "100%",
+								height: "100%",
+							}}
+						>
+							<ListingImageCarousel imageSrc={imageSrc} title={title} />
+						</div>
 						<div
 							style={{
 								position: "absolute",

@@ -14,6 +14,7 @@ import { formattedPrice } from "@/utils/formattedPrice";
 import { getListingImage } from "@/utils/getListingImage";
 import HeartButton from "@/components/HeartButton";
 import ContactButtons from "@/components/Listing/ContactButtons";
+import ListingImageCarousel from "@/components/Listing/ListingImageCarousel";
 
 const ListingItem = ({
 	id,
@@ -89,29 +90,15 @@ const ListingItem = ({
 					display: "block",
 				}}
 			>
-				{mainImage ? (
-					<Image
-						src={mainImage}
-						fill
-						alt={title}
-						style={{ objectFit: "cover", objectPosition: "center" }}
-						sizes="(max-width: 768px) 100vw, 350px"
-						unoptimized
-					/>
-				) : (
-					<div style={{ 
-						width: "100%", 
-						height: "100%", 
-						backgroundColor: "#f0f0f0", 
-						display: "flex", 
-						alignItems: "center", 
-						justifyContent: "center", 
-						color: "#999",
-						fontSize: "14px"
-					}}>
-						No Image Available
-					</div>
-				)}
+				<div
+					style={{
+						position: "relative",
+						width: "100%",
+						height: "100%",
+					}}
+				>
+					<ListingImageCarousel imageSrc={imageSrc} title={title} />
+				</div>
 				{/* Status Badge */}
 				<div style={{
 					position: "absolute",

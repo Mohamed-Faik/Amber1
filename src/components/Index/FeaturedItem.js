@@ -5,6 +5,7 @@ import { formattedPrice } from "@/utils/formattedPrice";
 import { getListingImage } from "@/utils/getListingImage";
 import HeartButton from "../HeartButton";
 import ContactButtons from "../Listing/ContactButtons";
+import ListingImageCarousel from "../Listing/ListingImageCarousel";
 import rulerIcon from "../../../public/images/icon/ruler.svg";
 import bedIcon from "../../../public/images/icon/bed.svg";
 import bathroomIcon from "../../../public/images/icon/bathroom.svg";
@@ -72,7 +73,7 @@ const FeaturedItem = ({
 						e.currentTarget.style.boxShadow = "0 2px 8px rgba(0, 0, 0, 0.08)";
 					}}
 				>
-					{/* Image Container */}
+					{/* Image Container with Carousel */}
 					<div
 						style={{
 							position: "relative",
@@ -82,37 +83,17 @@ const FeaturedItem = ({
 							backgroundColor: "#f0f0f0",
 						}}
 					>
-						{mainImage && !imageError ? (
-							<Image
-								src={mainImage}
-								alt={title || "Property image"}
-								fill
-								style={{
-									objectFit: "cover",
-								}}
-								sizes="300px"
-								unoptimized
-								priority={false}
-							/>
-						) : (
-							<div
-								style={{
-									position: "absolute",
-									top: 0,
-									left: 0,
-									width: "100%",
-									height: "100%",
-									backgroundColor: "#f0f0f0",
-									display: "flex",
-									alignItems: "center",
-									justifyContent: "center",
-									color: "#999",
-									fontSize: "14px",
-								}}
-							>
-								No Image Available
-							</div>
-						)}
+						<div
+							style={{
+								position: "absolute",
+								top: 0,
+								left: 0,
+								width: "100%",
+								height: "100%",
+							}}
+						>
+							<ListingImageCarousel imageSrc={imageSrc} title={title} />
+						</div>
 
 						{/* NEW Badge - Pink rounded rectangle overlay */}
 						{isNew && (

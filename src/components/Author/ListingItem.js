@@ -6,6 +6,7 @@ import { formattedPrice } from "@/utils/formattedPrice";
 import { getListingImage } from "@/utils/getListingImage";
 import HeartButton from "@/components/HeartButton";
 import ContactButtons from "@/components/Listing/ContactButtons";
+import ListingImageCarousel from "@/components/Listing/ListingImageCarousel";
 import locationSvg from "../../../public/images/icon/location-pin.svg";
 import clockSvg from "../../../public/images/icon/clock.svg";
 import profileSvg from "../../../public/images/icon/profile.svg";
@@ -46,7 +47,7 @@ const ListingItem = ({
 			}}
 		>
 			<Link 
-				href={`/listing/${id}/${slug}`} 
+				href={`/listing/${id}/${slug}`}
 				style={{ 
 					position: "relative",
 					width: "100%",
@@ -55,29 +56,15 @@ const ListingItem = ({
 					display: "block",
 				}}
 			>
-				{mainImage ? (
-					<Image
-						src={mainImage}
-						fill
-						alt={title}
-						style={{ objectFit: "cover", objectPosition: "center" }}
-						sizes="(max-width: 768px) 100vw, 350px"
-						unoptimized
-					/>
-				) : (
-					<div style={{ 
-						width: "100%", 
-						height: "100%", 
-						backgroundColor: "#f0f0f0", 
-						display: "flex", 
-						alignItems: "center", 
-						justifyContent: "center", 
-						color: "#999",
-						fontSize: "14px"
-					}}>
-						No Image Available
-					</div>
-				)}
+				<div
+					style={{
+						position: "relative",
+						width: "100%",
+						height: "100%",
+					}}
+				>
+					<ListingImageCarousel imageSrc={imageSrc} title={title} />
+				</div>
 				<div style={{
 					position: "absolute",
 					top: "12px",
