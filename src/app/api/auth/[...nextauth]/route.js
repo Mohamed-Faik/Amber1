@@ -256,11 +256,26 @@ export const authHandler = NextAuth({
 			return session;
 		},
 		async redirect({ url, baseUrl }) {
+			// Ensure baseUrl doesn't have trailing slash
+			const cleanBaseUrl = baseUrl.replace(/\/$/, "");
+			
 			// Allows relative callback URLs
-			if (url.startsWith("/")) return `${baseUrl}${url}`;
+			if (url.startsWith("/")) {
+				return `${cleanBaseUrl}${url}`;
+			}
 			// Allows callback URLs on the same origin
-			else if (new URL(url).origin === baseUrl) return url;
-			return baseUrl;
+			try {
+				const urlOrigin = new URL(url).origin;
+				const baseOrigin = new URL(cleanBaseUrl).origin;
+				if (urlOrigin === baseOrigin) {
+					return url;
+				}
+			} catch (e) {
+				// If URL parsing fails, fall back to baseUrl
+				console.error("Error parsing URL in redirect callback:", e);
+			}
+			// Default: return baseUrl (homepage)
+			return cleanBaseUrl;
 		},
 	},
 	events: {

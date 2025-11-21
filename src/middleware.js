@@ -8,7 +8,7 @@ export default withAuth(
 	},
 	{
 		callbacks: {
-			authorized: ({ token, req }) => {
+			authorized: ({ token }) => {
 				// Allow access if token exists (user is authenticated)
 				return !!token;
 			},
