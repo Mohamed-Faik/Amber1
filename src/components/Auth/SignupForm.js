@@ -28,6 +28,7 @@ const SignupForm = () => {
   const [phoneOtp, setPhoneOtp] = useState(["", "", "", "", "", ""]);
   const [phoneOtpError, setPhoneOtpError] = useState("");
   const [phoneVerified, setPhoneVerified] = useState(false);
+  const [twilioAvailable, setTwilioAvailable] = useState(true); // Default to true, will be checked
   const [gender, setGender] = useState("");
   const [address, setAddress] = useState("");
   const [password, setPassword] = useState("");
@@ -48,6 +49,30 @@ const SignupForm = () => {
       setShowOtp(true);
     }
   }, []);
+
+  // Check if Twilio is configured when signup form is shown
+  useEffect(() => {
+    if (showSignupForm) {
+      checkTwilioAvailability();
+    }
+  }, [showSignupForm]);
+
+  // Check if Twilio is available
+  const checkTwilioAvailability = async () => {
+    try {
+      const response = await axios.get("/api/auth/check-twilio");
+      setTwilioAvailable(response.data.available || false);
+      // If Twilio is not available, automatically mark phone as verified (optional)
+      if (!response.data.available) {
+        setPhoneVerified(true);
+      }
+    } catch (error) {
+      console.error("Error checking Twilio availability:", error);
+      // If check fails, assume Twilio is not available
+      setTwilioAvailable(false);
+      setPhoneVerified(true);
+    }
+  };
 
   // Handle email submit - Generate and send OTP
   const handleEmailSubmit = async () => {
@@ -451,13 +476,16 @@ const SignupForm = () => {
       toast.error("Full name is required");
       return;
     }
-    if (!phone) {
-      toast.error("Phone number is required");
-      return;
-    }
-    if (!phoneVerified) {
-      toast.error("Please verify your phone number first");
-      return;
+    // Phone verification is only required if Twilio is configured
+    if (twilioAvailable) {
+      if (!phone) {
+        toast.error("Phone number is required");
+        return;
+      }
+      if (!phoneVerified) {
+        toast.error("Please verify your phone number first");
+        return;
+      }
     }
     if (!gender) {
       toast.error("Please select your gender");
@@ -911,6 +939,25 @@ const SignupForm = () => {
                 }}>
                   Enter your details to create your account.
                 </p>
+                {!twilioAvailable && (
+                  <div style={{
+                    padding: "12px 16px",
+                    backgroundColor: "#FEF3C7",
+                    border: "1px solid #FCD34D",
+                    borderRadius: "8px",
+                    marginTop: "16px",
+                    marginBottom: "16px",
+                  }}>
+                    <p style={{
+                      fontSize: "14px",
+                      color: "#92400E",
+                      margin: 0,
+                      lineHeight: "1.5",
+                    }}>
+                      ℹ️ Phone verification is currently optional. You can register without a phone number.
+                    </p>
+                  </div>
+                )}
               </div>
 
               <form onSubmit={handleSignupSubmit}>
@@ -957,14 +1004,15 @@ const SignupForm = () => {
                 />
 
                 {/* Phone Number with OTP Verification */}
-                <div style={{ marginBottom: "16px", position: "relative" }}>
-                  <PhoneInput
-                    international
-                    defaultCountry="US"
-                    value={phone}
-                    onChange={setPhone}
-                    disabled={isLoading || phoneVerified}
-                    required
+                {twilioAvailable && (
+                  <div style={{ marginBottom: "16px", position: "relative" }}>
+                    <PhoneInput
+                      international
+                      defaultCountry="US"
+                      value={phone}
+                      onChange={setPhone}
+                      disabled={isLoading || phoneVerified}
+                      required
                     style={{
                       "--PhoneInput-color--focus": "#E61E4D",
                     }}
@@ -1182,6 +1230,7 @@ const SignupForm = () => {
                     </div>
                   )}
                 </div>
+                )}
 
                 {/* Gender */}
                 <select
@@ -1283,11 +1332,11 @@ const SignupForm = () => {
                 {/* Submit Button */}
                 <button
                   type="submit"
-                  disabled={isLoading || !phoneVerified}
+                  disabled={isLoading || (twilioAvailable && !phoneVerified)}
                   style={{
                     width: "100%",
                     padding: "14px 20px",
-                    background: phoneVerified 
+                    background: (twilioAvailable ? phoneVerified : true)
                       ? "linear-gradient(to right, #E61E4D 0%, #E31C5F 50%, #D70466 100%)"
                       : "linear-gradient(to right, #CCCCCC 0%, #BBBBBB 50%, #AAAAAA 100%)",
                     color: "#FFFFFF",
@@ -1295,22 +1344,26 @@ const SignupForm = () => {
                     borderRadius: "8px",
                     fontSize: "16px",
                     fontWeight: "600",
-                    cursor: (isLoading || !phoneVerified) ? "not-allowed" : "pointer",
-                    opacity: (isLoading || !phoneVerified) ? 0.5 : 1,
+                    cursor: (isLoading || (twilioAvailable && !phoneVerified)) ? "not-allowed" : "pointer",
+                    opacity: (isLoading || (twilioAvailable && !phoneVerified)) ? 0.5 : 1,
                     transition: "all 0.2s",
                   }}
                   onMouseOver={(e) => {
-                    if (!isLoading && phoneVerified) {
+                    if (!isLoading && (twilioAvailable ? phoneVerified : true)) {
                       e.currentTarget.style.background = "linear-gradient(to right, #D01346 0%, #C7124D 50%, #B0035C 100%)";
                     }
                   }}
                   onMouseOut={(e) => {
-                    if (!isLoading && phoneVerified) {
+                    if (!isLoading && (twilioAvailable ? phoneVerified : true)) {
                       e.currentTarget.style.background = "linear-gradient(to right, #E61E4D 0%, #E31C5F 50%, #D70466 100%)";
                     }
                   }}
                 >
-                  {isLoading ? "Creating Account..." : phoneVerified ? "Create Account" : "Verify Phone to Continue"}
+                  {isLoading 
+                    ? "Creating Account..." 
+                    : twilioAvailable 
+                      ? (phoneVerified ? "Create Account" : "Verify Phone to Continue")
+                      : "Create Account"}
                 </button>
               </form>
             </>
