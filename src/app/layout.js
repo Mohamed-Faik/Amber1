@@ -6,7 +6,6 @@ import "swiper/css";
 import "swiper/css/pagination";
 import "react-accessible-accordion/dist/fancy-example.css";
 // Global styles
-// Global styles
 import "./styles/style.css";
 import "./styles/responsive.css";
 

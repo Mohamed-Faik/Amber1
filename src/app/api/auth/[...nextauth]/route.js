@@ -256,25 +256,30 @@ export const authHandler = NextAuth({
 			return session;
 		},
 		async redirect({ url, baseUrl }) {
+			// This callback is ONLY called during NextAuth flows (sign in, sign out, OAuth callbacks)
+			// It should NOT affect normal navigation
+			
 			// Ensure baseUrl doesn't have trailing slash
 			const cleanBaseUrl = baseUrl.replace(/\/$/, "");
 			
-			// Allows relative callback URLs
+			// If url is relative, prepend baseUrl
 			if (url.startsWith("/")) {
 				return `${cleanBaseUrl}${url}`;
 			}
-			// Allows callback URLs on the same origin
+			
+			// If url is absolute and on same origin, return as-is
 			try {
-				const urlOrigin = new URL(url).origin;
-				const baseOrigin = new URL(cleanBaseUrl).origin;
-				if (urlOrigin === baseOrigin) {
+				const urlObj = new URL(url);
+				const baseUrlObj = new URL(cleanBaseUrl);
+				if (urlObj.origin === baseUrlObj.origin) {
 					return url;
 				}
 			} catch (e) {
-				// If URL parsing fails, fall back to baseUrl
-				console.error("Error parsing URL in redirect callback:", e);
+				// Invalid URL - log but don't crash
+				console.error("NextAuth redirect callback - invalid URL:", e);
 			}
-			// Default: return baseUrl (homepage)
+			
+			// Fallback: return baseUrl (homepage) - this should only happen for auth flows
 			return cleanBaseUrl;
 		},
 	},
