@@ -10,6 +10,12 @@ const nextConfig = {
 			"via.placeholder.com",
 			"developers.google.com",
 		],
+		remotePatterns: [
+			{
+				protocol: "https",
+				hostname: "**.public.blob.vercel-storage.com",
+			},
+		],
 	},
 	env: {
 		NEXTAUTH_SECRET: "b51afa1ed38dde0d5d8f218a7fe48e1a",

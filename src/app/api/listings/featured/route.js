@@ -39,7 +39,16 @@ export async function GET(request) {
 				title: listings[0].title,
 				location: listings[0].location_value,
 				status: listings[0].status,
+				imageSrc: listings[0].imageSrc?.substring(0, 100) + "...",
 			});
+		} else {
+			console.warn("⚠️  No approved listings found. Check if listings have status='Approved'");
+			// Log count of all listings by status for debugging
+			const statusCounts = await prisma.listing.groupBy({
+				by: ["status"],
+				_count: true,
+			});
+			console.log("📊 Listings by status:", statusCounts);
 		}
 
 		// Return listings (user data is not critical for display)
