@@ -8,6 +8,7 @@ export default async function getListings(params) {
 			title,
 			min_price,
 			max_price,
+			listingType, // Filter by SALE or RENT
 			page = 1,
 			pageSize = 9,
 			status, // For admin filtering
@@ -33,6 +34,11 @@ export default async function getListings(params) {
 		// Location filter
 		if (location_value) {
 			whereClause.location_value = location_value;
+		}
+
+		// Listing type filter (SALE or RENT)
+		if (listingType && (listingType === "SALE" || listingType === "RENT")) {
+			whereClause.listingType = listingType;
 		}
 
 		// Price filter

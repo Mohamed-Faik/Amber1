@@ -25,6 +25,8 @@ const FeaturedItem = ({
 	area,
 	bedrooms,
 	bathrooms,
+	listingType,
+	...listing
 }) => {
 	const mainImage = getListingImage(imageSrc);
 	const displayPrice = formattedPrice(price);
@@ -140,7 +142,7 @@ const FeaturedItem = ({
 
 					{/* Content Section */}
 					<div style={{ padding: "16px" }}>
-						{/* FOR SALE and Price Row */}
+						{/* FOR SALE / FOR RENT and Price Row */}
 						<div
 							style={{
 								display: "flex",
@@ -157,7 +159,7 @@ const FeaturedItem = ({
 									letterSpacing: "0.3px",
 								}}
 							>
-								FOR SALE
+								{listingType === "RENT" ? "FOR RENT" : "FOR SALE"}
 							</span>
 							<span
 								style={{
@@ -166,7 +168,7 @@ const FeaturedItem = ({
 									color: "#FF385C",
 								}}
 							>
-								{displayPrice}
+								{displayPrice} {listingType === "RENT" && "/month"}
 							</span>
 						</div>
 

@@ -22,6 +22,7 @@ export async function POST(request) {
 			address,
 			features,
 			category,
+			listingType,
 			location,
 			price,
 			area,
@@ -30,9 +31,17 @@ export async function POST(request) {
 		} = body;
 
 		// Validate required fields
-		if (!title || !description || !imageSrc || !address || !category || !location || !price) {
+		if (!title || !description || !imageSrc || !address || !category || !listingType || !location || !price) {
 			return NextResponse.json(
 				{ message: "One or more required fields are empty!" },
+				{ status: 400 }
+			);
+		}
+
+		// Validate listing type
+		if (listingType !== "SALE" && listingType !== "RENT") {
+			return NextResponse.json(
+				{ message: "Invalid listing type. Must be SALE or RENT." },
 				{ status: 400 }
 			);
 		}
@@ -101,6 +110,7 @@ export async function POST(request) {
 			address,
 			features: features || "",
 			category,
+			listingType: listingType || "SALE",
 			location_value: location.label,
 			price: parseInt(price, 10),
 			latitude: location.latlng[0],

@@ -62,6 +62,7 @@ model listing {
   location_value String
   price          Int
   status         listing_status @default(Pending)
+  listingType    listing_type   @default(SALE)
   latitude       Float
   longitude      Float
   category       String
@@ -72,6 +73,7 @@ model listing {
   reviews        review[]
 
   @@index([userId], map: "Listing_userId_idx")
+  @@index([listingType], map: "Listing_listingType_idx")
 }
 
 model profile {
@@ -170,6 +172,11 @@ enum user_status {
 enum listing_status {
   Pending
   Approved
+}
+
+enum listing_type {
+  SALE
+  RENT
 }
 
 model content_page {

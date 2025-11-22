@@ -56,6 +56,7 @@ const ListingForm = ({ initialData = null }) => {
 				address: "",
 				features: "",
 				category: "",
+				listingType: "SALE",
 				city: null,
 				neighborhood: null,
 				price: 1,
@@ -101,6 +102,7 @@ const ListingForm = ({ initialData = null }) => {
 			address: initialData.address || "",
 			features: initialData.features || "",
 			category: initialData.category || "",
+			listingType: initialData.listingType || "SALE",
 			city: cityOption ? { value: cityOption.value, label: cityOption.label, latlng: cityOption.latlng } : null,
 			neighborhood: neighborhoodOption ? { value: neighborhoodOption.value, label: neighborhoodOption.label, city: cityOption?.label, latlng: cityOption?.latlng } : null,
 			price: initialData.price ?? 1,
@@ -139,10 +141,15 @@ const ListingForm = ({ initialData = null }) => {
 		field: { value: catValue, onChange: catOnChange, ...restCategoryField },
 	} = useController({ name: "category", control });
 
+	const {
+		field: { value: listingTypeValue, onChange: listingTypeOnChange, ...restListingTypeField },
+	} = useController({ name: "listingType", control, defaultValue: "SALE" });
+
 	const city = watch("city");
 	const neighborhood = watch("neighborhood");
 	const imageSrc = watch("imageSrc");
 	const category = watch("category");
+	const listingType = watch("listingType");
 
 	// Clear neighborhood when city changes
 	useEffect(() => {
@@ -159,6 +166,13 @@ const ListingForm = ({ initialData = null }) => {
 		// Ensure imageSrc is an array and has at least one image
 		if (!data.imageSrc || !Array.isArray(data.imageSrc) || data.imageSrc.length === 0) {
 			toast.error("Please upload at least one image");
+			return;
+		}
+
+		// Validate listing type
+		if (!data.listingType || (data.listingType !== "SALE" && data.listingType !== "RENT")) {
+			toast.error("Please select whether this is for sale or rent");
+			setError("listingType", { type: "required", message: "Listing type is required" });
 			return;
 		}
 
@@ -671,8 +685,94 @@ const ListingForm = ({ initialData = null }) => {
 									/>
 								</div>
 
+								{/* Listing Type - Sale or Rent */}
+								<div style={{ position: "relative", zIndex: 1 }}>
+									<label className="form-label-custom" style={{ position: "relative", zIndex: 2 }}>
+										Listing Type <span style={{ color: "#FF385C" }}>*</span>
+									</label>
+									<div style={{ position: "relative", zIndex: 1 }}>
+										<Select
+											id="react-select-listing-type"
+											className="select-input"
+											classNamePrefix="select"
+											placeholder="Select Listing Type"
+											isSearchable={false}
+											menuPortalTarget={typeof document !== "undefined" ? document.body : null}
+											menuPosition="fixed"
+											options={[
+												{ value: "SALE", label: "For Sale" },
+												{ value: "RENT", label: "For Rent (Monthly)" }
+											]}
+											value={
+												listingTypeValue
+													? [{ value: "SALE", label: "For Sale" }, { value: "RENT", label: "For Rent (Monthly)" }].find(
+															(x) => x.value === listingTypeValue
+													  )
+													: null
+											}
+											onChange={(option) =>
+												listingTypeOnChange(
+													option ? option.value : null
+												)
+											}
+											{...restListingTypeField}
+											styles={{
+												control: (base, state) => ({
+													...base,
+													border: state.isFocused ? "2px solid #FF385C" : "1px solid #e0e0e0",
+													borderRadius: "8px",
+													padding: "4px",
+													boxShadow: state.isFocused ? "0 0 0 3px rgba(255, 56, 92, 0.1)" : "none",
+													minHeight: "48px",
+													"&:hover": {
+														borderColor: state.isFocused ? "#FF385C" : "#222222",
+													},
+												}),
+												placeholder: (base) => ({
+													...base,
+													color: "#717171",
+													fontSize: "14px",
+												}),
+												singleValue: (base) => ({
+													...base,
+													color: "#222222",
+													fontSize: "14px",
+												}),
+												menu: (base) => ({
+													...base,
+													borderRadius: "8px",
+													boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+													zIndex: 9999,
+												}),
+												option: (base, state) => ({
+													...base,
+													backgroundColor: state.isSelected
+														? "#FFF5F7"
+														: state.isFocused
+														? "#FFF5F7"
+														: "#ffffff",
+													color: state.isSelected ? "#FF385C" : "#222222",
+													fontWeight: state.isSelected ? "600" : "400",
+													"&:active": {
+														backgroundColor: "#FFF5F7",
+													},
+												}),
+												menuPortal: (base) => ({
+													...base,
+													zIndex: 9999,
+												}),
+											}}
+										/>
+									</div>
+									{errors.listingType && (
+										<p style={{ color: "#FF385C", fontSize: "12px", marginTop: "4px", marginBottom: 0 }}>
+											{errors.listingType.message}
+										</p>
+									)}
+								</div>
+
 								<Input
-									label="Price"
+									label={`Price ${listingType === "RENT" ? "(per month)" : ""}`}
 									id="price"
 									type="number"
 									placeholder="0"
