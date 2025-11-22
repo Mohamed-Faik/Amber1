@@ -428,33 +428,37 @@ const ListingForm = ({ initialData = null }) => {
 								Location & Category
 							</h2>
 							<div className="form-field-group">
-								<div>
-									<label className="form-label-custom">
+								<div className="form-group" style={{ marginBottom: 0 }}>
+									<label className="form-label-custom" style={{ marginBottom: "8px", display: "block" }}>
 										City <span style={{ color: "#FF385C" }}>*</span>
 									</label>
-									<MoroccanCitySelect
-										value={city}
-										onChange={(value) => {
-											setCustomValue("city", value);
-											// Clear neighborhood when city changes
-											if (!value || (value && city && value.value !== city.value)) {
-												setCustomValue("neighborhood", null);
-											}
-										}}
-									/>
+									<div style={{ width: "100%" }}>
+										<MoroccanCitySelect
+											value={city}
+											onChange={(value) => {
+												setCustomValue("city", value);
+												// Clear neighborhood when city changes
+												if (!value || (value && city && value.value !== city.value)) {
+													setCustomValue("neighborhood", null);
+												}
+											}}
+										/>
+									</div>
 								</div>
 
-								<div>
-									<label className="form-label-custom">
+								<div className="form-group" style={{ marginBottom: 0 }}>
+									<label className="form-label-custom" style={{ marginBottom: "8px", display: "block" }}>
 										Neighborhood
 									</label>
-									<MoroccanNeighborhoodSelect
-										city={city}
-										value={neighborhood}
-										onChange={(value) =>
-											setCustomValue("neighborhood", value)
-										}
-									/>
+									<div style={{ width: "100%" }}>
+										<MoroccanNeighborhoodSelect
+											city={city}
+											value={neighborhood}
+											onChange={(value) =>
+												setCustomValue("neighborhood", value)
+											}
+										/>
+									</div>
 								</div>
 
 								<div style={{ position: "relative", zIndex: 1 }}>

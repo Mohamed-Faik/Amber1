@@ -23,7 +23,7 @@ const HeartButton = ({ currentUser, listingId }) => {
 				justifyContent: "center",
 				cursor: "pointer",
 				boxShadow: "0 2px 8px rgba(0, 0, 0, 0.15)",
-				transition: "all 0.2s ease",
+				transition: "all 0.15s ease",
 				padding: 0,
 				margin: 0,
 			}}
