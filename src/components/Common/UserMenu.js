@@ -126,10 +126,15 @@ const UserMenu = ({ currentUser }) => {
 				
 				/* Desktop: Show full button */
 				@media (min-width: 992px) {
+					.user-menu-dropdown {
+						top: 0 !important;
+						margin-top: 0 !important;
+					}
 					.user-menu-button {
 						padding: 4px 10px 4px 13px !important;
 						width: auto !important;
 						height: 42px !important;
+						margin-top: 0 !important;
 					}
 				}
 				
@@ -198,7 +203,11 @@ const UserMenu = ({ currentUser }) => {
 				<>
 					<div 
 						className={`user-menu-dropdown ${isOpen ? "active" : ""}`}
-						style={{ position: "relative" }}
+						style={{ 
+							position: "relative",
+							top: 0,
+							marginTop: 0,
+						}}
 					>
 					<div 
 						ref={buttonRef}

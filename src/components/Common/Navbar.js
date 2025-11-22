@@ -205,8 +205,8 @@ const Navbar = ({ currentUser }) => {
                   transition: "all 0.2s ease",
                   display: "flex",
                   alignItems: "center",
-                  height: "100%",
-                  marginTop: "3px",
+                  justifyContent: "center",
+                  whiteSpace: "nowrap",
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.backgroundColor = "#F7F7F7";
@@ -230,7 +230,8 @@ const Navbar = ({ currentUser }) => {
                   transition: "all 0.2s ease",
                   display: "flex",
                   alignItems: "center",
-                  height: "100%",
+                  justifyContent: "center",
+                  whiteSpace: "nowrap",
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.backgroundColor = "#F7F7F7";
@@ -243,17 +244,23 @@ const Navbar = ({ currentUser }) => {
               </Link>
             )}
 
-
             {/* Notification Badge for Admin Users */}
-            <NotificationBadge currentUser={currentUser} />
+            <div style={{ 
+              display: "flex", 
+              alignItems: "center", 
+              justifyContent: "center",
+            }}>
+              <NotificationBadge currentUser={currentUser} />
+            </div>
 
             {/* UserMenu Component - Top Right */}
             <div style={{ 
               display: "flex", 
               alignItems: "center", 
-              justifyContent: "flex-end",
-              height: "100%",
+              justifyContent: "center",
               position: "relative",
+              top: 0,
+              marginTop: 0,
             }}>
               <UserMenu currentUser={currentUser} />
             </div>

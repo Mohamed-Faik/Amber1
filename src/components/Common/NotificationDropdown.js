@@ -93,28 +93,11 @@ const NotificationDropdown = ({ isOpen, position, onClose, notifications = [] })
 	};
 
 	return createPortal(
-		<div
-			style={{
-				position: "fixed",
-				right: position.right || 16,
-				top: position.top || 70,
-				width: "360px",
-				maxWidth: "calc(100vw - 32px)",
-				backgroundColor: "#FFFFFF",
-				borderRadius: "12px",
-				boxShadow: "0 10px 40px rgba(0, 0, 0, 0.15), 0 4px 12px rgba(0, 0, 0, 0.1)",
-				border: "1px solid #E5E7EB",
-				zIndex: 10001,
-				animation: "dropdownFadeIn 0.2s ease",
-				maxHeight: "calc(100vh - 100px)",
-				display: "flex",
-				flexDirection: "column",
-				overflow: "hidden",
-			}}
-			onClick={(e) => e.stopPropagation()}
-			data-notification-dropdown="true"
-		>
+		<>
 			<style>{`
+				[data-notification-dropdown="true"] {
+					position: fixed !important;
+				}
 				@keyframes dropdownFadeIn {
 					from {
 						opacity: 0;
@@ -126,6 +109,30 @@ const NotificationDropdown = ({ isOpen, position, onClose, notifications = [] })
 					}
 				}
 			`}</style>
+			<div
+				style={{
+					position: "fixed",
+					right: `${position.right || 16}px`,
+					top: `${position.top || 70}px`,
+					width: "360px",
+					maxWidth: "calc(100vw - 32px)",
+					backgroundColor: "#FFFFFF",
+					borderRadius: "12px",
+					boxShadow: "0 10px 40px rgba(0, 0, 0, 0.15), 0 4px 12px rgba(0, 0, 0, 0.1)",
+					border: "1px solid #E5E7EB",
+					zIndex: 10001,
+					animation: "dropdownFadeIn 0.2s ease",
+					maxHeight: "calc(100vh - 100px)",
+					display: "flex",
+					flexDirection: "column",
+					overflow: "hidden",
+					willChange: "transform",
+					transform: "translateZ(0)",
+					backfaceVisibility: "hidden",
+				}}
+				onClick={(e) => e.stopPropagation()}
+				data-notification-dropdown="true"
+			>
 
 			{/* Header */}
 			<div
@@ -396,7 +403,8 @@ const NotificationDropdown = ({ isOpen, position, onClose, notifications = [] })
 					</Link>
 				</div>
 			)}
-		</div>,
+		</div>
+		</>,
 		document.body
 	);
 };
