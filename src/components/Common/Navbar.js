@@ -87,12 +87,13 @@ const Navbar = ({ currentUser }) => {
           style={{
             maxWidth: "1760px",
             margin: "0 auto",
-            padding: "0 80px",
+            padding: "0 80px 0 80px",
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
             height: "80px",
             minHeight: "80px",
+            position: "relative",
           }}
           data-desktop-nav="true"
         >
@@ -180,9 +181,13 @@ const Navbar = ({ currentUser }) => {
             style={{
               display: "flex",
               alignItems: "center",
+              justifyContent: "flex-end",
               gap: "12px",
               flexShrink: 0,
               height: "100%",
+              marginLeft: "auto",
+              marginRight: "0",
+              paddingRight: "0",
             }}
           >
             {/* Become a Host */}
@@ -211,8 +216,17 @@ const Navbar = ({ currentUser }) => {
             </Link>
 
 
-            {/* UserMenu Component */}
-            <div style={{ display: "flex", alignItems: "center", height: "100%" }}>
+            {/* UserMenu Component - Top Right */}
+            <div style={{ 
+              display: "flex", 
+              alignItems: "center", 
+              justifyContent: "flex-end",
+              height: "100%",
+              position: "relative",
+              marginRight: "-65px",
+              marginTop: "-4px",
+              paddingRight: "0",
+            }}>
               <UserMenu currentUser={currentUser} />
             </div>
           </div>
@@ -225,15 +239,18 @@ const Navbar = ({ currentUser }) => {
           className="mobile-nav"
           style={{
             display: "flex",
-            padding: "0 16px",
+            padding: "0 8px 0 16px",
             height: "70px",
             alignItems: "center",
             justifyContent: "space-between",
             gap: "12px",
             width: "100%",
+            boxSizing: "border-box",
+            position: "relative",
           }}
           data-mobile-nav="true"
         >
+          {/* Logo */}
           <Link 
             href="/" 
             style={{ 
@@ -242,6 +259,7 @@ const Navbar = ({ currentUser }) => {
               alignItems: "center",
               height: "100%",
               flexShrink: 0,
+              minWidth: 0,
             }}
           >
             <Image
@@ -253,47 +271,54 @@ const Navbar = ({ currentUser }) => {
                 height: "auto",
                 width: "auto",
                 maxHeight: "40px",
+                maxWidth: "150px",
                 objectFit: "contain",
               }}
               priority
             />
           </Link>
           
-          <div style={{ display: "flex", alignItems: "center", gap: "8px", height: "100%", flexShrink: 0 }}>
-            {/* Host button - show for all users */}
-            <Link
-              href="/listings/new"
-              className="mobile-host-link"
-              style={{
-                padding: "8px 12px",
-                borderRadius: "20px",
-                fontSize: "12px",
-                fontWeight: "600",
-                color: "#222222",
-                textDecoration: "none",
-                backgroundColor: "#F7F7F7",
-                transition: "all 0.2s ease",
-                display: "flex",
-                alignItems: "center",
-                whiteSpace: "nowrap",
+          {/* Right Side: Profile Button or Login */}
+          <div 
+            className="mobile-nav-right"
+            style={{ 
+              display: "flex", 
+              alignItems: "center", 
+              justifyContent: "flex-end",
+              gap: "8px", 
+              height: "100%", 
+              flexShrink: 0,
+              minWidth: 0,
+              marginLeft: "auto",
+            marginRight: "0",
+            paddingRight: "0",
+          }}
+        >
+            {currentUser ? (
+              <div 
+                style={{ 
+                  display: "flex", 
+                  alignItems: "center", 
+                  justifyContent: "center",
+                  height: "100%",
+                  position: "relative",
+                  flexShrink: 0,
+                  alignSelf: "flex-start",
+              marginRight: "-65px",
+              marginTop: "-4px",
+              paddingRight: "0",
               }}
             >
-              Host
-            </Link>
-            
-            {/* UserMenu or Log in button */}
-            {currentUser ? (
-              <div style={{ display: "flex", alignItems: "center", height: "100%" }}>
-                <UserMenu currentUser={currentUser} />
-              </div>
+              <UserMenu currentUser={currentUser} />
+            </div>
             ) : (
               <Link
                 href="/auth/signin"
                 className="mobile-login-link"
                 style={{
-                  padding: "8px 12px",
-                  borderRadius: "20px",
-                  fontSize: "12px",
+                  padding: "10px 16px",
+                  borderRadius: "22px",
+                  fontSize: "14px",
                   fontWeight: "600",
                   color: "#222222",
                   textDecoration: "none",
@@ -301,49 +326,29 @@ const Navbar = ({ currentUser }) => {
                   transition: "all 0.2s ease",
                   display: "flex",
                   alignItems: "center",
+                  justifyContent: "center",
                   whiteSpace: "nowrap",
+                  height: "40px",
+                  flexShrink: 0,
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = "#E8E8E8";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = "#F7F7F7";
                 }}
               >
                 Log in
               </Link>
             )}
-            
-            <button
-              type="button"
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="mobile-menu-button"
-              style={{
-                padding: "8px",
-                border: "1px solid #E0E0E0",
-                borderRadius: "20px",
-                backgroundColor: "#FFFFFF",
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                transition: "all 0.2s ease",
-                height: "40px",
-                width: "40px",
-                flexShrink: 0,
-              }}
-              aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
-              aria-expanded={isMobileMenuOpen}
-              aria-controls="mobile-menu"
-            >
-              {isMobileMenuOpen ? (
-                <X size={18} color="#222222" strokeWidth={2} aria-hidden="true" />
-              ) : (
-                <Menu size={18} color="#222222" strokeWidth={2} aria-hidden="true" />
-              )}
-            </button>
           </div>
         </div>
         )}
 
       </div>
 
-      {/* Mobile Menu Overlay */}
-      {isMobileMenuOpen && (
+      {/* Mobile Menu Overlay - Hidden since navbar is removed */}
+      {false && isMobileMenuOpen && (
         <div
           className="mobile-menu-overlay"
           style={{
@@ -355,12 +360,13 @@ const Navbar = ({ currentUser }) => {
             backgroundColor: "rgba(0, 0, 0, 0.5)",
             zIndex: 999,
             animation: "fadeIn 0.2s ease",
+            display: "none", // Hidden - navbar removed
           }}
           onClick={() => setIsMobileMenuOpen(false)}
         />
       )}
 
-      {/* Mobile Menu Drawer */}
+      {/* Mobile Menu Drawer - Hidden since navbar is removed */}
       <div
         id="mobile-menu"
         className="mobile-menu-drawer"
@@ -368,6 +374,7 @@ const Navbar = ({ currentUser }) => {
         aria-modal="true"
         aria-label="Mobile navigation menu"
         style={{
+          display: "none", // Hidden - navbar removed
           position: "fixed",
           top: "70px",
           right: isMobileMenuOpen ? 0 : "-100%",
@@ -382,140 +389,7 @@ const Navbar = ({ currentUser }) => {
           WebkitOverflowScrolling: "touch",
         }}
       >
-        <div style={{ padding: "20px 16px" }}>
-          {/* Mobile Navigation Links */}
-          <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-            {navLinks.map((link) => {
-              const IconComponent = link.icon;
-              const isActive = pathname === link.href;
-              return (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="mobile-nav-link"
-                  style={{
-                    padding: "14px 16px",
-                    borderRadius: "12px",
-                    fontSize: "16px",
-                    fontWeight: "600",
-                    color: isActive ? "#222222" : "#717171",
-                    textDecoration: "none",
-                    backgroundColor: isActive ? "#F7F7F7" : "transparent",
-                    transition: "all 0.2s ease",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "12px",
-                    border: isActive ? "1px solid #E0E0E0" : "1px solid transparent",
-                    minHeight: "48px",
-                    WebkitTapHighlightColor: "transparent",
-                  }}
-                >
-                  <IconComponent 
-                    size={20} 
-                    color={isActive ? "#FF385C" : "#717171"}
-                    strokeWidth={2} 
-                  />
-                  <span>{link.label}</span>
-                </Link>
-              );
-            })}
-          </div>
-
-          {/* Divider */}
-          <div
-            style={{
-              height: "1px",
-              backgroundColor: "#E0E0E0",
-              margin: "20px 0",
-            }}
-          />
-
-          {/* Additional Mobile Actions */}
-          <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-            {/* Show auth buttons if user is NOT logged in */}
-            {!currentUser && (
-              <>
-                <Link
-                  href="/auth/signin"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="mobile-login-button"
-                  style={{
-                    padding: "14px 20px",
-                    borderRadius: "12px",
-                    fontSize: "16px",
-                    fontWeight: "600",
-                    color: "#222222",
-                    textDecoration: "none",
-                    backgroundColor: "#F7F7F7",
-                    textAlign: "center",
-                    transition: "all 0.2s ease",
-                    border: "1px solid #E0E0E0",
-                    minHeight: "48px",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    WebkitTapHighlightColor: "transparent",
-                  }}
-                >
-                  Log in
-                </Link>
-                <Link
-                  href="/auth/signup"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="mobile-signup-button"
-                  style={{
-                    padding: "14px 20px",
-                    borderRadius: "12px",
-                    fontSize: "16px",
-                    fontWeight: "600",
-                    color: "#FFFFFF",
-                    textDecoration: "none",
-                    background: "linear-gradient(135deg, #FF385C 0%, #E61E4D 50%, #D70466 100%)",
-                    textAlign: "center",
-                    transition: "all 0.2s ease",
-                    boxShadow: "0 4px 12px rgba(255, 56, 92, 0.3)",
-                    minHeight: "48px",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    WebkitTapHighlightColor: "transparent",
-                  }}
-                >
-                  Sign up
-                </Link>
-              </>
-            )}
-
-            {/* Show Become a Host button if user IS logged in */}
-            {currentUser && (
-              <Link
-                href="/listings/new"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="mobile-host-button"
-                style={{
-                  padding: "14px 20px",
-                  borderRadius: "12px",
-                  fontSize: "16px",
-                  fontWeight: "600",
-                  color: "#FFFFFF",
-                  textDecoration: "none",
-                  background: "linear-gradient(135deg, #FF385C 0%, #E61E4D 50%, #D70466 100%)",
-                  textAlign: "center",
-                  transition: "all 0.2s ease",
-                  boxShadow: "0 4px 12px rgba(255, 56, 92, 0.3)",
-                  minHeight: "48px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  WebkitTapHighlightColor: "transparent",
-                }}
-              >
-                Become a Host
-              </Link>
-            )}
-          </div>
-        </div>
+        {/* Navbar content removed */}
       </div>
 
       {/* Responsive Styles */}

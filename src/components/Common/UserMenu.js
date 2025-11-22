@@ -48,11 +48,13 @@ const UserMenu = ({ currentUser }) => {
 
 	const toggleDropdown = (e) => {
 		e.stopPropagation();
+		e.preventDefault();
 		if (buttonRef.current) {
 			const rect = buttonRef.current.getBoundingClientRect();
+			const isMobile = window.innerWidth < 992;
 			setDropdownPosition({
-				right: window.innerWidth - rect.right,
-				top: rect.bottom + 10,
+				right: isMobile ? 16 : window.innerWidth - rect.right, // On mobile, align to right edge with padding
+				top: rect.bottom + (isMobile ? 8 : 10),
 			});
 		}
 		setIsOpen(!isOpen);
@@ -74,6 +76,69 @@ const UserMenu = ({ currentUser }) => {
 					to {
 						opacity: 1;
 						transform: translateY(0);
+					}
+				}
+				
+				/* Mobile responsive: Hide menu icon, show only profile picture */
+				@media (max-width: 991px) {
+					.user-menu-icon-desktop {
+						display: none !important;
+					}
+					.user-menu-dropdown {
+						position: relative !important;
+						margin-top: 0 !important;
+					}
+					.user-menu-button {
+						padding: 0 !important;
+						border: 2px solid #E0E0E0 !important;
+						border-radius: 50% !important;
+						margin-top: 0 !important;
+						margin-bottom: 0 !important;
+						width: 40px !important;
+						height: 40px !important;
+						min-width: 40px !important;
+						min-height: 40px !important;
+						display: flex !important;
+						align-items: center !important;
+						justify-content: center !important;
+						background-color: #FFFFFF !important;
+						gap: 0 !important;
+						align-self: center !important;
+					}
+					.user-menu-dropdown {
+						margin-top: 0 !important;
+						margin-bottom: 0 !important;
+					}
+					.user-profile-picture {
+						width: 32px !important;
+						height: 32px !important;
+						border: none !important;
+						margin: 0 !important;
+					}
+					.user-menu-button:hover,
+					.user-menu-button:active,
+					.user-menu-button.active {
+						border-color: #FF385C !important;
+						box-shadow: 0 2px 8px rgba(255, 56, 92, 0.2) !important;
+						background-color: #FFF5F7 !important;
+					}
+				}
+				
+				/* Desktop: Show full button */
+				@media (min-width: 992px) {
+					.user-menu-button {
+						padding: 4px 10px 4px 13px !important;
+						width: auto !important;
+						height: 42px !important;
+					}
+				}
+				
+				/* Mobile dropdown positioning */
+				@media (max-width: 991px) {
+					.user-menu-dropdown-content {
+						right: 16px !important;
+						width: calc(100vw - 32px) !important;
+						max-width: 320px !important;
 					}
 				}
 			`}</style>
@@ -129,9 +194,11 @@ const UserMenu = ({ currentUser }) => {
 					>
 					<div 
 						ref={buttonRef}
+						className={`user-menu-button ${isOpen ? "active" : ""}`}
 						style={{
 							display: "flex",
 							alignItems: "center",
+							justifyContent: "center",
 							gap: "15px",
 							padding: "4px 10px 4px 13px",
 							borderRadius: "21px",
@@ -140,7 +207,7 @@ const UserMenu = ({ currentUser }) => {
 							transition: "all 0.2s ease",
 							backgroundColor: isOpen ? "#F7F7F7" : "transparent",
 							height: "42px",
-							marginTop: "-19px",
+							marginTop: 0,
 						}}
 							onClick={toggleDropdown}
 							onMouseDown={(e) => e.stopPropagation()}
@@ -155,7 +222,9 @@ const UserMenu = ({ currentUser }) => {
 								}
 							}}
 						>
+							{/* Desktop: Show menu icon + profile */}
 							<svg
+								className="user-menu-icon-desktop"
 								width="16"
 								height="16"
 								viewBox="0 0 24 24"
@@ -168,7 +237,9 @@ const UserMenu = ({ currentUser }) => {
 								<circle cx="12" cy="16" r="1" />
 								<path d="M7 11V7a5 5 0 0 1 10 0v4" />
 							</svg>
+							{/* Mobile: Just profile picture */}
 							<div
+								className="user-profile-picture"
 								style={{
 									width: "30px",
 									height: "30px",
@@ -179,6 +250,8 @@ const UserMenu = ({ currentUser }) => {
 									justifyContent: "center",
 									overflow: "hidden",
 									flexShrink: 0,
+									border: isOpen ? "2px solid #FF385C" : "2px solid transparent",
+									transition: "all 0.2s ease",
 								}}
 							>
 								{currentUser?.image ? (
@@ -209,6 +282,7 @@ const UserMenu = ({ currentUser }) => {
 								<div 
 									ref={dropdownRef}
 									className="dropdown show"
+									className="user-menu-dropdown-content"
 									style={{
 										position: 'fixed',
 										right: `${dropdownPosition.right}px`,
@@ -222,6 +296,7 @@ const UserMenu = ({ currentUser }) => {
 										boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.08)',
 										padding: '12px 8px',
 										width: '280px',
+										maxWidth: 'calc(100vw - 32px)',
 										border: '1px solid #f0f0f0',
 										animation: 'dropdownFadeIn 0.2s ease-out',
 									}}
