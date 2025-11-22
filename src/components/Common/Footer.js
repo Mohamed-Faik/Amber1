@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useRef } from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 const Footer = () => {
 	const footerRef = useRef(null);
@@ -69,17 +70,28 @@ const Footer = () => {
 				>
 					{/* Brand Section */}
 					<div>
-						<h2
+						<Link
+							href="/"
 							style={{
-								fontSize: "24px",
-								fontWeight: "700",
-								color: "#ffffff",
+								display: "inline-block",
 								marginBottom: "16px",
-								letterSpacing: "-0.5px",
+								textDecoration: "none",
 							}}
 						>
-							AmberHomes
-						</h2>
+							<Image
+								src="/images/amberhomes png.png"
+								alt="AmberHomes Logo"
+								width={180}
+								height={50}
+								style={{
+									height: "auto",
+									width: "auto",
+									maxHeight: "50px",
+									objectFit: "contain",
+									filter: "brightness(0) invert(1)", // Makes logo white for dark footer
+								}}
+							/>
+						</Link>
 						<p
 							style={{
 								fontSize: "14px",

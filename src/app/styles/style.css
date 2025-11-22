@@ -5876,3 +5876,27 @@ Page-navigation Area Style*/
   margin-bottom: 10px;
   line-height: 1.8;
 }
+
+/* 
+Shimmer/Skeleton Loading Animation
+============================*/
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.skeleton-shimmer {
+  animation: shimmer 2s infinite;
+  background: linear-gradient(
+    to right,
+    #f0f0f0 0%,
+    #e0e0e0 20%,
+    #f0f0f0 40%,
+    #f0f0f0 100%
+  ) !important;
+  background-size: 1000px 100% !important;
+}

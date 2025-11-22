@@ -2,13 +2,16 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import FeaturedItem from "./FeaturedItem";
+import ListingSkeleton from "./ListingSkeleton";
 import { toast } from "react-hot-toast";
 
 const Featured = ({ currentUser }) => {
 	const [sections, setSections] = useState([]);
+	const [isLoading, setIsLoading] = useState(true);
 
 	useEffect(() => {
 		const fetchData = async () => {
+			setIsLoading(true);
 			try {
 				console.log("📡 Fetching all listings...");
 				// Fetch all listings without category filter
@@ -72,6 +75,8 @@ const Featured = ({ currentUser }) => {
 				}
 				
 				setSections([]);
+			} finally {
+				setIsLoading(false);
 			}
 		};
 
@@ -96,7 +101,49 @@ const Featured = ({ currentUser }) => {
 					padding: "0 80px",
 				}}
 			>
-				{sections.map((section) => (
+				{/* Loading State - Skeleton Loaders */}
+				{isLoading && (
+					<div>
+						{/* Section Header Skeleton */}
+						<div
+							style={{
+								display: "flex",
+								justifyContent: "space-between",
+								alignItems: "center",
+								marginBottom: "32px",
+							}}
+						>
+							<div
+								style={{
+									width: "200px",
+									height: "34px",
+									borderRadius: "8px",
+									backgroundColor: "#f0f0f0",
+									animation: "shimmer 2s infinite",
+									background: "linear-gradient(to right, #f0f0f0 0%, #e0e0e0 20%, #f0f0f0 40%, #f0f0f0 100%)",
+									backgroundSize: "1000px 100%",
+								}}
+							/>
+						</div>
+
+						{/* Skeleton Grid */}
+						<div
+							className="featured-grid"
+							style={{
+								display: "grid",
+								gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
+								gap: "32px",
+							}}
+						>
+							{Array.from({ length: 6 }).map((_, index) => (
+								<ListingSkeleton key={`skeleton-${index}`} />
+							))}
+						</div>
+					</div>
+				)}
+
+				{/* Loaded State - Actual Listings */}
+				{!isLoading && sections.map((section) => (
 					<div key={section.key}>
 						{/* Section Header */}
 						<div
@@ -140,7 +187,7 @@ const Featured = ({ currentUser }) => {
 				))}
 
 				{/* Empty State */}
-				{sections.length === 0 && (
+				{!isLoading && sections.length === 0 && (
 					<div
 						style={{
 							textAlign: "center",

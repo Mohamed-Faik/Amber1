@@ -5,7 +5,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Menu, X, Home, LayoutGrid, Info, Mail } from "lucide-react";
-import logo from "../../../public/images/logo.png";
 import UserMenu from "./UserMenu";
 
 const Navbar = ({ currentUser }) => {
@@ -109,21 +108,19 @@ const Navbar = ({ currentUser }) => {
                 height: "100%",
               }}
             >
-              <div
+              <Image
+                src="/images/amberhomes png.png"
+                alt="AmberHomes Logo"
+                width={180}
+                height={50}
                 style={{
-                  fontSize: "24px",
-                  fontWeight: "700",
-                  background: "linear-gradient(135deg, #FF385C 0%, #E61E4D 50%, #D70466 100%)",
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                  backgroundClip: "text",
-                  letterSpacing: "-0.5px",
-                  display: "flex",
-                  alignItems: "center",
+                  height: "auto",
+                  width: "auto",
+                  maxHeight: "50px",
+                  objectFit: "contain",
                 }}
-              >
-                AmberHomes
-              </div>
+                priority
+              />
             </Link>
           </div>
 
@@ -247,22 +244,19 @@ const Navbar = ({ currentUser }) => {
               flexShrink: 0,
             }}
           >
-            <div
+            <Image
+              src="/images/amberhomes png.png"
+              alt="AmberHomes Logo"
+              width={150}
+              height={40}
               style={{
-                fontSize: "18px",
-                fontWeight: "700",
-                background: "linear-gradient(135deg, #FF385C 0%, #E61E4D 50%, #D70466 100%)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
-                letterSpacing: "-0.5px",
-                display: "flex",
-                alignItems: "center",
-                whiteSpace: "nowrap",
+                height: "auto",
+                width: "auto",
+                maxHeight: "40px",
+                objectFit: "contain",
               }}
-            >
-              AmberHomes
-            </div>
+              priority
+            />
           </Link>
           
           <div style={{ display: "flex", alignItems: "center", gap: "8px", height: "100%", flexShrink: 0 }}>
