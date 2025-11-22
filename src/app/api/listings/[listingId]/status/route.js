@@ -27,6 +27,26 @@ export async function PATCH(request, { params }) {
 	}
 
 	try {
+		// Get the listing first to check if status is changing
+		const existingListing = await prisma.listing.findUnique({
+			where: {
+				id: parseInt(listingId, 10),
+			},
+			select: {
+				id: true,
+				status: true,
+				userId: true,
+			},
+		});
+
+		if (!existingListing) {
+			return NextResponse.json(
+				{ message: "Listing not found." },
+				{ status: 404 }
+			);
+		}
+
+		// Update listing status
 		const listing = await prisma.listing.update({
 			where: {
 				id: parseInt(listingId, 10),

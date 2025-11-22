@@ -1,11 +1,42 @@
 "use client";
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from "next/navigation";
 
-const LeftSidebar = () => {
+const LeftSidebar = ({ pendingListingsCount: initialPendingCount = null }) => {
   const currentRoute = usePathname();
+  const [pendingListingsCount, setPendingListingsCount] = useState(initialPendingCount !== null ? initialPendingCount : 0);
+  const [isLoading, setIsLoading] = useState(initialPendingCount === null);
+
+  // Fetch pending count client-side if not provided as prop
+  useEffect(() => {
+    if (initialPendingCount !== null) {
+      return; // Don't fetch if count was passed as prop
+    }
+
+    const fetchPendingCount = async () => {
+      try {
+        const response = await fetch("/api/notifications/pending-count");
+        if (response.ok) {
+          const data = await response.json();
+          setPendingListingsCount(data.count || 0);
+        }
+      } catch (error) {
+        console.error("Error fetching pending count:", error);
+        setPendingListingsCount(0);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchPendingCount();
+
+    // Refresh every 30 seconds
+    const interval = setInterval(fetchPendingCount, 30000);
+
+    return () => clearInterval(interval);
+  }, [initialPendingCount]);
 
   const menuItems = [
     {
@@ -22,6 +53,8 @@ const LeftSidebar = () => {
       href: "/dashboard/listings",
       label: "Listings",
       icon: "📋",
+      showBadge: true,
+      badgeCount: pendingListingsCount,
     },
     {
       href: "/dashboard/reviews",
@@ -54,16 +87,60 @@ const LeftSidebar = () => {
       }}
     >
       <div style={{ marginBottom: "24px" }}>
-        <h3
-          style={{
-            fontSize: "18px",
-            fontWeight: "700",
-            color: "#111827",
-            marginBottom: "4px",
-          }}
-        >
-          Admin Panel
-        </h3>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "4px" }}>
+          <h3
+            style={{
+              fontSize: "18px",
+              fontWeight: "700",
+              color: "#111827",
+              margin: 0,
+            }}
+          >
+            Admin Panel
+          </h3>
+          {pendingListingsCount > 0 && (
+            <Link
+              href="/dashboard/listings?status=Pending"
+              style={{
+                position: "relative",
+                textDecoration: "none",
+              }}
+              title={`${pendingListingsCount} pending listing${pendingListingsCount !== 1 ? 's' : ''} awaiting approval`}
+            >
+              <span
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  minWidth: "24px",
+                  height: "24px",
+                  padding: "0 8px",
+                  backgroundColor: "#EF4444",
+                  color: "#FFFFFF",
+                  borderRadius: "12px",
+                  fontSize: "12px",
+                  fontWeight: "700",
+                  boxShadow: "0 2px 8px rgba(239, 68, 68, 0.4)",
+                  animation: pendingListingsCount > 0 ? "pulse 2s infinite" : "none",
+                }}
+              >
+                {pendingListingsCount > 99 ? "99+" : pendingListingsCount}
+              </span>
+              <style jsx>{`
+                @keyframes pulse {
+                  0%, 100% {
+                    opacity: 1;
+                    transform: scale(1);
+                  }
+                  50% {
+                    opacity: 0.8;
+                    transform: scale(1.05);
+                  }
+                }
+              `}</style>
+            </Link>
+          )}
+        </div>
         <p
           style={{
             fontSize: "12px",
@@ -116,7 +193,27 @@ const LeftSidebar = () => {
                 }}
               >
                 <span style={{ fontSize: "20px" }}>{item.icon}</span>
-                <span>{item.label}</span>
+                <span style={{ flex: 1 }}>{item.label}</span>
+                {item.showBadge && item.badgeCount > 0 && (
+                  <span
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      minWidth: "20px",
+                      height: "20px",
+                      padding: "0 6px",
+                      backgroundColor: "#EF4444",
+                      color: "#FFFFFF",
+                      borderRadius: "10px",
+                      fontSize: "11px",
+                      fontWeight: "700",
+                      marginLeft: "auto",
+                    }}
+                  >
+                    {item.badgeCount > 99 ? "99+" : item.badgeCount}
+                  </span>
+                )}
               </Link>
             </li>
           );

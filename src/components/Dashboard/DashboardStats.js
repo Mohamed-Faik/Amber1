@@ -2,7 +2,7 @@
 import React from "react";
 import Link from "next/link";
 
-const DashboardStats = ({ listings, blogPosts, users, reviews }) => {
+const DashboardStats = ({ listings, blogPosts, users, reviews, pendingListingsCount = 0 }) => {
 	const stats = [
 		{
 			title: "Total Listings",
@@ -11,6 +11,8 @@ const DashboardStats = ({ listings, blogPosts, users, reviews }) => {
 			color: "#3B82F6",
 			bgColor: "#EFF6FF",
 			href: "/dashboard/listings",
+			badgeCount: pendingListingsCount,
+			badgeLabel: "Pending",
 		},
 		{
 			title: "Blog Posts",
@@ -40,6 +42,74 @@ const DashboardStats = ({ listings, blogPosts, users, reviews }) => {
 
 	return (
 		<div>
+			{/* Alert Banner for Pending Listings */}
+			{pendingListingsCount > 0 && (
+				<div
+					style={{
+						backgroundColor: "#FEF3C7",
+						border: "2px solid #F59E0B",
+						borderRadius: "16px",
+						padding: "20px 24px",
+						marginBottom: "32px",
+						display: "flex",
+						alignItems: "center",
+						justifyContent: "space-between",
+						boxShadow: "0 4px 12px rgba(245, 158, 11, 0.2)",
+					}}
+				>
+					<div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+						<span style={{ fontSize: "32px" }}>⏳</span>
+						<div>
+							<h3
+								style={{
+									fontSize: "18px",
+									fontWeight: "700",
+									color: "#92400E",
+									margin: "0 0 4px 0",
+								}}
+							>
+								{pendingListingsCount} Listing{pendingListingsCount !== 1 ? 's' : ''} Awaiting Approval
+							</h3>
+							<p
+								style={{
+									fontSize: "14px",
+									color: "#78350F",
+									margin: 0,
+								}}
+							>
+								New properties have been submitted and need your review.
+							</p>
+						</div>
+					</div>
+					<Link
+						href="/dashboard/listings?status=Pending"
+						style={{
+							padding: "12px 24px",
+							backgroundColor: "#F59E0B",
+							color: "#FFFFFF",
+							borderRadius: "8px",
+							textDecoration: "none",
+							fontWeight: "600",
+							fontSize: "14px",
+							transition: "all 0.2s ease",
+							whiteSpace: "nowrap",
+						}}
+						onMouseEnter={(e) => {
+							e.currentTarget.style.backgroundColor = "#D97706";
+							e.currentTarget.style.transform = "translateY(-2px)";
+							e.currentTarget.style.boxShadow = "0 4px 12px rgba(245, 158, 11, 0.4)";
+						}}
+						onMouseLeave={(e) => {
+							e.currentTarget.style.backgroundColor = "#F59E0B";
+							e.currentTarget.style.transform = "translateY(0)";
+							e.currentTarget.style.boxShadow = "none";
+						}}
+					>
+						Review Now
+					</Link>
+				</div>
+			)}
+
 			{/* Welcome Section */}
 			<div
 				style={{
@@ -130,14 +200,33 @@ const DashboardStats = ({ listings, blogPosts, users, reviews }) => {
 								>
 									{stat.icon}
 								</div>
-								<div
-									style={{
-										width: "8px",
-										height: "8px",
-										borderRadius: "50%",
-										backgroundColor: stat.color,
-									}}
-								/>
+								<div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+									{stat.badgeCount > 0 && stat.badgeLabel && (
+										<span
+											style={{
+												display: "inline-flex",
+												alignItems: "center",
+												padding: "4px 10px",
+												backgroundColor: "#EF4444",
+												color: "#FFFFFF",
+												borderRadius: "12px",
+												fontSize: "11px",
+												fontWeight: "700",
+												whiteSpace: "nowrap",
+											}}
+										>
+											{stat.badgeCount} {stat.badgeLabel}
+										</span>
+									)}
+									<div
+										style={{
+											width: "8px",
+											height: "8px",
+											borderRadius: "50%",
+											backgroundColor: stat.color,
+										}}
+									/>
+								</div>
 							</div>
 							<h3
 								style={{

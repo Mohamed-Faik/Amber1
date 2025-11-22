@@ -1,6 +1,8 @@
 import React from "react";
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/actions/getCurrentUser";
+import { hasAdminAccess } from "@/utils/checkRole";
+import getPendingListingsCount from "@/actions/getPendingListingsCount";
 import PageBanner from "@/components/Common/PageBanner";
 import PrivacySettings from "@/components/Profile/PrivacySettings";
 import LeftSidebar from "@/components/Dashboard/LeftSidebar";
@@ -13,6 +15,11 @@ const PrivacyPage = async () => {
 	if (!currentUser) {
 		redirect("/auth/signin");
 	}
+
+	// Get pending listings count if user is admin
+	const pendingListingsCount = hasAdminAccess(currentUser) 
+		? await getPendingListingsCount() 
+		: 0;
 
 	return (
 		<>
@@ -35,7 +42,7 @@ const PrivacyPage = async () => {
 							alignItems: "start",
 						}}
 					>
-						<LeftSidebar />
+						<LeftSidebar pendingListingsCount={pendingListingsCount} />
 						
 						<div>
 							<PrivacySettings currentUser={currentUser} />

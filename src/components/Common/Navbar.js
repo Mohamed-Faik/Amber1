@@ -6,6 +6,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Menu, X, Home, LayoutGrid, Info, Mail } from "lucide-react";
 import UserMenu from "./UserMenu";
+import NotificationBadge from "./NotificationBadge";
 
 const Navbar = ({ currentUser }) => {
   const pathname = usePathname();
@@ -243,6 +244,9 @@ const Navbar = ({ currentUser }) => {
             )}
 
 
+            {/* Notification Badge for Admin Users */}
+            <NotificationBadge currentUser={currentUser} />
+
             {/* UserMenu Component - Top Right */}
             <div style={{ 
               display: "flex", 
@@ -318,6 +322,9 @@ const Navbar = ({ currentUser }) => {
             paddingRight: "0",
           }}
         >
+            {/* Notification Badge for Admin Users (Mobile) */}
+            <NotificationBadge currentUser={currentUser} />
+            
             {currentUser ? (
               <div 
                 style={{ 
