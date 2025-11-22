@@ -291,7 +291,7 @@ This project includes comprehensive unit tests using Jest.
 npm test
 ```
 
-### Watch Mode
+### Watch Mode.
 ```bash
 npm run test:watch
 ```
