@@ -27,6 +27,7 @@ const ListStyle = ({
 	area,
 	bedrooms,
 	bathrooms,
+	listingType,
 }) => {
 	const router = useRouter();
 	const mainImage = getListingImage(imageSrc);
@@ -123,6 +124,24 @@ const ListStyle = ({
 						}}
 					>
 						<div>
+							{/* FOR SALE / FOR RENT Badge */}
+							<div style={{ marginBottom: "8px" }}>
+								<span
+									style={{
+										display: "inline-block",
+										padding: "4px 10px",
+										backgroundColor: listingType === "RENT" ? "#E8F5E9" : "#FFF5F7",
+										color: listingType === "RENT" ? "#2E7D32" : "#FF385C",
+										borderRadius: "6px",
+										fontSize: "12px",
+										fontWeight: "700",
+										letterSpacing: "0.5px",
+									}}
+								>
+									{listingType === "RENT" ? "FOR RENT" : "FOR SALE"}
+								</span>
+							</div>
+
 							{/* Location */}
 							<div
 								style={{
@@ -251,7 +270,7 @@ const ListStyle = ({
 						</div>
 
 						{/* Price */}
-						<div>
+						<div style={{ display: "flex", alignItems: "baseline", gap: "4px" }}>
 							<span
 								style={{
 									fontSize: "20px",
@@ -261,6 +280,17 @@ const ListStyle = ({
 							>
 								{formattedPrice(price)}
 							</span>
+							{listingType === "RENT" && (
+								<span
+									style={{
+										fontSize: "16px",
+										fontWeight: "500",
+										color: "#717171",
+									}}
+								>
+									/month
+								</span>
+							)}
 						</div>
 					</div>
 					</div>

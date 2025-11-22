@@ -18,6 +18,7 @@ const DetailsHead = ({
 	area,
 	bedrooms,
 	bathrooms,
+	listingType,
 }) => {
 	return (
 		<div style={{ marginBottom: "24px" }}>
@@ -161,6 +162,45 @@ const DetailsHead = ({
 						)}
 					</div>
 				)}
+			</div>
+
+			{/* Listing Type Badge and Price */}
+			<div style={{ display: "flex", alignItems: "center", gap: "16px", marginBottom: "24px", flexWrap: "wrap" }}>
+				<span
+					style={{
+						display: "inline-block",
+						padding: "6px 14px",
+						backgroundColor: listingType === "RENT" ? "#E8F5E9" : "#FFF5F7",
+						color: listingType === "RENT" ? "#2E7D32" : "#FF385C",
+						borderRadius: "8px",
+						fontSize: "14px",
+						fontWeight: "700",
+						letterSpacing: "0.5px",
+					}}
+				>
+					{listingType === "RENT" ? "FOR RENT" : "FOR SALE"}
+				</span>
+				<span
+					style={{
+						fontSize: "24px",
+						fontWeight: "700",
+						color: "#222222",
+					}}
+				>
+					{formattedPrice(price)}
+					{listingType === "RENT" && (
+						<span
+							style={{
+								fontSize: "18px",
+								fontWeight: "500",
+								color: "#717171",
+								marginLeft: "4px",
+							}}
+						>
+							/month
+						</span>
+					)}
+				</span>
 			</div>
 
 			{/* Share and Save buttons */}

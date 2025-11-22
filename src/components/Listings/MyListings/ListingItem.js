@@ -28,6 +28,7 @@ const ListingItem = ({
 	user,
 	currentUser,
 	status,
+	listingType,
 }) => {
 	// Map status to display text
 	const getStatusDisplay = () => {
@@ -147,6 +148,24 @@ const ListingItem = ({
 				flex: 1,
 			}}>
 				<div>
+					{/* FOR SALE / FOR RENT Badge */}
+					<div style={{ marginBottom: "8px" }}>
+						<span
+							style={{
+								display: "inline-block",
+								padding: "4px 10px",
+								backgroundColor: listingType === "RENT" ? "#E8F5E9" : "#FFF5F7",
+								color: listingType === "RENT" ? "#2E7D32" : "#FF385C",
+								borderRadius: "6px",
+								fontSize: "12px",
+								fontWeight: "700",
+								letterSpacing: "0.5px",
+							}}
+						>
+							{listingType === "RENT" ? "FOR RENT" : "FOR SALE"}
+						</span>
+					</div>
+
 					<h3 style={{
 						fontSize: "18px",
 						fontWeight: "600",
@@ -263,13 +282,26 @@ const ListingItem = ({
 						>
 							{category}
 						</Link>
-						<span style={{
-							fontSize: "18px",
-							fontWeight: "600",
-							color: "#FF385C",
-						}}>
-							{formattedPrice(price)}
-						</span>
+						<div style={{ display: "flex", alignItems: "baseline", gap: "4px" }}>
+							<span style={{
+								fontSize: "18px",
+								fontWeight: "600",
+								color: "#FF385C",
+							}}>
+								{formattedPrice(price)}
+							</span>
+							{listingType === "RENT" && (
+								<span
+									style={{
+										fontSize: "14px",
+										fontWeight: "500",
+										color: "#717171",
+									}}
+								>
+									/month
+								</span>
+							)}
+						</div>
 					</div>
 
 					{/* Contact Buttons */}
