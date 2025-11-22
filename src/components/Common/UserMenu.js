@@ -281,8 +281,7 @@ const UserMenu = ({ currentUser }) => {
 							{mounted && isOpen && typeof document !== 'undefined' && createPortal(
 								<div 
 									ref={dropdownRef}
-									className="dropdown show"
-									className="user-menu-dropdown-content"
+									className="dropdown show user-menu-dropdown-content"
 									style={{
 										position: 'fixed',
 										right: `${dropdownPosition.right}px`,
