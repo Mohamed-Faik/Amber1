@@ -307,7 +307,7 @@ See [TESTING.md](./TESTING.md) for more details.
 
 This project uses GitHub Actions for continuous integration and deployment.
 
-### Workflows
+### Workflows.
 - **CI Pipeline**: Runs tests and builds on every push/PR
 - **Deploy Pipeline**: Deploys to production on main branch
 - **Docker Build**: Builds and publishes Docker images
