@@ -381,6 +381,38 @@ Please provide more information.`;
 					opacity: 1;
 					background: #FF385C;
 				}
+				
+				/* Mobile: < 768px - Larger touch targets and better visibility */
+				@media (max-width: 767px) {
+					.swiper-button-next,
+					.swiper-button-prev {
+						width: 40px !important;
+						height: 40px !important;
+					}
+					.swiper-button-next:after,
+					.swiper-button-prev:after {
+						font-size: 18px !important;
+					}
+					.swiper-pagination-bullet {
+						width: 10px !important;
+						height: 10px !important;
+					}
+					.featured-item-image-container {
+						paddingTop: "100%" !important;
+					}
+				}
+				
+				/* Small Mobile: < 480px - Even larger touch targets */
+				@media (max-width: 480px) {
+					.swiper-button-next,
+					.swiper-button-prev {
+						width: 44px !important;
+						height: 44px !important;
+					}
+					.swiper-pagination {
+						bottom: 8px !important;
+					}
+				}
 			`}</style>
 		</div>
 	);

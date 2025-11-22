@@ -738,6 +738,7 @@ const SignupForm = () => {
                     cursor: isLoading || !email.includes("@") ? "not-allowed" : "pointer",
                     opacity: isLoading || !email.includes("@") ? 0.5 : 1,
                     transition: "all 0.2s",
+                    marginBottom: "17px",
                   }}
                   onMouseOver={(e) => {
                     if (!isLoading && email.includes("@")) {
@@ -757,11 +758,12 @@ const SignupForm = () => {
               {/* Sign in Link */}
               <div style={{
                 textAlign: "center",
-                marginTop: "32px",
+                marginTop: "73px",
               }}>
                 <p style={{
                   fontSize: "15px",
                   color: "#767676",
+                  margin: 0,
                 }}>
                   Already have an account?{" "}
                   <Link href="/auth/signin" style={{

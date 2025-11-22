@@ -143,7 +143,11 @@ const UserMenu = ({ currentUser }) => {
 				}
 			`}</style>
 			{!currentUser ? (
-				<>
+				<div style={{ 
+					display: "flex", 
+					alignItems: "center", 
+					gap: "12px",
+				}}>
 					<Link
 						href="/auth/signin"
 						style={{
@@ -154,6 +158,8 @@ const UserMenu = ({ currentUser }) => {
 							color: "#000000",
 							textDecoration: "none",
 							transition: "all 0.2s ease",
+							display: "flex",
+							alignItems: "center",
 						}}
 						onMouseEnter={(e) => {
 							e.currentTarget.style.backgroundColor = "#F7F7F7";
@@ -175,6 +181,8 @@ const UserMenu = ({ currentUser }) => {
 							backgroundColor: "#222222",
 							textDecoration: "none",
 							transition: "all 0.2s ease",
+							display: "flex",
+							alignItems: "center",
 						}}
 						onMouseEnter={(e) => {
 							e.currentTarget.style.backgroundColor = "#000000";
@@ -185,7 +193,7 @@ const UserMenu = ({ currentUser }) => {
 					>
 						Sign up
 					</Link>
-				</>
+				</div>
 			) : (
 				<>
 					<div 

@@ -79,6 +79,7 @@ const FeaturedItem = ({
 				>
 					{/* Image Container with Carousel */}
 					<div
+						className="featured-item-image-container"
 						style={{
 							position: "relative",
 							width: "100%",

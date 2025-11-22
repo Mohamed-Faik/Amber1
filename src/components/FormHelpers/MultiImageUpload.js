@@ -2,6 +2,7 @@
 import Image from "next/image";
 import { useCallback, useState, useRef } from "react";
 import { toast } from "react-hot-toast";
+import imageCompression from "browser-image-compression";
 
 const MultiImageUpload = ({ onChange, value }) => {
 	const [isUploading, setIsUploading] = useState(false);
@@ -17,7 +18,7 @@ const MultiImageUpload = ({ onChange, value }) => {
 			const fileArray = Array.from(files);
 			const validFiles = [];
 
-			// Validate all files
+			// Validate and compress all files
 			for (const file of fileArray) {
 				if (!file.type.startsWith("image/")) {
 					toast.error(`${file.name} is not an image file`);
@@ -38,7 +39,28 @@ const MultiImageUpload = ({ onChange, value }) => {
 			const uploadedUrls = [...images];
 			
 			for (let i = 0; i < validFiles.length; i++) {
-				const file = validFiles[i];
+				let file = validFiles[i];
+				
+				// Compress image before upload
+				try {
+					const compressionOptions = {
+						maxSizeMB: 1, // Maximum size in MB (1MB)
+						maxWidthOrHeight: 1920, // Maximum width or height in pixels
+						useWebWorker: true,
+						fileType: file.type,
+						initialQuality: 0.85, // Quality: 0-1, 0.85 is a good balance
+					};
+					
+					const compressedFile = await imageCompression(file, compressionOptions);
+					file = compressedFile;
+					
+					const originalSize = (validFiles[i].size / 1024 / 1024).toFixed(2);
+					const compressedSize = (compressedFile.size / 1024 / 1024).toFixed(2);
+					console.log(`Image compressed: ${originalSize}MB → ${compressedSize}MB`);
+				} catch (compressionError) {
+					console.warn("Image compression failed, using original:", compressionError);
+					// Continue with original file if compression fails
+				}
 				setUploadingIndex(i);
 				setIsUploading(true);
 

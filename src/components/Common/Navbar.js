@@ -205,7 +205,7 @@ const Navbar = ({ currentUser }) => {
                   display: "flex",
                   alignItems: "center",
                   height: "100%",
-                  marginTop: "8px",
+                  marginTop: "3px",
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.backgroundColor = "#F7F7F7";
@@ -246,14 +246,10 @@ const Navbar = ({ currentUser }) => {
             {/* UserMenu Component - Top Right */}
             <div style={{ 
               display: "flex", 
-              alignItems: "flex-start", 
+              alignItems: "center", 
               justifyContent: "flex-end",
               height: "100%",
               position: "relative",
-              marginRight: "-65px",
-              marginTop: "-18px",
-              paddingRight: "0",
-              paddingTop: "8px",
             }}>
               <UserMenu currentUser={currentUser} />
             </div>

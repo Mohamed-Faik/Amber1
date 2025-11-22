@@ -43,6 +43,7 @@ const ListStyle = ({
 	return (
 		<div className="col-lg-6" style={{ marginBottom: "32px" }}>
 			<div
+				className="listing-card-list-style"
 				style={{
 					display: "flex",
 					flexDirection: "column",
@@ -74,6 +75,7 @@ const ListStyle = ({
 					}}
 				>
 					<div
+						className="listing-card-content-wrapper"
 						style={{
 							display: "flex",
 							width: "100%",
@@ -82,6 +84,7 @@ const ListStyle = ({
 					>
 						{/* Image with Carousel */}
 					<div
+						className="listing-card-image-container"
 						style={{
 							position: "relative",
 							width: "40%",
@@ -94,6 +97,7 @@ const ListStyle = ({
 								position: "relative",
 								width: "100%",
 								height: "100%",
+								minHeight: "250px",
 							}}
 						>
 							<ListingImageCarousel 
@@ -308,3 +312,38 @@ const ListStyle = ({
 };
 
 export default ListStyle;
+
+// Add mobile responsive styles
+if (typeof document !== 'undefined') {
+	const style = document.createElement('style');
+	style.textContent = `
+		/* Mobile: < 768px - Stack listing cards vertically */
+		@media (max-width: 767px) {
+			.listing-card-list-style {
+				flex-direction: column !important;
+			}
+			
+			.listing-card-content-wrapper {
+				flex-direction: column !important;
+			}
+			
+			.listing-card-image-container {
+				width: 100% !important;
+				min-width: 100% !important;
+				aspect-ratio: 4 / 3 !important;
+			}
+			
+			.listing-card-image-container > div {
+				min-height: 100% !important;
+			}
+		}
+		
+		/* Small Mobile: < 480px - Better image sizing */
+		@media (max-width: 480px) {
+			.listing-card-image-container {
+				aspect-ratio: 1 / 1 !important;
+			}
+		}
+	`;
+	document.head.appendChild(style);
+}

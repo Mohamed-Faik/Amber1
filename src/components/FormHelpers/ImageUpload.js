@@ -2,6 +2,7 @@
 import Image from "next/image";
 import { useState, useRef, useCallback } from "react";
 import { toast } from "react-hot-toast";
+import imageCompression from "browser-image-compression";
 
 const ImageUpload = ({ onChange, value }) => {
 	const [isUploading, setIsUploading] = useState(false);
@@ -26,6 +27,26 @@ const ImageUpload = ({ onChange, value }) => {
 
 			setIsUploading(true);
 
+			// Compress image before upload
+			let fileToUpload = file;
+			try {
+				const compressionOptions = {
+					maxSizeMB: 0.5, // Maximum size in MB (0.5MB for profile images)
+					maxWidthOrHeight: 1200, // Maximum width or height in pixels
+					useWebWorker: true,
+					fileType: file.type,
+					initialQuality: 0.85, // Quality: 0-1, 0.85 is a good balance
+				};
+				
+				fileToUpload = await imageCompression(file, compressionOptions);
+				const originalSize = (file.size / 1024 / 1024).toFixed(2);
+				const compressedSize = (fileToUpload.size / 1024 / 1024).toFixed(2);
+				console.log(`Profile image compressed: ${originalSize}MB → ${compressedSize}MB`);
+			} catch (compressionError) {
+				console.warn("Image compression failed, using original:", compressionError);
+				// Continue with original file if compression fails
+			}
+
 			// Show preview immediately
 			const reader = new FileReader();
 			let previewUrl = "";
@@ -33,11 +54,11 @@ const ImageUpload = ({ onChange, value }) => {
 				previewUrl = reader.result;
 				onChange(previewUrl); // Show preview immediately
 			};
-			reader.readAsDataURL(file);
+			reader.readAsDataURL(fileToUpload);
 
 			// Upload file
 			const formData = new FormData();
-			formData.append("file", file);
+			formData.append("file", fileToUpload);
 			formData.append("type", "profile"); // Specify this is a profile image
 
 			try {

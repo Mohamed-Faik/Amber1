@@ -3,6 +3,7 @@ import { writeFile, mkdir } from "fs/promises";
 import { join } from "path";
 import { existsSync } from "fs";
 import { put } from "@vercel/blob";
+import sharp from "sharp";
 
 export async function POST(request) {
 	try {
@@ -35,18 +36,38 @@ export async function POST(request) {
 
 		// Convert file to buffer
 		const bytes = await file.arrayBuffer();
-		const buffer = Buffer.from(bytes);
+		let buffer = Buffer.from(bytes);
 
 		// Get upload type (listings or profile), default to listings
 		const uploadType = formData.get("type") || "listings";
 		const folder = uploadType === "profile" ? "profiles" : "listings";
 
-		// Generate unique filename
+		// Optimize image using Sharp (server-side compression as backup)
+		try {
+			const maxWidth = uploadType === "profile" ? 1200 : 1920;
+			const maxHeight = uploadType === "profile" ? 1200 : 1920;
+			const quality = 85; // Quality: 1-100, 85 is a good balance
+
+			// Resize and compress image
+			buffer = await sharp(buffer)
+				.resize(maxWidth, maxHeight, {
+					fit: "inside",
+					withoutEnlargement: true,
+				})
+				.jpeg({ quality, progressive: true, mozjpeg: true })
+				.toBuffer();
+
+			console.log(`Image optimized: ${(bytes.byteLength / 1024 / 1024).toFixed(2)}MB → ${(buffer.length / 1024 / 1024).toFixed(2)}MB`);
+		} catch (sharpError) {
+			console.warn("Sharp optimization failed, using original image:", sharpError);
+			// Continue with original buffer if Sharp optimization fails
+		}
+
+		// Generate unique filename (always use .jpg after optimization)
 		const timestamp = Date.now();
 		const randomString = Math.random().toString(36).substring(2, 15);
-		const fileExtension = file.name.split(".").pop() || "jpg";
 		const prefix = uploadType === "profile" ? "profile" : "listing";
-		const filename = `${prefix}-${timestamp}-${randomString}.${fileExtension}`;
+		const filename = `${prefix}-${timestamp}-${randomString}.jpg`;
 
 		// Check if we're on Vercel - always use Blob Storage on Vercel
 		// Vercel sets VERCEL=1 environment variable automatically
@@ -78,7 +99,7 @@ export async function POST(request) {
 			try {
 				const blob = await put(`uploads/${folder}/${filename}`, buffer, {
 					access: "public",
-					contentType: file.type,
+					contentType: "image/jpeg", // Always JPEG after optimization
 				});
 
 				console.log("File uploaded successfully to Vercel Blob:", blob.url);
