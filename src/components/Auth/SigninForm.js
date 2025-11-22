@@ -90,11 +90,13 @@ const SigninForm = () => {
       
       if (result?.error) {
         if (result.error === "OAuthSignin" || result.error === "Configuration") {
-          toast.error("Facebook sign-in is not configured. Please add FACEBOOK_CLIENT_ID and FACEBOOK_CLIENT_SECRET to your .env file and restart the server.");
+          toast.error("Facebook sign-in is not configured. Please check FACEBOOK_CLIENT_ID and FACEBOOK_CLIENT_SECRET in your environment variables. Also ensure your Facebook app is in Live mode and redirect URIs are configured correctly.");
         } else if (result.error === "AccessDenied") {
-          toast.error("Facebook login was denied. Please make sure you grant email permission and that your Facebook app is configured correctly.");
+          toast.error("Facebook login was denied. Please make sure you grant permission and that your Facebook app is configured correctly.");
+        } else if (result.error === "OAuthCallback") {
+          toast.error("Facebook login callback failed. Please check that your Facebook app redirect URI is set to: " + window.location.origin + "/api/auth/callback/facebook");
         } else {
-          toast.error(`Facebook login failed: ${result.error}`);
+          toast.error(`Facebook login failed: ${result.error}. Please check FACEBOOK_LOGIN_SETUP.md for configuration instructions.`);
         }
         setIsSocialLoading(false);
       } else if (result?.ok) {
@@ -104,7 +106,7 @@ const SigninForm = () => {
       }
     } catch (error) {
       console.error("Facebook login error:", error);
-      toast.error("Facebook login failed. Please check your FACEBOOK_CLIENT_ID and FACEBOOK_CLIENT_SECRET in .env file and restart the server.");
+      toast.error("Facebook login failed. Please check your Facebook app configuration. See FACEBOOK_LOGIN_SETUP.md for setup instructions.");
       setIsSocialLoading(false);
     }
   };
