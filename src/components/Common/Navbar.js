@@ -190,42 +190,70 @@ const Navbar = ({ currentUser }) => {
               paddingRight: "0",
             }}
           >
-            {/* Become a Host */}
-            <Link
-              href="/listings/new"
-              style={{
-                padding: "14px 24px",
-                borderRadius: "22px",
-                fontSize: "15px",
-                fontWeight: "600",
-                color: "#222222",
-                textDecoration: "none",
-                transition: "all 0.2s ease",
-                display: "flex",
-                alignItems: "center",
-                height: "100%",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = "#F7F7F7";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = "transparent";
-              }}
-            >
-              Become a Host
-            </Link>
+            {/* Become a Host / Add a listing */}
+            {currentUser ? (
+              <Link
+                href="/listings/new"
+                style={{
+                  padding: "14px 24px",
+                  borderRadius: "22px",
+                  fontSize: "15px",
+                  fontWeight: "600",
+                  color: "#222222",
+                  textDecoration: "none",
+                  transition: "all 0.2s ease",
+                  display: "flex",
+                  alignItems: "center",
+                  height: "100%",
+                  marginTop: "8px",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = "#F7F7F7";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = "transparent";
+                }}
+              >
+                Add a listing
+              </Link>
+            ) : (
+              <Link
+                href="/listings/new"
+                style={{
+                  padding: "14px 24px",
+                  borderRadius: "22px",
+                  fontSize: "15px",
+                  fontWeight: "600",
+                  color: "#222222",
+                  textDecoration: "none",
+                  transition: "all 0.2s ease",
+                  display: "flex",
+                  alignItems: "center",
+                  height: "100%",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = "#F7F7F7";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = "transparent";
+                }}
+              >
+                Become a Host
+              </Link>
+            )}
 
 
             {/* UserMenu Component - Top Right */}
             <div style={{ 
               display: "flex", 
-              alignItems: "center", 
+              alignItems: "flex-start", 
               justifyContent: "flex-end",
               height: "100%",
               position: "relative",
               marginRight: "-65px",
-              marginTop: "-4px",
+              marginTop: "-18px",
               paddingRight: "0",
+              paddingTop: "8px",
             }}>
               <UserMenu currentUser={currentUser} />
             </div>
