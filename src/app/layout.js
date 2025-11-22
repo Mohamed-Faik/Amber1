@@ -13,7 +13,7 @@ import ConditionalLayout from "@/components/Common/ConditionalLayout";
 import TosterProvider from "@/providers/TosterProvider";
 import SessionProvider from "@/providers/SessionProvider";
 import { getCurrentUser } from "@/actions/getCurrentUser";
-import { Inter } from "next/font/google";
+import { Inter, Playfair_Display } from "next/font/google";
 
 export const metadata = {
   title: {
@@ -92,11 +92,19 @@ const inter = Inter({
   display: "swap",
 });
 
+// Elegant serif font for quotes and special text
+const playfairDisplay = Playfair_Display({
+  weight: ["400", "500", "600", "700", "800", "900"],
+  subsets: ["latin"],
+  variable: "--font-playfair",
+  display: "swap",
+});
+
 export default async function RootLayout({ children }) {
   const currentUser = await getCurrentUser();
 
   return (
-    <html lang="en" className={inter.variable}>
+    <html lang="en" className={`${inter.variable} ${playfairDisplay.variable}`}>
       <body suppressHydrationWarning={true}>
         <SessionProvider>
           <TosterProvider />

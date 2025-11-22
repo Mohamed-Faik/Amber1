@@ -204,13 +204,15 @@ const Banner = () => {
 						<p
 							style={{
 								fontSize: "clamp(32px, 5vw, 64px)",
-								fontWeight: "600",
+								fontWeight: "700",
 								color: "#FFFFFF",
-								fontFamily: "var(--font-inter), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
+								fontFamily: "var(--font-playfair), 'Playfair Display', Georgia, serif",
 								lineHeight: "1.2",
 								textShadow: "0 2px 8px rgba(0, 0, 0, 0.3)",
 								margin: 0,
 								display: "inline-block",
+								letterSpacing: "-0.5px",
+								fontStyle: "italic",
 							}}
 						>
 							<span style={{ color: "#FF385C" }}>"</span>
