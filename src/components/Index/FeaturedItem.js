@@ -32,6 +32,8 @@ const FeaturedItem = ({
 	const displayPrice = formattedPrice(price);
 	const displayRating = rating || "4.8"; // Default rating if not available
 	const [imageError, setImageError] = useState(false);
+	// Default to SALE if listingType is not provided (for backward compatibility)
+	const displayListingType = listingType || "SALE";
 
 	// Debug logging
 	React.useEffect(() => {
@@ -159,7 +161,7 @@ const FeaturedItem = ({
 									letterSpacing: "0.3px",
 								}}
 							>
-								{listingType === "RENT" ? "FOR RENT" : "FOR SALE"}
+								{displayListingType === "RENT" ? "FOR RENT" : "FOR SALE"}
 							</span>
 							<span
 								style={{
@@ -168,7 +170,7 @@ const FeaturedItem = ({
 									color: "#FF385C",
 								}}
 							>
-								{displayPrice} {listingType === "RENT" && "/month"}
+								{displayPrice} {displayListingType === "RENT" && "/month"}
 							</span>
 						</div>
 

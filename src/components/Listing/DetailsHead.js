@@ -20,6 +20,9 @@ const DetailsHead = ({
 	bathrooms,
 	listingType,
 }) => {
+	// Default to SALE if listingType is not provided (for backward compatibility)
+	const displayListingType = listingType || "SALE";
+	
 	return (
 		<div style={{ marginBottom: "24px" }}>
 			{/* Title and Location */}
@@ -170,15 +173,15 @@ const DetailsHead = ({
 					style={{
 						display: "inline-block",
 						padding: "6px 14px",
-						backgroundColor: listingType === "RENT" ? "#E8F5E9" : "#FFF5F7",
-						color: listingType === "RENT" ? "#2E7D32" : "#FF385C",
+						backgroundColor: displayListingType === "RENT" ? "#E8F5E9" : "#FFF5F7",
+						color: displayListingType === "RENT" ? "#2E7D32" : "#FF385C",
 						borderRadius: "8px",
 						fontSize: "14px",
 						fontWeight: "700",
 						letterSpacing: "0.5px",
 					}}
 				>
-					{listingType === "RENT" ? "FOR RENT" : "FOR SALE"}
+					{displayListingType === "RENT" ? "FOR RENT" : "FOR SALE"}
 				</span>
 				<span
 					style={{
@@ -188,7 +191,7 @@ const DetailsHead = ({
 					}}
 				>
 					{formattedPrice(price)}
-					{listingType === "RENT" && (
+					{displayListingType === "RENT" && (
 						<span
 							style={{
 								fontSize: "18px",

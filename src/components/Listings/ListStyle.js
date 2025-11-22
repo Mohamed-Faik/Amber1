@@ -31,6 +31,8 @@ const ListStyle = ({
 }) => {
 	const router = useRouter();
 	const mainImage = getListingImage(imageSrc);
+	// Default to SALE if listingType is not provided (for backward compatibility)
+	const displayListingType = listingType || "SALE";
 	
 	const handleCategoryClick = (e) => {
 		e.preventDefault();
@@ -130,15 +132,15 @@ const ListStyle = ({
 									style={{
 										display: "inline-block",
 										padding: "4px 10px",
-										backgroundColor: listingType === "RENT" ? "#E8F5E9" : "#FFF5F7",
-										color: listingType === "RENT" ? "#2E7D32" : "#FF385C",
+										backgroundColor: displayListingType === "RENT" ? "#E8F5E9" : "#FFF5F7",
+										color: displayListingType === "RENT" ? "#2E7D32" : "#FF385C",
 										borderRadius: "6px",
 										fontSize: "12px",
 										fontWeight: "700",
 										letterSpacing: "0.5px",
 									}}
 								>
-									{listingType === "RENT" ? "FOR RENT" : "FOR SALE"}
+									{displayListingType === "RENT" ? "FOR RENT" : "FOR SALE"}
 								</span>
 							</div>
 
@@ -280,7 +282,7 @@ const ListStyle = ({
 							>
 								{formattedPrice(price)}
 							</span>
-							{listingType === "RENT" && (
+							{displayListingType === "RENT" && (
 								<span
 									style={{
 										fontSize: "16px",
