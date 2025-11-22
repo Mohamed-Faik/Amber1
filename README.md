@@ -219,13 +219,28 @@ npx prisma studio
 
 ## 📝 Available Scripts
 
+### Development
 - `npm run dev` - Start development server
 - `npm run build` - Build for production
 - `npm run start` - Start production server
 - `npm run lint` - Run ESLint
+
+### Testing
 - `npm test` - Run tests
 - `npm run test:watch` - Run tests in watch mode
 - `npm run test:coverage` - Generate test coverage report
+
+### Backup & Recovery
+- `npm run backup:full` - Full backup (database + files) - Local MySQL
+- `npm run backup:full:docker` - Full backup (database + files) - Docker MySQL
+- `npm run backup:full:remote` - Full backup (database + files) - Remote MySQL
+- `npm run backup:db` - Database backup only - Local MySQL
+- `npm run backup:db:docker` - Database backup only - Docker MySQL
+- `npm run backup:db:remote` - Database backup only - Remote MySQL
+- `npm run backup:files` - File uploads backup only
+- `npm run restore:db <backup-file>` - Restore database from backup
+
+See [BACKUP_QUICK_START.md](./BACKUP_QUICK_START.md) for backup instructions.
 
 ## 🌍 Environment Variables
 
@@ -383,6 +398,30 @@ This project is private and proprietary.
 ## 👥 Contributing
 
 This is a private project. For issues or suggestions, please contact the repository owner.
+
+## 💾 Backup & Disaster Recovery
+
+AmberHomes includes comprehensive backup and disaster recovery tools.
+
+### Quick Backup Commands
+
+- **Full Backup**: `npm run backup:full` (local) or `npm run backup:full:docker` (Docker)
+- **Database Only**: `npm run backup:db` or `npm run backup:db:docker`
+- **Files Only**: `npm run backup:files`
+- **Restore**: `npm run restore:db <backup-file> --docker`
+
+### Automated Backups
+
+- **Daily automated backups** via GitHub Actions (`.github/workflows/backup.yml`)
+- **Backup retention**: 30 days (automatic cleanup)
+- **Backup location**: `./backups/` directory
+
+### Documentation
+
+- **[BACKUP_QUICK_START.md](./BACKUP_QUICK_START.md)** - Quick reference guide
+- **[BACKUP_DISASTER_RECOVERY.md](./BACKUP_DISASTER_RECOVERY.md)** - Comprehensive backup and recovery procedures
+
+---
 
 ## 🔒 GDPR / Data Privacy Compliance
 

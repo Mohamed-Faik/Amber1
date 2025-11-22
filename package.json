@@ -10,7 +10,15 @@
 		"test": "jest",
 		"test:watch": "jest --watch",
 		"test:coverage": "jest --coverage",
-		"postinstall": "prisma generate"
+		"postinstall": "prisma generate",
+		"backup:db": "node scripts/backup-database.js",
+		"backup:db:docker": "node scripts/backup-database.js --docker",
+		"backup:db:remote": "node scripts/backup-database.js --remote",
+		"backup:files": "node scripts/backup-files.js",
+		"backup:full": "node scripts/backup-full.js",
+		"backup:full:docker": "node scripts/backup-full.js --docker",
+		"backup:full:remote": "node scripts/backup-full.js --remote",
+		"restore:db": "node scripts/restore-database.js"
 	},
 	"dependencies": {
 		"@infobip-api/sdk": "^0.3.2",

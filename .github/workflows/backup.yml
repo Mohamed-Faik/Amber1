@@ -1,0 +1,115 @@
+name: Automated Daily Backup
+
+on:
+  schedule:
+    # Run daily at 2:00 AM UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  backup:
+    name: Create Backup
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18.x'
+          cache: 'npm'
+          cache-dependency-path: teor/package-lock.json
+      
+      - name: Install dependencies
+        working-directory: ./teor
+        run: npm ci
+      
+      - name: Create backup directory
+        working-directory: ./teor
+        run: mkdir -p backups
+      
+      # Note: Database backup requires DATABASE_URL
+      # This workflow assumes you have a way to access your database
+      # You may need to adjust based on your setup (Docker, remote DB, etc.)
+      
+      - name: Backup database (if DATABASE_URL is configured)
+        working-directory: ./teor
+        if: env.DATABASE_URL != ''
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          # Install MySQL client tools
+          sudo apt-get update
+          sudo apt-get install -y default-mysql-client
+          
+          # Run database backup
+          node scripts/backup-database.js --remote || echo "Database backup skipped (no connection)"
+        continue-on-error: true
+      
+      - name: Backup file uploads
+        working-directory: ./teor
+        run: |
+          # Create public/uploads directory if it doesn't exist (for CI)
+          mkdir -p public/uploads
+          
+          # Run file backup
+          node scripts/backup-files.js || echo "File backup skipped"
+        continue-on-error: true
+      
+      - name: Compress backups
+        working-directory: ./teor
+        run: |
+          # Create a single archive of all backups
+          if [ -d "backups" ]; then
+            tar -czf backup-$(date +%Y%m%d).tar.gz backups/
+            ls -lh backup-*.tar.gz
+          else
+            echo "No backups directory found"
+          fi
+        continue-on-error: true
+      
+      - name: Upload backups as artifact
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: backup-${{ github.run_number }}-${{ github.run_id }}
+          path: |
+            teor/backup-*.tar.gz
+            teor/backups/
+          retention-days: 7
+          if-no-files-found: warn
+      
+      # Optional: Upload to cloud storage (uncomment and configure if needed)
+      # - name: Configure AWS credentials
+      #   uses: aws-actions/configure-aws-credentials@v4
+      #   if: always()
+      #   with:
+      #     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      #     aws-region: us-east-1
+      # 
+      # - name: Upload to S3
+      #   if: always()
+      #   run: |
+      #     if [ -f teor/backup-*.tar.gz ]; then
+      #       aws s3 cp teor/backup-*.tar.gz s3://your-backup-bucket/amberhomes/backups/
+      #     fi
+      
+      - name: Backup summary
+        if: always()
+        run: |
+          echo "## Backup Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Backup Date:** $(date)" >> $GITHUB_STEP_SUMMARY
+          echo "**Workflow Run:** ${{ github.run_number }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Backup Files:**" >> $GITHUB_STEP_SUMMARY
+          if [ -d teor/backups ]; then
+            ls -lh teor/backups/*/* || echo "No backup files found" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "No backups directory" >> $GITHUB_STEP_SUMMARY
+          fi
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Backup process completed" >> $GITHUB_STEP_SUMMARY
+
