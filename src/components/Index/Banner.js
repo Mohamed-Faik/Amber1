@@ -140,7 +140,7 @@ const Banner = () => {
 						objectFit: "cover",
 					}}
 				>
-					<source src="https://www.immofusion.be/assets/video/Immofusion-1.mp4" type="video/mp4" />
+					<source src="/videos/house-interior.mp4" type="video/mp4" />
 					{/* Fallback image if video doesn't load */}
 					<Image
 						src="/images/banner/hero-bg-1.jpg"
