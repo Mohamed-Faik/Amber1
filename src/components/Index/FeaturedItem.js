@@ -144,25 +144,34 @@ const FeaturedItem = ({
 
 					{/* Content Section */}
 					<div style={{ padding: "16px" }}>
-						{/* FOR SALE / FOR RENT and Price Row */}
-						<div
-							style={{
-								display: "flex",
-								justifyContent: "space-between",
-								alignItems: "center",
-								marginBottom: "12px",
-							}}
-						>
+						{/* FOR SALE / FOR RENT Badge */}
+						<div style={{ marginBottom: "8px" }}>
 							<span
 								style={{
-									fontSize: "16px",
+									display: "inline-block",
+									padding: "4px 10px",
+									backgroundColor: displayListingType === "RENT" ? "#E8F5E9" : "#FFF5F7",
+									color: displayListingType === "RENT" ? "#2E7D32" : "#FF385C",
+									borderRadius: "6px",
+									fontSize: "12px",
 									fontWeight: "700",
-									color: "#222222",
-									letterSpacing: "0.3px",
+									letterSpacing: "0.5px",
 								}}
 							>
 								{displayListingType === "RENT" ? "FOR RENT" : "FOR SALE"}
 							</span>
+						</div>
+
+						{/* Price Row */}
+						<div
+							style={{
+								display: "flex",
+								justifyContent: "space-between",
+								alignItems: "baseline",
+								marginBottom: "12px",
+								gap: "4px",
+							}}
+						>
 							<span
 								style={{
 									fontSize: "18px",
@@ -170,7 +179,17 @@ const FeaturedItem = ({
 									color: "#FF385C",
 								}}
 							>
-								{displayPrice} {displayListingType === "RENT" && "/month"}
+								{displayPrice} {displayListingType === "RENT" && (
+									<span
+										style={{
+											fontSize: "14px",
+											fontWeight: "500",
+											color: "#717171",
+										}}
+									>
+										/month
+									</span>
+								)}
 							</span>
 						</div>
 

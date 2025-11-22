@@ -123,6 +123,7 @@ export async function GET(request) {
 			area: listing.area,
 			bedrooms: listing.bedrooms,
 			bathrooms: listing.bathrooms,
+			listingType: listing.listingType || "SALE", // Include listingType field
 			// Add default rating if not available (can be calculated from reviews later)
 			rating: null,
 		}));
