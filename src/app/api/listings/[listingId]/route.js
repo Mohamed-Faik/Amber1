@@ -121,27 +121,49 @@ export async function PATCH(request, { params }) {
 	}
 
 	const shouldResetStatus = existingListing.status === "Approved";
-	const listing = await prisma.listing.update({
-		where: { id: listingId },
-		data: {
-			title,
-			slug,
-			description,
-			imageSrc: imageSrcValue,
-			address,
-			features: features || "",
-			category,
-			listingType: listingType || existingListing.listingType || "SALE",
-			location_value: location.label,
-			price: parseInt(price, 10),
-			latitude: location.latlng[0],
-			longitude: location.latlng[1],
-			area: parseOptionalInt(area),
-			bedrooms: parseOptionalInt(bedrooms),
-			bathrooms: parseOptionalInt(bathrooms),
-			status: shouldResetStatus ? "Pending" : existingListing.status,
-		},
-	});
+	
+	try {
+		const listing = await prisma.listing.update({
+			where: { id: listingId },
+			data: {
+				title,
+				slug,
+				description,
+				imageSrc: imageSrcValue,
+				address,
+				features: features || "",
+				category,
+				listingType: listingType || existingListing.listingType || "SALE",
+				location_value: location.label,
+				price: parseInt(price, 10),
+				latitude: location.latlng[0],
+				longitude: location.latlng[1],
+				area: parseOptionalInt(area),
+				bedrooms: parseOptionalInt(bedrooms),
+				bathrooms: parseOptionalInt(bathrooms),
+				status: shouldResetStatus ? "Pending" : existingListing.status,
+			},
+		});
 
-	return NextResponse.json(listing);
+		return NextResponse.json(listing);
+	} catch (error) {
+		console.error("Error updating listing:", error);
+		
+		// Check if it's a database enum error
+		if (error.message?.includes("DAILY_RENT") || error.message?.includes("Invalid enum value") || error.message?.includes("Unknown argument")) {
+			return NextResponse.json(
+				{ 
+					message: "Database schema needs to be updated. Please run: npx prisma db push",
+					error: "The DAILY_RENT listing type is not available in the database yet. You need to update the database schema.",
+					details: error.message
+				},
+				{ status: 500 }
+			);
+		}
+		
+		return NextResponse.json(
+			{ message: error.message || "Failed to update listing" },
+			{ status: 500 }
+		);
+	}
 }

@@ -181,7 +181,7 @@ const DetailsHead = ({
 						letterSpacing: "0.5px",
 					}}
 				>
-					{displayListingType === "RENT" ? "FOR RENT" : displayListingType === "DAILY_RENT" ? "DAILY RENT" : "FOR SALE"}
+					{displayListingType === "RENT" ? "FOR RENT" : displayListingType === "DAILY_RENT" ? "FOR RENT (DAILY)" : "FOR SALE"}
 				</span>
 				<span
 					style={{

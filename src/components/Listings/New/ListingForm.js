@@ -143,7 +143,20 @@ const ListingForm = ({ initialData = null }) => {
 
 	const {
 		field: { value: listingTypeValue, onChange: listingTypeOnChange, ...restListingTypeField },
-	} = useController({ name: "listingType", control, defaultValue: "SALE" });
+	} = useController({ 
+		name: "listingType", 
+		control, 
+		defaultValue: "SALE",
+		rules: {
+			required: "Listing type is required",
+			validate: (value) => {
+				if (!value || (value !== "SALE" && value !== "RENT" && value !== "DAILY_RENT")) {
+					return "Please select a valid listing type";
+				}
+				return true;
+			}
+		}
+	});
 
 	const city = watch("city");
 	const neighborhood = watch("neighborhood");
@@ -163,6 +176,10 @@ const ListingForm = ({ initialData = null }) => {
 	}, [city, neighborhood, setCustomValue]);
 
 	const onSubmit = (data) => {
+		console.log("Form submitted with data:", data);
+		console.log("Listing type value:", data.listingType);
+		console.log("Listing type value type:", typeof data.listingType);
+		
 		// Ensure imageSrc is an array and has at least one image
 		if (!data.imageSrc || !Array.isArray(data.imageSrc) || data.imageSrc.length === 0) {
 			toast.error("Please upload at least one image");
@@ -170,8 +187,9 @@ const ListingForm = ({ initialData = null }) => {
 		}
 
 		// Validate listing type
-		if (!data.listingType || (data.listingType !== "SALE" && data.listingType !== "RENT")) {
-			toast.error("Please select whether this is for sale or rent");
+		if (!data.listingType || (data.listingType !== "SALE" && data.listingType !== "RENT" && data.listingType !== "DAILY_RENT")) {
+			console.error("Invalid listing type:", data.listingType);
+			toast.error("Please select a listing type (For Sale, For Rent Monthly, or For Rent Daily)");
 			setError("listingType", { type: "required", message: "Listing type is required" });
 			return;
 		}
@@ -717,21 +735,30 @@ const ListingForm = ({ initialData = null }) => {
 											options={[
 												{ value: "SALE", label: "For Sale" },
 												{ value: "RENT", label: "For Rent (Monthly)" },
-												{ value: "DAILY_RENT", label: "Daily Rent" }
+												{ value: "DAILY_RENT", label: "For Rent (Daily)" }
 											]}
 											value={
 												listingTypeValue
-													? [{ value: "SALE", label: "For Sale" }, { value: "RENT", label: "For Rent (Monthly)" }, { value: "DAILY_RENT", label: "Daily Rent" }].find(
+													? [{ value: "SALE", label: "For Sale" }, { value: "RENT", label: "For Rent (Monthly)" }, { value: "DAILY_RENT", label: "For Rent (Daily)" }].find(
 															(x) => x.value === listingTypeValue
 													  )
 													: null
 											}
-											onChange={(option) =>
-												listingTypeOnChange(
-													option ? option.value : null
-												)
-											}
-											{...restListingTypeField}
+											onChange={(option) => {
+												const value = option ? option.value : null;
+												console.log("Listing type changed to:", value);
+												// Call the field's onChange to update react-hook-form
+												listingTypeOnChange(value);
+												// Also update via setValue to ensure it's registered
+												setCustomValue("listingType", value);
+												// Clear any existing errors when a valid option is selected
+												if (value && (value === "SALE" || value === "RENT" || value === "DAILY_RENT")) {
+													setError("listingType", null);
+												}
+											}}
+											onBlur={restListingTypeField.onBlur}
+											name={restListingTypeField.name}
+											ref={restListingTypeField.ref}
 											styles={{
 												control: (base, state) => ({
 													...base,
@@ -788,7 +815,7 @@ const ListingForm = ({ initialData = null }) => {
 								</div>
 
 								<Input
-									label={`Price ${listingType === "RENT" ? "(per month)" : ""}`}
+									label={`Price ${listingType === "RENT" ? "(per month)" : listingType === "DAILY_RENT" ? "(per day)" : ""}`}
 									id="price"
 									type="number"
 									placeholder="0"
