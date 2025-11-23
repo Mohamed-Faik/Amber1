@@ -183,8 +183,11 @@ const ListingForm = ({ initialData = null }) => {
 			return;
 		}
 
-		// Validate conditional fields based on category
-		if (data.category === "House" || data.category === "Land") {
+		// Validate conditional fields based on property type
+		const propertyType = data.category;
+		
+		// Area is required for all property types except Land (optional for Land)
+		if (propertyType && propertyType !== "Land") {
 			if (!data.area || data.area === "") {
 				toast.error("Please enter the area in square meters");
 				setError("area", { type: "required", message: "Area is required" });
@@ -192,10 +195,11 @@ const ListingForm = ({ initialData = null }) => {
 			}
 		}
 
-		if (data.category === "House") {
+		// Bedrooms and bathrooms required for Villa, Apartment, and House
+		if (propertyType === "Villa" || propertyType === "Apartment" || propertyType === "House") {
 			if (!data.bedrooms || data.bedrooms === "") {
-				toast.error("Please enter the number of bedrooms");
-				setError("bedrooms", { type: "required", message: "Bedrooms is required" });
+				toast.error("Please enter the number of bedrooms/chambers");
+				setError("bedrooms", { type: "required", message: "Bedrooms/Chambers is required" });
 				return;
 			}
 			if (!data.bathrooms || data.bathrooms === "") {
@@ -463,14 +467,14 @@ const ListingForm = ({ initialData = null }) => {
 
 								<div style={{ position: "relative", zIndex: 1 }}>
 									<label className="form-label-custom" style={{ position: "relative", zIndex: 2 }}>
-										Category <span style={{ color: "#FF385C" }}>*</span>
+										Property Type <span style={{ color: "#FF385C" }}>*</span>
 									</label>
 									<div style={{ position: "relative", zIndex: 1 }}>
 									<Select
 										id="react-select-2-live-region"
 										className="select-input"
 										classNamePrefix="select"
-										placeholder="Select Category"
+										placeholder="Select Property Type (Villa, Apartment, House, or Land)"
 										isClearable
 										isSearchable
 										menuPortalTarget={typeof document !== "undefined" ? document.body : null}
@@ -483,11 +487,14 @@ const ListingForm = ({ initialData = null }) => {
 												  )
 												: catValue
 										}
-										onChange={(option) =>
-											catOnChange(
-												option ? option.value : option
-											)
-										}
+										onChange={(option) => {
+											catOnChange(option ? option.value : option);
+											// Clear bedrooms and bathrooms when switching to Land
+											if (!option || option.value === "Land") {
+												setCustomValue("bedrooms", "");
+												setCustomValue("bathrooms", "");
+											}
+										}}
 										{...restCategoryField}
 										styles={{
 											control: (base, state) => ({
@@ -588,8 +595,8 @@ const ListingForm = ({ initialData = null }) => {
 								/>
 							</div>
 
-							{/* Conditional Fields based on Category */}
-							{(category === "House" || category === "Land") && (
+							{/* Conditional Fields based on Property Type */}
+							{category && category !== "" && (
 								<div
 									style={{
 										marginTop: "24px",
@@ -615,33 +622,37 @@ const ListingForm = ({ initialData = null }) => {
 									<div
 										style={{
 											display: "grid",
-											gridTemplateColumns: category === "House" ? "repeat(3, 1fr)" : "1fr",
+											gridTemplateColumns: (category === "Villa" || category === "Apartment" || category === "House") 
+												? "repeat(3, 1fr)" 
+												: "1fr",
 											gap: "20px",
 											width: "100%",
 										}}
 									>
-										<Input
-											label="Area (Square Meters)"
-											id="area"
-											type="number"
-											placeholder="e.g., 150"
-											disabled={isLoading}
-											register={register}
-											errors={errors}
-											required={category === "House" || category === "Land"}
-										/>
+										{(category === "Villa" || category === "Apartment" || category === "House" || category === "Land") && (
+											<Input
+												label="Area (Square Meters)"
+												id="area"
+												type="number"
+												placeholder="e.g., 150"
+												disabled={isLoading}
+												register={register}
+												errors={errors}
+												required={category !== "Land"}
+											/>
+										)}
 
-										{category === "House" && (
+										{(category === "Villa" || category === "Apartment" || category === "House") && (
 											<>
 												<Input
-													label="Bedrooms"
+													label={category === "Apartment" ? "Chambers (Bedrooms)" : "Bedrooms"}
 													id="bedrooms"
 													type="number"
-													placeholder="e.g., 3"
+													placeholder={category === "Apartment" ? "e.g., 2" : "e.g., 3"}
 													disabled={isLoading}
 													register={register}
 													errors={errors}
-													required={category === "House"}
+													required
 												/>
 												<Input
 													label="Bathrooms"
@@ -651,7 +662,7 @@ const ListingForm = ({ initialData = null }) => {
 													disabled={isLoading}
 													register={register}
 													errors={errors}
-													required={category === "House"}
+													required
 												/>
 											</>
 										)}

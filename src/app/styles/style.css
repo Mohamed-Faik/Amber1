@@ -33,7 +33,7 @@ Default Style
 ============================*/
 body {
   font-size: 16px;
-  font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family: var(--font-cereal), "Cereal", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   color: #848484;
   font-weight: 400;
 }

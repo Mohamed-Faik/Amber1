@@ -1,0 +1,9 @@
+/* Cereal Font Face Declaration */
+@font-face {
+  font-family: 'Cereal';
+  src: url('/fonts/cereal.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+

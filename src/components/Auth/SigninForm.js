@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useRef, useEffect } from "react";
 import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { toast } from "react-hot-toast";
 import { ArrowLeft } from "lucide-react";
@@ -11,10 +11,34 @@ import googleImg from "../../../public/images/google.png";
 
 const SigninForm = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isSocialLoading, setIsSocialLoading] = useState(false);
+
+  // Check for OAuth callback errors in URL
+  useEffect(() => {
+    const error = searchParams?.get("error");
+    if (error) {
+      // Clear the error from URL
+      const newUrl = window.location.pathname;
+      window.history.replaceState({}, "", newUrl);
+      
+      // Show appropriate error message
+      if (error === "Callback") {
+        toast.error("Facebook login failed during authentication. This may be due to account linking issues. Please try again or contact support if the problem persists.");
+      } else if (error === "OAuthSignin") {
+        toast.error("Facebook sign-in failed. Please check your Facebook app configuration.");
+      } else if (error === "OAuthCallback") {
+        toast.error("Facebook login callback failed. Please verify your redirect URI is configured correctly in Facebook App settings.");
+      } else if (error === "AccessDenied") {
+        toast.error("Facebook login was denied. Please grant the necessary permissions.");
+      } else {
+        toast.error(`Login error: ${error}. Please try again.`);
+      }
+    }
+  }, [searchParams]);
 
   // Handle email/password login
   const handleEmailLogin = async (e) => {

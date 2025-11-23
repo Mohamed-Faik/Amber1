@@ -8,9 +8,13 @@ import { categories as allCategories } from "@/libs/Categories";
 import LocationFind from "./LocationFind";
 import { toast } from "react-hot-toast";
 import { Home, MapPin, Navigation, ChevronDown } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { getTranslation } from "@/utils/translations";
 
 const Banner = () => {
 	const router = useRouter();
+	const { language, isDetecting } = useLanguage();
+	const displayLanguage = isDetecting ? "en" : language;
 	const [saleType, setSaleType] = useState("For sale");
 	const [category, setCategory] = useState("");
 	const [location, setLocation] = useState("");
@@ -207,19 +211,19 @@ const Banner = () => {
 						<p
 							style={{
 								fontSize: "clamp(32px, 5vw, 64px)",
-								fontWeight: "700",
+								fontWeight: "400",
 								color: "#FFFFFF",
-								fontFamily: "var(--font-playfair), 'Playfair Display', Georgia, serif",
+								fontFamily: "var(--font-brush), 'Caveat Brush', 'Brush Script MT', cursive",
 								lineHeight: "1.2",
-								textShadow: "0 2px 8px rgba(0, 0, 0, 0.3)",
+								textShadow: "0 2px 8px rgba(0, 0, 0, 0.3), 0 4px 12px rgba(0, 0, 0, 0.2)",
 								margin: 0,
 								display: "inline-block",
-								letterSpacing: "-0.5px",
-								fontStyle: "italic",
+								letterSpacing: "1px",
+								fontStyle: "normal",
 							}}
 						>
 							<span style={{ color: "#FF385C" }}>"</span>
-							It's about people, not about stones
+							{getTranslation(displayLanguage, "hero.quote")}
 							<span style={{ color: "#FF385C" }}>"</span>
 						</p>
 					</div>

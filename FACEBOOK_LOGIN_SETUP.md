@@ -196,6 +196,60 @@ After updating environment variables:
 - Make sure the app status is "Live" and not restricted
 - Check if there are any warnings or issues in the dashboard
 
+### Issue: `error=Callback` - Redirects back to signin page after Facebook authentication
+
+**Symptoms:**
+- Facebook authentication appears to succeed
+- User is redirected back to signin/signup page
+- URL contains `error=Callback` parameter
+- Existing Facebook accounts can authenticate but get redirected back
+
+**Root Causes:**
+1. **Account Linking Issue**: When a Facebook account already exists in your database, NextAuth tries to link it but encounters an error
+2. **Database Constraint Violation**: Duplicate email or account linking conflict
+3. **User Status Issue**: User account might be inactive
+4. **Adapter Error**: Error in user creation/update process
+
+**Solutions:**
+
+1. **Check Vercel Function Logs**:
+   - Go to Vercel Dashboard → Your Project → Functions tab
+   - Look for errors related to `/api/auth/callback/facebook`
+   - Check for database errors, constraint violations, or adapter errors
+
+2. **Verify Database State**:
+   - Check if the Facebook user already exists in your database
+   - Look for duplicate emails (especially `facebook_*@facebook.local` emails)
+   - Verify user status is "Active" (not "Inactive")
+
+3. **Check Account Linking**:
+   - In your database, check the `account` table
+   - Look for existing Facebook accounts with the same `providerAccountId`
+   - If duplicate accounts exist, you may need to clean them up
+
+4. **Enable Debug Logging**:
+   - The code now has enhanced logging enabled
+   - Check Vercel Function Logs for detailed error messages
+   - Look for messages like "Error linking account in adapter" or "Error in signIn callback"
+
+5. **Database Cleanup** (if needed):
+   ```sql
+   -- Check for duplicate Facebook accounts
+   SELECT * FROM account WHERE provider = 'facebook';
+   
+   -- Check for users with Facebook emails
+   SELECT * FROM user WHERE email LIKE 'facebook_%@facebook.local';
+   ```
+
+6. **Test with a Fresh Facebook Account**:
+   - Try with a Facebook account that has never logged in before
+   - If it works, the issue is likely with account linking for existing users
+
+**Prevention:**
+- The code now includes better error handling for account linking
+- Duplicate account errors are caught and logged
+- Enhanced logging helps identify the exact issue
+
 ## Current Configuration
 
 Your app is currently configured to use:

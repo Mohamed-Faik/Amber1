@@ -4,16 +4,23 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Menu, X, Home, LayoutGrid, Info, Mail } from "lucide-react";
+import { Home, Sparkles, ConciergeBell } from "lucide-react";
 import UserMenu from "./UserMenu";
 import NotificationBadge from "./NotificationBadge";
+import LanguageSwitcher from "./LanguageSwitcher";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { getTranslation } from "@/utils/translations";
 
 const Navbar = ({ currentUser }) => {
   const pathname = usePathname();
   const router = useRouter();
+  const { language, isDetecting } = useLanguage();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  
+  // Use default language during detection to avoid hydration mismatch
+  const displayLanguage = isDetecting ? "en" : language;
 
   // Detect mobile screen size - only show mobile nav on actual phones/tablets
   useEffect(() => {
@@ -21,7 +28,7 @@ const Navbar = ({ currentUser }) => {
       // Use 992px breakpoint - laptops will show desktop nav
       setIsMobile(window.innerWidth < 992);
     };
-    
+
     checkMobile();
     window.addEventListener("resize", checkMobile);
     return () => window.removeEventListener("resize", checkMobile);
@@ -52,16 +59,67 @@ const Navbar = ({ currentUser }) => {
     };
   }, [isMobileMenuOpen]);
 
+
   // Don't show navbar on auth pages or admin login
   if (pathname?.startsWith("/auth") || pathname?.startsWith("/admin/login")) {
     return null;
   }
 
+  // Icon components with animations
+  const HomeIcon = ({ size = 36, color = "#222222", isActive, pathname }) => (
+    <div
+      key={`home-${pathname}`}
+      style={{
+        width: size,
+        height: size,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        animation: isActive ? "iconFlip 0.6s ease-in-out" : "none",
+        transformStyle: "preserve-3d",
+      }}
+    >
+      <Home size={size} strokeWidth={2} color={color} />
+    </div>
+  );
+
+  const ExperiencesIcon = ({ size = 36, color = "#222222", isActive, pathname }) => (
+    <div
+      key={`experiences-${pathname}`}
+      style={{
+        width: size,
+        height: size,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        animation: isActive ? "balloonFly 1.2s ease-in-out" : "none",
+      }}
+    >
+      <Sparkles size={size} strokeWidth={2} color={color} />
+    </div>
+  );
+
+  const ServicesIcon = ({ size = 36, color = "#222222", isActive, pathname }) => (
+    <div
+      key={`services-${pathname}`}
+      style={{
+        width: size,
+        height: size,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        animation: isActive ? "bellRing 0.8s ease-in-out" : "none",
+        transformOrigin: "top center",
+      }}
+    >
+      <ConciergeBell size={size} strokeWidth={2} color={color} />
+    </div>
+  );
+
   const navLinks = [
-    { href: "/", label: "Home", icon: Home },
-    { href: "/listings", label: "Listings", icon: LayoutGrid },
-    { href: "/about-us", label: "About", icon: Info },
-    { href: "/contact-us", label: "Contact", icon: Mail },
+    { href: "/", label: getTranslation(displayLanguage, "nav.homes"), icon: HomeIcon },
+    { href: "/experiences", label: getTranslation(displayLanguage, "nav.experiences"), icon: ExperiencesIcon },
+    { href: "/services", label: getTranslation(displayLanguage, "nav.services"), icon: ServicesIcon },
   ];
 
   return (
@@ -75,312 +133,318 @@ const Navbar = ({ currentUser }) => {
           zIndex: 1000,
           backgroundColor: isScrolled ? "#FFFFFF" : "#FFFFFF",
           borderBottom: isScrolled ? "1px solid #E0E0E0" : "1px solid #E0E0E0",
-          boxShadow: isScrolled 
-            ? "0 2px 12px rgba(0, 0, 0, 0.08)" 
+          boxShadow: isScrolled
+            ? "0 2px 12px rgba(0, 0, 0, 0.08)"
             : "0 1px 2px rgba(0, 0, 0, 0.04)",
           transition: "all 0.3s ease",
         }}
       >
         {/* Desktop Navbar */}
         {!isMobile && (
-        <div
-          className="desktop-nav"
-          style={{
-            maxWidth: "1760px",
-            margin: "0 auto",
-            padding: "0 80px 0 80px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            height: "80px",
-            minHeight: "80px",
-            position: "relative",
-          }}
-          data-desktop-nav="true"
-        >
-          {/* Left: Logo */}
-          <div style={{ flexShrink: 0, display: "flex", alignItems: "center", height: "100%" }}>
-            <Link
-              href="/"
+          <div
+            className="desktop-nav"
+            style={{
+              maxWidth: "1760px",
+              margin: "0 auto",
+              padding: "0 80px 0 80px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              height: "80px",
+              minHeight: "80px",
+              position: "relative",
+            }}
+            data-desktop-nav="true"
+          >
+            {/* Left: Logo */}
+            <div style={{ flexShrink: 0, display: "flex", alignItems: "center", height: "100%" }}>
+              <Link
+                href="/"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  textDecoration: "none",
+                  gap: "8px",
+                  height: "100%",
+                }}
+              >
+                <Image
+                  src="/images/amberhomes png.png"
+                  alt="AmberHomes Logo"
+                  width={180}
+                  height={50}
+                  style={{
+                    height: "auto",
+                    width: "auto",
+                    maxHeight: "50px",
+                    objectFit: "contain",
+                  }}
+                  priority
+                />
+              </Link>
+            </div>
+
+            {/* Center: Navigation Menu - Airbnb Style */}
+            <div
+              style={{
+                flex: "1 1 0",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "48px",
+                margin: "0 24px",
+              }}
+            >
+              {navLinks.map((link) => {
+                const IconComponent = link.icon;
+                // Check if current pathname matches the link href
+                // For "/" only match exactly, for others match if pathname starts with the href
+                const isActive = link.href === "/" 
+                  ? pathname === "/" 
+                  : pathname?.startsWith(link.href);
+                return (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    style={{
+                      position: "relative",
+                      padding: "12px 0",
+                      fontSize: "14px",
+                      fontWeight: "600",
+                      color: "#222222",
+                      textDecoration: "none",
+                      transition: "all 0.2s ease",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "8px",
+                      cursor: "pointer",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.opacity = "0.7";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.opacity = "1";
+                    }}
+                  >
+                    <IconComponent 
+                      size={36}
+                      color={isActive ? "#222222" : "#717171"}
+                      isActive={isActive}
+                      pathname={pathname}
+                    />
+                    <span>{link.label}</span>
+                  </Link>
+                );
+              })}
+            </div>
+
+            {/* Right: User Menu & Actions */}
+            <div
               style={{
                 display: "flex",
                 alignItems: "center",
-                textDecoration: "none",
-                gap: "8px",
+                justifyContent: "flex-end",
+                gap: "12px",
+                flexShrink: 0,
                 height: "100%",
+                marginLeft: "auto",
+                marginRight: "0",
+                paddingRight: "0",
+              }}
+            >
+              {/* Language Switcher */}
+              <LanguageSwitcher />
+
+              {/* Become a Host / Add a listing */}
+              {currentUser ? (
+                <Link
+                  href="/listings/new"
+                  style={{
+                    padding: "14px 24px",
+                    borderRadius: "22px",
+                    fontSize: "15px",
+                    fontWeight: "600",
+                    color: "#222222",
+                    textDecoration: "none",
+                    transition: "all 0.2s ease",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    whiteSpace: "nowrap",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = "#F7F7F7";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = "transparent";
+                  }}
+                >
+                  {getTranslation(displayLanguage, "nav.addListing")}
+                </Link>
+              ) : (
+                <Link
+                  href="/listings/new"
+                  style={{
+                    padding: "14px 24px",
+                    borderRadius: "22px",
+                    fontSize: "15px",
+                    fontWeight: "600",
+                    color: "#222222",
+                    textDecoration: "none",
+                    transition: "all 0.2s ease",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    whiteSpace: "nowrap",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = "#F7F7F7";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = "transparent";
+                  }}
+                >
+                  {getTranslation(displayLanguage, "nav.becomeHost")}
+                </Link>
+              )}
+
+              {/* Notification Badge for Admin Users */}
+              <div style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}>
+                <NotificationBadge currentUser={currentUser} />
+              </div>
+
+              {/* UserMenu Component - Top Right */}
+              <div style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                position: "relative",
+                top: 0,
+                marginTop: 0,
+              }}>
+                <UserMenu currentUser={currentUser} />
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Mobile/Tablet Navbar */}
+        {isMobile && (
+          <div
+            className="mobile-nav"
+            style={{
+              display: "flex",
+              padding: "0 8px 0 16px",
+              height: "70px",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: "12px",
+              width: "100%",
+              boxSizing: "border-box",
+              position: "relative",
+            }}
+            data-mobile-nav="true"
+          >
+            {/* Logo */}
+            <Link
+              href="/"
+              style={{
+                textDecoration: "none",
+                display: "flex",
+                alignItems: "center",
+                height: "100%",
+                flexShrink: 0,
+                minWidth: 0,
               }}
             >
               <Image
                 src="/images/amberhomes png.png"
                 alt="AmberHomes Logo"
-                width={180}
-                height={50}
+                width={150}
+                height={40}
                 style={{
                   height: "auto",
                   width: "auto",
-                  maxHeight: "50px",
+                  maxHeight: "40px",
+                  maxWidth: "150px",
                   objectFit: "contain",
                 }}
                 priority
               />
             </Link>
-          </div>
 
-          {/* Center: Navigation Menu */}
-          <div
-            style={{
-              flex: "1 1 0",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "4px",
-              margin: "0 24px",
-            }}
-          >
-            {navLinks.map((link) => {
-              const IconComponent = link.icon;
-              const isActive = pathname === link.href;
-              return (
-                <Link
-                  key={link.href}
-                  href={link.href}
+            {/* Right Side: Profile Button or Login */}
+            <div
+              className="mobile-nav-right"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "flex-end",
+                gap: "8px",
+                height: "100%",
+                flexShrink: 0,
+                minWidth: 0,
+                marginLeft: "auto",
+                marginRight: "0",
+                paddingRight: "0",
+              }}
+            >
+              {/* Notification Badge for Admin Users (Mobile) */}
+              <NotificationBadge currentUser={currentUser} />
+
+              {currentUser ? (
+                <div
                   style={{
-                    padding: "12px 20px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    height: "100%",
+                    position: "relative",
+                    flexShrink: 0,
+                    alignSelf: "flex-start",
+                    marginRight: "-65px",
+                    marginTop: "-4px",
+                    paddingRight: "0",
+                  }}
+                >
+                  <UserMenu currentUser={currentUser} />
+                </div>
+              ) : (
+                <Link
+                  href="/auth/signin"
+                  className="mobile-login-link"
+                  style={{
+                    padding: "10px 16px",
                     borderRadius: "22px",
-                    fontSize: "15px",
+                    fontSize: "14px",
                     fontWeight: "600",
-                    color: isActive ? "#000000" : "#000000",
+                    color: "#222222",
                     textDecoration: "none",
-                    backgroundColor: isActive ? "#F7F7F7" : "transparent",
+                    backgroundColor: "#F7F7F7",
                     transition: "all 0.2s ease",
                     display: "flex",
                     alignItems: "center",
-                    gap: "8px",
+                    justifyContent: "center",
+                    whiteSpace: "nowrap",
+                    height: "40px",
+                    flexShrink: 0,
                   }}
                   onMouseEnter={(e) => {
-                    if (!isActive) {
-                      e.currentTarget.style.backgroundColor = "#F7F7F7";
-                      e.currentTarget.style.color = "#000000";
-                    }
+                    e.currentTarget.style.backgroundColor = "#E8E8E8";
                   }}
                   onMouseLeave={(e) => {
-                    if (!isActive) {
-                      e.currentTarget.style.backgroundColor = "transparent";
-                      e.currentTarget.style.color = "#000000";
-                    }
+                    e.currentTarget.style.backgroundColor = "#F7F7F7";
                   }}
                 >
-                  <IconComponent size={16} strokeWidth={2} />
-                  <span>{link.label}</span>
+                  Log in
                 </Link>
-              );
-            })}
-          </div>
-
-          {/* Right: User Menu & Actions */}
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "flex-end",
-              gap: "12px",
-              flexShrink: 0,
-              height: "100%",
-              marginLeft: "auto",
-              marginRight: "0",
-              paddingRight: "0",
-            }}
-          >
-            {/* Become a Host / Add a listing */}
-            {currentUser ? (
-              <Link
-                href="/listings/new"
-                style={{
-                  padding: "14px 24px",
-                  borderRadius: "22px",
-                  fontSize: "15px",
-                  fontWeight: "600",
-                  color: "#222222",
-                  textDecoration: "none",
-                  transition: "all 0.2s ease",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  whiteSpace: "nowrap",
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = "#F7F7F7";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = "transparent";
-                }}
-              >
-                Add a listing
-              </Link>
-            ) : (
-              <Link
-                href="/listings/new"
-                style={{
-                  padding: "14px 24px",
-                  borderRadius: "22px",
-                  fontSize: "15px",
-                  fontWeight: "600",
-                  color: "#222222",
-                  textDecoration: "none",
-                  transition: "all 0.2s ease",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  whiteSpace: "nowrap",
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = "#F7F7F7";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = "transparent";
-                }}
-              >
-                Become a Host
-              </Link>
-            )}
-
-            {/* Notification Badge for Admin Users */}
-            <div style={{ 
-              display: "flex", 
-              alignItems: "center", 
-              justifyContent: "center",
-            }}>
-              <NotificationBadge currentUser={currentUser} />
-            </div>
-
-            {/* UserMenu Component - Top Right */}
-            <div style={{ 
-              display: "flex", 
-              alignItems: "center", 
-              justifyContent: "center",
-              position: "relative",
-              top: 0,
-              marginTop: 0,
-            }}>
-              <UserMenu currentUser={currentUser} />
+              )}
             </div>
           </div>
-        </div>
-        )}
-
-        {/* Mobile/Tablet Navbar */}
-        {isMobile && (
-        <div
-          className="mobile-nav"
-          style={{
-            display: "flex",
-            padding: "0 8px 0 16px",
-            height: "70px",
-            alignItems: "center",
-            justifyContent: "space-between",
-            gap: "12px",
-            width: "100%",
-            boxSizing: "border-box",
-            position: "relative",
-          }}
-          data-mobile-nav="true"
-        >
-          {/* Logo */}
-          <Link 
-            href="/" 
-            style={{ 
-              textDecoration: "none",
-              display: "flex",
-              alignItems: "center",
-              height: "100%",
-              flexShrink: 0,
-              minWidth: 0,
-            }}
-          >
-            <Image
-              src="/images/amberhomes png.png"
-              alt="AmberHomes Logo"
-              width={150}
-              height={40}
-              style={{
-                height: "auto",
-                width: "auto",
-                maxHeight: "40px",
-                maxWidth: "150px",
-                objectFit: "contain",
-              }}
-              priority
-            />
-          </Link>
-          
-          {/* Right Side: Profile Button or Login */}
-          <div 
-            className="mobile-nav-right"
-            style={{ 
-              display: "flex", 
-              alignItems: "center", 
-              justifyContent: "flex-end",
-              gap: "8px", 
-              height: "100%", 
-              flexShrink: 0,
-              minWidth: 0,
-              marginLeft: "auto",
-            marginRight: "0",
-            paddingRight: "0",
-          }}
-        >
-            {/* Notification Badge for Admin Users (Mobile) */}
-            <NotificationBadge currentUser={currentUser} />
-            
-            {currentUser ? (
-              <div 
-                style={{ 
-                  display: "flex", 
-                  alignItems: "center", 
-                  justifyContent: "center",
-                  height: "100%",
-                  position: "relative",
-                  flexShrink: 0,
-                  alignSelf: "flex-start",
-              marginRight: "-65px",
-              marginTop: "-4px",
-              paddingRight: "0",
-              }}
-            >
-              <UserMenu currentUser={currentUser} />
-            </div>
-            ) : (
-              <Link
-                href="/auth/signin"
-                className="mobile-login-link"
-                style={{
-                  padding: "10px 16px",
-                  borderRadius: "22px",
-                  fontSize: "14px",
-                  fontWeight: "600",
-                  color: "#222222",
-                  textDecoration: "none",
-                  backgroundColor: "#F7F7F7",
-                  transition: "all 0.2s ease",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  whiteSpace: "nowrap",
-                  height: "40px",
-                  flexShrink: 0,
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = "#E8E8E8";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = "#F7F7F7";
-                }}
-              >
-                Log in
-              </Link>
-            )}
-          </div>
-        </div>
         )}
 
       </div>
@@ -438,6 +502,75 @@ const Navbar = ({ currentUser }) => {
           }
           to {
             opacity: 1;
+          }
+        }
+
+        @keyframes iconFlip {
+          0% {
+            transform: rotateY(0deg) scale(1);
+          }
+          50% {
+            transform: rotateY(180deg) scale(1.1);
+          }
+          100% {
+            transform: rotateY(360deg) scale(1);
+          }
+        }
+
+        @keyframes balloonFly {
+          0% {
+            transform: translateY(0) translateX(0) scale(1);
+          }
+          20% {
+            transform: translateY(-8px) translateX(2px) scale(1.05);
+          }
+          40% {
+            transform: translateY(-12px) translateX(-2px) scale(1.08);
+          }
+          60% {
+            transform: translateY(-8px) translateX(2px) scale(1.05);
+          }
+          80% {
+            transform: translateY(-4px) translateX(-1px) scale(1.02);
+          }
+          100% {
+            transform: translateY(0) translateX(0) scale(1);
+          }
+        }
+
+        @keyframes bellRing {
+          0% {
+            transform: rotate(0deg);
+          }
+          10% {
+            transform: rotate(-15deg);
+          }
+          20% {
+            transform: rotate(12deg);
+          }
+          30% {
+            transform: rotate(-10deg);
+          }
+          40% {
+            transform: rotate(8deg);
+          }
+          50% {
+            transform: rotate(-6deg);
+          }
+          60% {
+            transform: rotate(4deg);
+          }
+          70% {
+            transform: rotate(-3deg);
+          }
+          80% {
+            transform: rotate(2deg);
+          }
+          90% {
+            transform: rotate(-1deg);
+          }
+          100% {
+            transform: rotate(0deg);
           }
         }
 

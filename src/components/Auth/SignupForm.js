@@ -3,7 +3,7 @@ import { useState, useRef, useEffect } from "react";
 import { signIn } from "next-auth/react";
 import { ArrowLeft } from "lucide-react";
 import { toast } from "react-hot-toast";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import axios from "axios";
 import PhoneInput from "react-phone-number-input";
@@ -13,6 +13,7 @@ import googleImg from "../../../public/images/google.png";
 
 const SignupForm = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
   
   // Part 1: Email & OTP
   const [email, setEmail] = useState("");
@@ -38,6 +39,29 @@ const SignupForm = () => {
   const [isSocialLoading, setIsSocialLoading] = useState(false);
   const inputRefs = useRef([]);
   const phoneOtpRefs = useRef([]);
+
+  // Check for OAuth callback errors in URL
+  useEffect(() => {
+    const error = searchParams?.get("error");
+    if (error) {
+      // Clear the error from URL
+      const newUrl = window.location.pathname;
+      window.history.replaceState({}, "", newUrl);
+      
+      // Show appropriate error message
+      if (error === "Callback") {
+        toast.error("Facebook signup failed during authentication. This may be due to account linking issues. Please try again or contact support if the problem persists.");
+      } else if (error === "OAuthSignin") {
+        toast.error("Facebook sign-in failed. Please check your Facebook app configuration.");
+      } else if (error === "OAuthCallback") {
+        toast.error("Facebook login callback failed. Please verify your redirect URI is configured correctly in Facebook App settings.");
+      } else if (error === "AccessDenied") {
+        toast.error("Facebook login was denied. Please grant the necessary permissions.");
+      } else {
+        toast.error(`Signup error: ${error}. Please try again.`);
+      }
+    }
+  }, [searchParams]);
 
   // Load OTP from localStorage on mount
   useEffect(() => {
