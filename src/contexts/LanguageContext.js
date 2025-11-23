@@ -34,18 +34,21 @@ export const LanguageProvider = ({ children, defaultLanguage = "en" }) => {
         (async () => {
           try {
             const result = await detectUserLanguage();
+            console.log("[Language Context] Detected language:", result);
             resolve(result || defaultLanguage);
           } catch (error) {
-            // Silently catch all errors
+            console.error("[Language Context] Detection error:", error);
             resolve(defaultLanguage);
           }
-        })().catch(() => {
+        })().catch((err) => {
           // Extra safety catch
+          console.error("[Language Context] Promise catch error:", err);
           resolve(defaultLanguage);
         });
       });
 
       if (isMounted) {
+        console.log("[Language Context] Setting language to:", detectedLang);
         setLanguage(detectedLang);
         setIsDetecting(false);
       }
