@@ -36,8 +36,8 @@ export default async function getListings(params) {
 			whereClause.location_value = location_value;
 		}
 
-		// Listing type filter (SALE or RENT)
-		if (listingType && (listingType === "SALE" || listingType === "RENT")) {
+		// Listing type filter (SALE, RENT, or DAILY_RENT)
+		if (listingType && (listingType === "SALE" || listingType === "RENT" || listingType === "DAILY_RENT")) {
 			whereClause.listingType = listingType;
 		}
 

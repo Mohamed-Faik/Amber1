@@ -297,6 +297,17 @@ const ListStyle = ({
 									/month
 								</span>
 							)}
+							{displayListingType === "DAILY_RENT" && (
+								<span
+									style={{
+										fontSize: "16px",
+										fontWeight: "500",
+										color: "#717171",
+									}}
+								>
+									/day
+								</span>
+							)}
 						</div>
 					</div>
 					</div>

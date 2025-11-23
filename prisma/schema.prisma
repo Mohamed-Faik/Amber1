@@ -177,6 +177,7 @@ enum listing_status {
 enum listing_type {
   SALE
   RENT
+  DAILY_RENT
 }
 
 model content_page {

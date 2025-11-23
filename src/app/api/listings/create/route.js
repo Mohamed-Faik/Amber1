@@ -39,9 +39,9 @@ export async function POST(request) {
 		}
 
 		// Validate listing type
-		if (listingType !== "SALE" && listingType !== "RENT") {
+		if (listingType !== "SALE" && listingType !== "RENT" && listingType !== "DAILY_RENT") {
 			return NextResponse.json(
-				{ message: "Invalid listing type. Must be SALE or RENT." },
+				{ message: "Invalid listing type. Must be SALE, RENT, or DAILY_RENT." },
 				{ status: 400 }
 			);
 		}

@@ -716,11 +716,12 @@ const ListingForm = ({ initialData = null }) => {
 											menuPosition="fixed"
 											options={[
 												{ value: "SALE", label: "For Sale" },
-												{ value: "RENT", label: "For Rent (Monthly)" }
+												{ value: "RENT", label: "For Rent (Monthly)" },
+												{ value: "DAILY_RENT", label: "Daily Rent" }
 											]}
 											value={
 												listingTypeValue
-													? [{ value: "SALE", label: "For Sale" }, { value: "RENT", label: "For Rent (Monthly)" }].find(
+													? [{ value: "SALE", label: "For Sale" }, { value: "RENT", label: "For Rent (Monthly)" }, { value: "DAILY_RENT", label: "Daily Rent" }].find(
 															(x) => x.value === listingTypeValue
 													  )
 													: null

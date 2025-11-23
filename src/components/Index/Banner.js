@@ -37,8 +37,8 @@ const Banner = () => {
 		if (location) params.append("location_value", location);
 		if (minPrice) params.append("min_price", minPrice);
 		if (maxPrice) params.append("max_price", maxPrice);
-		// Map saleType to listingType: "For sale" -> "SALE", "For rent" -> "RENT"
-		const listingType = saleType === "For rent" ? "RENT" : saleType === "For sale" ? "SALE" : null;
+		// Map saleType to listingType: "For sale" -> "SALE", "For rent" -> "RENT", "Daily rent" -> "DAILY_RENT"
+		const listingType = saleType === "For rent" ? "RENT" : saleType === "Daily rent" ? "DAILY_RENT" : saleType === "For sale" ? "SALE" : null;
 		if (listingType) params.append("listingType", listingType);
 		router.push(`/listings?${params.toString()}`);
 	};
@@ -113,7 +113,7 @@ const Banner = () => {
 		};
 	}, [showCategoryDropdown, showSaleTypeDropdown]);
 
-	const saleTypes = ["For sale", "For rent"];
+	const saleTypes = ["For sale", "For rent", "Daily rent"];
 
 	return (
 		<div
