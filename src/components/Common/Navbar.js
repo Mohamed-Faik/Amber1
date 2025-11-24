@@ -117,7 +117,7 @@ const Navbar = ({ currentUser }) => {
   );
 
   const navLinks = [
-    { href: "/", label: getTranslation(displayLanguage, "nav.homes"), icon: HomeIcon },
+    { href: "/homes", label: getTranslation(displayLanguage, "nav.homes"), icon: HomeIcon },
     { href: "/experiences", label: getTranslation(displayLanguage, "nav.experiences"), icon: ExperiencesIcon },
     { href: "/services", label: getTranslation(displayLanguage, "nav.services"), icon: ServicesIcon },
   ];
