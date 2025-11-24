@@ -37,9 +37,11 @@ const Banner = () => {
 		if (location) params.append("location_value", location);
 		if (minPrice) params.append("min_price", minPrice);
 		if (maxPrice) params.append("max_price", maxPrice);
-		// Map saleType to listingType: "For sale" -> "SALE", "For rent" -> "RENT", "For rent (Daily)" -> "DAILY_RENT"
-		const listingType = saleType === "For rent" ? "RENT" : saleType === "For rent (Daily)" ? "DAILY_RENT" : saleType === "For sale" ? "SALE" : null;
-		if (listingType) params.append("listingType", listingType);
+		// Map saleType to listingType: "For sale" -> "SALE", "For rent" -> don't filter (let search page handle monthly/daily)
+		if (saleType === "For sale") {
+			params.append("listingType", "SALE");
+		}
+		// For "For rent", don't pass listingType - users can filter by monthly/daily on search page
 		router.push(`/listings?${params.toString()}`);
 	};
 
@@ -113,7 +115,7 @@ const Banner = () => {
 		};
 	}, [showCategoryDropdown, showSaleTypeDropdown]);
 
-	const saleTypes = ["For sale", "For rent", "For rent (Daily)"];
+	const saleTypes = ["For sale", "For rent"];
 
 	return (
 		<div

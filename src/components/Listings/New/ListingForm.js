@@ -40,7 +40,7 @@ const parseImages = (value) => {
 	return [];
 };
 
-const ListingForm = ({ initialData = null }) => {
+const ListingForm = ({ initialData = null, featureType = null }) => {
 	const [isLoading, setIsLoading] = useState(false);
 	const router = useRouter();
 	const isEditMode = Boolean(initialData);
@@ -201,11 +201,12 @@ const ListingForm = ({ initialData = null }) => {
 			return;
 		}
 
-		// Validate conditional fields based on property type
+		// Validate conditional fields based on property type (only for HOMES)
 		const propertyType = data.category;
+		const isHomes = !featureType || featureType === "HOMES";
 		
-		// Area is required for all property types except Land (optional for Land)
-		if (propertyType && propertyType !== "Land") {
+		// Area is required for all property types except Land (optional for Land) - only for HOMES
+		if (isHomes && propertyType && propertyType !== "Land") {
 			if (!data.area || data.area === "") {
 				toast.error("Please enter the area in square meters");
 				setError("area", { type: "required", message: "Area is required" });
@@ -213,8 +214,8 @@ const ListingForm = ({ initialData = null }) => {
 			}
 		}
 
-		// Bedrooms and bathrooms required for Villa, Apartment, and House
-		if (propertyType === "Villa" || propertyType === "Apartment" || propertyType === "House") {
+		// Bedrooms and bathrooms required for Villa, Apartment, and House - only for HOMES
+		if (isHomes && (propertyType === "Villa" || propertyType === "Apartment" || propertyType === "House")) {
 			if (!data.bedrooms || data.bedrooms === "") {
 				toast.error("Please enter the number of bedrooms/chambers");
 				setError("bedrooms", { type: "required", message: "Bedrooms/Chambers is required" });
@@ -240,6 +241,8 @@ const ListingForm = ({ initialData = null }) => {
 				value: locationValue,
 				latlng: locationLatlng,
 			},
+			// Include featureType if provided (for Experiences and Services)
+			...(featureType && { featureType }),
 		};
 
 		setIsLoading(true);
@@ -253,9 +256,20 @@ const ListingForm = ({ initialData = null }) => {
 				toast.success(
 					isEditMode
 						? "Listing updated! Changes will be reviewed before going live."
+						: featureType === "EXPERIENCES"
+						? "Experience created successfully!"
+						: featureType === "SERVICES"
+						? "Service created successfully!"
 						: "Listing created! It is pending admin approval and will be visible once approved."
 				);
-				router.push("/listings/my-listings");
+				// Redirect based on feature type
+				if (featureType === "EXPERIENCES") {
+					router.push("/experiences");
+				} else if (featureType === "SERVICES") {
+					router.push("/services");
+				} else {
+					router.push("/listings/my-listings");
+				}
 				router.refresh();
 				reset(defaultValues);
 			})

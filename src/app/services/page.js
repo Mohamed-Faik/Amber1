@@ -1,5 +1,5 @@
 import React from "react";
-import { Search, LayoutGrid } from "lucide-react";
+import { ConciergeBell, LayoutGrid } from "lucide-react";
 import Listings from "@/components/Listings/Index";
 import SearchForm from "@/components/Listings/SearchForm";
 import getListings from "@/actions/getListings";
@@ -7,18 +7,18 @@ import { getCurrentUser } from "@/actions/getCurrentUser";
 
 export const dynamic = "force-dynamic";
 
-const page = async ({ searchParams }) => {
+const ServicesPage = async ({ searchParams }) => {
 	const {
 		listings,
 		totalPages,
 		startListingNumber,
 		endListingNumber,
 		totalListings: totalCount,
-	} = await getListings({ ...searchParams, featureType: "HOMES" });
+	} = await getListings({ ...searchParams, featureType: "SERVICES" });
 	const currentUser = await getCurrentUser();
 
 	return (
-		<div className="listings-page-container" style={{
+		<div className="services-page-container" style={{
 			backgroundColor: "#FAFAFA",
 			minHeight: "100vh",
 			position: "relative",
@@ -49,24 +49,24 @@ const page = async ({ searchParams }) => {
 			<div style={{ height: "80px" }} />
 			
 			{/* Search Form Section - Styled */}
-			<div className="listings-search-section" style={{
+			<div className="services-search-section" style={{
 				position: "relative",
 				zIndex: 1,
 				marginBottom: "48px",
 			}}>
-				<div className="listings-search-wrapper" style={{
+				<div className="services-search-wrapper" style={{
 					maxWidth: "1760px",
 					margin: "0 auto",
 					padding: "0 80px",
 				}}>
-					<div className="listings-search-card" style={{
+					<div className="services-search-card" style={{
 						backgroundColor: "#FFFFFF",
 						borderRadius: "16px",
 						padding: "40px",
 						boxShadow: "0 2px 12px rgba(0, 0, 0, 0.08)",
 						border: "1px solid #E0E0E0",
 					}}>
-						<div className="listings-search-header" style={{
+						<div className="services-search-header" style={{
 							display: "flex",
 							alignItems: "center",
 							gap: "16px",
@@ -82,7 +82,7 @@ const page = async ({ searchParams }) => {
 								justifyContent: "center",
 								boxShadow: "0 8px 24px rgba(255, 56, 92, 0.25)",
 							}}>
-								<Search size={28} color="#FFFFFF" strokeWidth={2.5} />
+								<ConciergeBell size={28} color="#FFFFFF" strokeWidth={2.5} />
 							</div>
 							<div>
 								<h1 style={{
@@ -93,7 +93,7 @@ const page = async ({ searchParams }) => {
 									lineHeight: "1.1",
 									letterSpacing: "-0.5px",
 								}}>
-									Find Your Perfect Property
+									Find Professional Services
 								</h1>
 								<p style={{
 									fontSize: "15px",
@@ -101,7 +101,7 @@ const page = async ({ searchParams }) => {
 									margin: "0",
 									fontWeight: "500",
 								}}>
-									Search & Explore Listings
+									Search & Explore Services
 								</p>
 							</div>
 						</div>
@@ -111,17 +111,17 @@ const page = async ({ searchParams }) => {
 			</div>
 
 			{/* Listings Section */}
-			<div className="listings-results-section" style={{
+			<div className="services-results-section" style={{
 				position: "relative",
 				zIndex: 1,
 				paddingBottom: "48px",
 			}}>
-				<div className="listings-results-wrapper" style={{
+				<div className="services-results-wrapper" style={{
 					maxWidth: "1760px",
 					margin: "0 auto",
 					padding: "0 80px",
 				}}>
-					<div className="listings-results-card" style={{
+					<div className="services-results-card" style={{
 						backgroundColor: "#FFFFFF",
 						borderRadius: "16px",
 						padding: "40px",
@@ -155,7 +155,7 @@ const page = async ({ searchParams }) => {
 								margin: "0",
 								letterSpacing: "-0.5px",
 							}}>
-								Available Properties
+								Available Services
 							</h2>
 						</div>
 
@@ -175,4 +175,5 @@ const page = async ({ searchParams }) => {
 	);
 };
 
-export default page;
+export default ServicesPage;
+

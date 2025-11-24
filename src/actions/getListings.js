@@ -9,6 +9,7 @@ export default async function getListings(params) {
 			min_price,
 			max_price,
 			listingType, // Filter by SALE or RENT
+			featureType, // Filter by HOMES, EXPERIENCES, or SERVICES
 			page = 1,
 			pageSize = 9,
 			status, // For admin filtering
@@ -40,6 +41,12 @@ export default async function getListings(params) {
 		if (listingType && (listingType === "SALE" || listingType === "RENT" || listingType === "DAILY_RENT")) {
 			whereClause.listingType = listingType;
 		}
+
+		// Feature type filter (HOMES, EXPERIENCES, or SERVICES)
+		if (featureType && (featureType === "HOMES" || featureType === "EXPERIENCES" || featureType === "SERVICES")) {
+			whereClause.featureType = featureType;
+		}
+		// Note: If no featureType is specified, show all types (for backward compatibility)
 
 		// Price filter
 		if (min_price || max_price) {

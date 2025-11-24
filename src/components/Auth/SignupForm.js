@@ -324,13 +324,20 @@ const SignupForm = () => {
       
       if (result?.error) {
         if (result.error === "OAuthSignin" || result.error === "Configuration") {
-          toast.error("Facebook sign-in is not configured. Please check FACEBOOK_CLIENT_ID and FACEBOOK_CLIENT_SECRET in your environment variables. Also ensure your Facebook app is in Live mode and redirect URIs are configured correctly.");
+          toast.error(
+            "Facebook login is unavailable. Make sure: 1) Facebook app is in Live mode (not Development), 2) Redirect URI is configured. See FACEBOOK_LOGIN_QUICK_FIX.md",
+            { duration: 6000 }
+          );
         } else if (result.error === "AccessDenied") {
           toast.error("Facebook login was denied. Please make sure you grant permission and that your Facebook app is configured correctly.");
         } else if (result.error === "OAuthCallback") {
-          toast.error("Facebook login callback failed. Please check that your Facebook app redirect URI is set to: " + window.location.origin + "/api/auth/callback/facebook");
+          const redirectUri = `${window.location.origin}/api/auth/callback/facebook`;
+          toast.error(
+            `Redirect URI mismatch! Add this exact URI to Facebook App Settings → Valid OAuth Redirect URIs: ${redirectUri}`,
+            { duration: 8000 }
+          );
         } else {
-          toast.error(`Facebook login failed: ${result.error}. Please check FACEBOOK_LOGIN_SETUP.md for configuration instructions.`);
+          toast.error(`Facebook login failed: ${result.error}. The most common fix is switching your Facebook app to Live mode. See FACEBOOK_LOGIN_QUICK_FIX.md`, { duration: 6000 });
         }
         setIsSocialLoading(false);
       } else if (result?.ok) {
