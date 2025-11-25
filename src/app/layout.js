@@ -9,6 +9,8 @@ import "react-accessible-accordion/dist/fancy-example.css";
 // Global styles
 import "./styles/style.css";
 import "./styles/responsive.css";
+// Tailwind CSS
+import "./styles/globals.css";
 
 import ConditionalLayout from "@/components/Common/ConditionalLayout";
 import TosterProvider from "@/providers/TosterProvider";

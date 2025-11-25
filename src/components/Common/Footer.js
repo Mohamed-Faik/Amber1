@@ -386,9 +386,7 @@ const Footer = () => {
 							color: "#b0b0b0",
 						}}
 					>
-						Made with
-						<span style={{ color: "#FF385C", margin: "0 4px" }}>❤️</span>
-						for property seekers
+						Created by AdverIQ
 					</div>
 				</div>
 			</div>

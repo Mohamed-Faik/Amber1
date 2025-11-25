@@ -138,6 +138,7 @@ const NotificationBadge = ({ currentUser }) => {
 			<button
 				ref={buttonRef}
 				onClick={toggleDropdown}
+				className="notification-bell-button"
 				style={{
 					position: "relative",
 					display: "flex",
@@ -151,6 +152,8 @@ const NotificationBadge = ({ currentUser }) => {
 					cursor: "pointer",
 					transition: "all 0.2s ease",
 					padding: 0,
+					flexShrink: 0,
+					marginLeft: "-14px",
 				}}
 				onMouseEnter={(e) => {
 					if (!isDropdownOpen) {
@@ -214,6 +217,26 @@ const NotificationBadge = ({ currentUser }) => {
 						50% {
 							opacity: 0.8;
 							transform: scale(1.1);
+						}
+					}
+					
+					/* Mobile responsive styles */
+					@media (max-width: 991px) {
+						.notification-bell-button {
+							width: 40px !important;
+							height: 40px !important;
+							min-width: 40px !important;
+							min-height: 40px !important;
+						}
+					}
+					
+					/* Small mobile adjustments */
+					@media (max-width: 480px) {
+						.notification-bell-button {
+							width: 38px !important;
+							height: 38px !important;
+							min-width: 38px !important;
+							min-height: 38px !important;
 						}
 					}
 				`}</style>

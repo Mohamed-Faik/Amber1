@@ -48,7 +48,7 @@ const LanguageSwitcher = () => {
           justifyContent: "center",
           padding: "10px",
           borderRadius: "50%",
-          border: "1px solid #DDDDDD",
+          // border: "1px solid #DDDDDD",
           backgroundColor: "#FFFFFF",
           cursor: "pointer",
           transition: "all 0.2s ease",
