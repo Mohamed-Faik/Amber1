@@ -8,10 +8,14 @@ import { categories as allCategories } from "@/libs/Categories";
 import LocationFind from "./LocationFind";
 import { toast } from "react-hot-toast";
 import { Home, MapPin, Navigation, ChevronDown } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { getTranslation } from "@/utils/translations";
 
 const Banner = () => {
 	const router = useRouter();
-	const [saleType, setSaleType] = useState("For sale");
+	const { language, isDetecting } = useLanguage();
+	const displayLanguage = isDetecting ? "en" : language;
+	const [saleType, setSaleType] = useState(getTranslation(displayLanguage, "hero.forSale"));
 	const [category, setCategory] = useState("");
 	const [location, setLocation] = useState("");
 	const [street, setStreet] = useState("");
@@ -33,9 +37,11 @@ const Banner = () => {
 		if (location) params.append("location_value", location);
 		if (minPrice) params.append("min_price", minPrice);
 		if (maxPrice) params.append("max_price", maxPrice);
-		// Map saleType to listingType: "For sale" -> "SALE", "For rent" -> "RENT"
-		const listingType = saleType === "For rent" ? "RENT" : saleType === "For sale" ? "SALE" : null;
-		if (listingType) params.append("listingType", listingType);
+		// Map saleType to listingType: "For sale" -> "SALE", "For rent" -> don't filter (let search page handle monthly/daily)
+		if (saleType === getTranslation(displayLanguage, "hero.forSale")) {
+			params.append("listingType", "SALE");
+		}
+		// For "For rent", don't pass listingType - users can filter by monthly/daily on search page
 		router.push(`/listings?${params.toString()}`);
 	};
 
@@ -109,7 +115,10 @@ const Banner = () => {
 		};
 	}, [showCategoryDropdown, showSaleTypeDropdown]);
 
-	const saleTypes = ["For sale", "For rent"];
+	const saleTypes = [
+		getTranslation(displayLanguage, "hero.forSale"),
+		getTranslation(displayLanguage, "hero.forRent")
+	];
 
 	return (
 		<div
@@ -191,7 +200,7 @@ const Banner = () => {
 						maxWidth: "1000px",
 						width: "100%",
 						margin: "0 auto",
-						padding: "0 80px",
+						padding: "0 10px",
 					}}
 				>
 					{/* Quote Text */}
@@ -207,19 +216,19 @@ const Banner = () => {
 						<p
 							style={{
 								fontSize: "clamp(32px, 5vw, 64px)",
-								fontWeight: "700",
+								fontWeight: "400",
 								color: "#FFFFFF",
-								fontFamily: "var(--font-playfair), 'Playfair Display', Georgia, serif",
+								fontFamily: "var(--font-brush), 'Caveat Brush', 'Brush Script MT', cursive",
 								lineHeight: "1.2",
-								textShadow: "0 2px 8px rgba(0, 0, 0, 0.3)",
+								textShadow: "0 2px 8px rgba(0, 0, 0, 0.3), 0 4px 12px rgba(0, 0, 0, 0.2)",
 								margin: 0,
 								display: "inline-block",
-								letterSpacing: "-0.5px",
-								fontStyle: "italic",
+								letterSpacing: "1px",
+								fontStyle: "normal",
 							}}
 						>
 							<span style={{ color: "#FF385C" }}>"</span>
-							It's about people, not about stones
+							{getTranslation(displayLanguage, "hero.quote")}
 							<span style={{ color: "#FF385C" }}>"</span>
 						</p>
 					</div>
@@ -412,7 +421,7 @@ const Banner = () => {
 											}
 										}}
 									>
-										<span>{category || "What type are you looking for?"}</span>
+										<span>{category || getTranslation(displayLanguage, "hero.category")}</span>
 										<ChevronDown 
 											size={18} 
 											color={showCategoryDropdown ? "#FF385C" : "#717171"}
@@ -551,7 +560,7 @@ const Banner = () => {
 								<div style={{ position: "relative" }}>
 									<input
 										type="text"
-										placeholder="Where are you looking?"
+										placeholder={getTranslation(displayLanguage, "hero.location")}
 										value={location}
 										onChange={(e) => {
 											setLocation(e.target.value);
@@ -607,7 +616,7 @@ const Banner = () => {
 									<div style={{ position: "relative", flex: "1" }}>
 										<input
 											type="number"
-											placeholder="Min Price (MAD)"
+											placeholder={`${getTranslation(displayLanguage, "hero.minPrice")} (MAD)`}
 											value={minPrice}
 											onChange={(e) => {
 												const value = e.target.value;
@@ -654,7 +663,7 @@ const Banner = () => {
 									<div style={{ position: "relative", flex: "1" }}>
 										<input
 											type="number"
-											placeholder="Max Price (MAD)"
+											placeholder={`${getTranslation(displayLanguage, "hero.maxPrice")} (MAD)`}
 											value={maxPrice}
 											onChange={(e) => {
 												const value = e.target.value;
@@ -739,7 +748,7 @@ const Banner = () => {
 										<circle cx="11" cy="11" r="8"></circle>
 										<path d="m21 21-4.35-4.35"></path>
 									</svg>
-									Search
+									{getTranslation(displayLanguage, "hero.search")}
 								</button>
 							</div>
 						</form>

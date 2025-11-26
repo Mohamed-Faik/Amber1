@@ -173,15 +173,15 @@ const DetailsHead = ({
 					style={{
 						display: "inline-block",
 						padding: "6px 14px",
-						backgroundColor: displayListingType === "RENT" ? "#E8F5E9" : "#FFF5F7",
-						color: displayListingType === "RENT" ? "#2E7D32" : "#FF385C",
+						backgroundColor: displayListingType === "RENT" ? "#E8F5E9" : displayListingType === "DAILY_RENT" ? "#E3F2FD" : "#FFF5F7",
+						color: displayListingType === "RENT" ? "#2E7D32" : displayListingType === "DAILY_RENT" ? "#1976D2" : "#FF385C",
 						borderRadius: "8px",
 						fontSize: "14px",
 						fontWeight: "700",
 						letterSpacing: "0.5px",
 					}}
 				>
-					{displayListingType === "RENT" ? "FOR RENT" : "FOR SALE"}
+					{displayListingType === "RENT" ? "FOR RENT" : displayListingType === "DAILY_RENT" ? "FOR RENT (DAILY)" : "FOR SALE"}
 				</span>
 				<span
 					style={{
@@ -201,6 +201,18 @@ const DetailsHead = ({
 							}}
 						>
 							/month
+						</span>
+					)}
+					{displayListingType === "DAILY_RENT" && (
+						<span
+							style={{
+								fontSize: "18px",
+								fontWeight: "500",
+								color: "#717171",
+								marginLeft: "4px",
+							}}
+						>
+							/day
 						</span>
 					)}
 				</span>

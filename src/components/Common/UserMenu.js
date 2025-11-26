@@ -87,27 +87,26 @@ const UserMenu = ({ currentUser }) => {
 					.user-menu-dropdown {
 						position: relative !important;
 						margin-top: 0 !important;
+						margin-bottom: 0 !important;
 					}
 					.user-menu-button {
 						padding: 0 !important;
 						border: 2px solid #E0E0E0 !important;
 						border-radius: 50% !important;
-						margin-top: 0 !important;
-						margin-bottom: 0 !important;
+						margin: 0 !important;
 						width: 40px !important;
 						height: 40px !important;
 						min-width: 40px !important;
 						min-height: 40px !important;
+						max-width: 40px !important;
+						max-height: 40px !important;
 						display: flex !important;
 						align-items: center !important;
 						justify-content: center !important;
 						background-color: #FFFFFF !important;
 						gap: 0 !important;
 						align-self: center !important;
-					}
-					.user-menu-dropdown {
-						margin-top: 0 !important;
-						margin-bottom: 0 !important;
+						flex-shrink: 0 !important;
 					}
 					.user-profile-picture {
 						width: 32px !important;
@@ -121,6 +120,22 @@ const UserMenu = ({ currentUser }) => {
 						border-color: #FF385C !important;
 						box-shadow: 0 2px 8px rgba(255, 56, 92, 0.2) !important;
 						background-color: #FFF5F7 !important;
+					}
+				}
+				
+				/* Small mobile adjustments */
+				@media (max-width: 480px) {
+					.user-menu-button {
+						width: 38px !important;
+						height: 38px !important;
+						min-width: 38px !important;
+						min-height: 38px !important;
+						max-width: 38px !important;
+						max-height: 38px !important;
+					}
+					.user-profile-picture {
+						width: 30px !important;
+						height: 30px !important;
 					}
 				}
 				
@@ -144,6 +159,9 @@ const UserMenu = ({ currentUser }) => {
 						right: 16px !important;
 						width: calc(100vw - 32px) !important;
 						max-width: 320px !important;
+					}
+					.signup-button {
+						display: none !important;
 					}
 				}
 			`}</style>
@@ -177,6 +195,7 @@ const UserMenu = ({ currentUser }) => {
 					</Link>
 					<Link
 						href="/auth/signup"
+						className="signup-button"
 						style={{
 							padding: "12px 16px",
 							borderRadius: "22px",

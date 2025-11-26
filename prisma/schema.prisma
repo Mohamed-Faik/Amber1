@@ -63,6 +63,7 @@ model listing {
   price          Int
   status         listing_status @default(Pending)
   listingType    listing_type   @default(SALE)
+  featureType    feature_type   @default(HOMES)
   latitude       Float
   longitude      Float
   category       String
@@ -74,6 +75,7 @@ model listing {
 
   @@index([userId], map: "Listing_userId_idx")
   @@index([listingType], map: "Listing_listingType_idx")
+  @@index([featureType], map: "Listing_featureType_idx")
 }
 
 model profile {
@@ -177,6 +179,13 @@ enum listing_status {
 enum listing_type {
   SALE
   RENT
+  DAILY_RENT
+}
+
+enum feature_type {
+  HOMES
+  EXPERIENCES
+  SERVICES
 }
 
 model content_page {

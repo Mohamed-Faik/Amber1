@@ -2,18 +2,22 @@ import "./styles/bootstrap.min.css";
 import "./styles/flaticon.css";
 import "./styles/remixicon.css";
 import "./styles/dark-mode.css";
+import "./styles/cereal-font.css";
 import "swiper/css";
 import "swiper/css/pagination";
 import "react-accessible-accordion/dist/fancy-example.css";
 // Global styles
 import "./styles/style.css";
 import "./styles/responsive.css";
+// Tailwind CSS
+import "./styles/globals.css";
 
 import ConditionalLayout from "@/components/Common/ConditionalLayout";
 import TosterProvider from "@/providers/TosterProvider";
 import SessionProvider from "@/providers/SessionProvider";
 import { getCurrentUser } from "@/actions/getCurrentUser";
-import { Inter, Playfair_Display } from "next/font/google";
+import localFont from "next/font/local";
+import { Dancing_Script } from "next/font/google";
 
 export const metadata = {
   title: {
@@ -84,19 +88,19 @@ export const metadata = {
   ],
 };
 
-// Professional font for all text
-const inter = Inter({
-  weight: ["300", "400", "500", "600", "700"],
-  subsets: ["latin"],
-  variable: "--font-inter",
+// Cereal font from local file
+const cereal = localFont({
+  src: "../../public/fonts/cereal.otf",
+  variable: "--font-cereal",
   display: "swap",
+  weight: "400",
 });
 
-// Elegant serif font for quotes and special text
-const playfairDisplay = Playfair_Display({
-  weight: ["400", "500", "600", "700", "800", "900"],
+// Brush-style font for hero text
+const dancingScript = Dancing_Script({
+  weight: ["400", "500", "600", "700"],
   subsets: ["latin"],
-  variable: "--font-playfair",
+  variable: "--font-brush",
   display: "swap",
 });
 
@@ -104,7 +108,7 @@ export default async function RootLayout({ children }) {
   const currentUser = await getCurrentUser();
 
   return (
-    <html lang="en" className={`${inter.variable} ${playfairDisplay.variable}`}>
+    <html lang="en" className={`${cereal.variable} ${dancingScript.variable}`}>
       <body suppressHydrationWarning={true}>
         <SessionProvider>
           <TosterProvider />

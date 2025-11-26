@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
-import { writeFile, mkdir } from "fs/promises";
+import { writeFile, mkdir, stat, unlink } from "fs/promises";
 import { join } from "path";
-import { existsSync } from "fs";
+import { existsSync, statSync } from "fs";
 import { put } from "@vercel/blob";
 import sharp from "sharp";
 
@@ -128,7 +128,24 @@ export async function POST(request) {
 			}
 		} else {
 			// Use local filesystem for development (localhost only)
-			const uploadsDir = join(process.cwd(), "public", "uploads", folder);
+			const publicDir = join(process.cwd(), "public");
+			const uploadsBaseDir = join(publicDir, "uploads");
+			const uploadsDir = join(uploadsBaseDir, folder);
+			
+			// Check if uploads exists and is a file (not a directory) - delete it if so
+			if (existsSync(uploadsBaseDir)) {
+				try {
+					const stats = statSync(uploadsBaseDir);
+					if (stats.isFile()) {
+						console.warn("Found 'uploads' as a file, removing it to create directory...");
+						await unlink(uploadsBaseDir);
+					}
+				} catch (error) {
+					console.warn("Error checking uploads path:", error);
+				}
+			}
+			
+			// Create directory structure if it doesn't exist
 			if (!existsSync(uploadsDir)) {
 				await mkdir(uploadsDir, { recursive: true });
 			}

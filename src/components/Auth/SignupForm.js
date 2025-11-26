@@ -3,7 +3,7 @@ import { useState, useRef, useEffect } from "react";
 import { signIn } from "next-auth/react";
 import { ArrowLeft } from "lucide-react";
 import { toast } from "react-hot-toast";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import axios from "axios";
 import PhoneInput from "react-phone-number-input";
@@ -13,6 +13,7 @@ import googleImg from "../../../public/images/google.png";
 
 const SignupForm = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
   
   // Part 1: Email & OTP
   const [email, setEmail] = useState("");
@@ -38,6 +39,29 @@ const SignupForm = () => {
   const [isSocialLoading, setIsSocialLoading] = useState(false);
   const inputRefs = useRef([]);
   const phoneOtpRefs = useRef([]);
+
+  // Check for OAuth callback errors in URL
+  useEffect(() => {
+    const error = searchParams?.get("error");
+    if (error) {
+      // Clear the error from URL
+      const newUrl = window.location.pathname;
+      window.history.replaceState({}, "", newUrl);
+      
+      // Show appropriate error message
+      if (error === "Callback") {
+        toast.error("Facebook signup failed during authentication. This may be due to account linking issues. Please try again or contact support if the problem persists.");
+      } else if (error === "OAuthSignin") {
+        toast.error("Facebook sign-in failed. Please check your Facebook app configuration.");
+      } else if (error === "OAuthCallback") {
+        toast.error("Facebook login callback failed. Please verify your redirect URI is configured correctly in Facebook App settings.");
+      } else if (error === "AccessDenied") {
+        toast.error("Facebook login was denied. Please grant the necessary permissions.");
+      } else {
+        toast.error(`Signup error: ${error}. Please try again.`);
+      }
+    }
+  }, [searchParams]);
 
   // Load OTP from localStorage on mount
   useEffect(() => {
@@ -300,11 +324,20 @@ const SignupForm = () => {
       
       if (result?.error) {
         if (result.error === "OAuthSignin" || result.error === "Configuration") {
-          toast.error("Facebook sign-in is not configured. Please add FACEBOOK_CLIENT_ID and FACEBOOK_CLIENT_SECRET to your .env file and restart the server.");
+          toast.error(
+            "Facebook login is unavailable. Make sure: 1) Facebook app is in Live mode (not Development), 2) Redirect URI is configured. See FACEBOOK_LOGIN_QUICK_FIX.md",
+            { duration: 6000 }
+          );
         } else if (result.error === "AccessDenied") {
-          toast.error("Facebook login was denied. Please make sure you grant email permission and that your Facebook app is configured correctly.");
+          toast.error("Facebook login was denied. Please make sure you grant permission and that your Facebook app is configured correctly.");
+        } else if (result.error === "OAuthCallback") {
+          const redirectUri = `${window.location.origin}/api/auth/callback/facebook`;
+          toast.error(
+            `Redirect URI mismatch! Add this exact URI to Facebook App Settings → Valid OAuth Redirect URIs: ${redirectUri}`,
+            { duration: 8000 }
+          );
         } else {
-          toast.error(`Facebook login failed: ${result.error}`);
+          toast.error(`Facebook login failed: ${result.error}. The most common fix is switching your Facebook app to Live mode. See FACEBOOK_LOGIN_QUICK_FIX.md`, { duration: 6000 });
         }
         setIsSocialLoading(false);
       } else if (result?.ok) {
@@ -314,7 +347,7 @@ const SignupForm = () => {
       }
     } catch (error) {
       console.error("Facebook login error:", error);
-      toast.error("Facebook login failed. Please check your FACEBOOK_CLIENT_ID and FACEBOOK_CLIENT_SECRET in .env file and restart the server.");
+      toast.error("Facebook login failed. Please check your Facebook app configuration. See FACEBOOK_LOGIN_SETUP.md for setup instructions.");
       setIsSocialLoading(false);
     }
   };

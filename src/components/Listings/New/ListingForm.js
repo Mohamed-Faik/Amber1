@@ -40,7 +40,7 @@ const parseImages = (value) => {
 	return [];
 };
 
-const ListingForm = ({ initialData = null }) => {
+const ListingForm = ({ initialData = null, featureType = null }) => {
 	const [isLoading, setIsLoading] = useState(false);
 	const router = useRouter();
 	const isEditMode = Boolean(initialData);
@@ -143,7 +143,20 @@ const ListingForm = ({ initialData = null }) => {
 
 	const {
 		field: { value: listingTypeValue, onChange: listingTypeOnChange, ...restListingTypeField },
-	} = useController({ name: "listingType", control, defaultValue: "SALE" });
+	} = useController({ 
+		name: "listingType", 
+		control, 
+		defaultValue: "SALE",
+		rules: {
+			required: "Listing type is required",
+			validate: (value) => {
+				if (!value || (value !== "SALE" && value !== "RENT" && value !== "DAILY_RENT")) {
+					return "Please select a valid listing type";
+				}
+				return true;
+			}
+		}
+	});
 
 	const city = watch("city");
 	const neighborhood = watch("neighborhood");
@@ -163,6 +176,10 @@ const ListingForm = ({ initialData = null }) => {
 	}, [city, neighborhood, setCustomValue]);
 
 	const onSubmit = (data) => {
+		console.log("Form submitted with data:", data);
+		console.log("Listing type value:", data.listingType);
+		console.log("Listing type value type:", typeof data.listingType);
+		
 		// Ensure imageSrc is an array and has at least one image
 		if (!data.imageSrc || !Array.isArray(data.imageSrc) || data.imageSrc.length === 0) {
 			toast.error("Please upload at least one image");
@@ -170,8 +187,9 @@ const ListingForm = ({ initialData = null }) => {
 		}
 
 		// Validate listing type
-		if (!data.listingType || (data.listingType !== "SALE" && data.listingType !== "RENT")) {
-			toast.error("Please select whether this is for sale or rent");
+		if (!data.listingType || (data.listingType !== "SALE" && data.listingType !== "RENT" && data.listingType !== "DAILY_RENT")) {
+			console.error("Invalid listing type:", data.listingType);
+			toast.error("Please select a listing type (For Sale, For Rent Monthly, or For Rent Daily)");
 			setError("listingType", { type: "required", message: "Listing type is required" });
 			return;
 		}
@@ -183,8 +201,12 @@ const ListingForm = ({ initialData = null }) => {
 			return;
 		}
 
-		// Validate conditional fields based on category
-		if (data.category === "House" || data.category === "Land") {
+		// Validate conditional fields based on property type (only for HOMES)
+		const propertyType = data.category;
+		const isHomes = !featureType || featureType === "HOMES";
+		
+		// Area is required for all property types except Land (optional for Land) - only for HOMES
+		if (isHomes && propertyType && propertyType !== "Land") {
 			if (!data.area || data.area === "") {
 				toast.error("Please enter the area in square meters");
 				setError("area", { type: "required", message: "Area is required" });
@@ -192,10 +214,11 @@ const ListingForm = ({ initialData = null }) => {
 			}
 		}
 
-		if (data.category === "House") {
+		// Bedrooms and bathrooms required for Villa, Apartment, and House - only for HOMES
+		if (isHomes && (propertyType === "Villa" || propertyType === "Apartment" || propertyType === "House")) {
 			if (!data.bedrooms || data.bedrooms === "") {
-				toast.error("Please enter the number of bedrooms");
-				setError("bedrooms", { type: "required", message: "Bedrooms is required" });
+				toast.error("Please enter the number of bedrooms/chambers");
+				setError("bedrooms", { type: "required", message: "Bedrooms/Chambers is required" });
 				return;
 			}
 			if (!data.bathrooms || data.bathrooms === "") {
@@ -218,6 +241,8 @@ const ListingForm = ({ initialData = null }) => {
 				value: locationValue,
 				latlng: locationLatlng,
 			},
+			// Include featureType if provided (for Experiences and Services)
+			...(featureType && { featureType }),
 		};
 
 		setIsLoading(true);
@@ -231,9 +256,20 @@ const ListingForm = ({ initialData = null }) => {
 				toast.success(
 					isEditMode
 						? "Listing updated! Changes will be reviewed before going live."
+						: featureType === "EXPERIENCES"
+						? "Experience created successfully!"
+						: featureType === "SERVICES"
+						? "Service created successfully!"
 						: "Listing created! It is pending admin approval and will be visible once approved."
 				);
-				router.push("/listings/my-listings");
+				// Redirect based on feature type
+				if (featureType === "EXPERIENCES") {
+					router.push("/experiences");
+				} else if (featureType === "SERVICES") {
+					router.push("/services");
+				} else {
+					router.push("/listings/my-listings");
+				}
 				router.refresh();
 				reset(defaultValues);
 			})
@@ -463,14 +499,14 @@ const ListingForm = ({ initialData = null }) => {
 
 								<div style={{ position: "relative", zIndex: 1 }}>
 									<label className="form-label-custom" style={{ position: "relative", zIndex: 2 }}>
-										Category <span style={{ color: "#FF385C" }}>*</span>
+										Property Type <span style={{ color: "#FF385C" }}>*</span>
 									</label>
 									<div style={{ position: "relative", zIndex: 1 }}>
 									<Select
 										id="react-select-2-live-region"
 										className="select-input"
 										classNamePrefix="select"
-										placeholder="Select Category"
+										placeholder="Select Property Type (Villa, Apartment, House, or Land)"
 										isClearable
 										isSearchable
 										menuPortalTarget={typeof document !== "undefined" ? document.body : null}
@@ -483,11 +519,14 @@ const ListingForm = ({ initialData = null }) => {
 												  )
 												: catValue
 										}
-										onChange={(option) =>
-											catOnChange(
-												option ? option.value : option
-											)
-										}
+										onChange={(option) => {
+											catOnChange(option ? option.value : option);
+											// Clear bedrooms and bathrooms when switching to Land
+											if (!option || option.value === "Land") {
+												setCustomValue("bedrooms", "");
+												setCustomValue("bathrooms", "");
+											}
+										}}
 										{...restCategoryField}
 										styles={{
 											control: (base, state) => ({
@@ -588,8 +627,8 @@ const ListingForm = ({ initialData = null }) => {
 								/>
 							</div>
 
-							{/* Conditional Fields based on Category */}
-							{(category === "House" || category === "Land") && (
+							{/* Conditional Fields based on Property Type */}
+							{category && category !== "" && (
 								<div
 									style={{
 										marginTop: "24px",
@@ -615,33 +654,37 @@ const ListingForm = ({ initialData = null }) => {
 									<div
 										style={{
 											display: "grid",
-											gridTemplateColumns: category === "House" ? "repeat(3, 1fr)" : "1fr",
+											gridTemplateColumns: (category === "Villa" || category === "Apartment" || category === "House") 
+												? "repeat(3, 1fr)" 
+												: "1fr",
 											gap: "20px",
 											width: "100%",
 										}}
 									>
-										<Input
-											label="Area (Square Meters)"
-											id="area"
-											type="number"
-											placeholder="e.g., 150"
-											disabled={isLoading}
-											register={register}
-											errors={errors}
-											required={category === "House" || category === "Land"}
-										/>
+										{(category === "Villa" || category === "Apartment" || category === "House" || category === "Land") && (
+											<Input
+												label="Area (Square Meters)"
+												id="area"
+												type="number"
+												placeholder="e.g., 150"
+												disabled={isLoading}
+												register={register}
+												errors={errors}
+												required={category !== "Land"}
+											/>
+										)}
 
-										{category === "House" && (
+										{(category === "Villa" || category === "Apartment" || category === "House") && (
 											<>
 												<Input
-													label="Bedrooms"
+													label={category === "Apartment" ? "Chambers (Bedrooms)" : "Bedrooms"}
 													id="bedrooms"
 													type="number"
-													placeholder="e.g., 3"
+													placeholder={category === "Apartment" ? "e.g., 2" : "e.g., 3"}
 													disabled={isLoading}
 													register={register}
 													errors={errors}
-													required={category === "House"}
+													required
 												/>
 												<Input
 													label="Bathrooms"
@@ -651,7 +694,7 @@ const ListingForm = ({ initialData = null }) => {
 													disabled={isLoading}
 													register={register}
 													errors={errors}
-													required={category === "House"}
+													required
 												/>
 											</>
 										)}
@@ -705,21 +748,31 @@ const ListingForm = ({ initialData = null }) => {
 											menuPosition="fixed"
 											options={[
 												{ value: "SALE", label: "For Sale" },
-												{ value: "RENT", label: "For Rent (Monthly)" }
+												{ value: "RENT", label: "For Rent (Monthly)" },
+												{ value: "DAILY_RENT", label: "For Rent (Daily)" }
 											]}
 											value={
 												listingTypeValue
-													? [{ value: "SALE", label: "For Sale" }, { value: "RENT", label: "For Rent (Monthly)" }].find(
+													? [{ value: "SALE", label: "For Sale" }, { value: "RENT", label: "For Rent (Monthly)" }, { value: "DAILY_RENT", label: "For Rent (Daily)" }].find(
 															(x) => x.value === listingTypeValue
 													  )
 													: null
 											}
-											onChange={(option) =>
-												listingTypeOnChange(
-													option ? option.value : null
-												)
-											}
-											{...restListingTypeField}
+											onChange={(option) => {
+												const value = option ? option.value : null;
+												console.log("Listing type changed to:", value);
+												// Call the field's onChange to update react-hook-form
+												listingTypeOnChange(value);
+												// Also update via setValue to ensure it's registered
+												setCustomValue("listingType", value);
+												// Clear any existing errors when a valid option is selected
+												if (value && (value === "SALE" || value === "RENT" || value === "DAILY_RENT")) {
+													setError("listingType", null);
+												}
+											}}
+											onBlur={restListingTypeField.onBlur}
+											name={restListingTypeField.name}
+											ref={restListingTypeField.ref}
 											styles={{
 												control: (base, state) => ({
 													...base,
@@ -776,7 +829,7 @@ const ListingForm = ({ initialData = null }) => {
 								</div>
 
 								<Input
-									label={`Price ${listingType === "RENT" ? "(per month)" : ""}`}
+									label={`Price ${listingType === "RENT" ? "(per month)" : listingType === "DAILY_RENT" ? "(per day)" : ""}`}
 									id="price"
 									type="number"
 									placeholder="0"

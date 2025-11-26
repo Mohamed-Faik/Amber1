@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import prisma from "@/libs/prismadb";
 import { getCurrentUser } from "@/actions/getCurrentUser";
 import { slugify } from "@/utils/slugify";
-import { isModerator } from "@/utils/checkRole";
+import { isModerator, hasAdminAccess } from "@/utils/checkRole";
 
 export async function POST(request) {
 	try {
@@ -23,6 +23,7 @@ export async function POST(request) {
 			features,
 			category,
 			listingType,
+			featureType,
 			location,
 			price,
 			area,
@@ -39,10 +40,30 @@ export async function POST(request) {
 		}
 
 		// Validate listing type
-		if (listingType !== "SALE" && listingType !== "RENT") {
+		if (listingType !== "SALE" && listingType !== "RENT" && listingType !== "DAILY_RENT") {
 			return NextResponse.json(
-				{ message: "Invalid listing type. Must be SALE or RENT." },
+				{ message: "Invalid listing type. Must be SALE, RENT, or DAILY_RENT." },
 				{ status: 400 }
+			);
+		}
+
+		// Validate and handle featureType
+		// Default to HOMES if not specified
+		let validatedFeatureType = featureType || "HOMES";
+		
+		// Validate featureType enum
+		if (!["HOMES", "EXPERIENCES", "SERVICES"].includes(validatedFeatureType)) {
+			return NextResponse.json(
+				{ message: "Invalid feature type. Must be HOMES, EXPERIENCES, or SERVICES." },
+				{ status: 400 }
+			);
+		}
+
+		// Restrict EXPERIENCES and SERVICES to admin users only
+		if ((validatedFeatureType === "EXPERIENCES" || validatedFeatureType === "SERVICES") && !hasAdminAccess(currentUser)) {
+			return NextResponse.json(
+				{ message: "Access denied. Only administrators can create Experiences and Services." },
+				{ status: 403 }
 			);
 		}
 
@@ -111,6 +132,7 @@ export async function POST(request) {
 			features: features || "",
 			category,
 			listingType: listingType || "SALE",
+			featureType: validatedFeatureType,
 			location_value: location.label,
 			price: parseInt(price, 10),
 			latitude: location.latlng[0],
@@ -143,6 +165,19 @@ export async function POST(request) {
 			meta: error.meta,
 			stack: error.stack
 		});
+		
+		// Check if it's a database enum error
+		if (error.message?.includes("DAILY_RENT") || error.message?.includes("Invalid enum value") || error.message?.includes("Unknown argument")) {
+			return NextResponse.json(
+				{ 
+					message: "Database schema needs to be updated. Please run: npx prisma db push",
+					error: "The DAILY_RENT listing type is not available in the database yet. You need to update the database schema.",
+					details: error.message
+				},
+				{ status: 500 }
+			);
+		}
+		
 		return NextResponse.json(
 			{ 
 				message: error.message || "Failed to create listing. Please try again.",

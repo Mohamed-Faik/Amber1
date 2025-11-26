@@ -76,7 +76,7 @@ const page = () => {
 				<div style={{
 					maxWidth: "1760px",
 					margin: "0 auto",
-					padding: "0 80px",
+					padding: "0 10px",
 				}}>
 					{/* Header */}
 					<div style={{ marginBottom: "64px" }}>

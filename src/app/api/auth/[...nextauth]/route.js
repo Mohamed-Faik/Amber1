@@ -71,7 +71,12 @@ const customAdapter = {
 			...data,
 			updated_at: new Date(),
 		};
-		return baseAdapter.createUser(userData);
+		try {
+			return await baseAdapter.createUser(userData);
+		} catch (error) {
+			console.error("Error creating user in adapter:", error);
+			throw error;
+		}
 	},
 	async updateUser(data) {
 		// Ensure updated_at is updated
@@ -79,7 +84,25 @@ const customAdapter = {
 			...data,
 			updated_at: new Date(),
 		};
-		return baseAdapter.updateUser(userData);
+		try {
+			return await baseAdapter.updateUser(userData);
+		} catch (error) {
+			console.error("Error updating user in adapter:", error);
+			throw error;
+		}
+	},
+	async linkAccount(account) {
+		try {
+			return await baseAdapter.linkAccount(account);
+		} catch (error) {
+			console.error("Error linking account in adapter:", error);
+			// If account already exists, that's okay - just return
+			if (error.code === "P2002") {
+				console.log("Account already linked, continuing...");
+				return account;
+			}
+			throw error;
+		}
 	},
 };
 
@@ -166,35 +189,67 @@ export const authHandler = NextAuth({
 	},
 	callbacks: {
 		async signIn({ user, account, profile }) {
-			// Allow OAuth sign-ins - PrismaAdapter will handle user creation
-			if (account?.provider === "google" || account?.provider === "github" || account?.provider === "facebook") {
-				// For Facebook, generate email if not provided (no advanced access needed)
-				if (account?.provider === "facebook") {
-					if (!user.email) {
-						// Generate a unique email from Facebook ID
-						user.email = `facebook_${account.providerAccountId}@facebook.local`;
-					}
-					// Log for debugging
-					if (process.env.NODE_ENV === "development") {
+			try {
+				// Allow OAuth sign-ins - PrismaAdapter will handle user creation
+				if (account?.provider === "google" || account?.provider === "github" || account?.provider === "facebook") {
+					// For Facebook, generate email if not provided (no advanced access needed)
+					if (account?.provider === "facebook") {
+						if (!user.email) {
+							// Generate a unique email from Facebook ID
+							user.email = `facebook_${account.providerAccountId}@facebook.local`;
+						}
+						// Log for debugging (enable in production for troubleshooting)
 						console.log("Facebook signIn callback:", { 
 							userEmail: user.email, 
 							facebookId: account.providerAccountId,
-							hasProfile: !!profile 
+							hasProfile: !!profile,
+							userId: user.id,
+							userName: user.name
 						});
 					}
-				}
-				
-				// Ensure user has required fields (email should always be set now)
-				if (!user.email) {
-					console.error("OAuth user missing email. Provider:", account?.provider, {
-						user: { id: user.id, name: user.name, email: user.email },
-						profile: profile ? { email: profile.email, name: profile.name } : null,
-					});
-					return false;
+					
+					// Ensure user has required fields (email should always be set now)
+					if (!user.email) {
+						console.error("OAuth user missing email. Provider:", account?.provider, {
+							user: { id: user.id, name: user.name, email: user.email },
+							profile: profile ? { email: profile.email, name: profile.name } : null,
+						});
+						return false;
+					}
+					
+					// Check if user exists and is active
+					if (user.id) {
+						try {
+							const existingUser = await prisma.user.findUnique({
+								where: { id: user.id },
+								select: { status: true }
+							});
+							
+							if (existingUser && existingUser.status === "Inactive") {
+								console.error("User account is inactive:", user.id);
+								return false;
+							}
+						} catch (error) {
+							console.error("Error checking user status:", error);
+							// Continue anyway - adapter will handle user creation/update
+						}
+					}
+					
+					return true;
 				}
 				return true;
+			} catch (error) {
+				console.error("Error in signIn callback:", error);
+				// Log detailed error for debugging
+				console.error("SignIn callback error details:", {
+					provider: account?.provider,
+					userId: user?.id,
+					userEmail: user?.email,
+					errorMessage: error.message,
+					errorStack: error.stack
+				});
+				return false;
 			}
-			return true;
 		},
 		async jwt({ token, user, account }) {
 			// Initial sign in
@@ -291,26 +346,46 @@ export const authHandler = NextAuth({
 					where: { id: user.id },
 					data: { updated_at: new Date() },
 				});
+				console.log("User created successfully:", { userId: user.id, email: user.email });
 			} catch (error) {
 				console.error("Error updating user after creation:", error);
+				console.error("Error details:", {
+					userId: user.id,
+					email: user.email,
+					errorMessage: error.message,
+					errorCode: error.code
+				});
 			}
 		},
 		async signIn({ user, account, profile }) {
 			// Log successful sign-ins for debugging
-			if (process.env.NODE_ENV === "development") {
-				console.log("Sign in successful:", {
-					provider: account?.provider,
-					email: user.email,
-					userId: user.id,
-				});
-			}
+			console.log("Sign in successful:", {
+				provider: account?.provider,
+				email: user.email,
+				userId: user.id,
+			});
 		},
-		async signInError({ error }) {
-			// Log sign-in errors
+		async signInError({ error, account, profile }) {
+			// Log sign-in errors with detailed information
 			console.error("Sign in error:", error);
+			console.error("Sign in error details:", {
+				errorMessage: error.message,
+				errorStack: error.stack,
+				provider: account?.provider,
+				providerAccountId: account?.providerAccountId,
+				userEmail: profile?.email,
+			});
+		},
+		async linkAccount({ account, user }) {
+			// Log account linking
+			console.log("Account linked:", {
+				provider: account.provider,
+				userId: user.id,
+				providerAccountId: account.providerAccountId
+			});
 		},
 	},
-	debug: process.env.NODE_ENV === "development",
+	debug: true, // Enable debug logging to help troubleshoot Facebook login issues
 	session: {
 		strategy: "jwt",
 	},

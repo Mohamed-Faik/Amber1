@@ -1,0 +1,21 @@
+{
+  "nav": {
+    "homes": "Huizen",
+    "experiences": "Ervaringen",
+    "services": "Diensten",
+    "addListing": "Advertentie toevoegen",
+    "becomeHost": "Word gastheer"
+  },
+  "common": {
+    "search": "Zoeken",
+    "login": "Inloggen",
+    "signup": "Registreren",
+    "logout": "Uitloggen",
+    "profile": "Profiel",
+    "settings": "Instellingen"
+  },
+  "hero": {
+    "quote": "Het gaat om mensen, niet om stenen"
+  }
+}
+

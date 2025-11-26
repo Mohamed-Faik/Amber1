@@ -112,21 +112,21 @@ const GridStyle = ({
 
 					{/* Content */}
 					<div style={{ padding: "16px" }}>
-						{/* FOR SALE / FOR RENT Badge */}
+						{/* FOR SALE / FOR RENT / DAILY RENT Badge */}
 						<div style={{ marginBottom: "8px" }}>
 							<span
 								style={{
 									display: "inline-block",
 									padding: "4px 10px",
-									backgroundColor: displayListingType === "RENT" ? "#E8F5E9" : "#FFF5F7",
-									color: displayListingType === "RENT" ? "#2E7D32" : "#FF385C",
+									backgroundColor: displayListingType === "RENT" ? "#E8F5E9" : displayListingType === "DAILY_RENT" ? "#E3F2FD" : "#FFF5F7",
+									color: displayListingType === "RENT" ? "#2E7D32" : displayListingType === "DAILY_RENT" ? "#1976D2" : "#FF385C",
 									borderRadius: "6px",
 									fontSize: "12px",
 									fontWeight: "700",
 									letterSpacing: "0.5px",
 								}}
 							>
-								{displayListingType === "RENT" ? "FOR RENT" : "FOR SALE"}
+								{displayListingType === "RENT" ? "FOR RENT" : displayListingType === "DAILY_RENT" ? "FOR RENT (DAILY)" : "FOR SALE"}
 							</span>
 						</div>
 
@@ -286,6 +286,17 @@ const GridStyle = ({
 									}}
 								>
 									/month
+								</span>
+							)}
+							{displayListingType === "DAILY_RENT" && (
+								<span
+									style={{
+										fontSize: "14px",
+										fontWeight: "500",
+										color: "#717171",
+									}}
+								>
+									/day
 								</span>
 							)}
 						</div>

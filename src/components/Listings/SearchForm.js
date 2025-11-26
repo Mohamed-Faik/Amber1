@@ -9,15 +9,17 @@ const SearchForm = ({ searchParams }) => {
 	const [locationValue, setLocationValue] = useState("");
 	const [minPrice, setMinPrice] = useState("");
 	const [maxPrice, setMaxPrice] = useState("");
+	const [listingType, setListingType] = useState("");
 	const router = useRouter();
 
 	useEffect(() => {
 		if (searchParams) {
-			const { category: cat, location_value: loc, min_price: min, max_price: max } = searchParams;
+			const { category: cat, location_value: loc, min_price: min, max_price: max, listingType: lt } = searchParams;
 			setCategory(cat || "");
 			setLocationValue(loc || "");
 			setMinPrice(min || "");
 			setMaxPrice(max || "");
+			setListingType(lt || "");
 		}
 	}, [searchParams]);
 
@@ -30,9 +32,10 @@ const SearchForm = ({ searchParams }) => {
 		if (locationValue) params.append("location_value", locationValue);
 		if (minPrice) params.append("min_price", minPrice);
 		if (maxPrice) params.append("max_price", maxPrice);
+		if (listingType) params.append("listingType", listingType);
 		
 		router.push(`/listings?${params.toString()}`);
-	}, [category, locationValue, minPrice, maxPrice, router]);
+	}, [category, locationValue, minPrice, maxPrice, listingType, router]);
 
 	return (
 		<form
@@ -45,7 +48,7 @@ const SearchForm = ({ searchParams }) => {
 		>
 			<div style={{
 				display: "grid",
-				gridTemplateColumns: "1fr 1fr 1fr 1fr auto",
+				gridTemplateColumns: "1fr 1fr 1fr 1fr 1fr auto",
 				gap: "20px",
 				alignItems: "flex-end",
 			}}
@@ -272,6 +275,57 @@ const SearchForm = ({ searchParams }) => {
 						}}>
 							<DollarSign size={20} color="#717171" strokeWidth={2} />
 						</div>
+					</div>
+				</div>
+
+				{/* Listing Type Filter */}
+				<div style={{ position: "relative", flex: 1 }}>
+					<label style={{
+						display: "block",
+						fontSize: "14px",
+						fontWeight: "600",
+						color: "#222222",
+						marginBottom: "8px",
+					}}>
+						Type
+					</label>
+					<div style={{ position: "relative" }}>
+						<select
+							value={listingType}
+							onChange={(e) => setListingType(e.target.value)}
+							style={{
+								width: "100%",
+								padding: "16px 20px",
+								border: "2px solid #E0E0E0",
+								borderRadius: "12px",
+								fontSize: "15px",
+								fontFamily: "inherit",
+								backgroundColor: "#FFFFFF",
+								color: listingType ? "#222222" : "#717171",
+								transition: "all 0.2s ease",
+								outline: "none",
+								boxSizing: "border-box",
+								cursor: "pointer",
+								appearance: "none",
+								backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23717171' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E")`,
+								backgroundRepeat: "no-repeat",
+								backgroundPosition: "right 16px center",
+								paddingRight: "48px",
+							}}
+							onFocus={(e) => {
+								e.currentTarget.style.borderColor = "#FF385C";
+								e.currentTarget.style.boxShadow = "0 0 0 4px rgba(255, 56, 92, 0.1)";
+							}}
+							onBlur={(e) => {
+								e.currentTarget.style.borderColor = "#E0E0E0";
+								e.currentTarget.style.boxShadow = "none";
+							}}
+						>
+							<option value="">All Types</option>
+							<option value="SALE">For Sale</option>
+							<option value="RENT">For Rent (Monthly)</option>
+							<option value="DAILY_RENT">For Rent (Daily)</option>
+						</select>
 					</div>
 				</div>
 

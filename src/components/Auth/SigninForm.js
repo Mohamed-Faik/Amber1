@@ -1,31 +1,59 @@
 "use client";
 import React, { useState, useRef, useEffect } from "react";
 import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { toast } from "react-hot-toast";
 import { ArrowLeft } from "lucide-react";
 import Image from "next/image";
 import axios from "axios";
 import googleImg from "../../../public/images/google.png";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { getTranslation } from "@/utils/translations";
 
 const SigninForm = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const { language, isDetecting } = useLanguage();
+  const displayLanguage = isDetecting ? "en" : language;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isSocialLoading, setIsSocialLoading] = useState(false);
+
+  // Check for OAuth callback errors in URL
+  useEffect(() => {
+    const error = searchParams?.get("error");
+    if (error) {
+      // Clear the error from URL
+      const newUrl = window.location.pathname;
+      window.history.replaceState({}, "", newUrl);
+      
+      // Show appropriate error message
+      if (error === "Callback") {
+        toast.error("Facebook login failed during authentication. This may be due to account linking issues. Please try again or contact support if the problem persists.");
+      } else if (error === "OAuthSignin") {
+        toast.error("Facebook sign-in failed. Please check your Facebook app configuration.");
+      } else if (error === "OAuthCallback") {
+        toast.error("Facebook login callback failed. Please verify your redirect URI is configured correctly in Facebook App settings.");
+      } else if (error === "AccessDenied") {
+        toast.error("Facebook login was denied. Please grant the necessary permissions.");
+      } else {
+        toast.error(`Login error: ${error}. Please try again.`);
+      }
+    }
+  }, [searchParams]);
 
   // Handle email/password login
   const handleEmailLogin = async (e) => {
     e.preventDefault();
     
     if (!email || !email.includes("@")) {
-      toast.error("Please enter a valid email address");
+      toast.error(getTranslation(displayLanguage, "auth.invalidEmail"));
       return;
     }
     if (!password || password.length < 6) {
-      toast.error("Password must be at least 6 characters");
+      toast.error(getTranslation(displayLanguage, "auth.passwordTooShort"));
       return;
     }
 
@@ -39,14 +67,14 @@ const SigninForm = () => {
       });
 
       if (result?.error) {
-        toast.error("Invalid email or password");
+        toast.error(getTranslation(displayLanguage, "auth.invalidCredentials"));
       } else {
-        toast.success("Logged in successfully!");
+        toast.success(getTranslation(displayLanguage, "auth.loginSuccess"));
         // Force a full page reload to update navbar with new session
         window.location.href = "/";
       }
     } catch (error) {
-      toast.error("Login failed. Please try again.");
+      toast.error(getTranslation(displayLanguage, "auth.loginFailed"));
     } finally {
       setIsLoading(false);
     }
@@ -90,11 +118,20 @@ const SigninForm = () => {
       
       if (result?.error) {
         if (result.error === "OAuthSignin" || result.error === "Configuration") {
-          toast.error("Facebook sign-in is not configured. Please add FACEBOOK_CLIENT_ID and FACEBOOK_CLIENT_SECRET to your .env file and restart the server.");
+          toast.error(
+            "Facebook login is unavailable. Make sure: 1) Facebook app is in Live mode (not Development), 2) Redirect URI is configured. See FACEBOOK_LOGIN_QUICK_FIX.md",
+            { duration: 6000 }
+          );
         } else if (result.error === "AccessDenied") {
-          toast.error("Facebook login was denied. Please make sure you grant email permission and that your Facebook app is configured correctly.");
+          toast.error("Facebook login was denied. Please make sure you grant permission and that your Facebook app is configured correctly.");
+        } else if (result.error === "OAuthCallback") {
+          const redirectUri = `${window.location.origin}/api/auth/callback/facebook`;
+          toast.error(
+            `Redirect URI mismatch! Add this exact URI to Facebook App Settings → Valid OAuth Redirect URIs: ${redirectUri}`,
+            { duration: 8000 }
+          );
         } else {
-          toast.error(`Facebook login failed: ${result.error}`);
+          toast.error(`Facebook login failed: ${result.error}. The most common fix is switching your Facebook app to Live mode. See FACEBOOK_LOGIN_QUICK_FIX.md`, { duration: 6000 });
         }
         setIsSocialLoading(false);
       } else if (result?.ok) {
@@ -104,7 +141,7 @@ const SigninForm = () => {
       }
     } catch (error) {
       console.error("Facebook login error:", error);
-      toast.error("Facebook login failed. Please check your FACEBOOK_CLIENT_ID and FACEBOOK_CLIENT_SECRET in .env file and restart the server.");
+      toast.error("Facebook login failed. Please check your Facebook app configuration. See FACEBOOK_LOGIN_SETUP.md for setup instructions.");
       setIsSocialLoading(false);
     }
   };
@@ -160,7 +197,7 @@ const SigninForm = () => {
               color: "#767676",
               lineHeight: "1.5",
             }}>
-              Sign in to your account to continue.
+              {getTranslation(displayLanguage, "auth.loginTitle")}
             </p>
           </div>
 
@@ -207,7 +244,7 @@ const SigninForm = () => {
                 width={20} 
                 height={20} 
               />
-              Continue with Google
+              {getTranslation(displayLanguage, "auth.continueWith")} Google
             </button>
 
             {/* Facebook Button */}
@@ -245,7 +282,7 @@ const SigninForm = () => {
               <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
               </svg>
-              Continue with Facebook
+              {getTranslation(displayLanguage, "auth.continueWith")} Facebook
             </button>
           </div>
 
@@ -275,7 +312,7 @@ const SigninForm = () => {
             <div style={{ marginBottom: "16px" }}>
               <input
                 type="email"
-                placeholder="Email address"
+                placeholder={getTranslation(displayLanguage, "auth.emailPlaceholder")}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 disabled={isLoading || isSocialLoading}
@@ -298,7 +335,7 @@ const SigninForm = () => {
             <div style={{ marginBottom: "8px" }}>
               <input
                 type="password"
-                placeholder="Password"
+                placeholder={getTranslation(displayLanguage, "auth.passwordPlaceholder")}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 disabled={isLoading || isSocialLoading}
@@ -334,7 +371,7 @@ const SigninForm = () => {
                   e.target.style.textDecoration = "none";
                 }}
               >
-                Forgot password?
+                {getTranslation(displayLanguage, "auth.forgotPassword")}
               </Link>
             </div>
 
@@ -366,7 +403,7 @@ const SigninForm = () => {
                 }
               }}
             >
-              {isLoading ? "Signing in..." : "Sign in"}
+              {isLoading ? `${getTranslation(displayLanguage, "common.loading")}` : getTranslation(displayLanguage, "auth.loginButton")}
             </button>
           </form>
 
@@ -379,13 +416,13 @@ const SigninForm = () => {
               fontSize: "15px",
               color: "#767676",
             }}>
-              Don't have an account?{" "}
+              {getTranslation(displayLanguage, "auth.dontHaveAccount")}{" "}
               <Link href="/auth/signup" style={{
                 color: "#E61E4D",
                 textDecoration: "none",
                 fontWeight: "500",
               }}>
-                Sign up
+                {getTranslation(displayLanguage, "common.signup")}
               </Link>
             </p>
           </div>

@@ -31,6 +31,7 @@ export async function GET(request) {
 				listings = await prisma.listing.findMany({
 					where: {
 						status: "Approved", // Only show approved listings on home page
+						featureType: "HOMES", // Only show HOMES on the home page
 					},
 					orderBy: {
 						created_at: "desc",
@@ -42,6 +43,7 @@ export async function GET(request) {
 					where: {
 						category: category,
 						status: "Approved", // Only show approved listings on home page
+						featureType: "HOMES", // Only show HOMES on the home page
 					},
 					orderBy: {
 						created_at: "desc",
@@ -124,6 +126,7 @@ export async function GET(request) {
 			bedrooms: listing.bedrooms,
 			bathrooms: listing.bathrooms,
 			listingType: listing.listingType || "SALE", // Include listingType field
+			featureType: listing.featureType || "HOMES", // Include featureType field
 			// Add default rating if not available (can be calculated from reviews later)
 			rating: null,
 		}));
