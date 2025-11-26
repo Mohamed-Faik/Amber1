@@ -48,7 +48,7 @@ const LanguageSwitcher = () => {
           justifyContent: "center",
           padding: "10px",
           borderRadius: "50%",
-          // border: "1px solid #DDDDDD",
+          border: "none",
           backgroundColor: "#FFFFFF",
           cursor: "pointer",
           transition: "all 0.2s ease",
@@ -56,12 +56,10 @@ const LanguageSwitcher = () => {
           height: "42px",
         }}
         onMouseEnter={(e) => {
-          e.currentTarget.style.borderColor = "#222222";
-          e.currentTarget.style.boxShadow = "0 2px 8px rgba(0, 0, 0, 0.1)";
+          e.currentTarget.style.backgroundColor = "#EBEBEB";
         }}
         onMouseLeave={(e) => {
-          e.currentTarget.style.borderColor = "#DDDDDD";
-          e.currentTarget.style.boxShadow = "none";
+          e.currentTarget.style.backgroundColor = "#FFFFFF";
         }}
         aria-label="Change language"
         aria-expanded={isOpen}
@@ -102,6 +100,7 @@ const LanguageSwitcher = () => {
                 fontSize: "14px",
                 fontWeight: language === lang.code ? "600" : "400",
                 color: "#222222",
+                fontFamily: "inherit",
               }}
               onMouseEnter={(e) => {
                 if (language !== lang.code) {

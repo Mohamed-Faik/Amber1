@@ -314,39 +314,43 @@ const Navbar = ({ currentUser }) => {
                 </div>
               </div>
             ) : (
-              /* When not logged in: Show menu icon */
-              <button
-                className="mobile-menu-btn"
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  width: "42px",
-                  height: "42px",
-                  border: "none",
-                  backgroundColor: "#F7F7F7",
-                  borderRadius: "50%",
-                  cursor: "pointer",
-                  transition: "all 0.2s ease",
-                }}
-                aria-label="Toggle menu"
-                onMouseDown={(e) => {
-                  e.currentTarget.style.transform = "scale(0.95)";
-                }}
-                onMouseUp={(e) => {
-                  e.currentTarget.style.transform = "scale(1)";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = "scale(1)";
-                }}
-              >
-                {isMobileMenuOpen ? (
-                  <X size={22} color="#222222" strokeWidth={2.5} />
-                ) : (
+              /* When not logged in: Show language + menu icon */
+              <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                {/* Language Switcher */}
+                <div className="mobile-language-wrapper">
+                  <LanguageSwitcher />
+                </div>
+                
+                {/* Menu Button */}
+                <button
+                  className="mobile-menu-btn"
+                  onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    width: "42px",
+                    height: "42px",
+                    border: "none",
+                    backgroundColor: "#F7F7F7",
+                    borderRadius: "50%",
+                    cursor: "pointer",
+                    transition: "all 0.2s ease",
+                  }}
+                  aria-label="Toggle menu"
+                  onMouseDown={(e) => {
+                    e.currentTarget.style.transform = "scale(0.95)";
+                  }}
+                  onMouseUp={(e) => {
+                    e.currentTarget.style.transform = "scale(1)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = "scale(1)";
+                  }}
+                >
                   <Menu size={22} color="#222222" strokeWidth={2.5} />
-                )}
-              </button>
+                </button>
+              </div>
             )}
           </div>
         </nav>
@@ -355,12 +359,12 @@ const Navbar = ({ currentUser }) => {
         <div
           className="mobile-nav-pills"
           style={{
-            display: "none",
             padding: "16px 20px",
             borderTop: "1px solid #F0F0F0",
             backgroundColor: "#FAFAFA",
             overflowX: "auto",
             WebkitOverflowScrolling: "touch",
+            display: "none",
           }}
         >
           <div style={{ 
@@ -428,7 +432,7 @@ const Navbar = ({ currentUser }) => {
             right: 0,
             bottom: 0,
             backgroundColor: "rgba(0, 0, 0, 0.5)",
-            zIndex: 998,
+            zIndex: 1001,
             animation: "fadeIn 0.2s ease-out",
           }}
         >
@@ -437,19 +441,61 @@ const Navbar = ({ currentUser }) => {
             onClick={(e) => e.stopPropagation()}
             style={{
               position: "fixed",
-              top: "64px",
+              top: "0",
               right: "0",
               bottom: "0",
               width: "100%",
               maxWidth: "400px",
               backgroundColor: "#FFFFFF",
-              zIndex: 999,
+              zIndex: 1002,
               overflowY: "auto",
               animation: "slideInRight 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
               boxShadow: "-4px 0 24px rgba(0, 0, 0, 0.15)",
+              paddingTop: "20px",
             }}
           >
-          <div style={{ padding: "32px 24px 24px" }}>
+          <div style={{ padding: "0 24px 24px" }}>
+            {/* Close Button */}
+            <div style={{ 
+              display: "flex", 
+              justifyContent: "flex-end", 
+              alignItems: "center",
+              marginBottom: "24px",
+              paddingBottom: "16px",
+              borderBottom: "1px solid #F0F0F0"
+            }}>
+              <button
+                onClick={() => setIsMobileMenuOpen(false)}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  width: "40px",
+                  height: "40px",
+                  border: "none",
+                  backgroundColor: "#F7F7F7",
+                  borderRadius: "50%",
+                  cursor: "pointer",
+                  transition: "all 0.2s ease",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = "#EBEBEB";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = "#F7F7F7";
+                }}
+                onMouseDown={(e) => {
+                  e.currentTarget.style.transform = "scale(0.95)";
+                }}
+                onMouseUp={(e) => {
+                  e.currentTarget.style.transform = "scale(1)";
+                }}
+                aria-label="Close menu"
+              >
+                <X size={22} color="#222222" strokeWidth={2.5} />
+              </button>
+            </div>
+
             {/* User Actions */}
             {currentUser ? (
               <div style={{ 
@@ -573,47 +619,6 @@ const Navbar = ({ currentUser }) => {
                 </Link>
               </div>
             )}
-
-            {/* Navigation Links */}
-            <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-              {navLinks.map((link) => {
-                const Icon = link.icon;
-                const isActive = link.href === "/" ? pathname === "/" : pathname?.startsWith(link.href);
-                return (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "16px",
-                      padding: "16px 18px",
-                      fontSize: "16px",
-                      fontWeight: "600",
-                      color: isActive ? "#222222" : "#717171",
-                      textDecoration: "none",
-                      backgroundColor: isActive ? "#F7F7F7" : "transparent",
-                      borderRadius: "12px",
-                      transition: "all 0.2s ease",
-                    }}
-                    onMouseEnter={(e) => {
-                      if (!isActive) {
-                        e.currentTarget.style.backgroundColor = "#FAFAFA";
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      if (!isActive) {
-                        e.currentTarget.style.backgroundColor = "transparent";
-                      }
-                    }}
-                  >
-                    <Icon size={22} strokeWidth={isActive ? 2.5 : 2} />
-                    <span>{link.label}</span>
-                  </Link>
-                );
-              })}
-            </div>
           </div>
           </div>
         </div>
@@ -646,6 +651,20 @@ const Navbar = ({ currentUser }) => {
           scrollbar-width: none;
         }
 
+        /* Base styles */
+        .desktop-nav {
+          display: flex;
+        }
+        .desktop-actions {
+          display: flex;
+        }
+        .mobile-actions {
+          display: none;
+        }
+        .mobile-nav-pills {
+          display: none;
+        }
+
         /* Desktop styles (default) */
         @media (min-width: 992px) {
           .desktop-nav {
@@ -654,10 +673,16 @@ const Navbar = ({ currentUser }) => {
           .desktop-actions {
             display: flex !important;
           }
+          .mobile-actions {
+            display: none !important;
+          }
           .mobile-menu-btn {
             display: none !important;
           }
           .mobile-nav-pills {
+            display: none !important;
+          }
+          .mobile-language-wrapper {
             display: none !important;
           }
         }
@@ -692,8 +717,13 @@ const Navbar = ({ currentUser }) => {
           .mobile-nav-pills > div {
             justify-content: center !important;
           }
+          .mobile-menu-overlay {
+            z-index: 1001 !important;
+          }
           .mobile-menu-drawer {
-            top: 72px !important;
+            top: 0 !important;
+            padding-top: 20px !important;
+            z-index: 1002 !important;
           }
         }
 
@@ -727,8 +757,13 @@ const Navbar = ({ currentUser }) => {
           .mobile-nav-pills > div {
             justify-content: center !important;
           }
+          .mobile-menu-overlay {
+            z-index: 1001 !important;
+          }
           .mobile-menu-drawer {
-            top: 66px !important;
+            top: 0 !important;
+            padding-top: 20px !important;
+            z-index: 1002 !important;
           }
         }
 
@@ -752,8 +787,13 @@ const Navbar = ({ currentUser }) => {
           .mobile-nav-pills {
             padding: 12px 14px !important;
           }
+          .mobile-menu-overlay {
+            z-index: 1001 !important;
+          }
           .mobile-menu-drawer {
-            top: 64px !important;
+            top: 0 !important;
+            padding-top: 20px !important;
+            z-index: 1002 !important;
           }
         }
         
@@ -771,10 +811,41 @@ const Navbar = ({ currentUser }) => {
           transform: scale(0.95);
         }
         
+        /* Mobile logged in icons */
+        .mobile-logged-in-icons {
+          display: flex;
+          align-items: center;
+        }
+        
+        /* Mobile language wrapper styles */
+        .mobile-language-wrapper {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        
         @media (max-width: 767px) {
           .mobile-add-listing-btn {
             width: 42px !important;
             height: 42px !important;
+          }
+          
+          .mobile-language-wrapper button {
+            width: 42px !important;
+            height: 42px !important;
+            background-color: #F7F7F7 !important;
+            border: none !important;
+          }
+          
+          .mobile-language-wrapper button:hover {
+            background-color: #EBEBEB !important;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .mobile-language-wrapper button {
+            width: 40px !important;
+            height: 40px !important;
           }
         }
 
