@@ -16,8 +16,20 @@ const Navbar = ({ currentUser }) => {
   const { language, isDetecting } = useLanguage();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   const displayLanguage = isDetecting ? "en" : language;
+
+  // Detect mobile screen size
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 992);
+    };
+    
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -420,7 +432,6 @@ const Navbar = ({ currentUser }) => {
         </div>
       </header>
 
-<<<<<<< HEAD
         {/* Mobile/Tablet Navbar */}
         {isMobile && (
         <div
@@ -553,14 +564,8 @@ const Navbar = ({ currentUser }) => {
         </div>
         )}
 
-      </div>
-
-      {/* Mobile Menu Overlay - Hidden since navbar is removed */}
-      {false && isMobileMenuOpen && (
-=======
       {/* Mobile Menu Overlay */}
       {isMobileMenuOpen && (
->>>>>>> d2987668e205e4e85ce97d17f7812d3c91681faf
         <div
           className="mobile-menu-overlay"
           onClick={() => setIsMobileMenuOpen(false)}
@@ -851,14 +856,14 @@ const Navbar = ({ currentUser }) => {
           .mobile-menu-overlay {
             top: 64px !important;
           }
-=======
-        /* Hide scrollbar */
-        .mobile-nav-pills::-webkit-scrollbar {
-          display: none;
-        }
-        .mobile-nav-pills {
-          scrollbar-width: none;
->>>>>>> d2987668e205e4e85ce97d17f7812d3c91681faf
+          
+          /* Hide scrollbar */
+          .mobile-nav-pills::-webkit-scrollbar {
+            display: none;
+          }
+          .mobile-nav-pills {
+            scrollbar-width: none;
+          }
         }
 
         /* Base styles */

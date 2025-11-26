@@ -164,17 +164,12 @@ const NotificationBadge = ({ currentUser }) => {
 					border: "none",
 					cursor: "pointer",
 					transition: "all 0.2s ease",
-					padding: 0,
-<<<<<<< HEAD
-					top: 0,
-					right: 0,
-					margin: 0,
-					verticalAlign: "middle",
-=======
-					flexShrink: 0,
-					marginLeft: "-14px",
->>>>>>> d2987668e205e4e85ce97d17f7812d3c91681faf
-				}}
+				padding: 0,
+				top: 0,
+				right: 0,
+				margin: 0,
+				verticalAlign: "middle",
+			}}
 				onMouseEnter={(e) => {
 					if (!isDropdownOpen) {
 						e.currentTarget.style.backgroundColor = "#F7F7F7";

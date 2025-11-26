@@ -25,6 +25,7 @@ const SignupForm = () => {
   const [showSignupForm, setShowSignupForm] = useState(false);
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
+  const [whatsappNumber, setWhatsappNumber] = useState("");
   const [showPhoneOtp, setShowPhoneOtp] = useState(false);
   const [phoneOtp, setPhoneOtp] = useState(["", "", "", "", "", ""]);
   const [phoneOtpError, setPhoneOtpError] = useState("");
@@ -509,12 +510,12 @@ const SignupForm = () => {
       toast.error("Full name is required");
       return;
     }
+    if (!phone) {
+      toast.error("Phone number is required");
+      return;
+    }
     // Phone verification is only required if Twilio is configured
     if (twilioAvailable) {
-      if (!phone) {
-        toast.error("Phone number is required");
-        return;
-      }
       if (!phoneVerified) {
         toast.error("Please verify your phone number first");
         return;
@@ -543,6 +544,7 @@ const SignupForm = () => {
         name: fullName.trim(),
         password,
         phone: phone,
+        whatsappNumber: whatsappNumber || null,
         address: address || null,
         gender: gender,
       });
@@ -1038,16 +1040,15 @@ const SignupForm = () => {
                   }}
                 />
 
-                {/* Phone Number with OTP Verification */}
-                {twilioAvailable && (
-                  <div style={{ marginBottom: "16px", position: "relative" }}>
-                    <PhoneInput
-                      international
-                      defaultCountry="US"
-                      value={phone}
-                      onChange={setPhone}
-                      disabled={isLoading || phoneVerified}
-                      required
+                {/* Phone Number - Always visible and required */}
+                <div style={{ marginBottom: "16px", position: "relative" }}>
+                  <PhoneInput
+                    international
+                    defaultCountry="US"
+                    value={phone}
+                    onChange={setPhone}
+                    disabled={isLoading || (twilioAvailable && phoneVerified)}
+                    required
                     style={{
                       "--PhoneInput-color--focus": "#E61E4D",
                     }}
@@ -1064,7 +1065,7 @@ const SignupForm = () => {
                         width: "100%",
                         backgroundColor: phoneVerified ? "#F0FDF4" : "#FFFFFF",
                       },
-                      placeholder: phoneVerified ? "Phone verified ✓" : "Phone number",
+                      placeholder: (twilioAvailable && phoneVerified) ? "Phone verified ✓" : "Phone number *",
                       onFocus: (e) => {
                         if (!phoneVerified) {
                           e.currentTarget.style.borderColor = "#E61E4D";
@@ -1077,7 +1078,7 @@ const SignupForm = () => {
                       },
                     }}
                   />
-                  {showPhoneOtp && !phoneVerified && (
+                  {twilioAvailable && showPhoneOtp && !phoneVerified && (
                     <div
                       onClick={(e) => {
                         e.preventDefault();
@@ -1142,7 +1143,7 @@ const SignupForm = () => {
                     </div>
                   )}
                   
-                  {!phoneVerified && phone && (
+                  {twilioAvailable && !phoneVerified && phone && (
                     <div style={{ marginTop: "12px" }}>
                       {!showPhoneOtp ? (
                         <button
@@ -1265,7 +1266,45 @@ const SignupForm = () => {
                     </div>
                   )}
                 </div>
-                )}
+
+                {/* WhatsApp Number - Optional */}
+                <div style={{ marginBottom: "16px" }}>
+                  <PhoneInput
+                    international
+                    defaultCountry="US"
+                    value={whatsappNumber}
+                    onChange={setWhatsappNumber}
+                    disabled={isLoading}
+                    numberInputProps={{
+                      style: {
+                        padding: "14px 16px",
+                        border: "1px solid #E0E0E0",
+                        borderRadius: "8px",
+                        fontSize: "16px",
+                        outline: "none",
+                        transition: "all 0.2s",
+                        opacity: isLoading ? 0.6 : 1,
+                        width: "100%",
+                        backgroundColor: "#FFFFFF",
+                      },
+                      placeholder: "WhatsApp Number (Optional)",
+                      onFocus: (e) => {
+                        e.currentTarget.style.borderColor = "#E61E4D";
+                      },
+                      onBlur: (e) => {
+                        e.currentTarget.style.borderColor = "#E0E0E0";
+                      },
+                    }}
+                  />
+                  <p style={{
+                    fontSize: "13px",
+                    color: "#767676",
+                    marginTop: "6px",
+                    marginBottom: 0,
+                  }}>
+                    📱 We'll use this to contact you on WhatsApp
+                  </p>
+                </div>
 
                 {/* Gender */}
                 <select

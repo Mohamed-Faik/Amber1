@@ -3,6 +3,9 @@ import prisma from "@/libs/prismadb";
 export default async function getAllUsers() {
 	try {
 		const users = await prisma.user.findMany({
+			include: {
+				profile: true,
+			},
 			orderBy: {
 				created_at: "desc",
 			},

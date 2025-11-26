@@ -5,7 +5,7 @@ import prisma from "@/libs/prismadb";
 export async function POST(request) {
 	try {
 		const body = await request.json();
-		const { name, email, password, phone, address, gender } = body;
+		const { name, email, password, phone, whatsappNumber, address, gender } = body;
 
 		// Check if user already exists
 		const existingUser = await prisma.user.findUnique({
@@ -37,6 +37,7 @@ export async function POST(request) {
 			data: {
 				userId: user.id,
 				phone: phone || null,
+				whatsappNumber: whatsappNumber || null,
 				address: address || null,
 				gender: gender || null,
 			},
