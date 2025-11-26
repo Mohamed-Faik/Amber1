@@ -325,30 +325,47 @@ const Navbar = ({ currentUser }) => {
               flexShrink: 0,
               minWidth: 0,
               marginLeft: "auto",
-            marginRight: "0",
-            paddingRight: "0",
-          }}
-        >
+              marginRight: "0",
+              paddingRight: "0",
+            }}
+          >
             {/* Notification Badge for Admin Users (Mobile) */}
-            <NotificationBadge currentUser={currentUser} />
+            <div 
+              className="mobile-notification-wrapper"
+              style={{ 
+                display: "flex", 
+                alignItems: "center", 
+                justifyContent: "center",
+                position: "relative",
+                top: 0,
+                right: 0,
+                margin: 0,
+                padding: 0,
+                height: "40px",
+                width: "40px",
+                flexShrink: 0,
+              }}
+            >
+              <NotificationBadge currentUser={currentUser} />
+            </div>
             
             {currentUser ? (
               <div 
+                className="mobile-user-menu-wrapper"
                 style={{ 
                   display: "flex", 
                   alignItems: "center", 
                   justifyContent: "center",
-                  height: "100%",
                   position: "relative",
                   flexShrink: 0,
-                  alignSelf: "flex-start",
-              marginRight: "-65px",
-              marginTop: "-4px",
-              paddingRight: "0",
-              }}
-            >
-              <UserMenu currentUser={currentUser} />
-            </div>
+                  height: "40px",
+                  width: "40px",
+                  margin: 0,
+                  padding: 0,
+                }}
+              >
+                <UserMenu currentUser={currentUser} />
+              </div>
             ) : (
               <Link
                 href="/auth/signin"
@@ -456,6 +473,54 @@ const Navbar = ({ currentUser }) => {
           .mobile-nav {
             padding: 0 12px !important;
             height: 64px !important;
+          }
+
+          .mobile-nav-right {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: flex-end !important;
+            gap: 8px !important;
+          }
+
+          /* Ensure notification badge and user menu are properly aligned on mobile */
+          .mobile-nav-right {
+            align-items: center !important;
+            height: 100% !important;
+          }
+
+          .mobile-notification-wrapper,
+          .mobile-user-menu-wrapper {
+            position: relative !important;
+            top: 0 !important;
+            right: 0 !important;
+            transform: none !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            height: 40px !important;
+            width: 40px !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            flex-shrink: 0 !important;
+          }
+
+          /* Ensure both notification badge and user menu buttons are same size */
+          .mobile-nav-right button,
+          .mobile-nav-right .user-menu-button,
+          .mobile-notification-wrapper button,
+          .mobile-user-menu-wrapper .user-menu-button {
+            width: 40px !important;
+            height: 40px !important;
+            min-width: 40px !important;
+            min-height: 40px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            position: relative !important;
+            top: 0 !important;
+            vertical-align: middle !important;
           }
 
           .mobile-login-link {

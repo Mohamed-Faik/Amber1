@@ -135,8 +135,21 @@ const NotificationBadge = ({ currentUser }) => {
 	// Always show bell icon for admins, show badge when count > 0
 	return (
 		<>
+			<style>{`
+				/* Mobile: Ensure proper alignment */
+				@media (max-width: 991px) {
+					.notification-badge-button {
+						position: relative !important;
+						top: 0 !important;
+						right: 0 !important;
+						transform: none !important;
+						margin: 0 !important;
+					}
+				}
+			`}</style>
 			<button
 				ref={buttonRef}
+				className="notification-badge-button"
 				onClick={toggleDropdown}
 				style={{
 					position: "relative",
@@ -151,6 +164,10 @@ const NotificationBadge = ({ currentUser }) => {
 					cursor: "pointer",
 					transition: "all 0.2s ease",
 					padding: 0,
+					top: 0,
+					right: 0,
+					margin: 0,
+					verticalAlign: "middle",
 				}}
 				onMouseEnter={(e) => {
 					if (!isDropdownOpen) {
@@ -205,7 +222,7 @@ const NotificationBadge = ({ currentUser }) => {
 						{pendingCount > 99 ? "99+" : pendingCount}
 					</span>
 				)}
-				<style jsx>{`
+				<style>{`
 					@keyframes pulse {
 						0%, 100% {
 							opacity: 1;
