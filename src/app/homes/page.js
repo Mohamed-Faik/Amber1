@@ -57,7 +57,7 @@ const HomesPage = async ({ searchParams }) => {
 				<div className="homes-search-wrapper" style={{
 					maxWidth: "1760px",
 					margin: "0 auto",
-					padding: "0 80px",
+					padding: "0 10px",
 				}}>
 					<div className="homes-search-card" style={{
 						backgroundColor: "#FFFFFF",
@@ -119,7 +119,7 @@ const HomesPage = async ({ searchParams }) => {
 				<div className="homes-results-wrapper" style={{
 					maxWidth: "1760px",
 					margin: "0 auto",
-					padding: "0 80px",
+					padding: "0 10px",
 				}}>
 					<div className="homes-results-card" style={{
 						backgroundColor: "#FFFFFF",

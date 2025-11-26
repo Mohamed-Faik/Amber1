@@ -28,6 +28,15 @@ export const LanguageProvider = ({ children, defaultLanguage = "en" }) => {
         return;
       }
 
+      // Check localStorage first
+      const savedLang = localStorage.getItem("userLanguage");
+      if (savedLang && ["en", "fr", "nl"].includes(savedLang)) {
+        console.log("[Language Context] Using saved language:", savedLang);
+        setLanguage(savedLang);
+        setIsDetecting(false);
+        return;
+      }
+
       // Wrap in Promise to catch all errors
       const detectedLang = await new Promise((resolve) => {
         // Use a separate async function to catch all possible errors
@@ -50,6 +59,7 @@ export const LanguageProvider = ({ children, defaultLanguage = "en" }) => {
       if (isMounted) {
         console.log("[Language Context] Setting language to:", detectedLang);
         setLanguage(detectedLang);
+        localStorage.setItem("userLanguage", detectedLang);
         setIsDetecting(false);
       }
     };
@@ -68,6 +78,7 @@ export const LanguageProvider = ({ children, defaultLanguage = "en" }) => {
   const changeLanguage = (lang) => {
     if (["en", "fr", "nl"].includes(lang)) {
       setLanguage(lang);
+      localStorage.setItem("userLanguage", lang);
     }
   };
 

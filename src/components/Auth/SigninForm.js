@@ -8,10 +8,14 @@ import { ArrowLeft } from "lucide-react";
 import Image from "next/image";
 import axios from "axios";
 import googleImg from "../../../public/images/google.png";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { getTranslation } from "@/utils/translations";
 
 const SigninForm = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { language, isDetecting } = useLanguage();
+  const displayLanguage = isDetecting ? "en" : language;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -45,11 +49,11 @@ const SigninForm = () => {
     e.preventDefault();
     
     if (!email || !email.includes("@")) {
-      toast.error("Please enter a valid email address");
+      toast.error(getTranslation(displayLanguage, "auth.invalidEmail"));
       return;
     }
     if (!password || password.length < 6) {
-      toast.error("Password must be at least 6 characters");
+      toast.error(getTranslation(displayLanguage, "auth.passwordTooShort"));
       return;
     }
 
@@ -63,14 +67,14 @@ const SigninForm = () => {
       });
 
       if (result?.error) {
-        toast.error("Invalid email or password");
+        toast.error(getTranslation(displayLanguage, "auth.invalidCredentials"));
       } else {
-        toast.success("Logged in successfully!");
+        toast.success(getTranslation(displayLanguage, "auth.loginSuccess"));
         // Force a full page reload to update navbar with new session
         window.location.href = "/";
       }
     } catch (error) {
-      toast.error("Login failed. Please try again.");
+      toast.error(getTranslation(displayLanguage, "auth.loginFailed"));
     } finally {
       setIsLoading(false);
     }
@@ -193,7 +197,7 @@ const SigninForm = () => {
               color: "#767676",
               lineHeight: "1.5",
             }}>
-              Sign in to your account to continue.
+              {getTranslation(displayLanguage, "auth.loginTitle")}
             </p>
           </div>
 
@@ -240,7 +244,7 @@ const SigninForm = () => {
                 width={20} 
                 height={20} 
               />
-              Continue with Google
+              {getTranslation(displayLanguage, "auth.continueWith")} Google
             </button>
 
             {/* Facebook Button */}
@@ -278,7 +282,7 @@ const SigninForm = () => {
               <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
               </svg>
-              Continue with Facebook
+              {getTranslation(displayLanguage, "auth.continueWith")} Facebook
             </button>
           </div>
 
@@ -308,7 +312,7 @@ const SigninForm = () => {
             <div style={{ marginBottom: "16px" }}>
               <input
                 type="email"
-                placeholder="Email address"
+                placeholder={getTranslation(displayLanguage, "auth.emailPlaceholder")}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 disabled={isLoading || isSocialLoading}
@@ -331,7 +335,7 @@ const SigninForm = () => {
             <div style={{ marginBottom: "8px" }}>
               <input
                 type="password"
-                placeholder="Password"
+                placeholder={getTranslation(displayLanguage, "auth.passwordPlaceholder")}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 disabled={isLoading || isSocialLoading}
@@ -367,7 +371,7 @@ const SigninForm = () => {
                   e.target.style.textDecoration = "none";
                 }}
               >
-                Forgot password?
+                {getTranslation(displayLanguage, "auth.forgotPassword")}
               </Link>
             </div>
 
@@ -399,7 +403,7 @@ const SigninForm = () => {
                 }
               }}
             >
-              {isLoading ? "Signing in..." : "Sign in"}
+              {isLoading ? `${getTranslation(displayLanguage, "common.loading")}` : getTranslation(displayLanguage, "auth.loginButton")}
             </button>
           </form>
 
@@ -412,13 +416,13 @@ const SigninForm = () => {
               fontSize: "15px",
               color: "#767676",
             }}>
-              Don't have an account?{" "}
+              {getTranslation(displayLanguage, "auth.dontHaveAccount")}{" "}
               <Link href="/auth/signup" style={{
                 color: "#E61E4D",
                 textDecoration: "none",
                 fontWeight: "500",
               }}>
-                Sign up
+                {getTranslation(displayLanguage, "common.signup")}
               </Link>
             </p>
           </div>

@@ -57,7 +57,7 @@ const ExperiencesPage = async ({ searchParams }) => {
 				<div className="experiences-search-wrapper" style={{
 					maxWidth: "1760px",
 					margin: "0 auto",
-					padding: "0 80px",
+					padding: "0 10px",
 				}}>
 					<div className="experiences-search-card" style={{
 						backgroundColor: "#FFFFFF",
@@ -119,7 +119,7 @@ const ExperiencesPage = async ({ searchParams }) => {
 				<div className="experiences-results-wrapper" style={{
 					maxWidth: "1760px",
 					margin: "0 auto",
-					padding: "0 80px",
+					padding: "0 10px",
 				}}>
 					<div className="experiences-results-card" style={{
 						backgroundColor: "#FFFFFF",

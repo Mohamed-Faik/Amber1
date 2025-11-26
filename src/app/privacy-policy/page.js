@@ -89,7 +89,7 @@ const PrivacyPolicy = async () => {
 				<div style={{
 					maxWidth: "1200px",
 					margin: "0 auto",
-					padding: "0 80px",
+					padding: "0 10px",
 				}}>
 					{/* Header */}
 					<div style={{ marginBottom: "56px" }}>
