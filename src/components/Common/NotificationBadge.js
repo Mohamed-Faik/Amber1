@@ -147,12 +147,11 @@ const NotificationBadge = ({ currentUser }) => {
 					}
 				}
 			`}</style>
-			<button
-				ref={buttonRef}
-				className="notification-badge-button"
-				onClick={toggleDropdown}
-				className="notification-bell-button"
-				style={{
+		<button
+			ref={buttonRef}
+			className="notification-badge-button"
+			onClick={toggleDropdown}
+			style={{
 					position: "relative",
 					display: "flex",
 					alignItems: "center",
