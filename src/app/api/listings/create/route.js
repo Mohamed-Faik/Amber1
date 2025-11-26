@@ -14,38 +14,56 @@ export async function POST(request) {
 			);
 		}
 
-		const body = await request.json();
-		const {
-			title,
-			description,
-			imageSrc,
-			address,
-			features,
-			category,
-			listingType,
-			featureType,
-			location,
-			price,
-			area,
-			bedrooms,
-			bathrooms,
-		} = body;
+	const body = await request.json();
+	const {
+		title,
+		description,
+		imageSrc,
+		address,
+		features,
+		category,
+		listingType,
+		featureType,
+		location,
+		price,
+		area,
+		bedrooms,
+		bathrooms,
+	} = body;
 
-		// Validate required fields
-		if (!title || !description || !imageSrc || !address || !category || !listingType || !location || !price) {
+	// Determine if this is a HOMES listing (default)
+	const isHomes = !featureType || featureType === "HOMES";
+
+	// Validate required fields (conditional based on featureType)
+	if (!title || !description || !imageSrc || !category || !location || !price) {
+		return NextResponse.json(
+			{ message: "One or more required fields are empty!" },
+			{ status: 400 }
+		);
+	}
+
+	// Address and listingType are only required for HOMES
+	if (isHomes) {
+		if (!address) {
 			return NextResponse.json(
-				{ message: "One or more required fields are empty!" },
+				{ message: "Address is required for property listings!" },
 				{ status: 400 }
 			);
 		}
-
-		// Validate listing type
+		if (!listingType) {
+			return NextResponse.json(
+				{ message: "Listing type is required for property listings!" },
+				{ status: 400 }
+			);
+		}
+		// Validate listing type for HOMES
 		if (listingType !== "SALE" && listingType !== "RENT" && listingType !== "DAILY_RENT") {
 			return NextResponse.json(
 				{ message: "Invalid listing type. Must be SALE, RENT, or DAILY_RENT." },
 				{ status: 400 }
 			);
 		}
+	}
 
 		// Validate and handle featureType
 		// Default to HOMES if not specified
@@ -123,26 +141,26 @@ export async function POST(request) {
 		// Determine listing status: Moderators and Admins get auto-approved
 		const listingStatus = isModerator(currentUser) ? "Approved" : "Pending";
 
-		const listingData = {
-			title,
-			slug,
-			description,
-			imageSrc: imageSrcValue,
-			address,
-			features: features || "",
-			category,
-			listingType: listingType || "SALE",
-			featureType: validatedFeatureType,
-			location_value: location.label,
-			price: parseInt(price, 10),
-			latitude: location.latlng[0],
-			longitude: location.latlng[1],
-			userId: currentUser.id,
-			status: listingStatus, // Auto-approved for moderators/admins, Pending for regular users
-			area: parseOptionalInt(area),
-			bedrooms: parseOptionalInt(bedrooms),
-			bathrooms: parseOptionalInt(bathrooms),
-		};
+	const listingData = {
+		title,
+		slug,
+		description,
+		imageSrc: imageSrcValue,
+		address: address || "", // Allow empty address for Experiences and Services
+		features: features || "",
+		category,
+		listingType: listingType || "SALE", // Default to SALE for Experiences and Services
+		featureType: validatedFeatureType,
+		location_value: location.label,
+		price: parseInt(price, 10),
+		latitude: location.latlng[0],
+		longitude: location.latlng[1],
+		userId: currentUser.id,
+		status: listingStatus, // Auto-approved for moderators/admins, Pending for regular users
+		area: parseOptionalInt(area),
+		bedrooms: parseOptionalInt(bedrooms),
+		bathrooms: parseOptionalInt(bathrooms),
+	};
 
 		// Log the data being sent (for debugging)
 		console.log("Creating listing with data:", {

@@ -19,6 +19,7 @@ const DetailsHead = ({
 	bedrooms,
 	bathrooms,
 	listingType,
+	featureType,
 }) => {
 	// Default to SALE if listingType is not provided (for backward compatibility)
 	const displayListingType = listingType || "SALE";
@@ -83,88 +84,162 @@ const DetailsHead = ({
 					</span>
 				</div>
 
-				{/* Property Details: Area, Bedrooms, Bathrooms */}
-				{(area || bedrooms || bathrooms) && (
-					<div
-						style={{
-							display: "flex",
-							alignItems: "center",
-							gap: "24px",
-							flexWrap: "wrap",
-							marginTop: "12px",
-						}}
-					>
-						{/* Area - Ruler Icon */}
-						{area && (
-							<div
-								style={{
-									display: "flex",
-									alignItems: "center",
-									gap: "8px",
-									fontSize: "14px",
-									color: "#222222",
-								}}
-							>
-								<Image
-									src={rulerIcon}
-									alt="Area"
-									width={20}
-									height={20}
-									style={{ flexShrink: 0 }}
-								/>
-								<span style={{ fontWeight: "500" }}>{area} m²</span>
-							</div>
-						)}
+			{/* Property Details */}
+			{(area || bedrooms || bathrooms) && (
+				<div
+					style={{
+						display: "flex",
+						alignItems: "center",
+						gap: "24px",
+						flexWrap: "wrap",
+						marginTop: "12px",
+					}}
+				>
+					{/* EXPERIENCES - Show Duration and Group Size */}
+					{featureType === "EXPERIENCES" && (
+						<>
+							{/* Duration - Clock Icon */}
+							{area && (
+								<div
+									style={{
+										display: "flex",
+										alignItems: "center",
+										gap: "8px",
+										fontSize: "14px",
+										color: "#222222",
+									}}
+								>
+									<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+										<circle cx="12" cy="12" r="10"></circle>
+										<polyline points="12 6 12 12 16 14"></polyline>
+									</svg>
+									<span style={{ fontWeight: "500" }}>{area} {area === 1 ? "hour" : "hours"}</span>
+								</div>
+							)}
 
-						{/* Bedrooms - Bed Icon */}
-						{bedrooms && (
-							<div
-								style={{
-									display: "flex",
-									alignItems: "center",
-									gap: "8px",
-									fontSize: "14px",
-									color: "#222222",
-								}}
-							>
-								<Image
-									src={bedIcon}
-									alt="Bedrooms"
-									width={20}
-									height={20}
-									style={{ flexShrink: 0 }}
-								/>
-								<span style={{ fontWeight: "500" }}>
-									{bedrooms} {bedrooms === 1 ? "Chambre" : "Chambres"}
-								</span>
-							</div>
-						)}
+							{/* Group Size - People Icon */}
+							{bedrooms && (
+								<div
+									style={{
+										display: "flex",
+										alignItems: "center",
+										gap: "8px",
+										fontSize: "14px",
+										color: "#222222",
+									}}
+								>
+									<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+										<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+										<circle cx="9" cy="7" r="4"></circle>
+										<path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+										<path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+									</svg>
+									<span style={{ fontWeight: "500" }}>{bedrooms} {bedrooms === 1 ? "person" : "people"}</span>
+								</div>
+							)}
+						</>
+					)}
 
-						{/* Bathrooms - Bathroom Icon */}
-						{bathrooms && (
-							<div
-								style={{
-									display: "flex",
-									alignItems: "center",
-									gap: "8px",
-									fontSize: "14px",
-									color: "#222222",
-								}}
-							>
-								<Image
-									src={bathroomIcon}
-									alt="Bathrooms"
-									width={20}
-									height={20}
-									style={{ flexShrink: 0 }}
-								/>
-								<span style={{ fontWeight: "500" }}>
-									{bathrooms} {bathrooms === 1 ? "Salle de bain" : "Salles de bain"}
-								</span>
-							</div>
-						)}
-					</div>
-				)}
+					{/* SERVICES - Show Service Details */}
+					{featureType === "SERVICES" && (
+						<>
+							{/* Service Duration */}
+							{area && (
+								<div
+									style={{
+										display: "flex",
+										alignItems: "center",
+										gap: "8px",
+										fontSize: "14px",
+										color: "#222222",
+									}}
+								>
+									<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+										<circle cx="12" cy="12" r="10"></circle>
+										<polyline points="12 6 12 12 16 14"></polyline>
+									</svg>
+									<span style={{ fontWeight: "500" }}>{area}</span>
+								</div>
+							)}
+						</>
+					)}
+
+					{/* HOMES - Show Area, Bedrooms, Bathrooms */}
+					{(!featureType || featureType === "HOMES") && (
+						<>
+							{/* Area - Ruler Icon */}
+							{area && (
+								<div
+									style={{
+										display: "flex",
+										alignItems: "center",
+										gap: "8px",
+										fontSize: "14px",
+										color: "#222222",
+									}}
+								>
+									<Image
+										src={rulerIcon}
+										alt="Area"
+										width={20}
+										height={20}
+										style={{ flexShrink: 0 }}
+									/>
+									<span style={{ fontWeight: "500" }}>{area} m²</span>
+								</div>
+							)}
+
+							{/* Bedrooms - Bed Icon */}
+							{bedrooms && (
+								<div
+									style={{
+										display: "flex",
+										alignItems: "center",
+										gap: "8px",
+										fontSize: "14px",
+										color: "#222222",
+									}}
+								>
+									<Image
+										src={bedIcon}
+										alt="Bedrooms"
+										width={20}
+										height={20}
+										style={{ flexShrink: 0 }}
+									/>
+									<span style={{ fontWeight: "500" }}>
+										{bedrooms} {bedrooms === 1 ? "Chambre" : "Chambres"}
+									</span>
+								</div>
+							)}
+
+							{/* Bathrooms - Bathroom Icon */}
+							{bathrooms && (
+								<div
+									style={{
+										display: "flex",
+										alignItems: "center",
+										gap: "8px",
+										fontSize: "14px",
+										color: "#222222",
+									}}
+								>
+									<Image
+										src={bathroomIcon}
+										alt="Bathrooms"
+										width={20}
+										height={20}
+										style={{ flexShrink: 0 }}
+									/>
+									<span style={{ fontWeight: "500" }}>
+										{bathrooms} {bathrooms === 1 ? "Salle de bain" : "Salles de bain"}
+									</span>
+								</div>
+							)}
+						</>
+					)}
+				</div>
+			)}
 			</div>
 
 			{/* Listing Type Badge and Price */}

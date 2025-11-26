@@ -20,6 +20,36 @@ const RichTextEditor = dynamic(() => import("@mantine/rte"), {
 });
 import RTEControls from "@/utils/RTEControls";
 
+// Experience Categories
+const experienceCategories = [
+	{ value: "Adventure & Outdoor", label: "Adventure & Outdoor", icon: "🏔️" },
+	{ value: "Food & Drink", label: "Food & Drink", icon: "🍷" },
+	{ value: "Art & Culture", label: "Art & Culture", icon: "🎨" },
+	{ value: "Wellness", label: "Wellness", icon: "🧘" },
+	{ value: "Tours & Sightseeing", label: "Tours & Sightseeing", icon: "🗺️" },
+	{ value: "Classes & Workshops", label: "Classes & Workshops", icon: "📚" },
+	{ value: "Entertainment", label: "Entertainment", icon: "🎭" },
+	{ value: "Sports & Fitness", label: "Sports & Fitness", icon: "⚽" },
+	{ value: "Shopping", label: "Shopping", icon: "🛍️" },
+	{ value: "Nature & Wildlife", label: "Nature & Wildlife", icon: "🦁" },
+];
+
+// Service Categories
+const serviceCategories = [
+	{ value: "Cleaning", label: "Cleaning Services", icon: "🧹" },
+	{ value: "Property Management", label: "Property Management", icon: "🏢" },
+	{ value: "Maintenance & Repair", label: "Maintenance & Repair", icon: "🔧" },
+	{ value: "Gardening & Landscaping", label: "Gardening & Landscaping", icon: "🌳" },
+	{ value: "Interior Design", label: "Interior Design", icon: "🛋️" },
+	{ value: "Photography", label: "Photography & Videography", icon: "📸" },
+	{ value: "Catering", label: "Catering & Chef Services", icon: "👨‍🍳" },
+	{ value: "Security", label: "Security Services", icon: "🔒" },
+	{ value: "Transportation", label: "Transportation & Transfer", icon: "🚗" },
+	{ value: "Pet Care", label: "Pet Care Services", icon: "🐕" },
+	{ value: "Concierge", label: "Concierge Services", icon: "🎩" },
+	{ value: "Event Planning", label: "Event Planning", icon: "🎉" },
+];
+
 const parseImages = (value) => {
 	if (!value) return [];
 	if (Array.isArray(value)) {
@@ -186,8 +216,13 @@ const ListingForm = ({ initialData = null, featureType = null }) => {
 			return;
 		}
 
-		// Validate listing type
-		if (!data.listingType || (data.listingType !== "SALE" && data.listingType !== "RENT" && data.listingType !== "DAILY_RENT")) {
+		// Define feature type flags
+		const isHomes = !featureType || featureType === "HOMES";
+		const isExperience = featureType === "EXPERIENCES";
+		const isService = featureType === "SERVICES";
+
+		// Validate listing type - Only for HOMES
+		if (isHomes && (!data.listingType || (data.listingType !== "SALE" && data.listingType !== "RENT" && data.listingType !== "DAILY_RENT"))) {
 			console.error("Invalid listing type:", data.listingType);
 			toast.error("Please select a listing type (For Sale, For Rent Monthly, or For Rent Daily)");
 			setError("listingType", { type: "required", message: "Listing type is required" });
@@ -201,29 +236,45 @@ const ListingForm = ({ initialData = null, featureType = null }) => {
 			return;
 		}
 
-		// Validate conditional fields based on property type (only for HOMES)
+		// Validate conditional fields based on feature type
 		const propertyType = data.category;
-		const isHomes = !featureType || featureType === "HOMES";
 		
-		// Area is required for all property types except Land (optional for Land) - only for HOMES
-		if (isHomes && propertyType && propertyType !== "Land") {
-			if (!data.area || data.area === "") {
-				toast.error("Please enter the area in square meters");
-				setError("area", { type: "required", message: "Area is required" });
-				return;
+		// HOMES validation
+		if (isHomes) {
+			// Area is required for all property types except Land (optional for Land)
+			if (propertyType && propertyType !== "Land") {
+				if (!data.area || data.area === "") {
+					toast.error("Please enter the area in square meters");
+					setError("area", { type: "required", message: "Area is required" });
+					return;
+				}
+			}
+
+			// Bedrooms and bathrooms required for Villa, Apartment, and House
+			if (propertyType === "Villa" || propertyType === "Apartment" || propertyType === "House") {
+				if (!data.bedrooms || data.bedrooms === "") {
+					toast.error("Please enter the number of bedrooms/chambers");
+					setError("bedrooms", { type: "required", message: "Bedrooms/Chambers is required" });
+					return;
+				}
+				if (!data.bathrooms || data.bathrooms === "") {
+					toast.error("Please enter the number of bathrooms");
+					setError("bathrooms", { type: "required", message: "Bathrooms is required" });
+					return;
+				}
 			}
 		}
 
-		// Bedrooms and bathrooms required for Villa, Apartment, and House - only for HOMES
-		if (isHomes && (propertyType === "Villa" || propertyType === "Apartment" || propertyType === "House")) {
-			if (!data.bedrooms || data.bedrooms === "") {
-				toast.error("Please enter the number of bedrooms/chambers");
-				setError("bedrooms", { type: "required", message: "Bedrooms/Chambers is required" });
+		// EXPERIENCES validation
+		if (isExperience) {
+			if (!data.area || data.area === "") {
+				toast.error("Please enter the duration in hours");
+				setError("area", { type: "required", message: "Duration is required" });
 				return;
 			}
-			if (!data.bathrooms || data.bathrooms === "") {
-				toast.error("Please enter the number of bathrooms");
-				setError("bathrooms", { type: "required", message: "Bathrooms is required" });
+			if (!data.bedrooms || data.bedrooms === "") {
+				toast.error("Please enter the maximum group size");
+				setError("bedrooms", { type: "required", message: "Group size is required" });
 				return;
 			}
 		}
@@ -241,6 +292,8 @@ const ListingForm = ({ initialData = null, featureType = null }) => {
 				value: locationValue,
 				latlng: locationLatlng,
 			},
+			// Set default listingType for Experiences and Services (not used but required in schema)
+			listingType: featureType ? "SALE" : data.listingType,
 			// Include featureType if provided (for Experiences and Services)
 			...(featureType && { featureType }),
 		};
@@ -305,7 +358,17 @@ const ListingForm = ({ initialData = null, featureType = null }) => {
 							lineHeight: "1.3",
 						}}
 					>
-						{isEditMode ? "Edit Listing" : "Create a New Listing"}
+						{isEditMode 
+							? featureType === "EXPERIENCES" 
+								? "Edit Experience" 
+								: featureType === "SERVICES" 
+								? "Edit Service" 
+								: "Edit Listing"
+							: featureType === "EXPERIENCES"
+							? "Create a New Experience"
+							: featureType === "SERVICES"
+							? "Create a New Service"
+							: "Create a New Listing"}
 					</h1>
 					<p
 						style={{
@@ -317,6 +380,10 @@ const ListingForm = ({ initialData = null, featureType = null }) => {
 					>
 						{isEditMode
 							? "Update your listing details. Changes to published listings will move back to admin review."
+							: featureType === "EXPERIENCES"
+							? "Create an amazing experience for your guests. Share activities, tours, and unique local experiences."
+							: featureType === "SERVICES"
+							? "Offer professional services to help homeowners and guests. From cleaning to property management."
 							: "Share your property with potential buyers. All listings require admin approval."}
 					</p>
 				</div>
@@ -499,30 +566,49 @@ const ListingForm = ({ initialData = null, featureType = null }) => {
 
 								<div style={{ position: "relative", zIndex: 1 }}>
 									<label className="form-label-custom" style={{ position: "relative", zIndex: 2 }}>
-										Property Type <span style={{ color: "#FF385C" }}>*</span>
+										{featureType === "EXPERIENCES" 
+											? "Experience Type" 
+											: featureType === "SERVICES" 
+											? "Service Type" 
+											: "Property Type"} <span style={{ color: "#FF385C" }}>*</span>
 									</label>
 									<div style={{ position: "relative", zIndex: 1 }}>
 									<Select
 										id="react-select-2-live-region"
 										className="select-input"
 										classNamePrefix="select"
-										placeholder="Select Property Type (Villa, Apartment, House, or Land)"
+										placeholder={
+											featureType === "EXPERIENCES" 
+												? "Select Experience Type" 
+												: featureType === "SERVICES" 
+												? "Select Service Type" 
+												: "Select Property Type (Villa, Apartment, House, or Land)"
+										}
 										isClearable
 										isSearchable
 										menuPortalTarget={typeof document !== "undefined" ? document.body : null}
 										menuPosition="fixed"
-										options={categories}
+										options={
+											featureType === "EXPERIENCES" 
+												? experienceCategories 
+												: featureType === "SERVICES" 
+												? serviceCategories 
+												: categories
+										}
 										value={
 											catValue
-												? categories.find(
-														(x) => x.value === catValue
-												  )
+												? (featureType === "EXPERIENCES" 
+														? experienceCategories 
+														: featureType === "SERVICES" 
+														? serviceCategories 
+														: categories
+													).find((x) => x.value === catValue)
 												: catValue
 										}
 										onChange={(option) => {
 											catOnChange(option ? option.value : option);
-											// Clear bedrooms and bathrooms when switching to Land
-											if (!option || option.value === "Land") {
+											// Clear bedrooms and bathrooms when switching to Land (only for HOMES)
+											if (!featureType && (!option || option.value === "Land")) {
 												setCustomValue("bedrooms", "");
 												setCustomValue("bathrooms", "");
 											}
@@ -615,6 +701,8 @@ const ListingForm = ({ initialData = null, featureType = null }) => {
 									</div>
 								</div>
 
+							{/* Full Address - Only for HOMES */}
+							{!featureType && (
 								<Input
 									label="Full Address"
 									id="address"
@@ -623,11 +711,21 @@ const ListingForm = ({ initialData = null, featureType = null }) => {
 									disabled={isLoading}
 									register={register}
 									errors={errors}
-									required
+									required={!featureType}
 								/>
+							)}
+							
+							{/* For Experiences and Services - Register address as optional hidden field */}
+							{featureType && (
+								<input
+									type="hidden"
+									{...register("address")}
+									value=""
+								/>
+							)}
 							</div>
 
-							{/* Conditional Fields based on Property Type */}
+							{/* Conditional Fields based on Feature Type */}
 							{category && category !== "" && (
 								<div
 									style={{
@@ -649,56 +747,151 @@ const ListingForm = ({ initialData = null, featureType = null }) => {
 											marginTop: 0,
 										}}
 									>
-										Property Details
+										{featureType === "EXPERIENCES" 
+											? "Experience Details" 
+											: featureType === "SERVICES" 
+											? "Service Details" 
+											: "Property Details"}
 									</h3>
-									<div
-										style={{
-											display: "grid",
-											gridTemplateColumns: (category === "Villa" || category === "Apartment" || category === "House") 
-												? "repeat(3, 1fr)" 
-												: "1fr",
-											gap: "20px",
-											width: "100%",
-										}}
-									>
-										{(category === "Villa" || category === "Apartment" || category === "House" || category === "Land") && (
+									
+									{/* HOMES - Property Details */}
+									{!featureType && (
+										<div
+											style={{
+												display: "grid",
+												gridTemplateColumns: (category === "Villa" || category === "Apartment" || category === "House") 
+													? "repeat(3, 1fr)" 
+													: "1fr",
+												gap: "20px",
+												width: "100%",
+											}}
+										>
+											{(category === "Villa" || category === "Apartment" || category === "House" || category === "Land") && (
+												<Input
+													label="Area (Square Meters)"
+													id="area"
+													type="number"
+													placeholder="e.g., 150"
+													disabled={isLoading}
+													register={register}
+													errors={errors}
+													required={category !== "Land"}
+												/>
+											)}
+
+											{(category === "Villa" || category === "Apartment" || category === "House") && (
+												<>
+													<Input
+														label={category === "Apartment" ? "Chambers (Bedrooms)" : "Bedrooms"}
+														id="bedrooms"
+														type="number"
+														placeholder={category === "Apartment" ? "e.g., 2" : "e.g., 3"}
+														disabled={isLoading}
+														register={register}
+														errors={errors}
+														required
+													/>
+													<Input
+														label="Bathrooms"
+														id="bathrooms"
+														type="number"
+														placeholder="e.g., 2"
+														disabled={isLoading}
+														register={register}
+														errors={errors}
+														required
+													/>
+												</>
+											)}
+										</div>
+									)}
+
+									{/* EXPERIENCES - Experience Details */}
+									{featureType === "EXPERIENCES" && (
+										<>
+											<div
+												style={{
+													display: "grid",
+													gridTemplateColumns: "repeat(2, 1fr)",
+													gap: "20px",
+													width: "100%",
+												}}
+											>
+												<Input
+													label="Duration (Hours)"
+													id="area"
+													type="number"
+													placeholder="e.g., 3"
+													disabled={isLoading}
+													register={register}
+													errors={errors}
+													required
+												/>
+												<Input
+													label="Group Size (Max Guests)"
+													id="bedrooms"
+													type="number"
+													placeholder="e.g., 10"
+													disabled={isLoading}
+													register={register}
+													errors={errors}
+													required
+												/>
+											</div>
+											{/* Hidden fields for experiences */}
+											<input type="hidden" {...register("bathrooms")} value="" />
+											<input type="hidden" {...register("features")} value="" />
+										</>
+									)}
+
+									{/* SERVICES - Service Details */}
+									{featureType === "SERVICES" && (
+										<div
+											style={{
+												display: "grid",
+												gridTemplateColumns: "repeat(2, 1fr)",
+												gap: "20px",
+												width: "100%",
+											}}
+										>
 											<Input
-												label="Area (Square Meters)"
+												label="Service Duration"
 												id="area"
-												type="number"
-												placeholder="e.g., 150"
+												type="text"
+												placeholder="e.g., 2 hours, Ongoing"
 												disabled={isLoading}
 												register={register}
 												errors={errors}
-												required={category !== "Land"}
 											/>
-										)}
-
-										{(category === "Villa" || category === "Apartment" || category === "House") && (
-											<>
-												<Input
-													label={category === "Apartment" ? "Chambers (Bedrooms)" : "Bedrooms"}
-													id="bedrooms"
-													type="number"
-													placeholder={category === "Apartment" ? "e.g., 2" : "e.g., 3"}
-													disabled={isLoading}
-													register={register}
-													errors={errors}
-													required
-												/>
-												<Input
-													label="Bathrooms"
-													id="bathrooms"
-													type="number"
-													placeholder="e.g., 2"
-													disabled={isLoading}
-													register={register}
-													errors={errors}
-													required
-												/>
-											</>
-										)}
-									</div>
+											<Input
+												label="Availability"
+												id="bedrooms"
+												type="text"
+												placeholder="e.g., Daily, Weekly, On-demand"
+												disabled={isLoading}
+												register={register}
+												errors={errors}
+											/>
+											<Input
+												label="Service Area Coverage"
+												id="bathrooms"
+												type="text"
+												placeholder="e.g., All of Casablanca"
+												disabled={isLoading}
+												register={register}
+												errors={errors}
+											/>
+											<Input
+												label="Response Time"
+												id="features"
+												type="text"
+												placeholder="e.g., Within 24 hours"
+												disabled={isLoading}
+												register={register}
+												errors={errors}
+											/>
+										</div>
+									)}
 								</div>
 							)}
 						</div>
@@ -730,9 +923,10 @@ const ListingForm = ({ initialData = null, featureType = null }) => {
 											/>
 										)}
 									/>
-								</div>
+							</div>
 
-								{/* Listing Type - Sale or Rent */}
+							{/* Listing Type - Sale or Rent - Only for HOMES */}
+							{!featureType && (
 								<div style={{ position: "relative", zIndex: 1 }}>
 									<label className="form-label-custom" style={{ position: "relative", zIndex: 2 }}>
 										Listing Type <span style={{ color: "#FF385C" }}>*</span>
@@ -827,17 +1021,24 @@ const ListingForm = ({ initialData = null, featureType = null }) => {
 										</p>
 									)}
 								</div>
+							)}
 
-								<Input
-									label={`Price ${listingType === "RENT" ? "(per month)" : listingType === "DAILY_RENT" ? "(per day)" : ""}`}
-									id="price"
-									type="number"
-									placeholder="0"
-									disabled={isLoading}
-									register={register}
-									errors={errors}
-									required
-								/>
+						<Input
+								label={
+									featureType === "EXPERIENCES" 
+										? "Price (per person)" 
+										: featureType === "SERVICES" 
+										? "Price (starting from)" 
+										: `Price ${listingType === "RENT" ? "(per month)" : listingType === "DAILY_RENT" ? "(per day)" : ""}`
+								}
+								id="price"
+								type="number"
+								placeholder="0"
+								disabled={isLoading}
+								register={register}
+								errors={errors}
+								required
+							/>
 							</div>
 						</div>
 					</div>
