@@ -16,20 +16,8 @@ const Navbar = ({ currentUser }) => {
   const { language, isDetecting } = useLanguage();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
 
   const displayLanguage = isDetecting ? "en" : language;
-
-  // Detect mobile screen size
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 992);
-    };
-    
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -431,138 +419,6 @@ const Navbar = ({ currentUser }) => {
           </div>
         </div>
       </header>
-
-        {/* Mobile/Tablet Navbar */}
-        {isMobile && (
-        <div
-          className="mobile-nav"
-          style={{
-            display: "flex",
-            padding: "0 8px 0 16px",
-            height: "70px",
-            alignItems: "center",
-            justifyContent: "space-between",
-            gap: "12px",
-            width: "100%",
-            boxSizing: "border-box",
-            position: "relative",
-          }}
-          data-mobile-nav="true"
-        >
-          {/* Logo */}
-          <Link 
-            href="/" 
-            style={{ 
-              textDecoration: "none",
-              display: "flex",
-              alignItems: "center",
-              height: "100%",
-              flexShrink: 0,
-              minWidth: 0,
-            }}
-          >
-            <Image
-              src="/images/amberhomes png.png"
-              alt="AmberHomes Logo"
-              width={150}
-              height={40}
-              style={{
-                height: "auto",
-                width: "auto",
-                maxHeight: "40px",
-                maxWidth: "150px",
-                objectFit: "contain",
-              }}
-              priority
-            />
-          </Link>
-          
-          {/* Right Side: Profile Button or Login */}
-          <div 
-            className="mobile-nav-right"
-            style={{ 
-              display: "flex", 
-              alignItems: "center", 
-              justifyContent: "flex-end",
-              gap: "8px", 
-              height: "100%", 
-              flexShrink: 0,
-              minWidth: 0,
-              marginLeft: "auto",
-              marginRight: "0",
-              paddingRight: "0",
-            }}
-          >
-            {/* Notification Badge for Admin Users (Mobile) */}
-            <div 
-              className="mobile-notification-wrapper"
-              style={{ 
-                display: "flex", 
-                alignItems: "center", 
-                justifyContent: "center",
-                position: "relative",
-                top: 0,
-                right: 0,
-                margin: 0,
-                padding: 0,
-                height: "40px",
-                width: "40px",
-                flexShrink: 0,
-              }}
-            >
-              <NotificationBadge currentUser={currentUser} />
-            </div>
-            
-            {currentUser ? (
-              <div 
-                className="mobile-user-menu-wrapper"
-                style={{ 
-                  display: "flex", 
-                  alignItems: "center", 
-                  justifyContent: "center",
-                  position: "relative",
-                  flexShrink: 0,
-                  height: "40px",
-                  width: "40px",
-                  margin: 0,
-                  padding: 0,
-                }}
-              >
-                <UserMenu currentUser={currentUser} />
-              </div>
-            ) : (
-              <Link
-                href="/auth/signin"
-                className="mobile-login-link"
-                style={{
-                  padding: "10px 16px",
-                  borderRadius: "22px",
-                  fontSize: "14px",
-                  fontWeight: "600",
-                  color: "#222222",
-                  textDecoration: "none",
-                  backgroundColor: "#F7F7F7",
-                  transition: "all 0.2s ease",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  whiteSpace: "nowrap",
-                  height: "40px",
-                  flexShrink: 0,
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = "#E8E8E8";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = "#F7F7F7";
-                }}
-              >
-                Log in
-              </Link>
-            )}
-          </div>
-        </div>
-        )}
 
       {/* Mobile Menu Overlay */}
       {isMobileMenuOpen && (
