@@ -85,6 +85,7 @@ const SearchForm = () => {
 	}, []);
 
 	return (
+		<>
 		<form
 			className="search-form"
 			onSubmit={(e) => {
@@ -404,6 +405,7 @@ const SearchForm = () => {
 					background-clip: padding-box;
 				}
 			`}</style>
+		</>
 	);
 };
 
