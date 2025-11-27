@@ -8,6 +8,7 @@ import { formattedPrice } from "@/utils/formattedPrice";
 import { getListingImage } from "@/utils/getListingImage";
 import ContactButtons from "../Listing/ContactButtons";
 import ListingImageCarousel from "../Listing/ListingImageCarousel";
+import { getTranslation } from "@/utils/translations";
 import rulerIcon from "../../../public/images/icon/ruler.svg";
 import bedIcon from "../../../public/images/icon/bed.svg";
 import bathroomIcon from "../../../public/images/icon/bathroom.svg";
@@ -28,6 +29,7 @@ const GridStyle = ({
 	bathrooms,
 	listingType,
 	featureType,
+	displayLanguage = "en",
 	status,
 }) => {
 	const router = useRouter();
@@ -197,7 +199,11 @@ const GridStyle = ({
 									letterSpacing: "0.5px",
 								}}
 							>
-								{displayListingType === "RENT" ? "FOR RENT" : displayListingType === "DAILY_RENT" ? "FOR RENT (DAILY)" : "FOR SALE"}
+								{displayListingType === "RENT" 
+								? getTranslation(displayLanguage, "listings.forRent") 
+								: displayListingType === "DAILY_RENT" 
+									? getTranslation(displayLanguage, "listings.forRentDaily") 
+									: getTranslation(displayLanguage, "listings.forSale")}
 							</span>
 						</div>
 
@@ -355,9 +361,11 @@ const GridStyle = ({
 												height={14}
 												style={{ flexShrink: 0, opacity: 0.7 }}
 											/>
-											<span style={{ fontWeight: "500" }}>
-												{bedrooms} {bedrooms === 1 ? "Chambre" : "Chambres"}
-											</span>
+										<span style={{ fontWeight: "500" }}>
+											{bedrooms} {bedrooms === 1 
+												? getTranslation(displayLanguage, "listings.bedroom") 
+												: getTranslation(displayLanguage, "listings.bedrooms")}
+										</span>
 										</div>
 									)}
 
@@ -371,9 +379,11 @@ const GridStyle = ({
 												height={14}
 												style={{ flexShrink: 0, opacity: 0.7 }}
 											/>
-											<span style={{ fontWeight: "500" }}>
-												{bathrooms} {bathrooms === 1 ? "Salle de bain" : "Salles de bain"}
-											</span>
+										<span style={{ fontWeight: "500" }}>
+											{bathrooms} {bathrooms === 1 
+												? getTranslation(displayLanguage, "listings.bathroom") 
+												: getTranslation(displayLanguage, "listings.bathrooms")}
+										</span>
 										</div>
 									)}
 								</>

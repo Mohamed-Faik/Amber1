@@ -155,6 +155,16 @@ const enTranslations = {
     favorites: "Favorites",
     addListing: "Add Listing",
     createListing: "Create a New Listing",
+    findYourPerfectHome: "Find Your Perfect Home",
+    searchAndExploreProperties: "Search & explore properties",
+    availableHomes: "Available Homes",
+    discoverAmazingExperiences: "Discover Amazing Experiences",
+    findUniqueActivities: "Find unique activities and local experiences",
+    availableExperiences: "Available Experiences",
+    propertiesFound: "Properties Found",
+    ofProperties: "of {count} Properties",
+    noPropertiesFound: "No properties found",
+    tryAdjustingFilters: "Try adjusting your search filters",
     editListing: "Edit Listing",
     viewListing: "View Listing",
     deleteListing: "Delete Listing",
@@ -414,6 +424,16 @@ const frTranslations = {
     favorites: "Favoris",
     addListing: "Ajouter une annonce",
     createListing: "Créer une nouvelle annonce",
+    findYourPerfectHome: "Trouvez votre maison parfaite",
+    searchAndExploreProperties: "Rechercher et explorer les propriétés",
+    availableHomes: "Maisons disponibles",
+    discoverAmazingExperiences: "Découvrez des expériences incroyables",
+    findUniqueActivities: "Trouvez des activités uniques et des expériences locales",
+    availableExperiences: "Expériences disponibles",
+    propertiesFound: "Propriétés trouvées",
+    ofProperties: "de {count} propriétés",
+    noPropertiesFound: "Aucune propriété trouvée",
+    tryAdjustingFilters: "Essayez d'ajuster vos filtres de recherche",
     editListing: "Modifier l'annonce",
     viewListing: "Voir l'annonce",
     deleteListing: "Supprimer l'annonce",
@@ -673,6 +693,16 @@ const nlTranslations = {
     favorites: "Favorieten",
     addListing: "Advertentie toevoegen",
     createListing: "Nieuwe advertentie maken",
+    findYourPerfectHome: "Vind uw perfecte huis",
+    searchAndExploreProperties: "Zoek en verken eigendommen",
+    availableHomes: "Beschikbare woningen",
+    discoverAmazingExperiences: "Ontdek geweldige ervaringen",
+    findUniqueActivities: "Vind unieke activiteiten en lokale ervaringen",
+    availableExperiences: "Beschikbare ervaringen",
+    propertiesFound: "Eigendommen gevonden",
+    ofProperties: "van {count} eigendommen",
+    noPropertiesFound: "Geen eigendommen gevonden",
+    tryAdjustingFilters: "Probeer uw zoekfilters aan te passen",
     editListing: "Advertentie bewerken",
     viewListing: "Advertentie bekijken",
     deleteListing: "Advertentie verwijderen",
@@ -782,7 +812,7 @@ const translations = {
   nl: nlTranslations,
 };
 
-export const getTranslation = (language, key) => {
+export const getTranslation = (language, key, params = {}) => {
   const keys = key.split(".");
   let value = translations[language] || translations.en;
   
@@ -798,7 +828,16 @@ export const getTranslation = (language, key) => {
     }
   }
   
-  return value || key;
+  let result = value || key;
+  
+  // Replace placeholders like {count}, {name}, etc.
+  if (typeof result === 'string' && params) {
+    Object.keys(params).forEach(paramKey => {
+      result = result.replace(new RegExp(`\\{${paramKey}\\}`, 'g'), params[paramKey]);
+    });
+  }
+  
+  return result;
 };
 
 export const languages = [

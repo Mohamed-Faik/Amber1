@@ -4,6 +4,8 @@ import CategorySearch from "./CategorySearch";
 import PaginationBar from "./PaginationBar";
 import GridStyle from "./GridStyle";
 import ListStyle from "./ListStyle";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { getTranslation } from "@/utils/translations";
 
 const Index = ({
 	currentUser,
@@ -15,6 +17,8 @@ const Index = ({
 	endListingNumber,
 }) => {
 	const [listStyle, setListStyle] = useState("grid");
+	const { language, isDetecting } = useLanguage();
+	const displayLanguage = isDetecting ? "en" : language;
 
 	return (
 		<div
@@ -37,33 +41,33 @@ const Index = ({
 					}}
 				>
 					<div>
-						{totalCount === 0 ? (
-							<p
-								style={{
-									fontSize: "18px",
-									color: "#717171",
-									margin: 0,
-								}}
-							>
-								<span style={{ fontWeight: "600", color: "#222222" }}>
-									0
-								</span>{" "}
-								Properties Found
-							</p>
-						) : (
-							<p
-								style={{
-									fontSize: "18px",
-									color: "#717171",
-									margin: 0,
-								}}
-							>
-								<span style={{ fontWeight: "600", color: "#222222" }}>
-									{startListingNumber} - {endListingNumber}
-								</span>{" "}
-								of {totalCount} Properties
-							</p>
-						)}
+					{totalCount === 0 ? (
+						<p
+							style={{
+								fontSize: "18px",
+								color: "#717171",
+								margin: 0,
+							}}
+						>
+							<span style={{ fontWeight: "600", color: "#222222" }}>
+								0
+							</span>{" "}
+							{getTranslation(displayLanguage, "listings.propertiesFound")}
+						</p>
+					) : (
+						<p
+							style={{
+								fontSize: "18px",
+								color: "#717171",
+								margin: 0,
+							}}
+						>
+							<span style={{ fontWeight: "600", color: "#222222" }}>
+								{startListingNumber} - {endListingNumber}
+							</span>{" "}
+							{getTranslation(displayLanguage, "listings.ofProperties", { count: totalCount })}
+						</p>
+					)}
 					</div>
 
 					<CategorySearch
@@ -79,13 +83,14 @@ const Index = ({
 						<div className="row">
 							{listStyle === "grid" ? (
 								listings.length > 0 ? (
-									listings.map((list) => (
-										<GridStyle
-											currentUser={currentUser}
-											key={list.id}
-											{...list}
-										/>
-									))
+								listings.map((list) => (
+									<GridStyle
+										currentUser={currentUser}
+										key={list.id}
+										displayLanguage={displayLanguage}
+										{...list}
+									/>
+								))
 								) : (
 									<div className="col-lg-12">
 										<div
@@ -123,13 +128,14 @@ const Index = ({
 									</div>
 								)
 							) : listings.length > 0 ? (
-								listings.map((list) => (
-									<ListStyle
-										currentUser={currentUser}
-										key={list.id}
-										{...list}
-									/>
-								))
+							listings.map((list) => (
+								<ListStyle
+									currentUser={currentUser}
+									key={list.id}
+									displayLanguage={displayLanguage}
+									{...list}
+								/>
+							))
 							) : (
 								<div className="col-lg-12">
 									<div
@@ -158,10 +164,10 @@ const Index = ({
 												marginBottom: "8px",
 											}}
 										>
-											No properties found
+											{getTranslation(displayLanguage, "listings.noPropertiesFound")}
 										</h3>
 										<p style={{ color: "#717171", margin: 0 }}>
-											Try adjusting your search filters
+											{getTranslation(displayLanguage, "listings.tryAdjustingFilters")}
 										</p>
 									</div>
 								</div>
