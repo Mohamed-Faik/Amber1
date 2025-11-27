@@ -15,9 +15,15 @@ const HomesPage = async ({ searchParams }) => {
 	} = await getListings({ ...searchParams, featureType: "HOMES" });
 	const currentUser = await getCurrentUser();
 
+	// Separate premium and regular listings
+	const premiumListings = listings.filter(listing => listing.isPremium === true);
+	const regularListings = listings.filter(listing => !listing.isPremium);
+
 	return (
 		<HomesPageClient
 			listings={listings}
+			premiumListings={premiumListings}
+			regularListings={regularListings}
 			totalPages={totalPages}
 			startListingNumber={startListingNumber}
 			endListingNumber={endListingNumber}
