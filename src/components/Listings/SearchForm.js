@@ -116,8 +116,8 @@ const SearchForm = ({ searchParams, featureType }) => {
 	// Airbnb-style compact design for Experiences and Homes
 	if (featureType === "EXPERIENCES" || featureType === "HOMES") {
 		return (
-			<form onSubmit={handleSearch} style={{ position: "relative", zIndex: 100 }}>
-				<div style={{
+			<form onSubmit={handleSearch} className="airbnb-search-form" style={{ position: "relative", zIndex: 100 }}>
+				<div className="search-form-container" style={{
 					display: "flex",
 					alignItems: "center",
 					backgroundColor: "#FFFFFF",
@@ -139,6 +139,7 @@ const SearchForm = ({ searchParams, featureType }) => {
 				{/* Where Section */}
 				<div 
 					ref={locationDropdownRef}
+					className="search-where-section"
 					style={{
 						flex: 1,
 						padding: "14px 24px",
@@ -174,49 +175,63 @@ const SearchForm = ({ searchParams, featureType }) => {
 						{locationValue || "Search destinations"}
 					</div>
 
-					{/* Location Dropdown Menu */}
-					{showLocationDropdown && (
+			{/* Location Dropdown Menu */}
+			{showLocationDropdown && (
+				<div className="location-dropdown" style={{
+					position: "absolute",
+					top: "calc(100% + 12px)",
+					left: 0,
+					right: 0,
+					backgroundColor: "#FFFFFF",
+					border: "1px solid rgba(0, 0, 0, 0.08)",
+					borderRadius: "20px",
+					boxShadow: "0 10px 40px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.08)",
+					zIndex: 99999,
+					maxHeight: "360px",
+					overflowY: "auto",
+					minWidth: "300px",
+					animation: "dropdownFadeIn 0.2s ease-out",
+				}}>
+						{/* Search Input Inside Dropdown */}
 						<div style={{
-							position: "absolute",
-							top: "calc(100% + 12px)",
-							left: 0,
-							right: 0,
+							padding: "16px",
+							borderBottom: "1px solid rgba(0, 0, 0, 0.06)",
+							position: "sticky",
+							top: 0,
 							backgroundColor: "#FFFFFF",
-							border: "1px solid #DDDDDD",
-							borderRadius: "16px",
-							boxShadow: "0 6px 20px rgba(0, 0, 0, 0.2)",
-							zIndex: 99999,
-							maxHeight: "320px",
-							overflowY: "auto",
-							minWidth: "280px",
+							zIndex: 1,
+							backdropFilter: "blur(10px)",
 						}}>
-							{/* Search Input Inside Dropdown */}
-							<div style={{
-								padding: "12px",
-								borderBottom: "1px solid #EEEEEE",
-								position: "sticky",
-								top: 0,
-								backgroundColor: "#FFFFFF",
-								zIndex: 1,
-							}}>
-								<input
-									type="text"
-									placeholder="Type to search cities..."
-									value={locationSearchTerm}
-									onChange={(e) => setLocationSearchTerm(e.target.value)}
-									onClick={(e) => e.stopPropagation()}
-									style={{
-										width: "100%",
-										border: "1px solid #DDDDDD",
-										borderRadius: "8px",
-										padding: "8px 12px",
-										fontSize: "14px",
-										outline: "none",
-										fontFamily: "inherit",
-									}}
-								/>
-							</div>
-							{filteredCities.map((city) => (
+							<input
+								type="text"
+								placeholder="Search cities..."
+								value={locationSearchTerm}
+								onChange={(e) => setLocationSearchTerm(e.target.value)}
+								onClick={(e) => e.stopPropagation()}
+								style={{
+									width: "100%",
+									border: "2px solid #EEEEEE",
+									borderRadius: "12px",
+									padding: "12px 16px",
+									fontSize: "14px",
+									outline: "none",
+									fontFamily: "inherit",
+									transition: "all 0.2s ease",
+									backgroundColor: "#F9F9F9",
+									fontWeight: "500",
+								}}
+								onFocus={(e) => {
+									e.target.style.border = "2px solid #FF385C";
+									e.target.style.backgroundColor = "#FFFFFF";
+								}}
+								onBlur={(e) => {
+									e.target.style.border = "2px solid #EEEEEE";
+									e.target.style.backgroundColor = "#F9F9F9";
+								}}
+							/>
+						</div>
+						<div style={{ padding: "8px 0" }}>
+							{filteredCities.map((city, index) => (
 								<div
 									key={city.value}
 									onClick={(e) => {
@@ -226,58 +241,88 @@ const SearchForm = ({ searchParams, featureType }) => {
 										setShowLocationDropdown(false);
 									}}
 									style={{
-										padding: "12px 16px",
+										padding: "14px 20px",
+										margin: "4px 8px",
 										cursor: "pointer",
-										transition: "background-color 0.15s ease",
+										transition: "all 0.2s ease",
 										display: "flex",
 										alignItems: "center",
-										gap: "10px",
-										fontSize: "14px",
+										gap: "12px",
+										fontSize: "15px",
 										color: "#222222",
-										backgroundColor: locationValue === city.label ? "#F7F7F7" : "transparent",
+										fontWeight: "500",
+										backgroundColor: locationValue === city.label ? "rgba(255, 56, 92, 0.08)" : "transparent",
+										borderRadius: "12px",
 									}}
 									onMouseEnter={(e) => {
-										e.currentTarget.style.backgroundColor = "#F7F7F7";
+										e.currentTarget.style.backgroundColor = locationValue === city.label 
+											? "rgba(255, 56, 92, 0.12)" 
+											: "rgba(0, 0, 0, 0.04)";
+										e.currentTarget.style.transform = "translateX(4px)";
 									}}
 									onMouseLeave={(e) => {
-										e.currentTarget.style.backgroundColor = locationValue === city.label ? "#F7F7F7" : "transparent";
+										e.currentTarget.style.backgroundColor = locationValue === city.label 
+											? "rgba(255, 56, 92, 0.08)" 
+											: "transparent";
+										e.currentTarget.style.transform = "translateX(0)";
 									}}
 								>
-									<MapPin size={16} color="#FF385C" strokeWidth={2} />
-									<span>{city.label}</span>
+									<div style={{
+										width: "32px",
+										height: "32px",
+										borderRadius: "10px",
+										background: "linear-gradient(135deg, #FF385C 0%, #E61E4D 100%)",
+										display: "flex",
+										alignItems: "center",
+										justifyContent: "center",
+										flexShrink: 0,
+									}}>
+										<MapPin size={16} color="#FFFFFF" strokeWidth={2.5} />
+									</div>
+									<span style={{ flex: 1 }}>{city.label}</span>
+									{locationValue === city.label && (
+										<div style={{
+											width: "6px",
+											height: "6px",
+											borderRadius: "50%",
+											background: "linear-gradient(135deg, #FF385C 0%, #E61E4D 100%)",
+										}} />
+									)}
 								</div>
 							))}
 						</div>
-					)}
+					</div>
+				)}
 				</div>
 
-					{/* Divider */}
-					<div style={{
-						width: "1px",
-						height: "32px",
-						backgroundColor: "#DDDDDD",
-					}} />
+				{/* Divider */}
+				<div className="search-divider" style={{
+					width: "1px",
+					height: "32px",
+					backgroundColor: "#DDDDDD",
+				}} />
 
-					{/* Type of Service Section */}
-					<div 
-						ref={dropdownRef}
-						style={{
-							flex: 1,
-							padding: "14px 24px",
-							cursor: "pointer",
-							borderRadius: "40px",
-							transition: "background-color 0.2s ease",
-							position: "relative",
-							zIndex: 10,
-						}}
-						onClick={() => setShowCategoryDropdown(!showCategoryDropdown)}
-						onMouseEnter={(e) => {
-							e.currentTarget.style.backgroundColor = "#EBEBEB";
-						}}
-						onMouseLeave={(e) => {
-							e.currentTarget.style.backgroundColor = "transparent";
-						}}
-					>
+				{/* Type of Service Section */}
+				<div 
+					ref={dropdownRef}
+					className="search-type-section"
+					style={{
+						flex: 1,
+						padding: "14px 24px",
+						cursor: "pointer",
+						borderRadius: "40px",
+						transition: "background-color 0.2s ease",
+						position: "relative",
+						zIndex: 10,
+					}}
+					onClick={() => setShowCategoryDropdown(!showCategoryDropdown)}
+					onMouseEnter={(e) => {
+						e.currentTarget.style.backgroundColor = "#EBEBEB";
+					}}
+					onMouseLeave={(e) => {
+						e.currentTarget.style.backgroundColor = "transparent";
+					}}
+				>
 					<div style={{
 						fontSize: "12px",
 						fontWeight: "600",
@@ -299,111 +344,208 @@ const SearchForm = ({ searchParams, featureType }) => {
 							}
 						</div>
 
-						{/* Dropdown Menu */}
-						{showCategoryDropdown && (
-							<div style={{
-								position: "absolute",
-								top: "calc(100% + 12px)",
-								left: 0,
-								right: 0,
-								backgroundColor: "#FFFFFF",
-								border: "1px solid #DDDDDD",
-								borderRadius: "16px",
-								boxShadow: "0 6px 20px rgba(0, 0, 0, 0.2)",
-								zIndex: 99999,
-								maxHeight: "400px",
-								overflowY: "auto",
-								minWidth: "240px",
-							}}>
-								{categories.map((cat) => (
-									<div
-										key={cat.value}
-										onClick={(e) => {
-											e.stopPropagation();
-											setCategory(cat.value);
-											setShowCategoryDropdown(false);
-										}}
-										style={{
-											padding: "12px 16px",
-											cursor: "pointer",
-											transition: "background-color 0.15s ease",
-											display: "flex",
-											alignItems: "center",
-											gap: "10px",
-											fontSize: "14px",
-											color: "#222222",
-											backgroundColor: category === cat.value ? "#F7F7F7" : "transparent",
-										}}
-										onMouseEnter={(e) => {
-											e.currentTarget.style.backgroundColor = "#F7F7F7";
-										}}
-										onMouseLeave={(e) => {
-											e.currentTarget.style.backgroundColor = category === cat.value ? "#F7F7F7" : "transparent";
-										}}
-									>
-								{getIcon(cat.icon, 18, "#FF385C")}
-										<span>{cat.label}</span>
+				{/* Dropdown Menu */}
+				{showCategoryDropdown && (
+					<div className="category-dropdown" style={{
+						position: "absolute",
+						top: "calc(100% + 12px)",
+						left: 0,
+						right: 0,
+						backgroundColor: "#FFFFFF",
+						border: "1px solid rgba(0, 0, 0, 0.08)",
+						borderRadius: "20px",
+						boxShadow: "0 10px 40px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.08)",
+						zIndex: 99999,
+						maxHeight: "420px",
+						overflowY: "auto",
+						minWidth: "280px",
+						animation: "dropdownFadeIn 0.2s ease-out",
+					}}>
+						<div style={{ padding: "8px 0" }}>
+							{categories.map((cat, index) => (
+								<div
+									key={cat.value}
+									onClick={(e) => {
+										e.stopPropagation();
+										setCategory(cat.value);
+										setShowCategoryDropdown(false);
+									}}
+									style={{
+										padding: "14px 20px",
+										margin: "4px 8px",
+										cursor: "pointer",
+										transition: "all 0.2s ease",
+										display: "flex",
+										alignItems: "center",
+										gap: "14px",
+										fontSize: "15px",
+										color: "#222222",
+										fontWeight: "500",
+										backgroundColor: category === cat.value ? "rgba(255, 56, 92, 0.08)" : "transparent",
+										borderRadius: "12px",
+									}}
+									onMouseEnter={(e) => {
+										e.currentTarget.style.backgroundColor = category === cat.value 
+											? "rgba(255, 56, 92, 0.12)" 
+											: "rgba(0, 0, 0, 0.04)";
+										e.currentTarget.style.transform = "translateX(4px)";
+									}}
+									onMouseLeave={(e) => {
+										e.currentTarget.style.backgroundColor = category === cat.value 
+											? "rgba(255, 56, 92, 0.08)" 
+											: "transparent";
+										e.currentTarget.style.transform = "translateX(0)";
+									}}
+								>
+									<div style={{
+										width: "36px",
+										height: "36px",
+										borderRadius: "10px",
+										background: "linear-gradient(135deg, #FF385C 0%, #E61E4D 100%)",
+										display: "flex",
+										alignItems: "center",
+										justifyContent: "center",
+										flexShrink: 0,
+									}}>
+										{getIcon(cat.icon, 18, "#FFFFFF")}
 									</div>
-								))}
-							</div>
-						)}
+									<span style={{ flex: 1 }}>{cat.label}</span>
+									{category === cat.value && (
+										<div style={{
+											width: "6px",
+											height: "6px",
+											borderRadius: "50%",
+											background: "linear-gradient(135deg, #FF385C 0%, #E61E4D 100%)",
+										}} />
+									)}
+								</div>
+							))}
+						</div>
 					</div>
-
-					{/* Search Button */}
-					<button
-						type="submit"
-						style={{
-							background: "linear-gradient(to right, #E61E4D 0%, #D70466 100%)",
-							color: "#FFFFFF",
-							border: "none",
-							borderRadius: "50%",
-							width: "48px",
-							height: "48px",
-							display: "flex",
-							alignItems: "center",
-							justifyContent: "center",
-							cursor: "pointer",
-							transition: "transform 0.1s ease",
-							boxShadow: "0 2px 4px rgba(0,0,0,0.18)",
-						}}
-						onMouseEnter={(e) => {
-							e.currentTarget.style.transform = "scale(1.04)";
-						}}
-						onMouseLeave={(e) => {
-							e.currentTarget.style.transform = "scale(1)";
-						}}
-					>
-						<Search size={18} strokeWidth={3} />
-					</button>
+				)}
 				</div>
 
-				{/* Mobile Responsive Styles */}
-				<style jsx>{`
-					@media (max-width: 768px) {
-						form > div {
-							flex-direction: column !important;
-							border-radius: 16px !important;
-							padding: 16px !important;
-						}
-						form > div > div:first-child,
-						form > div > div:nth-child(3) {
-							padding: 12px 0 !important;
-							width: 100%;
-						}
-						form > div > div:nth-child(2) {
-							width: 100%;
-							height: 1px;
-							margin: 8px 0;
-						}
-						form > div > button {
-							width: 100%;
-							border-radius: 8px !important;
-							height: 48px;
-							margin-top: 12px;
-						}
+				{/* Search Button */}
+				<button
+					type="submit"
+					className="search-submit-button"
+					style={{
+						background: "linear-gradient(to right, #E61E4D 0%, #D70466 100%)",
+						color: "#FFFFFF",
+						border: "none",
+						borderRadius: "50%",
+						width: "48px",
+						height: "48px",
+						display: "flex",
+						alignItems: "center",
+						justifyContent: "center",
+						cursor: "pointer",
+						transition: "transform 0.1s ease",
+						boxShadow: "0 2px 4px rgba(0,0,0,0.18)",
+					}}
+					onMouseEnter={(e) => {
+						e.currentTarget.style.transform = "scale(1.04)";
+					}}
+					onMouseLeave={(e) => {
+						e.currentTarget.style.transform = "scale(1)";
+					}}
+				>
+					<Search size={18} strokeWidth={3} />
+				</button>
+			</div>
+
+			{/* Dropdown Animation & Mobile Responsive Styles */}
+			<style jsx>{`
+				@keyframes dropdownFadeIn {
+					from {
+						opacity: 0;
+						transform: translateY(-10px);
 					}
-				`}</style>
-			</form>
+					to {
+						opacity: 1;
+						transform: translateY(0);
+					}
+				}
+				
+				.location-dropdown::-webkit-scrollbar,
+				.category-dropdown::-webkit-scrollbar {
+					width: 8px;
+				}
+				
+				.location-dropdown::-webkit-scrollbar-track,
+				.category-dropdown::-webkit-scrollbar-track {
+					background: transparent;
+					margin: 8px 0;
+				}
+				
+				.location-dropdown::-webkit-scrollbar-thumb,
+				.category-dropdown::-webkit-scrollbar-thumb {
+					background: linear-gradient(135deg, #FF385C 0%, #E61E4D 100%);
+					border-radius: 10px;
+				}
+				
+				.location-dropdown::-webkit-scrollbar-thumb:hover,
+				.category-dropdown::-webkit-scrollbar-thumb:hover {
+					background: linear-gradient(135deg, #E61E4D 0%, #D70466 100%);
+				}
+				
+				@media (max-width: 768px) {
+					.search-form-container {
+						flex-direction: column !important;
+						border-radius: 16px !important;
+						padding: 16px !important;
+						align-items: stretch !important;
+					}
+					
+					.search-where-section,
+					.search-type-section {
+						padding: 16px 16px !important;
+						width: 100% !important;
+						flex: none !important;
+						border-radius: 12px !important;
+						background-color: #F7F7F7 !important;
+						position: relative !important;
+					}
+					
+					.search-where-section {
+						margin-bottom: 12px !important;
+						z-index: 20 !important;
+					}
+					
+					.search-type-section {
+						z-index: 15 !important;
+					}
+					
+					.search-divider {
+						display: none !important;
+					}
+					
+					.search-submit-button {
+						width: 100% !important;
+						border-radius: 12px !important;
+						height: 52px !important;
+						margin-top: 12px !important;
+						font-size: 16px !important;
+						font-weight: 600 !important;
+						position: relative !important;
+						z-index: 5 !important;
+					}
+					
+					/* Dropdown positioning for mobile */
+					.location-dropdown,
+					.category-dropdown {
+						position: absolute !important;
+						left: 0 !important;
+						right: 0 !important;
+						top: calc(100% + 8px) !important;
+						width: 100% !important;
+						max-height: 300px !important;
+						z-index: 999999 !important;
+						box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25) !important;
+					}
+				}
+			`}</style>
+		</form>
 		);
 	}
 

@@ -73,7 +73,7 @@ const ListingItem = ({
 	{status === "Sold" && featureType !== "EXPERIENCES" && (
 		<div
 			style={{
-				position: "absolute",
+					position: "absolute",
 				top: "50%",
 				left: "50%",
 				transform: "translate(-50%, -50%) rotate(-45deg)",
@@ -91,9 +91,9 @@ const ListingItem = ({
 			}}
 		>
 			SOLD
-		</div>
+				</div>
 	)}
-		</Link>
+			</Link>
 
 			<div style={{
 				padding: "20px",

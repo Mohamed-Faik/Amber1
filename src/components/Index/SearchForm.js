@@ -177,90 +177,99 @@ const SearchForm = () => {
 						</svg>
 					</div>
 
-					{/* Category Dropdown Menu */}
-					{showCategoryDropdown && allCategories && allCategories.length > 0 && (
-						<div
-							ref={dropdownRef}
-							className="category-dropdown"
-							style={{
-								position: "absolute",
-								top: "calc(100% + 8px)",
-								left: 0,
-								right: 0,
-								backgroundColor: "#ffffff",
-								border: "1px solid #e0e0e0",
-								borderRadius: "12px",
-								boxShadow:
-									"0 8px 24px rgba(0, 0, 0, 0.15), 0 2px 8px rgba(0, 0, 0, 0.1)",
-								zIndex: 10000,
-								overflow: "hidden",
-								minWidth: "100%",
-							}}
-						>
+				{/* Category Dropdown Menu */}
+				{showCategoryDropdown && allCategories && allCategories.length > 0 && (
+					<div
+						ref={dropdownRef}
+						className="category-dropdown"
+						style={{
+							position: "absolute",
+							top: "calc(100% + 8px)",
+							left: 0,
+							right: 0,
+							backgroundColor: "#FFFFFF",
+							border: "1px solid rgba(0, 0, 0, 0.08)",
+							borderRadius: "20px",
+							boxShadow: "0 10px 40px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.08)",
+							zIndex: 10000,
+							maxHeight: "360px",
+							overflowY: "auto",
+							minWidth: "100%",
+							animation: "dropdownFadeIn 0.2s ease-out",
+						}}
+					>
+						<div style={{ padding: "8px 0" }}>
 							{allCategories.map((cat, index) => (
 								<div
 									key={cat.value}
 									onClick={() => handleCategorySelect(cat.label)}
 									style={{
 										padding: "14px 20px",
+										margin: "4px 8px",
 										cursor: "pointer",
-										borderBottom:
-											index !== allCategories.length - 1
-												? "1px solid #f5f5f5"
-												: "none",
-										transition: "all 0.2s ease-in-out",
+										transition: "all 0.2s ease",
 										display: "flex",
 										alignItems: "center",
-										gap: "12px",
+										gap: "14px",
+										fontSize: "15px",
+										fontWeight: "500",
+										color: "#222222",
+										backgroundColor: category === cat.label ? "rgba(255, 56, 92, 0.08)" : "transparent",
+										borderRadius: "12px",
 									}}
 									onMouseEnter={(e) => {
-										e.currentTarget.style.backgroundColor =
-											"#f8f9fa";
+										e.currentTarget.style.backgroundColor = category === cat.label 
+											? "rgba(255, 56, 92, 0.12)" 
+											: "rgba(0, 0, 0, 0.04)";
+										e.currentTarget.style.transform = "translateX(4px)";
 									}}
 									onMouseLeave={(e) => {
-										e.currentTarget.style.backgroundColor =
-											"#ffffff";
+										e.currentTarget.style.backgroundColor = category === cat.label 
+											? "rgba(255, 56, 92, 0.08)" 
+											: "transparent";
+										e.currentTarget.style.transform = "translateX(0)";
 									}}
 								>
 									<div
 										style={{
-											width: "40px",
-											height: "40px",
-											borderRadius: "8px",
-											backgroundColor: "#f0f4f8",
+											width: "36px",
+											height: "36px",
+											borderRadius: "10px",
+											background: category === cat.label 
+												? "linear-gradient(135deg, #FF385C 0%, #E61E4D 100%)" 
+												: "rgba(0, 0, 0, 0.06)",
 											display: "flex",
 											alignItems: "center",
 											justifyContent: "center",
 											flexShrink: 0,
-											boxShadow:
-												"0 2px 4px rgba(0,0,0,0.05)",
+											transition: "all 0.2s ease",
 										}}
 									>
-								<Image
-									src={cat.imageSrc}
-									width={24}
-									height={24}
-									alt={cat.label}
-									style={{
-										objectFit: "contain",
-									}}
-								/>
+										<Image
+											src={cat.imageSrc}
+											width={18}
+											height={18}
+											alt={cat.label}
+											style={{
+												objectFit: "contain",
+												filter: category === cat.label ? "brightness(0) invert(1)" : "none",
+											}}
+										/>
 									</div>
-									<div
-										style={{
-											flex: 1,
-											fontSize: "15px",
-											fontWeight: "500",
-											color: "#333",
-											letterSpacing: "0.3px",
-										}}
-									>
-										{cat.label}
-									</div>
+									<span style={{ flex: 1 }}>{cat.label}</span>
+									{category === cat.label && (
+										<div style={{
+											width: "6px",
+											height: "6px",
+											borderRadius: "50%",
+											background: "linear-gradient(135deg, #FF385C 0%, #E61E4D 100%)",
+										}} />
+									)}
 								</div>
 							))}
 						</div>
-					)}
+					</div>
+				)}
 				</div>
 
 					{/* Location Input */}
@@ -360,6 +369,41 @@ const SearchForm = () => {
 					Search
 				</button>
 			</form>
+
+			<style jsx global>{`
+				@keyframes dropdownFadeIn {
+					from {
+						opacity: 0;
+						transform: translateY(-8px);
+					}
+					to {
+						opacity: 1;
+						transform: translateY(0);
+					}
+				}
+
+				.category-dropdown::-webkit-scrollbar {
+					width: 8px;
+				}
+
+				.category-dropdown::-webkit-scrollbar-track {
+					background: transparent;
+					margin: 8px 0;
+				}
+
+				.category-dropdown::-webkit-scrollbar-thumb {
+					background: rgba(0, 0, 0, 0.2);
+					border-radius: 10px;
+					border: 2px solid transparent;
+					background-clip: padding-box;
+				}
+
+				.category-dropdown::-webkit-scrollbar-thumb:hover {
+					background: rgba(0, 0, 0, 0.3);
+					border: 2px solid transparent;
+					background-clip: padding-box;
+				}
+			`}</style>
 	);
 };
 

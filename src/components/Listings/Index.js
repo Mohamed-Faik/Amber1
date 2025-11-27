@@ -41,33 +41,33 @@ const Index = ({
 					}}
 				>
 					<div>
-					{totalCount === 0 ? (
-						<p
-							style={{
-								fontSize: "18px",
-								color: "#717171",
-								margin: 0,
-							}}
-						>
-							<span style={{ fontWeight: "600", color: "#222222" }}>
-								0
-							</span>{" "}
+						{totalCount === 0 ? (
+							<p
+								style={{
+									fontSize: "18px",
+									color: "#717171",
+									margin: 0,
+								}}
+							>
+								<span style={{ fontWeight: "600", color: "#222222" }}>
+									0
+								</span>{" "}
 							{getTranslation(displayLanguage, "listings.propertiesFound")}
-						</p>
-					) : (
-						<p
-							style={{
-								fontSize: "18px",
-								color: "#717171",
-								margin: 0,
-							}}
-						>
-							<span style={{ fontWeight: "600", color: "#222222" }}>
-								{startListingNumber} - {endListingNumber}
-							</span>{" "}
+							</p>
+						) : (
+							<p
+								style={{
+									fontSize: "18px",
+									color: "#717171",
+									margin: 0,
+								}}
+							>
+								<span style={{ fontWeight: "600", color: "#222222" }}>
+									{startListingNumber} - {endListingNumber}
+								</span>{" "}
 							{getTranslation(displayLanguage, "listings.ofProperties", { count: totalCount })}
-						</p>
-					)}
+							</p>
+						)}
 					</div>
 
 					<CategorySearch
@@ -83,14 +83,14 @@ const Index = ({
 						<div className="row">
 							{listStyle === "grid" ? (
 								listings.length > 0 ? (
-								listings.map((list) => (
-									<GridStyle
-										currentUser={currentUser}
-										key={list.id}
+									listings.map((list) => (
+										<GridStyle
+											currentUser={currentUser}
+											key={list.id}
 										displayLanguage={displayLanguage}
-										{...list}
-									/>
-								))
+											{...list}
+										/>
+									))
 								) : (
 									<div className="col-lg-12">
 										<div
@@ -128,14 +128,14 @@ const Index = ({
 									</div>
 								)
 							) : listings.length > 0 ? (
-							listings.map((list) => (
-								<ListStyle
-									currentUser={currentUser}
-									key={list.id}
+								listings.map((list) => (
+									<ListStyle
+										currentUser={currentUser}
+										key={list.id}
 									displayLanguage={displayLanguage}
-									{...list}
-								/>
-							))
+										{...list}
+									/>
+								))
 							) : (
 								<div className="col-lg-12">
 									<div

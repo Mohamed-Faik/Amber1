@@ -5,6 +5,7 @@ import Link from "next/link";
 import { signOut } from "next-auth/react";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
+import { LayoutDashboard, ListChecks, Plus, Heart, UserPen, Settings, Eye, LogOut } from "lucide-react";
 import userImg from "../../../public/images/authors/author-1.jpg";
 
 const UserMenu = ({ currentUser }) => {
@@ -314,155 +315,117 @@ const UserMenu = ({ currentUser }) => {
 							</div>
 						</div>
 
-							{mounted && isOpen && typeof document !== 'undefined' && createPortal(
-								<div 
-									ref={dropdownRef}
-									className="dropdown show user-menu-dropdown-content"
-									style={{
-										position: 'fixed',
-										right: `${dropdownPosition.right}px`,
-										top: `${dropdownPosition.top}px`,
-										zIndex: 99999,
-										opacity: 1,
-										visibility: 'visible',
-										pointerEvents: 'auto',
-										backgroundColor: '#ffffff',
-										borderRadius: '16px',
-										boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.08)',
-										padding: '12px 8px',
-										width: '280px',
-										maxWidth: 'calc(100vw - 32px)',
-										border: '1px solid #f0f0f0',
-										animation: 'dropdownFadeIn 0.2s ease-out',
-									}}
-									onMouseDown={(e) => {
-										e.stopPropagation();
-									}}
-									onClick={(e) => {
-										e.stopPropagation();
-									}}
-								>
-									{/* User Info Header */}
+						{mounted && isOpen && typeof document !== 'undefined' && createPortal(
+							<div 
+								ref={dropdownRef}
+								className="dropdown show user-menu-dropdown-content"
+								style={{
+									position: 'fixed',
+									right: `${dropdownPosition.right}px`,
+									top: `${dropdownPosition.top}px`,
+									zIndex: 99999,
+									opacity: 1,
+									visibility: 'visible',
+									pointerEvents: 'auto',
+									backgroundColor: '#ffffff',
+									borderRadius: '20px',
+									boxShadow: '0 10px 40px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.08)',
+									padding: '16px',
+									width: '300px',
+									maxWidth: 'calc(100vw - 32px)',
+									border: '1px solid rgba(0, 0, 0, 0.08)',
+									animation: 'dropdownFadeIn 0.2s ease-out',
+								}}
+								onMouseDown={(e) => {
+									e.stopPropagation();
+								}}
+								onClick={(e) => {
+									e.stopPropagation();
+								}}
+							>
+								{/* User Info Header */}
+								<div style={{
+									padding: '16px',
+									borderBottom: '1px solid rgba(0, 0, 0, 0.06)',
+									marginBottom: '12px',
+									borderRadius: '16px',
+									background: 'linear-gradient(135deg, rgba(255, 56, 92, 0.05) 0%, rgba(230, 30, 77, 0.08) 100%)',
+								}}>
 									<div style={{
-										padding: '12px 16px',
-										borderBottom: '1px solid #f7f7f7',
-										marginBottom: '8px',
+										display: 'flex',
+										alignItems: 'center',
+										gap: '14px',
 									}}>
-										<div style={{
-											display: 'flex',
-											alignItems: 'center',
-											gap: '12px',
-										}}>
-											<div
-												style={{
-													width: '48px',
-													height: '48px',
-													borderRadius: '50%',
-													backgroundColor: '#FF385C',
-													display: 'flex',
-													alignItems: 'center',
-													justifyContent: 'center',
-													overflow: 'hidden',
-													flexShrink: 0,
-													border: '2px solid #FFF5F7',
-												}}
-											>
-												{currentUser?.image ? (
-													<Image
-														src={currentUser.image}
-														alt={currentUser.name || "User"}
-														width={48}
-														height={48}
-														style={{ objectFit: 'cover' }}
-													/>
-												) : (
-													<svg
-														width="24"
-														height="24"
-														viewBox="0 0 24 24"
-														fill="none"
-														stroke="white"
-														strokeWidth="2"
-													>
-														<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-														<circle cx="12" cy="7" r="4" />
-													</svg>
-												)}
+										<div
+											style={{
+												width: '52px',
+												height: '52px',
+												borderRadius: '50%',
+												background: 'linear-gradient(135deg, #FF385C 0%, #E61E4D 100%)',
+												display: 'flex',
+												alignItems: 'center',
+												justifyContent: 'center',
+												overflow: 'hidden',
+												flexShrink: 0,
+												border: '3px solid #FFFFFF',
+												boxShadow: '0 2px 8px rgba(255, 56, 92, 0.3)',
+											}}
+										>
+											{currentUser?.image ? (
+												<Image
+													src={currentUser.image}
+													alt={currentUser.name || "User"}
+													width={52}
+													height={52}
+													style={{ objectFit: 'cover' }}
+												/>
+											) : (
+												<svg
+													width="26"
+													height="26"
+													viewBox="0 0 24 24"
+													fill="none"
+													stroke="white"
+													strokeWidth="2.5"
+												>
+													<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+													<circle cx="12" cy="7" r="4" />
+												</svg>
+											)}
+										</div>
+										<div style={{ flex: 1, minWidth: 0 }}>
+											<div style={{
+												fontSize: '16px',
+												fontWeight: '700',
+												color: '#222222',
+												marginBottom: '4px',
+												overflow: 'hidden',
+												textOverflow: 'ellipsis',
+												whiteSpace: 'nowrap',
+											}}>
+												{currentUser?.name || 'User'}
 											</div>
-											<div style={{ flex: 1, minWidth: 0 }}>
-												<div style={{
-													fontSize: '15px',
-													fontWeight: '600',
-													color: '#222222',
-													marginBottom: '2px',
-													overflow: 'hidden',
-													textOverflow: 'ellipsis',
-													whiteSpace: 'nowrap',
-												}}>
-													{currentUser?.name || 'User'}
-												</div>
-												<div style={{
-													fontSize: '13px',
-													color: '#717171',
-													overflow: 'hidden',
-													textOverflow: 'ellipsis',
-													whiteSpace: 'nowrap',
-												}}>
-													{currentUser?.email || ''}
-												</div>
+											<div style={{
+												fontSize: '13px',
+												fontWeight: '500',
+												color: '#717171',
+												overflow: 'hidden',
+												textOverflow: 'ellipsis',
+												whiteSpace: 'nowrap',
+											}}>
+												{currentUser?.email || ''}
 											</div>
 										</div>
 									</div>
+								</div>
 
-									<ul style={{ margin: 0, padding: '4px 0', listStyle: 'none' }}>
-										{isAdmin && (
-											<li>
-												<Link 
-													href="/administrator"
-													className={`user-nav-link ${
-														currentRoute === "/administrator"
-															? "active"
-															: "non-active"
-													}`}
-													onClick={handleLinkClick}
-													onMouseDown={(e) => e.stopPropagation()}
-													style={{
-														display: 'flex',
-														alignItems: 'center',
-														gap: '12px',
-														padding: '10px 16px',
-														color: currentRoute === "/administrator" ? '#FF385C' : '#222222',
-														textDecoration: 'none',
-														fontSize: '14px',
-														fontWeight: currentRoute === "/administrator" ? '600' : '500',
-														borderRadius: '10px',
-														transition: 'all 0.2s ease',
-														backgroundColor: currentRoute === "/administrator" ? '#FFF5F7' : 'transparent',
-														margin: '2px 8px',
-													}}
-													onMouseEnter={(e) => {
-														if (currentRoute !== "/administrator") {
-															e.target.style.backgroundColor = '#FFF5F7';
-															e.target.style.color = '#FF385C';
-														}
-													}}
-													onMouseLeave={(e) => {
-														if (currentRoute !== "/administrator") {
-															e.target.style.backgroundColor = 'transparent';
-															e.target.style.color = '#222222';
-														}
-													}}
-												>
-													<i className="ri-dashboard-line" style={{ fontSize: '18px', flexShrink: 0 }}></i>
-													<span>Administrator</span>
-												</Link>
-											</li>
-										)}
+								<ul style={{ margin: 0, padding: '8px 0', listStyle: 'none' }}>
+									{isAdmin && (
 										<li>
 											<Link 
-												href="/listings/my-listings"
+												href="/administrator"
 												className={`user-nav-link ${
-													currentRoute === "/listings/my-listings"
+													currentRoute === "/administrator"
 														? "active"
 														: "non-active"
 												}`}
@@ -471,286 +434,526 @@ const UserMenu = ({ currentUser }) => {
 												style={{
 													display: 'flex',
 													alignItems: 'center',
-													gap: '12px',
-													padding: '10px 16px',
-													color: currentRoute === "/listings/my-listings" ? '#FF385C' : '#222222',
-													textDecoration: 'none',
-													fontSize: '14px',
-													fontWeight: currentRoute === "/listings/my-listings" ? '600' : '500',
-													borderRadius: '10px',
-													transition: 'all 0.2s ease',
-													backgroundColor: currentRoute === "/listings/my-listings" ? '#FFF5F7' : 'transparent',
-													margin: '2px 8px',
-												}}
-												onMouseEnter={(e) => {
-													if (currentRoute !== "/listings/my-listings") {
-														e.target.style.backgroundColor = '#FFF5F7';
-														e.target.style.color = '#FF385C';
-													}
-												}}
-												onMouseLeave={(e) => {
-													if (currentRoute !== "/listings/my-listings") {
-														e.target.style.backgroundColor = 'transparent';
-														e.target.style.color = '#222222';
-													}
-												}}
-											>
-												<i className="ri-list-check" style={{ fontSize: '18px', flexShrink: 0 }}></i>
-												<span>My Listings</span>
-											</Link>
-										</li>
-										<li>
-											<Link 
-												href="/listings/new"
-												className={`user-nav-link ${
-													currentRoute === "/listings/new"
-														? "active"
-														: "non-active"
-												}`}
-												onClick={handleLinkClick}
-												onMouseDown={(e) => e.stopPropagation()}
-												style={{
-													display: 'flex',
-													alignItems: 'center',
-													gap: '12px',
-													padding: '10px 16px',
-													color: currentRoute === "/listings/new" ? '#FF385C' : '#222222',
-													textDecoration: 'none',
-													fontSize: '14px',
-													fontWeight: currentRoute === "/listings/new" ? '600' : '500',
-													borderRadius: '10px',
-													transition: 'all 0.2s ease',
-													backgroundColor: currentRoute === "/listings/new" ? '#FFF5F7' : 'transparent',
-													margin: '2px 8px',
-												}}
-												onMouseEnter={(e) => {
-													if (currentRoute !== "/listings/new") {
-														e.target.style.backgroundColor = '#FFF5F7';
-														e.target.style.color = '#FF385C';
-													}
-												}}
-												onMouseLeave={(e) => {
-													if (currentRoute !== "/listings/new") {
-														e.target.style.backgroundColor = 'transparent';
-														e.target.style.color = '#222222';
-													}
-												}}
-											>
-												<i className="ri-menu-add-line" style={{ fontSize: '18px', flexShrink: 0 }}></i>
-												<span>Add Listings</span>
-											</Link>
-										</li>
-										<li>
-											<Link 
-												href="/listings/favourites"
-												className={`user-nav-link ${
-													currentRoute === "/listings/favourites"
-														? "active"
-														: "non-active"
-												}`}
-												onClick={handleLinkClick}
-												onMouseDown={(e) => e.stopPropagation()}
-												style={{
-													display: 'flex',
-													alignItems: 'center',
-													gap: '12px',
-													padding: '10px 16px',
-													color: currentRoute === "/listings/favourites" ? '#FF385C' : '#222222',
-													textDecoration: 'none',
-													fontSize: '14px',
-													fontWeight: currentRoute === "/listings/favourites" ? '600' : '500',
-													borderRadius: '10px',
-													transition: 'all 0.2s ease',
-													backgroundColor: currentRoute === "/listings/favourites" ? '#FFF5F7' : 'transparent',
-													margin: '2px 8px',
-												}}
-												onMouseEnter={(e) => {
-													if (currentRoute !== "/listings/favourites") {
-														e.target.style.backgroundColor = '#FFF5F7';
-														e.target.style.color = '#FF385C';
-													}
-												}}
-												onMouseLeave={(e) => {
-													if (currentRoute !== "/listings/favourites") {
-														e.target.style.backgroundColor = 'transparent';
-														e.target.style.color = '#222222';
-													}
-												}}
-											>
-												<i className="ri-bookmark-3-line" style={{ fontSize: '18px', flexShrink: 0 }}></i>
-												<span>Favourites</span>
-											</Link>
-										</li>
-										<li>
-											<Link 
-												href="/profile/edit-my-info"
-												className={`user-nav-link ${
-												currentRoute === "/profile/edit-my-info"
-													? "active"
-													: "non-active"
-												}`}
-												onClick={handleLinkClick}
-												onMouseDown={(e) => e.stopPropagation()}
-												style={{
-													display: 'flex',
-													alignItems: 'center',
-													gap: '12px',
-													padding: '10px 16px',
-													color: currentRoute === "/profile/edit-my-info" ? '#FF385C' : '#222222',
-													textDecoration: 'none',
-													fontSize: '14px',
-													fontWeight: currentRoute === "/profile/edit-my-info" ? '600' : '500',
-													borderRadius: '10px',
-													transition: 'all 0.2s ease',
-													backgroundColor: currentRoute === "/profile/edit-my-info" ? '#FFF5F7' : 'transparent',
-													margin: '2px 8px',
-												}}
-												onMouseEnter={(e) => {
-													if (currentRoute !== "/profile/edit-my-info") {
-														e.target.style.backgroundColor = '#FFF5F7';
-														e.target.style.color = '#FF385C';
-													}
-												}}
-												onMouseLeave={(e) => {
-													if (currentRoute !== "/profile/edit-my-info") {
-														e.target.style.backgroundColor = 'transparent';
-														e.target.style.color = '#222222';
-													}
-												}}
-											>
-												<i className="ri-user-add-line" style={{ fontSize: '18px', flexShrink: 0 }}></i>
-												<span>Update Profile Info</span>
-											</Link>
-										</li>
-										<li>
-											<Link 
-												href="/profile/settings"
-												className={`user-nav-link ${
-												currentRoute === "/profile/settings"
-													? "active"
-													: "non-active"
-												}`}
-												onClick={handleLinkClick}
-												onMouseDown={(e) => e.stopPropagation()}
-												style={{
-													display: 'flex',
-													alignItems: 'center',
-													gap: '12px',
-													padding: '10px 16px',
-													color: currentRoute === "/profile/settings" ? '#FF385C' : '#222222',
-													textDecoration: 'none',
-													fontSize: '14px',
-													fontWeight: currentRoute === "/profile/settings" ? '600' : '500',
-													borderRadius: '10px',
-													transition: 'all 0.2s ease',
-													backgroundColor: currentRoute === "/profile/settings" ? '#FFF5F7' : 'transparent',
-													margin: '2px 8px',
-												}}
-												onMouseEnter={(e) => {
-													if (currentRoute !== "/profile/settings") {
-														e.target.style.backgroundColor = '#FFF5F7';
-														e.target.style.color = '#FF385C';
-													}
-												}}
-												onMouseLeave={(e) => {
-													if (currentRoute !== "/profile/settings") {
-														e.target.style.backgroundColor = 'transparent';
-														e.target.style.color = '#222222';
-													}
-												}}
-											>
-												<i className="ri-settings-line" style={{ fontSize: '18px', flexShrink: 0 }}></i>
-												<span>Settings</span>
-											</Link>
-										</li>
-										<li>
-											<Link
-												href={`/author/${currentUser.id}`}
-												className={`user-nav-link ${
-													currentRoute === `/author/${currentUser.id}`
-														? "active"
-														: "non-active"
-													}`}
-												onClick={handleLinkClick}
-												onMouseDown={(e) => e.stopPropagation()}
-												style={{
-													display: 'flex',
-													alignItems: 'center',
-													gap: '12px',
-													padding: '10px 16px',
-													color: currentRoute === `/author/${currentUser.id}` ? '#FF385C' : '#222222',
-													textDecoration: 'none',
-													fontSize: '14px',
-													fontWeight: currentRoute === `/author/${currentUser.id}` ? '600' : '500',
-													borderRadius: '10px',
-													transition: 'all 0.2s ease',
-													backgroundColor: currentRoute === `/author/${currentUser.id}` ? '#FFF5F7' : 'transparent',
-													margin: '2px 8px',
-												}}
-												onMouseEnter={(e) => {
-													if (currentRoute !== `/author/${currentUser.id}`) {
-														e.target.style.backgroundColor = '#FFF5F7';
-														e.target.style.color = '#FF385C';
-													}
-												}}
-												onMouseLeave={(e) => {
-													if (currentRoute !== `/author/${currentUser.id}`) {
-														e.target.style.backgroundColor = 'transparent';
-														e.target.style.color = '#222222';
-													}
-												}}
-											>
-												<i className="ri-focus-3-line" style={{ fontSize: '18px', flexShrink: 0 }}></i>
-												<span>View My Profile</span>
-											</Link>
-										</li>
-										
-										<div style={{ 
-											height: '1px', 
-											backgroundColor: '#f7f7f7', 
-											margin: '8px 16px' 
-										}} />
-
-										<li>
-											<button
-												onClick={(e) => {
-													e.stopPropagation();
-													setIsOpen(false);
-													signOut();
-												}}
-												onMouseDown={(e) => e.stopPropagation()}
-												className="read-more"
-												style={{
-													display: 'flex',
-													alignItems: 'center',
-													gap: '12px',
-													width: '100%',
-													padding: '10px 16px',
+													gap: '14px',
+													padding: '12px 12px',
 													color: '#222222',
 													textDecoration: 'none',
-													fontSize: '14px',
+													fontSize: '15px',
 													fontWeight: '500',
-													borderRadius: '10px',
+													borderRadius: '12px',
 													transition: 'all 0.2s ease',
-													backgroundColor: 'transparent',
-													border: 'none',
-													textAlign: 'left',
-													cursor: 'pointer',
-													margin: '2px 8px',
+													backgroundColor: currentRoute === "/administrator" ? 'rgba(255, 56, 92, 0.08)' : 'transparent',
+													margin: '4px 0',
 												}}
 												onMouseEnter={(e) => {
-													e.target.style.backgroundColor = '#FFF5F7';
-													e.target.style.color = '#FF385C';
+													e.currentTarget.style.backgroundColor = currentRoute === "/administrator" 
+														? 'rgba(255, 56, 92, 0.12)' 
+														: 'rgba(0, 0, 0, 0.04)';
+													e.currentTarget.style.transform = 'translateX(4px)';
 												}}
 												onMouseLeave={(e) => {
-													e.target.style.backgroundColor = 'transparent';
-													e.target.style.color = '#222222';
+													e.currentTarget.style.backgroundColor = currentRoute === "/administrator" 
+														? 'rgba(255, 56, 92, 0.08)' 
+														: 'transparent';
+													e.currentTarget.style.transform = 'translateX(0)';
 												}}
 											>
-												<i className="ri-logout-box-r-line" style={{ fontSize: '18px', flexShrink: 0 }}></i>
-												<span>Logout</span>
-											</button>
+											<div style={{
+												width: '36px',
+												height: '36px',
+												borderRadius: '10px',
+												background: currentRoute === "/administrator" 
+													? 'linear-gradient(135deg, #FF385C 0%, #E61E4D 100%)' 
+													: 'rgba(0, 0, 0, 0.06)',
+												display: 'flex',
+												alignItems: 'center',
+												justifyContent: 'center',
+												flexShrink: 0,
+												transition: 'all 0.2s ease',
+											}}>
+												<LayoutDashboard 
+													size={18}
+													color={currentRoute === "/administrator" ? '#FFFFFF' : '#717171'}
+													strokeWidth={2.5}
+												/>
+											</div>
+												<span style={{ flex: 1 }}>Administrator</span>
+												{currentRoute === "/administrator" && (
+													<div style={{
+														width: '6px',
+														height: '6px',
+														borderRadius: '50%',
+														background: 'linear-gradient(135deg, #FF385C 0%, #E61E4D 100%)',
+													}} />
+												)}
+											</Link>
 										</li>
+									)}
+									<li>
+										<Link 
+											href="/listings/my-listings"
+											className={`user-nav-link ${
+												currentRoute === "/listings/my-listings"
+													? "active"
+													: "non-active"
+											}`}
+											onClick={handleLinkClick}
+											onMouseDown={(e) => e.stopPropagation()}
+											style={{
+												display: 'flex',
+												alignItems: 'center',
+												gap: '14px',
+												padding: '12px 12px',
+												color: '#222222',
+												textDecoration: 'none',
+												fontSize: '15px',
+												fontWeight: '500',
+												borderRadius: '12px',
+												transition: 'all 0.2s ease',
+												backgroundColor: currentRoute === "/listings/my-listings" ? 'rgba(255, 56, 92, 0.08)' : 'transparent',
+												margin: '4px 0',
+											}}
+											onMouseEnter={(e) => {
+												e.currentTarget.style.backgroundColor = currentRoute === "/listings/my-listings" 
+													? 'rgba(255, 56, 92, 0.12)' 
+													: 'rgba(0, 0, 0, 0.04)';
+												e.currentTarget.style.transform = 'translateX(4px)';
+											}}
+											onMouseLeave={(e) => {
+												e.currentTarget.style.backgroundColor = currentRoute === "/listings/my-listings" 
+													? 'rgba(255, 56, 92, 0.08)' 
+													: 'transparent';
+												e.currentTarget.style.transform = 'translateX(0)';
+											}}
+										>
+										<div style={{
+											width: '36px',
+											height: '36px',
+											borderRadius: '10px',
+											background: currentRoute === "/listings/my-listings" 
+												? 'linear-gradient(135deg, #FF385C 0%, #E61E4D 100%)' 
+												: 'rgba(0, 0, 0, 0.06)',
+											display: 'flex',
+											alignItems: 'center',
+											justifyContent: 'center',
+											flexShrink: 0,
+											transition: 'all 0.2s ease',
+										}}>
+											<ListChecks 
+												size={18}
+												color={currentRoute === "/listings/my-listings" ? '#FFFFFF' : '#717171'}
+												strokeWidth={2.5}
+											/>
+										</div>
+											<span style={{ flex: 1 }}>My Listings</span>
+											{currentRoute === "/listings/my-listings" && (
+												<div style={{
+													width: '6px',
+													height: '6px',
+													borderRadius: '50%',
+													background: 'linear-gradient(135deg, #FF385C 0%, #E61E4D 100%)',
+												}} />
+											)}
+										</Link>
+									</li>
+									<li>
+										<Link 
+											href="/listings/new"
+											className={`user-nav-link ${
+												currentRoute === "/listings/new"
+													? "active"
+													: "non-active"
+											}`}
+											onClick={handleLinkClick}
+											onMouseDown={(e) => e.stopPropagation()}
+											style={{
+												display: 'flex',
+												alignItems: 'center',
+												gap: '14px',
+												padding: '12px 12px',
+												color: '#222222',
+												textDecoration: 'none',
+												fontSize: '15px',
+												fontWeight: '500',
+												borderRadius: '12px',
+												transition: 'all 0.2s ease',
+												backgroundColor: currentRoute === "/listings/new" ? 'rgba(255, 56, 92, 0.08)' : 'transparent',
+												margin: '4px 0',
+											}}
+											onMouseEnter={(e) => {
+												e.currentTarget.style.backgroundColor = currentRoute === "/listings/new" 
+													? 'rgba(255, 56, 92, 0.12)' 
+													: 'rgba(0, 0, 0, 0.04)';
+												e.currentTarget.style.transform = 'translateX(4px)';
+											}}
+											onMouseLeave={(e) => {
+												e.currentTarget.style.backgroundColor = currentRoute === "/listings/new" 
+													? 'rgba(255, 56, 92, 0.08)' 
+													: 'transparent';
+												e.currentTarget.style.transform = 'translateX(0)';
+											}}
+										>
+										<div style={{
+											width: '36px',
+											height: '36px',
+											borderRadius: '10px',
+											background: currentRoute === "/listings/new" 
+												? 'linear-gradient(135deg, #FF385C 0%, #E61E4D 100%)' 
+												: 'rgba(0, 0, 0, 0.06)',
+											display: 'flex',
+											alignItems: 'center',
+											justifyContent: 'center',
+											flexShrink: 0,
+											transition: 'all 0.2s ease',
+										}}>
+											<Plus 
+												size={20}
+												color={currentRoute === "/listings/new" ? '#FFFFFF' : '#717171'}
+												strokeWidth={2.5}
+											/>
+										</div>
+											<span style={{ flex: 1 }}>Add Listings</span>
+											{currentRoute === "/listings/new" && (
+												<div style={{
+													width: '6px',
+													height: '6px',
+													borderRadius: '50%',
+													background: 'linear-gradient(135deg, #FF385C 0%, #E61E4D 100%)',
+												}} />
+											)}
+										</Link>
+									</li>
+									<li>
+										<Link 
+											href="/listings/favourites"
+											className={`user-nav-link ${
+												currentRoute === "/listings/favourites"
+													? "active"
+													: "non-active"
+											}`}
+											onClick={handleLinkClick}
+											onMouseDown={(e) => e.stopPropagation()}
+											style={{
+												display: 'flex',
+												alignItems: 'center',
+												gap: '14px',
+												padding: '12px 12px',
+												color: '#222222',
+												textDecoration: 'none',
+												fontSize: '15px',
+												fontWeight: '500',
+												borderRadius: '12px',
+												transition: 'all 0.2s ease',
+												backgroundColor: currentRoute === "/listings/favourites" ? 'rgba(255, 56, 92, 0.08)' : 'transparent',
+												margin: '4px 0',
+											}}
+											onMouseEnter={(e) => {
+												e.currentTarget.style.backgroundColor = currentRoute === "/listings/favourites" 
+													? 'rgba(255, 56, 92, 0.12)' 
+													: 'rgba(0, 0, 0, 0.04)';
+												e.currentTarget.style.transform = 'translateX(4px)';
+											}}
+											onMouseLeave={(e) => {
+												e.currentTarget.style.backgroundColor = currentRoute === "/listings/favourites" 
+													? 'rgba(255, 56, 92, 0.08)' 
+													: 'transparent';
+												e.currentTarget.style.transform = 'translateX(0)';
+											}}
+										>
+										<div style={{
+											width: '36px',
+											height: '36px',
+											borderRadius: '10px',
+											background: currentRoute === "/listings/favourites" 
+												? 'linear-gradient(135deg, #FF385C 0%, #E61E4D 100%)' 
+												: 'rgba(0, 0, 0, 0.06)',
+											display: 'flex',
+											alignItems: 'center',
+											justifyContent: 'center',
+											flexShrink: 0,
+											transition: 'all 0.2s ease',
+										}}>
+											<Heart 
+												size={18}
+												color={currentRoute === "/listings/favourites" ? '#FFFFFF' : '#717171'}
+												strokeWidth={2.5}
+											/>
+										</div>
+											<span style={{ flex: 1 }}>Favourites</span>
+											{currentRoute === "/listings/favourites" && (
+												<div style={{
+													width: '6px',
+													height: '6px',
+													borderRadius: '50%',
+													background: 'linear-gradient(135deg, #FF385C 0%, #E61E4D 100%)',
+												}} />
+											)}
+										</Link>
+									</li>
+									<li>
+										<Link 
+											href="/profile/edit-my-info"
+											className={`user-nav-link ${
+											currentRoute === "/profile/edit-my-info"
+												? "active"
+												: "non-active"
+											}`}
+											onClick={handleLinkClick}
+											onMouseDown={(e) => e.stopPropagation()}
+											style={{
+												display: 'flex',
+												alignItems: 'center',
+												gap: '14px',
+												padding: '12px 12px',
+												color: '#222222',
+												textDecoration: 'none',
+												fontSize: '15px',
+												fontWeight: '500',
+												borderRadius: '12px',
+												transition: 'all 0.2s ease',
+												backgroundColor: currentRoute === "/profile/edit-my-info" ? 'rgba(255, 56, 92, 0.08)' : 'transparent',
+												margin: '4px 0',
+											}}
+											onMouseEnter={(e) => {
+												e.currentTarget.style.backgroundColor = currentRoute === "/profile/edit-my-info" 
+													? 'rgba(255, 56, 92, 0.12)' 
+													: 'rgba(0, 0, 0, 0.04)';
+												e.currentTarget.style.transform = 'translateX(4px)';
+											}}
+											onMouseLeave={(e) => {
+												e.currentTarget.style.backgroundColor = currentRoute === "/profile/edit-my-info" 
+													? 'rgba(255, 56, 92, 0.08)' 
+													: 'transparent';
+												e.currentTarget.style.transform = 'translateX(0)';
+											}}
+										>
+										<div style={{
+											width: '36px',
+											height: '36px',
+											borderRadius: '10px',
+											background: currentRoute === "/profile/edit-my-info" 
+												? 'linear-gradient(135deg, #FF385C 0%, #E61E4D 100%)' 
+												: 'rgba(0, 0, 0, 0.06)',
+											display: 'flex',
+											alignItems: 'center',
+											justifyContent: 'center',
+											flexShrink: 0,
+											transition: 'all 0.2s ease',
+										}}>
+											<UserPen 
+												size={18}
+												color={currentRoute === "/profile/edit-my-info" ? '#FFFFFF' : '#717171'}
+												strokeWidth={2.5}
+											/>
+										</div>
+											<span style={{ flex: 1 }}>Update Profile Info</span>
+											{currentRoute === "/profile/edit-my-info" && (
+												<div style={{
+													width: '6px',
+													height: '6px',
+													borderRadius: '50%',
+													background: 'linear-gradient(135deg, #FF385C 0%, #E61E4D 100%)',
+												}} />
+											)}
+										</Link>
+									</li>
+									<li>
+										<Link 
+											href="/profile/settings"
+											className={`user-nav-link ${
+											currentRoute === "/profile/settings"
+												? "active"
+												: "non-active"
+											}`}
+											onClick={handleLinkClick}
+											onMouseDown={(e) => e.stopPropagation()}
+											style={{
+												display: 'flex',
+												alignItems: 'center',
+												gap: '14px',
+												padding: '12px 12px',
+												color: '#222222',
+												textDecoration: 'none',
+												fontSize: '15px',
+												fontWeight: '500',
+												borderRadius: '12px',
+												transition: 'all 0.2s ease',
+												backgroundColor: currentRoute === "/profile/settings" ? 'rgba(255, 56, 92, 0.08)' : 'transparent',
+												margin: '4px 0',
+											}}
+											onMouseEnter={(e) => {
+												e.currentTarget.style.backgroundColor = currentRoute === "/profile/settings" 
+													? 'rgba(255, 56, 92, 0.12)' 
+													: 'rgba(0, 0, 0, 0.04)';
+												e.currentTarget.style.transform = 'translateX(4px)';
+											}}
+											onMouseLeave={(e) => {
+												e.currentTarget.style.backgroundColor = currentRoute === "/profile/settings" 
+													? 'rgba(255, 56, 92, 0.08)' 
+													: 'transparent';
+												e.currentTarget.style.transform = 'translateX(0)';
+											}}
+										>
+										<div style={{
+											width: '36px',
+											height: '36px',
+											borderRadius: '10px',
+											background: currentRoute === "/profile/settings" 
+												? 'linear-gradient(135deg, #FF385C 0%, #E61E4D 100%)' 
+												: 'rgba(0, 0, 0, 0.06)',
+											display: 'flex',
+											alignItems: 'center',
+											justifyContent: 'center',
+											flexShrink: 0,
+											transition: 'all 0.2s ease',
+										}}>
+											<Settings 
+												size={18}
+												color={currentRoute === "/profile/settings" ? '#FFFFFF' : '#717171'}
+												strokeWidth={2.5}
+											/>
+										</div>
+											<span style={{ flex: 1 }}>Settings</span>
+											{currentRoute === "/profile/settings" && (
+												<div style={{
+													width: '6px',
+													height: '6px',
+													borderRadius: '50%',
+													background: 'linear-gradient(135deg, #FF385C 0%, #E61E4D 100%)',
+												}} />
+											)}
+										</Link>
+									</li>
+									<li>
+										<Link
+											href={`/author/${currentUser.id}`}
+											className={`user-nav-link ${
+												currentRoute === `/author/${currentUser.id}`
+													? "active"
+													: "non-active"
+												}`}
+											onClick={handleLinkClick}
+											onMouseDown={(e) => e.stopPropagation()}
+											style={{
+												display: 'flex',
+												alignItems: 'center',
+												gap: '14px',
+												padding: '12px 12px',
+												color: '#222222',
+												textDecoration: 'none',
+												fontSize: '15px',
+												fontWeight: '500',
+												borderRadius: '12px',
+												transition: 'all 0.2s ease',
+												backgroundColor: currentRoute === `/author/${currentUser.id}` ? 'rgba(255, 56, 92, 0.08)' : 'transparent',
+												margin: '4px 0',
+											}}
+											onMouseEnter={(e) => {
+												e.currentTarget.style.backgroundColor = currentRoute === `/author/${currentUser.id}` 
+													? 'rgba(255, 56, 92, 0.12)' 
+													: 'rgba(0, 0, 0, 0.04)';
+												e.currentTarget.style.transform = 'translateX(4px)';
+											}}
+											onMouseLeave={(e) => {
+												e.currentTarget.style.backgroundColor = currentRoute === `/author/${currentUser.id}` 
+													? 'rgba(255, 56, 92, 0.08)' 
+													: 'transparent';
+												e.currentTarget.style.transform = 'translateX(0)';
+											}}
+										>
+										<div style={{
+											width: '36px',
+											height: '36px',
+											borderRadius: '10px',
+											background: currentRoute === `/author/${currentUser.id}` 
+												? 'linear-gradient(135deg, #FF385C 0%, #E61E4D 100%)' 
+												: 'rgba(0, 0, 0, 0.06)',
+											display: 'flex',
+											alignItems: 'center',
+											justifyContent: 'center',
+											flexShrink: 0,
+											transition: 'all 0.2s ease',
+										}}>
+											<Eye 
+												size={18}
+												color={currentRoute === `/author/${currentUser.id}` ? '#FFFFFF' : '#717171'}
+												strokeWidth={2.5}
+											/>
+										</div>
+											<span style={{ flex: 1 }}>View My Profile</span>
+											{currentRoute === `/author/${currentUser.id}` && (
+												<div style={{
+													width: '6px',
+													height: '6px',
+													borderRadius: '50%',
+													background: 'linear-gradient(135deg, #FF385C 0%, #E61E4D 100%)',
+												}} />
+											)}
+										</Link>
+									</li>
+										
+									<div style={{ 
+										height: '1px', 
+										backgroundColor: 'rgba(0, 0, 0, 0.06)', 
+										margin: '12px 0' 
+									}} />
+
+									<li>
+										<button
+											onClick={(e) => {
+												e.stopPropagation();
+												setIsOpen(false);
+												signOut();
+											}}
+											onMouseDown={(e) => e.stopPropagation()}
+											className="read-more"
+											style={{
+												display: 'flex',
+												alignItems: 'center',
+												gap: '14px',
+												width: '100%',
+												padding: '12px 12px',
+												color: '#222222',
+												textDecoration: 'none',
+												fontSize: '15px',
+												fontWeight: '500',
+												borderRadius: '12px',
+												transition: 'all 0.2s ease',
+												backgroundColor: 'transparent',
+												border: 'none',
+												textAlign: 'left',
+												cursor: 'pointer',
+												margin: '4px 0',
+											}}
+											onMouseEnter={(e) => {
+												e.currentTarget.style.backgroundColor = 'rgba(220, 38, 38, 0.08)';
+												e.currentTarget.style.transform = 'translateX(4px)';
+											}}
+											onMouseLeave={(e) => {
+												e.currentTarget.style.backgroundColor = 'transparent';
+												e.currentTarget.style.transform = 'translateX(0)';
+											}}
+										>
+										<div style={{
+											width: '36px',
+											height: '36px',
+											borderRadius: '10px',
+											background: 'rgba(220, 38, 38, 0.1)',
+											display: 'flex',
+											alignItems: 'center',
+											justifyContent: 'center',
+											flexShrink: 0,
+											transition: 'all 0.2s ease',
+										}}>
+											<LogOut 
+												size={18}
+												color="#DC2626"
+												strokeWidth={2.5}
+											/>
+										</div>
+											<span style={{ flex: 1 }}>Logout</span>
+										</button>
+									</li>
 									</ul>
 								</div>,
 								document.body

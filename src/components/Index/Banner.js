@@ -8,9 +8,20 @@ import { categories as allCategories } from "@/libs/Categories";
 import { moroccanCities } from "@/libs/moroccanCities";
 import LocationFind from "./LocationFind";
 import { toast } from "react-hot-toast";
-import { Home, MapPin, Navigation, ChevronDown } from "lucide-react";
+import { Home, MapPin, Navigation, ChevronDown, Castle, Building2, Trees } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { getTranslation } from "@/utils/translations";
+
+// Map category names to Lucide icons
+const getCategoryIcon = (categoryLabel) => {
+	const iconMap = {
+		"Villa": Castle,
+		"Apartment": Building2,
+		"House": Home,
+		"Land": Trees,
+	};
+	return iconMap[categoryLabel] || Home;
+};
 
 const Banner = () => {
 	const router = useRouter();
@@ -359,10 +370,10 @@ const Banner = () => {
 											top: "calc(100% + 8px)",
 											left: 0,
 											right: 0,
-											backgroundColor: "#ffffff",
-											border: "1px solid #E0E0E0",
-											borderRadius: "12px",
-											boxShadow: "0 12px 32px rgba(0, 0, 0, 0.2), 0 4px 8px rgba(0, 0, 0, 0.1)",
+											backgroundColor: "#FFFFFF",
+											border: "1px solid rgba(0, 0, 0, 0.08)",
+											borderRadius: "20px",
+											boxShadow: "0 10px 40px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.08)",
 											zIndex: 1002,
 											overflow: "hidden",
 											marginTop: "4px",
@@ -371,58 +382,73 @@ const Banner = () => {
 											visibility: showSaleTypeDropdown ? "visible" : "hidden",
 											transition: "opacity 0.2s ease-out, transform 0.2s ease-out, visibility 0.2s ease-out",
 											pointerEvents: showSaleTypeDropdown ? "auto" : "none",
+											animation: showSaleTypeDropdown ? "dropdownFadeIn 0.2s ease-out" : "none",
 										}}
 									>
-									{saleTypes.map((type, index) => (
-										<div
-											key={type.key}
-											onClick={() => handleSaleTypeSelect(type.key)}
-											style={{
-												padding: "16px 20px",
-												cursor: "pointer",
-												borderBottom:
-													index !== saleTypes.length - 1
-														? "1px solid #F0F0F0"
-														: "none",
-													transition: "all 0.15s ease",
-													fontSize: "14px",
-													fontWeight: saleType === type.key ? "600" : "400",
-													color: saleType === type.key ? "#FF385C" : "#222222",
-													backgroundColor: saleType === type.key ? "#FFF5F7" : "#ffffff",
-													display: "flex",
-													alignItems: "center",
-													gap: "8px",
-												}}
-												onMouseEnter={(e) => {
-													if (saleType !== type.key) {
-														e.currentTarget.style.backgroundColor = "#F7F7F7";
-													}
-												}}
-												onMouseLeave={(e) => {
-													if (saleType !== type.key) {
-														e.currentTarget.style.backgroundColor = "#ffffff";
-													} else {
-														e.currentTarget.style.backgroundColor = "#FFF5F7";
-													}
-												}}
-											>
-												{saleType === type.key && (
-													<svg
-														width="16"
-														height="16"
-														viewBox="0 0 24 24"
-														fill="none"
-														stroke="#FF385C"
-														strokeWidth="3"
-														style={{ flexShrink: 0 }}
-													>
-														<polyline points="20 6 9 17 4 12"></polyline>
-													</svg>
-												)}
-												<span>{type.label}</span>
-											</div>
-										))}
+										<div style={{ padding: "8px 0" }}>
+											{saleTypes.map((type, index) => (
+												<div
+													key={type.key}
+													onClick={() => handleSaleTypeSelect(type.key)}
+													style={{
+														padding: "14px 20px",
+														margin: "4px 8px",
+														cursor: "pointer",
+														transition: "all 0.2s ease",
+														fontSize: "15px",
+														fontWeight: "500",
+														color: "#222222",
+														backgroundColor: saleType === type.key ? "rgba(255, 56, 92, 0.08)" : "transparent",
+														display: "flex",
+														alignItems: "center",
+														gap: "14px",
+														borderRadius: "12px",
+													}}
+													onMouseEnter={(e) => {
+														e.currentTarget.style.backgroundColor = saleType === type.key 
+															? "rgba(255, 56, 92, 0.12)" 
+															: "rgba(0, 0, 0, 0.04)";
+														e.currentTarget.style.transform = "translateX(4px)";
+													}}
+													onMouseLeave={(e) => {
+														e.currentTarget.style.backgroundColor = saleType === type.key 
+															? "rgba(255, 56, 92, 0.08)" 
+															: "transparent";
+														e.currentTarget.style.transform = "translateX(0)";
+													}}
+												>
+													<div style={{
+														width: "36px",
+														height: "36px",
+														borderRadius: "10px",
+														background: saleType === type.key 
+															? "linear-gradient(135deg, #FF385C 0%, #E61E4D 100%)" 
+															: "rgba(0, 0, 0, 0.06)",
+														display: "flex",
+														alignItems: "center",
+														justifyContent: "center",
+														flexShrink: 0,
+														transition: "all 0.2s ease",
+													}}>
+														<Home 
+															size={18}
+															color={saleType === type.key ? "#FFFFFF" : "#717171"}
+															strokeWidth={2.5}
+														/>
+													</div>
+													<span style={{ flex: 1 }}>{type.label}</span>
+													{saleType === type.key && (
+														<div style={{
+															width: "6px",
+															height: "6px",
+															borderRadius: "50%",
+															background: "linear-gradient(135deg, #FF385C 0%, #E61E4D 100%)",
+														}} />
+													)}
+												</div>
+											))}
 										</div>
+									</div>
 								</div>
 
 								{/* What Type Dropdown */}
@@ -489,13 +515,12 @@ const Banner = () => {
 											top: "calc(100% + 8px)",
 											left: 0,
 											right: 0,
-											backgroundColor: "#ffffff",
-											border: "1px solid #E0E0E0",
-											borderRadius: "12px",
-											boxShadow: "0 12px 32px rgba(0, 0, 0, 0.2), 0 4px 8px rgba(0, 0, 0, 0.1)",
+											backgroundColor: "#FFFFFF",
+											border: "1px solid rgba(0, 0, 0, 0.08)",
+											borderRadius: "20px",
+											boxShadow: "0 10px 40px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.08)",
 											zIndex: 1002,
-											overflow: "hidden",
-											maxHeight: "300px",
+											maxHeight: "360px",
 											overflowY: "auto",
 											marginTop: "4px",
 											opacity: showCategoryDropdown ? 1 : 0,
@@ -503,83 +528,80 @@ const Banner = () => {
 											visibility: showCategoryDropdown ? "visible" : "hidden",
 											transition: "opacity 0.2s ease-out, transform 0.2s ease-out, visibility 0.2s ease-out",
 											pointerEvents: showCategoryDropdown ? "auto" : "none",
+											animation: showCategoryDropdown ? "dropdownFadeIn 0.2s ease-out" : "none",
 										}}
+										className="category-dropdown"
 									>
-										{allCategories && allCategories.length > 0 && allCategories.map((cat, index) => (
-											<div
-												key={cat.value}
-												onClick={() => handleCategorySelect(cat.label)}
-												style={{
-													padding: "16px 20px",
-													cursor: "pointer",
-													borderBottom:
-														index !== allCategories.length - 1
-															? "1px solid #F0F0F0"
-															: "none",
-													transition: "all 0.15s ease",
-													display: "flex",
-													alignItems: "center",
-													gap: "12px",
-													backgroundColor: category === cat.label ? "#FFF5F7" : "#ffffff",
-												}}
-												onMouseEnter={(e) => {
-													if (category !== cat.label) {
-														e.currentTarget.style.backgroundColor = "#F7F7F7";
-													}
-												}}
-												onMouseLeave={(e) => {
-													if (category !== cat.label) {
-														e.currentTarget.style.backgroundColor = "#ffffff";
-													} else {
-														e.currentTarget.style.backgroundColor = "#FFF5F7";
-													}
-												}}
-											>
-											<div
-												style={{
-													width: "32px",
-													height: "32px",
-													borderRadius: "6px",
-													backgroundColor: "#f0f4f8",
-													display: "flex",
-													alignItems: "center",
-													justifyContent: "center",
-													flexShrink: 0,
-												}}
-											>
-											<Image
-												src={cat.imageSrc}
-												width={20}
-												height={20}
-												alt={cat.label}
-												style={{ objectFit: "contain" }}
-											/>
-											</div>
+										<div style={{ padding: "8px 0" }}>
+											{allCategories && allCategories.length > 0 && allCategories.map((cat, index) => (
 												<div
+													key={cat.value}
+													onClick={() => handleCategorySelect(cat.label)}
 													style={{
-														fontSize: "14px",
-														fontWeight: category === cat.label ? "600" : "500",
-														color: category === cat.label ? "#FF385C" : "#222222",
-														flex: 1,
+														padding: "14px 20px",
+														margin: "4px 8px",
+														cursor: "pointer",
+														transition: "all 0.2s ease",
+														display: "flex",
+														alignItems: "center",
+														gap: "14px",
+														fontSize: "15px",
+														fontWeight: "500",
+														color: "#222222",
+														backgroundColor: category === cat.label ? "rgba(255, 56, 92, 0.08)" : "transparent",
+														borderRadius: "12px",
+													}}
+													onMouseEnter={(e) => {
+														e.currentTarget.style.backgroundColor = category === cat.label 
+															? "rgba(255, 56, 92, 0.12)" 
+															: "rgba(0, 0, 0, 0.04)";
+														e.currentTarget.style.transform = "translateX(4px)";
+													}}
+													onMouseLeave={(e) => {
+														e.currentTarget.style.backgroundColor = category === cat.label 
+															? "rgba(255, 56, 92, 0.08)" 
+															: "transparent";
+														e.currentTarget.style.transform = "translateX(0)";
 													}}
 												>
-													{cat.label}
-												</div>
-												{category === cat.label && (
-													<svg
-														width="16"
-														height="16"
-														viewBox="0 0 24 24"
-														fill="none"
-														stroke="#FF385C"
-														strokeWidth="3"
-														style={{ flexShrink: 0 }}
+													<div
+														style={{
+															width: "36px",
+															height: "36px",
+															borderRadius: "10px",
+															background: category === cat.label 
+																? "linear-gradient(135deg, #FF385C 0%, #E61E4D 100%)" 
+																: "rgba(0, 0, 0, 0.06)",
+															display: "flex",
+															alignItems: "center",
+															justifyContent: "center",
+															flexShrink: 0,
+															transition: "all 0.2s ease",
+														}}
 													>
-														<polyline points="20 6 9 17 4 12"></polyline>
-													</svg>
-												)}
-											</div>
-										))}
+														{(() => {
+															const IconComponent = getCategoryIcon(cat.label);
+															return (
+																<IconComponent
+																	size={18}
+																	color={category === cat.label ? "#FFFFFF" : "#717171"}
+																	strokeWidth={2}
+																/>
+															);
+														})()}
+													</div>
+													<span style={{ flex: 1 }}>{cat.label}</span>
+													{category === cat.label && (
+														<div style={{
+															width: "6px",
+															height: "6px",
+															borderRadius: "50%",
+															background: "linear-gradient(135deg, #FF385C 0%, #E61E4D 100%)",
+														}} />
+													)}
+												</div>
+											))}
+										</div>
 									</div>
 								</div>
 							</div>
@@ -653,13 +675,12 @@ const Banner = () => {
 											top: "calc(100% + 8px)",
 											left: 0,
 											right: 0,
-											backgroundColor: "#ffffff",
-											border: "1px solid #E0E0E0",
-											borderRadius: "12px",
-											boxShadow: "0 12px 32px rgba(0, 0, 0, 0.2), 0 4px 8px rgba(0, 0, 0, 0.1)",
+											backgroundColor: "#FFFFFF",
+											border: "1px solid rgba(0, 0, 0, 0.08)",
+											borderRadius: "20px",
+											boxShadow: "0 10px 40px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.08)",
 											zIndex: 1002,
-											overflow: "hidden",
-											maxHeight: "300px",
+											maxHeight: "360px",
 											overflowY: "auto",
 											marginTop: "4px",
 											opacity: showLocationDropdown ? 1 : 0,
@@ -667,71 +688,86 @@ const Banner = () => {
 											visibility: showLocationDropdown ? "visible" : "hidden",
 											transition: "opacity 0.2s ease-out, transform 0.2s ease-out, visibility 0.2s ease-out",
 											pointerEvents: showLocationDropdown ? "auto" : "none",
+											animation: showLocationDropdown ? "dropdownFadeIn 0.2s ease-out" : "none",
 										}}
+										className="location-dropdown"
 									>
-										{filteredCities.length > 0 ? (
-											filteredCities.map((city, index) => (
+										<div style={{ padding: "8px 0" }}>
+											{filteredCities.length > 0 ? (
+												filteredCities.map((city, index) => (
+													<div
+														key={city.value}
+														onClick={() => handleLocationCitySelect(city.label)}
+														style={{
+															padding: "14px 20px",
+															margin: "4px 8px",
+															cursor: "pointer",
+															transition: "all 0.2s ease",
+															fontSize: "15px",
+															fontWeight: "500",
+															color: "#222222",
+															backgroundColor: location === city.label ? "rgba(255, 56, 92, 0.08)" : "transparent",
+															display: "flex",
+															alignItems: "center",
+															gap: "14px",
+															borderRadius: "12px",
+														}}
+														onMouseEnter={(e) => {
+															e.currentTarget.style.backgroundColor = location === city.label 
+																? "rgba(255, 56, 92, 0.12)" 
+																: "rgba(0, 0, 0, 0.04)";
+															e.currentTarget.style.transform = "translateX(4px)";
+														}}
+														onMouseLeave={(e) => {
+															e.currentTarget.style.backgroundColor = location === city.label 
+																? "rgba(255, 56, 92, 0.08)" 
+																: "transparent";
+															e.currentTarget.style.transform = "translateX(0)";
+														}}
+													>
+														<div style={{
+															width: "36px",
+															height: "36px",
+															borderRadius: "10px",
+															background: location === city.label 
+																? "linear-gradient(135deg, #FF385C 0%, #E61E4D 100%)" 
+																: "rgba(0, 0, 0, 0.06)",
+															display: "flex",
+															alignItems: "center",
+															justifyContent: "center",
+															flexShrink: 0,
+															transition: "all 0.2s ease",
+														}}>
+															<MapPin 
+																size={16}
+																color={location === city.label ? "#FFFFFF" : "#717171"}
+																strokeWidth={2.5}
+															/>
+														</div>
+														<span style={{ flex: 1 }}>{city.label}</span>
+														{location === city.label && (
+															<div style={{
+																width: "6px",
+																height: "6px",
+																borderRadius: "50%",
+																background: "linear-gradient(135deg, #FF385C 0%, #E61E4D 100%)",
+															}} />
+														)}
+													</div>
+												))
+											) : (
 												<div
-													key={city.value}
-													onClick={() => handleLocationCitySelect(city.label)}
 													style={{
 														padding: "16px 20px",
-														cursor: "pointer",
-														borderBottom:
-															index !== filteredCities.length - 1
-																? "1px solid #F0F0F0"
-																: "none",
-														transition: "all 0.15s ease",
 														fontSize: "14px",
-														fontWeight: location === city.label ? "600" : "400",
-														color: location === city.label ? "#FF385C" : "#222222",
-														backgroundColor: location === city.label ? "#FFF5F7" : "#ffffff",
-														display: "flex",
-														alignItems: "center",
-														gap: "8px",
-													}}
-													onMouseEnter={(e) => {
-														if (location !== city.label) {
-															e.currentTarget.style.backgroundColor = "#F7F7F7";
-														}
-													}}
-													onMouseLeave={(e) => {
-														if (location !== city.label) {
-															e.currentTarget.style.backgroundColor = "#ffffff";
-														} else {
-															e.currentTarget.style.backgroundColor = "#FFF5F7";
-														}
+														color: "#717171",
+														textAlign: "center",
 													}}
 												>
-													<MapPin size={16} color={location === city.label ? "#FF385C" : "#717171"} />
-													<span>{city.label}</span>
-													{location === city.label && (
-														<svg
-															width="16"
-															height="16"
-															viewBox="0 0 24 24"
-															fill="none"
-															stroke="#FF385C"
-															strokeWidth="3"
-															style={{ flexShrink: 0, marginLeft: "auto" }}
-														>
-															<polyline points="20 6 9 17 4 12"></polyline>
-														</svg>
-													)}
+													No cities found
 												</div>
-											))
-										) : (
-											<div
-												style={{
-													padding: "16px 20px",
-													fontSize: "14px",
-													color: "#717171",
-													textAlign: "center",
-												}}
-											>
-												No cities found
-											</div>
-										)}
+											)}
+										</div>
 									</div>
 							</div>
 
@@ -784,10 +820,46 @@ const Banner = () => {
 				</div>
 			</div>
 
-			{/* Responsive Styles */}
-			<style jsx>{`
-				/* Tablet: 768px - 991px */
-				@media (max-width: 991px) {
+		{/* Dropdown Animations & Scrollbar Styles */}
+		<style jsx global>{`
+			@keyframes dropdownFadeIn {
+				from {
+					opacity: 0;
+					transform: translateY(-10px);
+				}
+				to {
+					opacity: 1;
+					transform: translateY(0);
+				}
+			}
+			
+			.location-dropdown::-webkit-scrollbar,
+			.category-dropdown::-webkit-scrollbar {
+				width: 8px;
+			}
+			
+			.location-dropdown::-webkit-scrollbar-track,
+			.category-dropdown::-webkit-scrollbar-track {
+				background: transparent;
+				margin: 8px 0;
+			}
+			
+			.location-dropdown::-webkit-scrollbar-thumb,
+			.category-dropdown::-webkit-scrollbar-thumb {
+				background: linear-gradient(135deg, #FF385C 0%, #E61E4D 100%);
+				border-radius: 10px;
+			}
+			
+			.location-dropdown::-webkit-scrollbar-thumb:hover,
+			.category-dropdown::-webkit-scrollbar-thumb:hover {
+				background: linear-gradient(135deg, #E61E4D 0%, #D70466 100%);
+			}
+		`}</style>
+		
+		{/* Responsive Styles */}
+		<style jsx>{`
+			/* Tablet: 768px - 991px */
+			@media (max-width: 991px) {
 					.hero-banner-container {
 						height: auto !important;
 						min-height: 700px !important;
