@@ -180,37 +180,44 @@ const FilterPanel = ({ featureType = "HOMES" }) => {
 		>
 			{/* Filter Button */}
 			<button
+				className="filter-toggle-button"
 				onClick={() => setShowFilters(!showFilters)}
 				style={{
 					display: "flex",
 					alignItems: "center",
-					gap: "8px",
-					padding: "10px 18px",
+					justifyContent: "center",
+					gap: "6px",
+					padding: "8px 14px",
+					minHeight: "36px",
 					backgroundColor: showFilters ? "#FF385C" : "#FFFFFF",
 					color: showFilters ? "#FFFFFF" : "#222222",
 					border: `2px solid ${showFilters ? "#FF385C" : "#DDDDDD"}`,
-					borderRadius: "12px",
-					fontSize: "15px",
+					borderRadius: "10px",
+					fontSize: "14px",
 					fontWeight: "600",
 					cursor: "pointer",
 					transition: "all 0.2s ease",
 					position: "relative",
+					whiteSpace: "nowrap",
+					lineHeight: "1.2",
+					width: "auto",
+					flexShrink: 0,
 				}}
 				onMouseEnter={(e) => {
-					if (!showFilters) {
+					if (!showFilters && !isMobile) {
 						e.currentTarget.style.borderColor = "#FF385C";
 						e.currentTarget.style.backgroundColor = "#FFF5F7";
 					}
 				}}
 				onMouseLeave={(e) => {
-					if (!showFilters) {
+					if (!showFilters && !isMobile) {
 						e.currentTarget.style.borderColor = "#DDDDDD";
 						e.currentTarget.style.backgroundColor = "#FFFFFF";
 					}
 				}}
 			>
-				<SlidersHorizontal size={18} strokeWidth={2.5} />
-				<span>{getTranslation(displayLanguage, "filters.filters")}</span>
+				<SlidersHorizontal size={16} strokeWidth={2.5} style={{ flexShrink: 0 }} />
+				<span style={{ flexShrink: 0 }}>{getTranslation(displayLanguage, "filters.filters")}</span>
 				{activeFiltersCount > 0 && (
 					<div style={{
 						position: "absolute",
@@ -219,14 +226,16 @@ const FilterPanel = ({ featureType = "HOMES" }) => {
 						backgroundColor: "#FF385C",
 						color: "#FFFFFF",
 						borderRadius: "50%",
-						width: "20px",
-						height: "20px",
+						minWidth: "18px",
+						height: "18px",
 						display: "flex",
 						alignItems: "center",
 						justifyContent: "center",
-						fontSize: "11px",
+						fontSize: "10px",
 						fontWeight: "700",
 						border: "2px solid #FFFFFF",
+						padding: "0 4px",
+						boxSizing: "border-box",
 					}}>
 						{activeFiltersCount}
 					</div>
@@ -615,11 +624,92 @@ const FilterPanel = ({ featureType = "HOMES" }) => {
 					.filter-button-container {
 						position: relative !important;
 						z-index: auto !important;
+						width: auto !important;
+						flex-shrink: 0 !important;
 					}
 
-					.filter-button-container > button {
-						padding: 8px 14px !important;
-						font-size: 14px !important;
+					.filter-toggle-button {
+						padding: 7px 12px !important;
+						min-height: 34px !important;
+						font-size: 13px !important;
+						gap: 5px !important;
+						border-radius: 9px !important;
+						white-space: nowrap !important;
+						width: auto !important;
+						flex-shrink: 0 !important;
+					}
+
+					.filter-toggle-button svg {
+						width: 15px !important;
+						height: 15px !important;
+						flex-shrink: 0 !important;
+					}
+
+					.filter-toggle-button span {
+						font-size: 13px !important;
+						line-height: 1.2 !important;
+						flex-shrink: 0 !important;
+					}
+
+					.filter-toggle-button > div[style*="position: absolute"] {
+						min-width: 16px !important;
+						height: 16px !important;
+						top: -5px !important;
+						right: -5px !important;
+						font-size: 9px !important;
+						border-width: 1.5px !important;
+					}
+
+					/* Extra small phones (up to 360px) */
+					@media (max-width: 360px) {
+						.filter-toggle-button {
+							padding: 6px 10px !important;
+							min-height: 32px !important;
+							font-size: 12px !important;
+							gap: 4px !important;
+						}
+
+						.filter-toggle-button svg {
+							width: 14px !important;
+							height: 14px !important;
+						}
+
+						.filter-toggle-button span {
+							font-size: 12px !important;
+						}
+					}
+
+					/* Small phones (361px - 375px) */
+					@media (min-width: 361px) and (max-width: 375px) {
+						.filter-toggle-button {
+							padding: 7px 11px !important;
+							min-height: 33px !important;
+							font-size: 12.5px !important;
+						}
+					}
+
+					/* Medium phones (376px - 414px) */
+					@media (min-width: 376px) and (max-width: 414px) {
+						.filter-toggle-button {
+							padding: 7px 13px !important;
+							min-height: 35px !important;
+							font-size: 13.5px !important;
+						}
+					}
+
+					/* Large phones (415px and up) */
+					@media (min-width: 415px) and (max-width: 768px) {
+						.filter-toggle-button {
+							padding: 8px 14px !important;
+							min-height: 36px !important;
+							font-size: 14px !important;
+							gap: 6px !important;
+						}
+
+						.filter-toggle-button svg {
+							width: 16px !important;
+							height: 16px !important;
+						}
 					}
 
 					/* Ensure navbar and search sections stay behind filter */
@@ -780,15 +870,26 @@ const FilterPanel = ({ featureType = "HOMES" }) => {
 
 				/* Extra Small Mobile (480px and below) */
 				@media (max-width: 480px) {
-					.filter-button-container > button {
-						padding: 7px 12px !important;
-						font-size: 13px !important;
-						gap: 6px !important;
+					.filter-toggle-button {
+						padding: 6px 10px !important;
+						font-size: 12px !important;
+						gap: 4px !important;
+						min-height: 32px !important;
 					}
 
-					.filter-button-container > button svg {
-						width: 16px !important;
-						height: 16px !important;
+					.filter-toggle-button svg {
+						width: 14px !important;
+						height: 14px !important;
+					}
+
+					.filter-toggle-button span {
+						font-size: 12px !important;
+					}
+
+					.filter-toggle-button > div[style*="position: absolute"] {
+						min-width: 15px !important;
+						height: 15px !important;
+						font-size: 9px !important;
 					}
 
 					.filter-dropdown {
@@ -866,9 +967,20 @@ const FilterPanel = ({ featureType = "HOMES" }) => {
 
 				/* Very Small Mobile (375px and below) */
 				@media (max-width: 375px) {
-					.filter-button-container > button {
-						padding: 6px 10px !important;
-						font-size: 12px !important;
+					.filter-toggle-button {
+						padding: 6px 9px !important;
+						font-size: 11.5px !important;
+						min-height: 30px !important;
+						gap: 4px !important;
+					}
+
+					.filter-toggle-button svg {
+						width: 13px !important;
+						height: 13px !important;
+					}
+
+					.filter-toggle-button span {
+						font-size: 11.5px !important;
 					}
 
 					.filter-dropdown {
@@ -918,13 +1030,21 @@ const FilterPanel = ({ featureType = "HOMES" }) => {
 
 				/* Tiny Mobile (320px and below) */
 				@media (max-width: 320px) {
-					.filter-button-container > button {
+					.filter-toggle-button {
 						padding: 5px 8px !important;
 						font-size: 11px !important;
+						min-height: 28px !important;
+						gap: 3px !important;
 					}
 
-					.filter-button-container > button span {
-						display: none;
+					.filter-toggle-button svg {
+						width: 12px !important;
+						height: 12px !important;
+					}
+
+					.filter-toggle-button span {
+						font-size: 10px !important;
+						display: inline !important;
 					}
 
 					.filter-dropdown {

@@ -3,7 +3,6 @@ import React from "react";
 import { LayoutGrid } from "lucide-react";
 import Listings from "@/components/Listings/Index";
 import SearchForm from "@/components/Listings/SearchForm";
-import FilterPanel from "@/components/Listings/FilterPanel";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { getTranslation } from "@/utils/translations";
 
@@ -140,7 +139,7 @@ const ExperiencesPageClient = ({
 					line-height: 1.3 !important;
 				}
 
-				/* Sticky Filter Button - Far Right on Mobile */
+				/* Sticky Filter Button - Responsive on Mobile */
 				.experiences-page-container .sticky-filter-wrapper {
 					position: sticky !important;
 					top: 70px !important;
@@ -149,7 +148,7 @@ const ExperiencesPageClient = ({
 					margin-left: auto !important;
 					flex-shrink: 0 !important;
 					background-color: #FFFFFF !important;
-					padding: 8px 8px 8px 16px !important;
+					padding: 8px !important;
 					border-radius: 12px !important;
 					box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
 				}
@@ -239,9 +238,6 @@ const ExperiencesPageClient = ({
 								}}>
 									{getTranslation(displayLanguage, "listings.availableExperiences")}
 								</h2>
-							</div>
-							<div className="sticky-filter-wrapper">
-								<FilterPanel featureType="EXPERIENCES" />
 							</div>
 						</div>
 

@@ -3,7 +3,6 @@ import React from "react";
 import { LayoutGrid } from "lucide-react";
 import Listings from "@/components/Listings/Index";
 import SearchForm from "@/components/Listings/SearchForm";
-import FilterPanel from "@/components/Listings/FilterPanel";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { getTranslation } from "@/utils/translations";
 
@@ -206,15 +205,6 @@ const HomesPageClient = ({
 				font-size: 13px !important;
 			}
 
-			/* Filter Panel - Enhanced Mobile */
-			.sticky-filter-wrapper > div > button {
-				padding: 10px 16px !important;
-				font-size: 14px !important;
-				min-height: 44px !important;
-				box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
-				background: white !important;
-				border-radius: 12px !important;
-			}
 
 			/* Header Row - Force Filter to Far Right */
 			.homes-header {
@@ -239,7 +229,7 @@ const HomesPageClient = ({
 				line-height: 1.3 !important;
 			}
 
-			/* Sticky Filter Button - Far Right on Mobile */
+			/* Sticky Filter Button - Responsive on Mobile */
 			.sticky-filter-wrapper {
 				position: sticky !important;
 				top: 70px !important;
@@ -248,7 +238,7 @@ const HomesPageClient = ({
 				margin-left: auto !important;
 				flex-shrink: 0 !important;
 				background-color: #FFFFFF !important;
-				padding: 8px 8px 8px 16px !important;
+				padding: 8px !important;
 				border-radius: 12px !important;
 				box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
 			}
@@ -337,12 +327,6 @@ const HomesPageClient = ({
 				height: 36px !important;
 			}
 
-			/* Sticky Filter - Far Right on Small Screens */
-			.sticky-filter-wrapper {
-				top: 60px !important;
-				margin-left: auto !important;
-				flex-shrink: 0 !important;
-			}
 
 			/* Header - Force Filter to Far Right on Small Phones */
 			.homes-header {
@@ -448,9 +432,6 @@ const HomesPageClient = ({
 							{getTranslation(displayLanguage, "listings.availableHomes")}
 						</h2>
 					</div>
-				<div className="sticky-filter-wrapper">
-					<FilterPanel featureType="HOMES" />
-				</div>
 				</div>
 
 					{/* Premium Listings Section */}
