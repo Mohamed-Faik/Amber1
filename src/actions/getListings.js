@@ -6,8 +6,10 @@ export default async function getListings(params) {
 			category,
 			location_value,
 			title,
-			min_price,
-			max_price,
+			min_price: minPriceParam,
+			max_price: maxPriceParam,
+			minPrice, // Backward compatibility
+			maxPrice, // Backward compatibility
 			bedrooms,
 			bathrooms,
 			listingType, // Filter by SALE or RENT
@@ -17,6 +19,10 @@ export default async function getListings(params) {
 			status, // For admin filtering
 			showAll = false, // For admin to see all listings
 		} = params;
+
+		// Support both min_price and minPrice for backward compatibility
+		const min_price = minPriceParam || minPrice;
+		const max_price = maxPriceParam || maxPrice;
 
 		const parsedPage = parseInt(page, 10);
 		const parsedPageSize = parseInt(pageSize, 10);

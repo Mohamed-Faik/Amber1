@@ -108,17 +108,28 @@ const HomesPageClient = ({
 		.sticky-filter-wrapper {
 			margin-left: auto;
 			flex-shrink: 0;
+			position: relative;
+			z-index: 1;
 		}
 
 		@media (max-width: 768px) {
 			/* Search Section */
-			.homes-search-section,
+			.homes-search-section {
+				z-index: 1 !important;
+			}
+			
 			.homes-search-wrapper,
 			.homes-search-section form,
 			.homes-search-section > div {
 				position: static !important;
 				top: auto !important;
 				position: relative !important;
+				z-index: 1 !important;
+			}
+			
+			/* Lower search section when filter is open */
+			body:has(.filter-backdrop) .homes-search-section,
+			.filter-backdrop ~ * .homes-search-section {
 				z-index: 1 !important;
 			}
 
@@ -213,6 +224,8 @@ const HomesPageClient = ({
 				align-items: flex-start !important;
 				flex-wrap: nowrap !important;
 				justify-content: space-between !important;
+				background-color: #FFFFFF !important;
+				padding-top: 8px !important;
 			}
 
 			.homes-header > div:first-child {
@@ -230,11 +243,24 @@ const HomesPageClient = ({
 			.sticky-filter-wrapper {
 				position: sticky !important;
 				top: 70px !important;
-				z-index: 100 !important;
+				z-index: 10 !important;
 				align-self: flex-start !important;
 				margin-left: auto !important;
 				flex-shrink: 0 !important;
-				padding-left: 8px !important;
+				background-color: #FFFFFF !important;
+				padding: 8px 8px 8px 16px !important;
+				border-radius: 12px !important;
+				box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+			}
+			
+			/* Make header background white when sticky */
+			.homes-header {
+				background-color: #FFFFFF !important;
+				position: relative !important;
+			}
+			
+			.homes-results-section {
+				z-index: 0 !important;
 			}
 
 			/* Keep profile images as designed */
@@ -365,7 +391,7 @@ const HomesPageClient = ({
 		{/* Listings Section */}
 		<div className="homes-results-section" style={{
 			position: "relative",
-			zIndex: 1,
+			zIndex: 0,
 			paddingBottom: "48px",
 		}}>
 				<div className="homes-results-wrapper" style={{

@@ -3,6 +3,7 @@ import React from "react";
 import { LayoutGrid } from "lucide-react";
 import Listings from "@/components/Listings/Index";
 import SearchForm from "@/components/Listings/SearchForm";
+import FilterPanel from "@/components/Listings/FilterPanel";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { getTranslation } from "@/utils/translations";
 
@@ -85,16 +86,96 @@ const ExperiencesPageClient = ({
 			</div>
 		</div>
 		
-		{/* Ensure not sticky on mobile */}
+		{/* Mobile Styles */}
 		<style jsx global>{`
 			@media (max-width: 768px) {
-				.experiences-search-section,
+				.experiences-search-section {
+					z-index: 1 !important;
+				}
+				
 				.experiences-search-wrapper,
 				.experiences-search-section form,
 				.experiences-search-section > div {
 					position: static !important;
 					top: auto !important;
 					position: relative !important;
+					z-index: 1 !important;
+				}
+				
+				/* Lower search section when filter is open */
+				body:has(.filter-backdrop) .experiences-search-section,
+				.filter-backdrop ~ * .experiences-search-section {
+					z-index: 1 !important;
+				}
+
+				.experiences-results-section {
+					position: static !important;
+					z-index: auto !important;
+				}
+
+				.experiences-results-wrapper {
+					padding: 0 16px !important;
+				}
+
+				/* Header Row - Force Filter to Far Right */
+				.experiences-header {
+					gap: 8px !important;
+					padding-bottom: 20px !important;
+					margin-bottom: 28px !important;
+					align-items: flex-start !important;
+					flex-wrap: nowrap !important;
+					justify-content: space-between !important;
+					background-color: #FFFFFF !important;
+					padding-top: 8px !important;
+				}
+
+				.experiences-header > div:first-child {
+					flex: 0 1 auto !important;
+					max-width: calc(100% - 120px) !important;
+					gap: 10px !important;
+				}
+
+				.experiences-header h2 {
+					font-size: 18px !important;
+					line-height: 1.3 !important;
+				}
+
+				/* Sticky Filter Button - Far Right on Mobile */
+				.experiences-page-container .sticky-filter-wrapper {
+					position: sticky !important;
+					top: 70px !important;
+					z-index: 10 !important;
+					align-self: flex-start !important;
+					margin-left: auto !important;
+					flex-shrink: 0 !important;
+					background-color: #FFFFFF !important;
+					padding: 8px 8px 8px 16px !important;
+					border-radius: 12px !important;
+					box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+				}
+				
+				/* Make header background white when sticky */
+				.experiences-page-container .experiences-header {
+					background-color: #FFFFFF !important;
+					position: relative !important;
+				}
+				
+				.experiences-results-section {
+					z-index: 0 !important;
+				}
+			}
+
+			@media (max-width: 480px) {
+				.experiences-header h2 {
+					font-size: 18px !important;
+				}
+
+				.experiences-header > div:first-child {
+					max-width: calc(100% - 100px) !important;
+				}
+
+				.experiences-page-container .sticky-filter-wrapper {
+					top: 60px !important;
 				}
 			}
 		`}</style>
@@ -102,7 +183,7 @@ const ExperiencesPageClient = ({
 			{/* Listings Section */}
 			<div className="experiences-results-section" style={{
 				position: "relative",
-				zIndex: 1,
+				zIndex: 0,
 				paddingBottom: "48px",
 			}}>
 				<div className="experiences-results-wrapper" style={{
@@ -118,34 +199,50 @@ const ExperiencesPageClient = ({
 						border: "1px solid #E0E0E0",
 					}}>
 						{/* Header */}
-						<div style={{
+						<div className="experiences-header" style={{
 							display: "flex",
-							alignItems: "center",
+							alignItems: "flex-start",
+							justifyContent: "space-between",
 							gap: "16px",
 							marginBottom: "32px",
 							paddingBottom: "24px",
 							borderBottom: "1px solid #E0E0E0",
+							flexWrap: "wrap",
 						}}>
-							<div style={{
-								width: "44px",
-								height: "44px",
-								borderRadius: "12px",
-								background: "linear-gradient(135deg, #FF385C 0%, #E61E4D 50%, #D70466 100%)",
-								display: "flex",
-								alignItems: "center",
-								justifyContent: "center",
+							<div style={{ 
+								display: "flex", 
+								alignItems: "center", 
+								gap: "16px",
+								flex: "1 1 auto",
+								minWidth: "200px",
+								paddingTop: "4px"
 							}}>
-								<LayoutGrid size={22} color="#FFFFFF" strokeWidth={2.5} />
+								<div style={{
+									width: "44px",
+									height: "44px",
+									borderRadius: "12px",
+									background: "linear-gradient(135deg, #FF385C 0%, #E61E4D 50%, #D70466 100%)",
+									display: "flex",
+									alignItems: "center",
+									justifyContent: "center",
+									flexShrink: 0
+								}}>
+									<LayoutGrid size={22} color="#FFFFFF" strokeWidth={2.5} />
+								</div>
+								<h2 style={{
+									fontSize: "28px",
+									fontWeight: "700",
+									color: "#222222",
+									margin: "0",
+									letterSpacing: "-0.5px",
+									lineHeight: "1.2"
+								}}>
+									{getTranslation(displayLanguage, "listings.availableExperiences")}
+								</h2>
 							</div>
-							<h2 style={{
-								fontSize: "28px",
-								fontWeight: "700",
-								color: "#222222",
-								margin: "0",
-								letterSpacing: "-0.5px",
-							}}>
-								{getTranslation(displayLanguage, "listings.availableExperiences")}
-							</h2>
+							<div className="sticky-filter-wrapper">
+								<FilterPanel featureType="EXPERIENCES" />
+							</div>
 						</div>
 
 						<Listings

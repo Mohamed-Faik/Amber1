@@ -408,7 +408,7 @@ const Banner = () => {
 														e.currentTarget.style.backgroundColor = saleType === type.key 
 															? "rgba(255, 56, 92, 0.12)" 
 															: "rgba(0, 0, 0, 0.04)";
-														e.currentTarget.style.transform = "translateX(4px)";
+														e.currentTarget.style.transform = "translateX(2px)";
 													}}
 													onMouseLeave={(e) => {
 														e.currentTarget.style.backgroundColor = saleType === type.key 
@@ -555,7 +555,7 @@ const Banner = () => {
 														e.currentTarget.style.backgroundColor = category === cat.label 
 															? "rgba(255, 56, 92, 0.12)" 
 															: "rgba(0, 0, 0, 0.04)";
-														e.currentTarget.style.transform = "translateX(4px)";
+														e.currentTarget.style.transform = "translateX(2px)";
 													}}
 													onMouseLeave={(e) => {
 														e.currentTarget.style.backgroundColor = category === cat.label 
@@ -716,7 +716,7 @@ const Banner = () => {
 															e.currentTarget.style.backgroundColor = location === city.label 
 																? "rgba(255, 56, 92, 0.12)" 
 																: "rgba(0, 0, 0, 0.04)";
-															e.currentTarget.style.transform = "translateX(4px)";
+															e.currentTarget.style.transform = "translateX(2px)";
 														}}
 														onMouseLeave={(e) => {
 															e.currentTarget.style.backgroundColor = location === city.label 
@@ -1025,17 +1025,43 @@ const Banner = () => {
 					}
 				}
 
-				/* Dropdown responsive adjustments */
-				@media (max-width: 767px) {
-					div[style*="position: \"absolute\""][style*="top: \"calc(100% + 8px)\""] {
-						position: fixed !important;
-						left: 16px !important;
-						right: 16px !important;
-						width: auto !important;
-						max-height: 50vh !important;
-						overflow-y: auto !important;
-					}
+			/* Dropdown responsive adjustments */
+			@media (max-width: 767px) {
+				div[style*="position: \"absolute\""][style*="top: \"calc(100% + 8px)\""] {
+					position: fixed !important;
+					left: 16px !important;
+					right: 16px !important;
+					width: auto !important;
+					max-height: 50vh !important;
+					overflow-y: auto !important;
 				}
+
+				/* AGGRESSIVE: Target ALL dropdown items on mobile - FLUSH LEFT */
+				.category-dropdown div[style*="padding: 14px"],
+				.location-dropdown div[style*="padding: 14px"],
+				div[style*="position: fixed"] div[style*="padding: 14px 20px"],
+				div[style*="position: fixed"] div[style*="margin: 4px 8px"] {
+					margin: 0 !important;
+					margin-top: 2px !important;
+					margin-bottom: 2px !important;
+					padding: 14px 8px !important;
+				}
+
+				/* Dropdown container - NO padding */
+				.category-dropdown > div,
+				.location-dropdown > div,
+				div[style*="position: fixed"] > div[style*="padding"] {
+					padding: 0 !important;
+					padding-top: 4px !important;
+					padding-bottom: 4px !important;
+				}
+
+				/* Override any hover transform */
+				.category-dropdown div[style*="padding: 14px"]:hover,
+				.location-dropdown div[style*="padding: 14px"]:hover {
+					transform: translateX(0) !important;
+				}
+			}
 			`}</style>
 		</div>
 	);
