@@ -3,6 +3,7 @@ import React from "react";
 import { LayoutGrid } from "lucide-react";
 import Listings from "@/components/Listings/Index";
 import SearchForm from "@/components/Listings/SearchForm";
+import FilterPanel from "@/components/Listings/FilterPanel";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { getTranslation } from "@/utils/translations";
 
@@ -85,7 +86,7 @@ const HomesPageClient = ({
 			</div>
 		</div>
 		
-		{/* Ensure not sticky on mobile */}
+		{/* Mobile Styles */}
 		<style jsx global>{`
 			@media (max-width: 768px) {
 				.homes-search-section,
@@ -95,16 +96,22 @@ const HomesPageClient = ({
 					position: static !important;
 					top: auto !important;
 					position: relative !important;
+					z-index: 1 !important;
+				}
+
+				.homes-results-section {
+					position: static !important;
+					z-index: auto !important;
 				}
 			}
 		`}</style>
 
-			{/* Listings Section */}
-			<div className="homes-results-section" style={{
-				position: "relative",
-				zIndex: 1,
-				paddingBottom: "48px",
-			}}>
+		{/* Listings Section */}
+		<div className="homes-results-section" style={{
+			position: "relative",
+			zIndex: 1,
+			paddingBottom: "48px",
+		}}>
 				<div className="homes-results-wrapper" style={{
 					maxWidth: "1760px",
 					margin: "0 auto",
@@ -117,15 +124,17 @@ const HomesPageClient = ({
 						boxShadow: "0 2px 12px rgba(0, 0, 0, 0.08)",
 						border: "1px solid #E0E0E0",
 					}}>
-						{/* Header */}
-						<div style={{
-							display: "flex",
-							alignItems: "center",
-							gap: "16px",
-							marginBottom: "32px",
-							paddingBottom: "24px",
-							borderBottom: "1px solid #E0E0E0",
-						}}>
+					{/* Header */}
+					<div style={{
+						display: "flex",
+						alignItems: "center",
+						justifyContent: "space-between",
+						gap: "16px",
+						marginBottom: "32px",
+						paddingBottom: "24px",
+						borderBottom: "1px solid #E0E0E0",
+					}}>
+						<div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
 							<div style={{
 								width: "44px",
 								height: "44px",
@@ -147,6 +156,8 @@ const HomesPageClient = ({
 								{getTranslation(displayLanguage, "listings.availableHomes")}
 							</h2>
 						</div>
+						<FilterPanel featureType="HOMES" />
+					</div>
 
 						<Listings
 							currentUser={currentUser}

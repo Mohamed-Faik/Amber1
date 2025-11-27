@@ -8,6 +8,8 @@ export default async function getListings(params) {
 			title,
 			min_price,
 			max_price,
+			bedrooms,
+			bathrooms,
 			listingType, // Filter by SALE or RENT
 			featureType, // Filter by HOMES, EXPERIENCES, or SERVICES
 			page = 1,
@@ -48,22 +50,46 @@ export default async function getListings(params) {
 		}
 		// Note: If no featureType is specified, show all types (for backward compatibility)
 
-		// Price filter
-		if (min_price || max_price) {
-			whereClause.price = {};
-			if (min_price) {
-				const minPrice = parseInt(min_price, 10);
-				if (!isNaN(minPrice)) {
-					whereClause.price.gte = minPrice;
-				}
-			}
-			if (max_price) {
-				const maxPrice = parseInt(max_price, 10);
-				if (!isNaN(maxPrice)) {
-					whereClause.price.lte = maxPrice;
-				}
+	// Price filter
+	if (min_price || max_price) {
+		whereClause.price = {};
+		if (min_price) {
+			const minPrice = parseInt(min_price, 10);
+			if (!isNaN(minPrice)) {
+				whereClause.price.gte = minPrice;
 			}
 		}
+		if (max_price) {
+			const maxPrice = parseInt(max_price, 10);
+			if (!isNaN(maxPrice)) {
+				whereClause.price.lte = maxPrice;
+			}
+		}
+	}
+
+	// Bedrooms filter
+	if (bedrooms) {
+		if (bedrooms === "5+") {
+			whereClause.bedrooms = { gte: 5 };
+		} else {
+			const bedroomsCount = parseInt(bedrooms, 10);
+			if (!isNaN(bedroomsCount)) {
+				whereClause.bedrooms = bedroomsCount;
+			}
+		}
+	}
+
+	// Bathrooms filter
+	if (bathrooms) {
+		if (bathrooms === "5+") {
+			whereClause.bathrooms = { gte: 5 };
+		} else {
+			const bathroomsCount = parseInt(bathrooms, 10);
+			if (!isNaN(bathroomsCount)) {
+				whereClause.bathrooms = bathroomsCount;
+			}
+		}
+	}
 
 	// Status filter - only show approved and sold for public, unless admin wants to see all
 	// For public users, show Approved and Sold listings
