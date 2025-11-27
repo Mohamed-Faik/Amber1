@@ -7,6 +7,7 @@ import ContactButtons from "../Listing/ContactButtons";
 import ListingImageCarousel from "../Listing/ListingImageCarousel";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { getTranslation } from "@/utils/translations";
+import { useTranslatedContent } from "@/hooks/useTranslatedContent";
 import rulerIcon from "../../../public/images/icon/ruler.svg";
 import bedIcon from "../../../public/images/icon/bed.svg";
 import bathroomIcon from "../../../public/images/icon/bathroom.svg";
@@ -40,6 +41,9 @@ const FeaturedItem = ({
 	const [imageError, setImageError] = useState(false);
 	// Default to SALE if listingType is not provided (for backward compatibility)
 	const displayListingType = listingType || "SALE";
+	
+	// Translate the title dynamically
+	const { translatedContent: translatedTitle } = useTranslatedContent(title, displayLanguage, false);
 
 	// Debug logging
 	React.useEffect(() => {
@@ -327,7 +331,7 @@ const FeaturedItem = ({
 											color: "#717171",
 										}}
 									>
-										/month
+										{getTranslation(displayLanguage, "listings.perMonth")}
 									</span>
 								)}
 								{displayListingType === "DAILY_RENT" && (
@@ -338,23 +342,28 @@ const FeaturedItem = ({
 											color: "#717171",
 										}}
 									>
-										/day
+										{getTranslation(displayLanguage, "listings.perNight")}
 									</span>
 								)}
 							</span>
 						</div>
 
-					{/* Property Type */}
-					<div
-						style={{
-							fontSize: "15px",
-							fontWeight: "500",
-							color: "#222222",
-							marginBottom: "8px",
-						}}
-					>
-						{translateCategory(category) || getTranslation(displayLanguage, "listings.title")}
-					</div>
+				{/* Listing Title */}
+				<div
+					style={{
+						fontSize: "15px",
+						fontWeight: "600",
+						color: "#222222",
+						marginBottom: "8px",
+						lineHeight: "1.4",
+						display: "-webkit-box",
+						WebkitLineClamp: 2,
+						WebkitBoxOrient: "vertical",
+						overflow: "hidden",
+					}}
+				>
+					{translatedTitle}
+				</div>
 
 						{/* Location with Pin Icon */}
 						<div

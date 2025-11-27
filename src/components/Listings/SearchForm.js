@@ -4,6 +4,8 @@ import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Search, Globe, MapPin, ArrowRight, Sparkles, Mountain, UtensilsCrossed, Palette, Heart, Map, BookOpen, Film, Dumbbell, ShoppingBag, Trees, Castle, Building2, Home as HomeIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { moroccanCities } from "@/libs/moroccanCities";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { getTranslation } from "@/utils/translations";
 
 // Get icon component by name
 const getIcon = (iconName, size = 18, color = "#FF385C") => {
@@ -57,6 +59,8 @@ const SearchForm = ({ searchParams, featureType }) => {
 	const dropdownRef = useRef(null);
 	const locationDropdownRef = useRef(null);
 	const router = useRouter();
+	const { language, isDetecting } = useLanguage();
+	const displayLanguage = isDetecting ? "en" : language;
 
 	// Select categories based on feature type
 	const categories = featureType === "EXPERIENCES" ? experienceCategories : propertyCategories;
@@ -163,7 +167,7 @@ const SearchForm = ({ searchParams, featureType }) => {
 						color: "#222222",
 						marginBottom: "2px",
 					}}>
-						Where
+						{getTranslation(displayLanguage, "filters.where")}
 					</div>
 					<div style={{
 						fontSize: "14px",
@@ -172,7 +176,7 @@ const SearchForm = ({ searchParams, featureType }) => {
 						textOverflow: "ellipsis",
 						whiteSpace: "nowrap",
 					}}>
-						{locationValue || "Search destinations"}
+						{locationValue || getTranslation(displayLanguage, "filters.searchDestinations")}
 					</div>
 
 			{/* Location Dropdown Menu */}
@@ -329,7 +333,7 @@ const SearchForm = ({ searchParams, featureType }) => {
 						color: "#222222",
 						marginBottom: "2px",
 					}}>
-						{featureType === "EXPERIENCES" ? "Type of service" : "Property type"}
+						{getTranslation(displayLanguage, "filters.propertyType")}
 					</div>
 						<div style={{
 							fontSize: "14px",
@@ -339,8 +343,8 @@ const SearchForm = ({ searchParams, featureType }) => {
 							whiteSpace: "nowrap",
 						}}>
 							{category 
-								? categories.find(cat => cat.value === category)?.label
-								: (featureType === "EXPERIENCES" ? "Add service" : "Add property type")
+								? getTranslation(displayLanguage, `categories.${category.toLowerCase()}`)
+								: getTranslation(displayLanguage, "filters.addPropertyType")
 							}
 						</div>
 

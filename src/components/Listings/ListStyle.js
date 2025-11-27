@@ -9,6 +9,7 @@ import { getListingImage } from "@/utils/getListingImage";
 import ContactButtons from "../Listing/ContactButtons";
 import ListingImageCarousel from "../Listing/ListingImageCarousel";
 import { getTranslation } from "@/utils/translations";
+import { useTranslatedContent } from "@/hooks/useTranslatedContent";
 import rulerIcon from "../../../public/images/icon/ruler.svg";
 import bedIcon from "../../../public/images/icon/bed.svg";
 import bathroomIcon from "../../../public/images/icon/bathroom.svg";
@@ -36,6 +37,9 @@ const ListStyle = ({
 	const mainImage = getListingImage(imageSrc);
 	// Default to SALE if listingType is not provided (for backward compatibility)
 	const displayListingType = listingType || "SALE";
+	
+	// Translate the title dynamically
+	const { translatedContent: translatedTitle } = useTranslatedContent(title, displayLanguage, false);
 	
 	const handleCategoryClick = (e) => {
 		e.preventDefault();
@@ -258,11 +262,11 @@ const ListStyle = ({
 									fontWeight: "600",
 									color: "#222222",
 									marginBottom: "12px",
-									lineHeight: "1.4",
-								}}
-							>
-								{title}
-							</h3>
+								lineHeight: "1.4",
+							}}
+						>
+							{translatedTitle}
+						</h3>
 
 							{/* Category Badge */}
 							<div style={{ marginBottom: "12px" }}>
@@ -426,7 +430,7 @@ const ListStyle = ({
 										color: "#717171",
 									}}
 								>
-									/month
+									{getTranslation(displayLanguage, "listings.perMonth")}
 								</span>
 							)}
 							{displayListingType === "DAILY_RENT" && (
@@ -437,7 +441,7 @@ const ListStyle = ({
 										color: "#717171",
 									}}
 								>
-									/day
+									{getTranslation(displayLanguage, "listings.perNight")}
 								</span>
 							)}
 						</div>
