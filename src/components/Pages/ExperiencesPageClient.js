@@ -49,41 +49,55 @@ const ExperiencesPageClient = ({
 			
 			<div style={{ height: "80px" }} />
 			
-			{/* Compact Search Bar Section - Airbnb Style */}
-			<div className="experiences-search-section" style={{
-				position: "relative",
-				zIndex: 100,
-				marginBottom: "32px",
+		{/* Compact Search Bar Section - Airbnb Style */}
+		<div className="experiences-search-section" style={{
+			position: "relative",
+			zIndex: 100,
+			marginBottom: "32px",
+		}}>
+			<div className="experiences-search-wrapper" style={{
+				maxWidth: "850px",
+				margin: "0 auto",
+				padding: "0 24px",
 			}}>
-				<div className="experiences-search-wrapper" style={{
-					maxWidth: "850px",
-					margin: "0 auto",
-					padding: "0 24px",
+				<div style={{
+					textAlign: "center",
+					marginBottom: "24px",
 				}}>
-					<div style={{
-						textAlign: "center",
-						marginBottom: "24px",
+					<h1 style={{
+						fontSize: "32px",
+						fontWeight: "600",
+						color: "#222222",
+						margin: "0 0 8px 0",
+						letterSpacing: "-0.5px",
 					}}>
-						<h1 style={{
-							fontSize: "32px",
-							fontWeight: "600",
-							color: "#222222",
-							margin: "0 0 8px 0",
-							letterSpacing: "-0.5px",
-						}}>
-							{getTranslation(displayLanguage, "listings.discoverAmazingExperiences")}
-						</h1>
-						<p style={{
-							fontSize: "16px",
-							color: "#717171",
-							margin: "0",
-						}}>
-							{getTranslation(displayLanguage, "listings.findUniqueActivities")}
-						</p>
-					</div>
-					<SearchForm searchParams={searchParams} featureType="EXPERIENCES" />
+						{getTranslation(displayLanguage, "listings.discoverAmazingExperiences")}
+					</h1>
+					<p style={{
+						fontSize: "16px",
+						color: "#717171",
+						margin: "0",
+					}}>
+						{getTranslation(displayLanguage, "listings.findUniqueActivities")}
+					</p>
 				</div>
+				<SearchForm searchParams={searchParams} featureType="EXPERIENCES" />
 			</div>
+		</div>
+		
+		{/* Ensure not sticky on mobile */}
+		<style jsx global>{`
+			@media (max-width: 768px) {
+				.experiences-search-section,
+				.experiences-search-wrapper,
+				.experiences-search-section form,
+				.experiences-search-section > div {
+					position: static !important;
+					top: auto !important;
+					position: relative !important;
+				}
+			}
+		`}</style>
 
 			{/* Listings Section */}
 			<div className="experiences-results-section" style={{

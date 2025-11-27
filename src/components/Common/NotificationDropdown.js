@@ -66,11 +66,8 @@ const NotificationDropdown = ({ isOpen, position, onClose, notifications = [] })
 	const getNotificationHref = (notification) => {
 		switch (notification.type) {
 			case "new_user":
-				// Link to user's profile page
-				if (notification.userId) {
-					return `/author/${notification.userId}`;
-				}
-				return `/dashboard/users`;
+				// Link to administrator panel users section
+				return `/administrator`;
 			case "new_listing":
 				// Link to administrator page for admin to easily approve listings
 				return `/administrator`;

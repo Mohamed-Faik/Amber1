@@ -49,41 +49,55 @@ const HomesPageClient = ({
 			
 			<div style={{ height: "80px" }} />
 			
-			{/* Compact Search Bar Section - Airbnb Style */}
-			<div className="homes-search-section" style={{
-				position: "relative",
-				zIndex: 100,
-				marginBottom: "32px",
+		{/* Compact Search Bar Section - Airbnb Style */}
+		<div className="homes-search-section" style={{
+			position: "relative",
+			zIndex: 100,
+			marginBottom: "32px",
+		}}>
+			<div className="homes-search-wrapper" style={{
+				maxWidth: "850px",
+				margin: "0 auto",
+				padding: "0 24px",
 			}}>
-				<div className="homes-search-wrapper" style={{
-					maxWidth: "850px",
-					margin: "0 auto",
-					padding: "0 24px",
+				<div style={{
+					textAlign: "center",
+					marginBottom: "24px",
 				}}>
-					<div style={{
-						textAlign: "center",
-						marginBottom: "24px",
+					<h1 style={{
+						fontSize: "32px",
+						fontWeight: "600",
+						color: "#222222",
+						margin: "0 0 8px 0",
+						letterSpacing: "-0.5px",
 					}}>
-						<h1 style={{
-							fontSize: "32px",
-							fontWeight: "600",
-							color: "#222222",
-							margin: "0 0 8px 0",
-							letterSpacing: "-0.5px",
-						}}>
-							{getTranslation(displayLanguage, "listings.findYourPerfectHome")}
-						</h1>
-						<p style={{
-							fontSize: "16px",
-							color: "#717171",
-							margin: "0",
-						}}>
-							{getTranslation(displayLanguage, "listings.searchAndExploreProperties")}
-						</p>
-					</div>
-					<SearchForm searchParams={searchParams} featureType="HOMES" />
+						{getTranslation(displayLanguage, "listings.findYourPerfectHome")}
+					</h1>
+					<p style={{
+						fontSize: "16px",
+						color: "#717171",
+						margin: "0",
+					}}>
+						{getTranslation(displayLanguage, "listings.searchAndExploreProperties")}
+					</p>
 				</div>
+				<SearchForm searchParams={searchParams} featureType="HOMES" />
 			</div>
+		</div>
+		
+		{/* Ensure not sticky on mobile */}
+		<style jsx global>{`
+			@media (max-width: 768px) {
+				.homes-search-section,
+				.homes-search-wrapper,
+				.homes-search-section form,
+				.homes-search-section > div {
+					position: static !important;
+					top: auto !important;
+					position: relative !important;
+				}
+			}
+		`}</style>
 
 			{/* Listings Section */}
 			<div className="homes-results-section" style={{

@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Search, Globe, MapPin, ArrowRight, Sparkles, Mountain, UtensilsCrossed, Palette, Heart, Map, BookOpen, Film, Dumbbell, ShoppingBag, Trees, Castle, Building2, Home as HomeIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { moroccanCities } from "@/libs/moroccanCities";
 
 // Get icon component by name
 const getIcon = (iconName, size = 18, color = "#FF385C") => {
@@ -51,11 +52,19 @@ const SearchForm = ({ searchParams, featureType }) => {
 	const [locationValue, setLocationValue] = useState("");
 	const [listingType, setListingType] = useState("");
 	const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
+	const [showLocationDropdown, setShowLocationDropdown] = useState(false);
+	const [locationSearchTerm, setLocationSearchTerm] = useState("");
 	const dropdownRef = useRef(null);
+	const locationDropdownRef = useRef(null);
 	const router = useRouter();
 
 	// Select categories based on feature type
 	const categories = featureType === "EXPERIENCES" ? experienceCategories : propertyCategories;
+
+	// Filter cities based on search term
+	const filteredCities = moroccanCities.filter((city) =>
+		city.label.toLowerCase().includes(locationSearchTerm.toLowerCase())
+	);
 
 	useEffect(() => {
 		if (searchParams) {
@@ -72,16 +81,19 @@ const SearchForm = ({ searchParams, featureType }) => {
 			if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
 				setShowCategoryDropdown(false);
 			}
+			if (locationDropdownRef.current && !locationDropdownRef.current.contains(event.target)) {
+				setShowLocationDropdown(false);
+			}
 		};
 
-		if (showCategoryDropdown) {
+		if (showCategoryDropdown || showLocationDropdown) {
 			document.addEventListener("mousedown", handleClickOutside);
 		}
 
 		return () => {
 			document.removeEventListener("mousedown", handleClickOutside);
 		};
-	}, [showCategoryDropdown]);
+	}, [showCategoryDropdown, showLocationDropdown]);
 
 	const handleSearch = useCallback((e) => {
 		if (e) {
@@ -124,46 +136,120 @@ const SearchForm = ({ searchParams, featureType }) => {
 					e.currentTarget.style.boxShadow = "0 1px 2px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.05)";
 				}}
 				>
-					{/* Where Section */}
-					<div style={{
+				{/* Where Section */}
+				<div 
+					ref={locationDropdownRef}
+					style={{
 						flex: 1,
 						padding: "14px 24px",
 						cursor: "pointer",
 						borderRadius: "40px",
 						transition: "background-color 0.2s ease",
+						position: "relative",
+						zIndex: 10,
 					}}
+					onClick={() => setShowLocationDropdown(!showLocationDropdown)}
 					onMouseEnter={(e) => {
 						e.currentTarget.style.backgroundColor = "#EBEBEB";
 					}}
 					onMouseLeave={(e) => {
 						e.currentTarget.style.backgroundColor = "transparent";
 					}}
-					>
-						<div style={{
-							fontSize: "12px",
-							fontWeight: "600",
-							color: "#222222",
-							marginBottom: "2px",
-						}}>
-							Where
-						</div>
-						<input
-							type="text"
-							placeholder="Search destinations"
-							value={locationValue}
-							onChange={(e) => setLocationValue(e.target.value)}
-							style={{
-								border: "none",
-								outline: "none",
-								fontSize: "14px",
-								color: "#717171",
-								backgroundColor: "transparent",
-								width: "100%",
-								padding: "0",
-								fontFamily: "inherit",
-							}}
-						/>
+				>
+					<div style={{
+						fontSize: "12px",
+						fontWeight: "600",
+						color: "#222222",
+						marginBottom: "2px",
+					}}>
+						Where
 					</div>
+					<div style={{
+						fontSize: "14px",
+						color: locationValue ? "#222222" : "#717171",
+						overflow: "hidden",
+						textOverflow: "ellipsis",
+						whiteSpace: "nowrap",
+					}}>
+						{locationValue || "Search destinations"}
+					</div>
+
+					{/* Location Dropdown Menu */}
+					{showLocationDropdown && (
+						<div style={{
+							position: "absolute",
+							top: "calc(100% + 12px)",
+							left: 0,
+							right: 0,
+							backgroundColor: "#FFFFFF",
+							border: "1px solid #DDDDDD",
+							borderRadius: "16px",
+							boxShadow: "0 6px 20px rgba(0, 0, 0, 0.2)",
+							zIndex: 99999,
+							maxHeight: "320px",
+							overflowY: "auto",
+							minWidth: "280px",
+						}}>
+							{/* Search Input Inside Dropdown */}
+							<div style={{
+								padding: "12px",
+								borderBottom: "1px solid #EEEEEE",
+								position: "sticky",
+								top: 0,
+								backgroundColor: "#FFFFFF",
+								zIndex: 1,
+							}}>
+								<input
+									type="text"
+									placeholder="Type to search cities..."
+									value={locationSearchTerm}
+									onChange={(e) => setLocationSearchTerm(e.target.value)}
+									onClick={(e) => e.stopPropagation()}
+									style={{
+										width: "100%",
+										border: "1px solid #DDDDDD",
+										borderRadius: "8px",
+										padding: "8px 12px",
+										fontSize: "14px",
+										outline: "none",
+										fontFamily: "inherit",
+									}}
+								/>
+							</div>
+							{filteredCities.map((city) => (
+								<div
+									key={city.value}
+									onClick={(e) => {
+										e.stopPropagation();
+										setLocationValue(city.label);
+										setLocationSearchTerm(city.label);
+										setShowLocationDropdown(false);
+									}}
+									style={{
+										padding: "12px 16px",
+										cursor: "pointer",
+										transition: "background-color 0.15s ease",
+										display: "flex",
+										alignItems: "center",
+										gap: "10px",
+										fontSize: "14px",
+										color: "#222222",
+										backgroundColor: locationValue === city.label ? "#F7F7F7" : "transparent",
+									}}
+									onMouseEnter={(e) => {
+										e.currentTarget.style.backgroundColor = "#F7F7F7";
+									}}
+									onMouseLeave={(e) => {
+										e.currentTarget.style.backgroundColor = locationValue === city.label ? "#F7F7F7" : "transparent";
+									}}
+								>
+									<MapPin size={16} color="#FF385C" strokeWidth={2} />
+									<span>{city.label}</span>
+								</div>
+							))}
+						</div>
+					)}
+				</div>
 
 					{/* Divider */}
 					<div style={{
