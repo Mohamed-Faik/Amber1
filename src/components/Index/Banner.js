@@ -485,7 +485,7 @@ const Banner = () => {
 											}
 										}}
 									>
-										<span>{category || getTranslation(displayLanguage, "hero.category")}</span>
+										<span>{category ? getTranslation(displayLanguage, `categories.${category.toLowerCase()}`) : getTranslation(displayLanguage, "hero.category")}</span>
 										<ChevronDown 
 											size={18} 
 											color={showCategoryDropdown ? "#FF385C" : "#717171"}
@@ -590,7 +590,7 @@ const Banner = () => {
 															);
 														})()}
 													</div>
-													<span style={{ flex: 1 }}>{cat.label}</span>
+													<span style={{ flex: 1 }}>{getTranslation(displayLanguage, `categories.${cat.label.toLowerCase()}`)}</span>
 													{category === cat.label && (
 														<div style={{
 															width: "6px",

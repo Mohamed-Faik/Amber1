@@ -10,8 +10,9 @@ const RichTextEditor = dynamic(() => import("@mantine/rte"), {
 });
 import RTEControls from "@/utils/RTEControls";
 import Button from "@/components/FormHelpers/Button";
+import { getTranslation } from "@/utils/translations";
 
-const ContentSection = () => {
+const ContentSection = ({ displayLanguage = "en" }) => {
 	const router = useRouter();
 	const [contentPages, setContentPages] = useState([]);
 	const [selectedPage, setSelectedPage] = useState(null);
@@ -106,38 +107,38 @@ const ContentSection = () => {
 						fontWeight: "600",
 						color: "#222222",
 						margin: 0,
-					}}
-				>
-					Content Management
-				</h2>
-			</div>
-
-			<div
-				style={{
-					display: "grid",
-					gridTemplateColumns: "250px 1fr",
-					gap: "24px",
 				}}
 			>
-				{/* Page List */}
-				<div
+				{getTranslation(displayLanguage, "admin.manageContent")}
+			</h2>
+		</div>
+
+		<div
+			style={{
+				display: "grid",
+				gridTemplateColumns: "250px 1fr",
+				gap: "24px",
+			}}
+		>
+			{/* Page List */}
+			<div
+				style={{
+					border: "1px solid #E0E0E0",
+					borderRadius: "12px",
+					padding: "16px",
+					backgroundColor: "#F9FAFB",
+				}}
+			>
+				<h3
 					style={{
-						border: "1px solid #E0E0E0",
-						borderRadius: "12px",
-						padding: "16px",
-						backgroundColor: "#F9FAFB",
+						fontSize: "16px",
+						fontWeight: "600",
+						color: "#222222",
+						marginBottom: "16px",
 					}}
 				>
-					<h3
-						style={{
-							fontSize: "16px",
-							fontWeight: "600",
-							color: "#222222",
-							marginBottom: "16px",
-						}}
-					>
-						Pages
-					</h3>
+					{getTranslation(displayLanguage, "nav.legal")}
+				</h3>
 					<div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
 						{predefinedPages.map((page) => (
 							<button
@@ -252,11 +253,11 @@ const ContentSection = () => {
 								disabled={isSaving || !title || !content}
 							/>
 						</>
-					) : (
-						<div style={{ textAlign: "center", padding: "40px" }}>
-							<p style={{ color: "#717171" }}>Select a page to edit</p>
-						</div>
-					)}
+				) : (
+					<div style={{ textAlign: "center", padding: "40px" }}>
+						<p style={{ color: "#717171" }}>{getTranslation(displayLanguage, "pages.selectPage") || "Select a page to edit"}</p>
+					</div>
+				)}
 				</div>
 			</div>
 		</div>

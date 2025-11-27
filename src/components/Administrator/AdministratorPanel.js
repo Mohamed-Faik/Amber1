@@ -7,6 +7,8 @@ import UsersSection from "./UsersSection";
 import ReviewsSection from "./ReviewsSection";
 import BlogsSection from "./BlogsSection";
 import ContentSection from "./ContentSection";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { getTranslation } from "@/utils/translations";
 
 const AdministratorPanel = ({
 	listings = [],
@@ -15,13 +17,15 @@ const AdministratorPanel = ({
 	blogPosts = [],
 }) => {
 	const [activeTab, setActiveTab] = useState("listings");
+	const { language, isDetecting } = useLanguage();
+	const displayLanguage = isDetecting ? "en" : language;
 
 	const tabs = [
-		{ id: "listings", label: "Listings", icon: LayoutGrid, count: listings?.length || 0 },
-		{ id: "users", label: "Users", icon: Users, count: users?.length || 0 },
-		{ id: "reviews", label: "Reviews", icon: Star, count: reviews?.length || 0 },
-		{ id: "blogs", label: "Blogs", icon: FileText, count: blogPosts?.length || 0 },
-		{ id: "content", label: "Content", icon: FileEdit, count: null },
+		{ id: "listings", label: getTranslation(displayLanguage, "admin.listings"), icon: LayoutGrid, count: listings?.length || 0 },
+		{ id: "users", label: getTranslation(displayLanguage, "admin.users"), icon: Users, count: users?.length || 0 },
+		{ id: "reviews", label: getTranslation(displayLanguage, "admin.reviews"), icon: Star, count: reviews?.length || 0 },
+		{ id: "blogs", label: getTranslation(displayLanguage, "admin.blogs"), icon: FileText, count: blogPosts?.length || 0 },
+		{ id: "content", label: getTranslation(displayLanguage, "admin.content"), icon: FileEdit, count: null },
 	];
 
 	return (
@@ -72,32 +76,32 @@ const AdministratorPanel = ({
 									letterSpacing: "-0.5px",
 								}}
 								className="admin-title"
-							>
-								Admin Portal
-							</h1>
-							<p
-								style={{
-									fontSize: "15px",
-									color: "#717171",
-									margin: "0",
-									fontWeight: "500",
-								}}
-							>
-								Control Panel
-							</p>
-						</div>
-					</div>
+					>
+						{getTranslation(displayLanguage, "admin.adminPortal")}
+					</h1>
 					<p
 						style={{
-							fontSize: "16px",
-							color: "#767676",
-							lineHeight: "1.6",
-							margin: "0 0 24px 0",
+							fontSize: "15px",
+							color: "#717171",
+							margin: "0",
+							fontWeight: "500",
 						}}
-						className="admin-description"
 					>
-						Manage listings, users, reviews, and blog posts with full administrative control.
+						{getTranslation(displayLanguage, "admin.controlPanel")}
 					</p>
+				</div>
+			</div>
+			<p
+				style={{
+					fontSize: "16px",
+					color: "#767676",
+					lineHeight: "1.6",
+					margin: "0 0 24px 0",
+				}}
+				className="admin-description"
+			>
+				{getTranslation(displayLanguage, "admin.manageDescription")}
+			</p>
 					
 					{/* Quick Actions */}
 					<div style={{
@@ -130,13 +134,13 @@ const AdministratorPanel = ({
 								e.currentTarget.style.backgroundColor = "#FFFFFF";
 								e.currentTarget.style.color = "#FF385C";
 							}}
-						>
-							<Plus size={18} />
-							<HomeIcon size={18} />
-							<span>Create Home</span>
-						</Link>
-						<Link
-							href="/administrator/experiences/new"
+					>
+						<Plus size={18} />
+						<HomeIcon size={18} />
+						<span>{getTranslation(displayLanguage, "admin.createHomeListing")}</span>
+					</Link>
+					<Link
+						href="/administrator/experiences/new"
 							style={{
 								display: "flex",
 								alignItems: "center",
@@ -161,10 +165,10 @@ const AdministratorPanel = ({
 								e.currentTarget.style.color = "#FF385C";
 							}}
 						>
-					<Plus size={18} />
-					<Sparkles size={18} />
-					<span>Create Experience</span>
-				</Link>
+				<Plus size={18} />
+				<Sparkles size={18} />
+				<span>{getTranslation(displayLanguage, "admin.createExperience")}</span>
+			</Link>
 					</div>
 				</div>
 
@@ -259,13 +263,13 @@ const AdministratorPanel = ({
 					}}
 					className="admin-content"
 				>
-					{activeTab === "listings" && (
-						<ListingsSection listings={listings} />
-					)}
-					{activeTab === "users" && <UsersSection users={users} />}
-					{activeTab === "reviews" && <ReviewsSection reviews={reviews} />}
-					{activeTab === "blogs" && <BlogsSection blogPosts={blogPosts} />}
-					{activeTab === "content" && <ContentSection />}
+				{activeTab === "listings" && (
+					<ListingsSection listings={listings} displayLanguage={displayLanguage} />
+				)}
+				{activeTab === "users" && <UsersSection users={users} displayLanguage={displayLanguage} />}
+				{activeTab === "reviews" && <ReviewsSection reviews={reviews} displayLanguage={displayLanguage} />}
+				{activeTab === "blogs" && <BlogsSection blogPosts={blogPosts} displayLanguage={displayLanguage} />}
+				{activeTab === "content" && <ContentSection displayLanguage={displayLanguage} />}
 				</div>
 			</div>
 			<style jsx>{`

@@ -65,14 +65,15 @@ const Featured = ({ currentUser }) => {
 		}));
 		
 		// Create two sections: Premium Properties and All Properties
+		// Store sections without titles - titles will be computed on render for instant translation
 		const newSections = [
 			{
-				title: getTranslation(displayLanguage, "listings.premiumProperties"),
+				titleKey: "listings.premiumProperties",
 				listings: premiumListingsWithFlag,
 				key: "premium-properties",
 			},
 			{
-				title: getTranslation(displayLanguage, "listings.allProperties"),
+				titleKey: "listings.allProperties",
 				listings: allListings,
 				key: "all-listings",
 			}
@@ -103,8 +104,8 @@ const Featured = ({ currentUser }) => {
 			}
 		};
 
-		fetchData();
-	}, []);
+	fetchData();
+}, []);
 
 
 	return (
@@ -177,16 +178,16 @@ const Featured = ({ currentUser }) => {
 								marginBottom: "32px",
 							}}
 						>
-							<h2
-								style={{
-									fontSize: "28px",
-									fontWeight: "600",
-									color: "#222222",
-									margin: 0,
-								}}
-							>
-								{section.title}
-							</h2>
+						<h2
+							style={{
+								fontSize: "28px",
+								fontWeight: "600",
+								color: "#222222",
+								margin: 0,
+							}}
+						>
+							{getTranslation(displayLanguage, section.titleKey)}
+						</h2>
 						</div>
 
 						{/* Grid Layout */}

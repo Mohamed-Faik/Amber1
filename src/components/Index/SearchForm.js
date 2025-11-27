@@ -178,27 +178,27 @@ const SearchForm = () => {
 						</svg>
 					</div>
 
-				{/* Category Dropdown Menu */}
-				{showCategoryDropdown && allCategories && allCategories.length > 0 && (
-					<div
-						ref={dropdownRef}
-						className="category-dropdown"
-						style={{
-							position: "absolute",
-							top: "calc(100% + 8px)",
-							left: 0,
-							right: 0,
+					{/* Category Dropdown Menu */}
+					{showCategoryDropdown && allCategories && allCategories.length > 0 && (
+						<div
+							ref={dropdownRef}
+							className="category-dropdown"
+							style={{
+								position: "absolute",
+								top: "calc(100% + 8px)",
+								left: 0,
+								right: 0,
 							backgroundColor: "#FFFFFF",
 							border: "1px solid rgba(0, 0, 0, 0.08)",
 							borderRadius: "20px",
 							boxShadow: "0 10px 40px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.08)",
-							zIndex: 10000,
+								zIndex: 10000,
 							maxHeight: "360px",
 							overflowY: "auto",
-							minWidth: "100%",
+								minWidth: "100%",
 							animation: "dropdownFadeIn 0.2s ease-out",
-						}}
-					>
+							}}
+						>
 						<div style={{ padding: "8px 0" }}>
 							{allCategories.map((cat, index) => (
 								<div
@@ -269,8 +269,8 @@ const SearchForm = () => {
 								</div>
 							))}
 						</div>
-					</div>
-				)}
+						</div>
+					)}
 				</div>
 
 					{/* Location Input */}

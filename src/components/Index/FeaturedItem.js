@@ -247,13 +247,13 @@ const FeaturedItem = ({
 							</svg>
 						)}
 						</div>
-						<div style={{ 
-							fontSize: "12px", 
-							color: "#717171",
-							lineHeight: "1.3"
-						}}>
-							Listed by owner
-						</div>
+					<div style={{ 
+						fontSize: "12px", 
+						color: "#717171",
+						lineHeight: "1.3"
+					}}>
+						{getTranslation(displayLanguage, "listings.listedByOwner")}
+					</div>
 					</div>
 						</div>
 					)}

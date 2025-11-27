@@ -7,8 +7,10 @@ import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { getListingImage } from "@/utils/getListingImage";
 import { formatDate } from "@/utils/formatDate";
+import { getTranslation } from "@/utils/translations";
+import TranslatedListingCard from "./TranslatedListingCard";
 
-const ListingsSection = ({ listings: initialListings }) => {
+const ListingsSection = ({ listings: initialListings, displayLanguage = "en" }) => {
 	const router = useRouter();
 	const [filterStatus, setFilterStatus] = useState("all");
 	const [listings, setListings] = useState(initialListings || []);
@@ -65,6 +67,14 @@ const ListingsSection = ({ listings: initialListings }) => {
 	};
 
 	const getStatusBadge = (status) => {
+		const getStatusText = (s) => {
+			if (s === "Pending") return getTranslation(displayLanguage, "admin.pending");
+			if (s === "Approved") return getTranslation(displayLanguage, "admin.approved");
+			if (s === "Sold") return getTranslation(displayLanguage, "admin.sold");
+			if (s === "Canceled") return "Canceled";
+			return s;
+		};
+		
 		const styles = {
 			Pending: {
 				backgroundColor: "#FFF3CD",
@@ -95,13 +105,13 @@ const ListingsSection = ({ listings: initialListings }) => {
 					borderRadius: "20px",
 					fontSize: "12px",
 					fontWeight: "600",
-					...styles[status] || styles.Pending,
-				}}
-			>
-				{status}
-			</span>
-		);
-	};
+			...styles[status] || styles.Pending,
+			}}
+		>
+			{getStatusText(status)}
+		</span>
+	);
+};
 
 	return (
 		<div>
@@ -123,44 +133,55 @@ const ListingsSection = ({ listings: initialListings }) => {
 						color: "#222222",
 						margin: 0,
 					}}
-					className="listings-title"
-				>
-					Manage Listings
-				</h2>
+				className="listings-title"
+			>
+				{getTranslation(displayLanguage, "admin.allListings")}
+			</h2>
 
-			{/* Status Filter */}
-			<div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }} className="listings-filters">
-				{["all", "Pending", "Approved", "Sold", "Canceled"].map((status) => (
-						<button
-							key={status}
-							onClick={() => setFilterStatus(status)}
-							style={{
-								backgroundColor:
-									filterStatus === status ? "#222222" : "#FFFFFF",
-								color: filterStatus === status ? "#FFFFFF" : "#222222",
-								border: "1px solid #DDDDDD",
-								padding: "8px 16px",
-								borderRadius: "8px",
-								fontSize: "14px",
-								fontWeight: "500",
-								cursor: "pointer",
-								transition: "all 0.2s ease",
-							}}
-							onMouseEnter={(e) => {
-								if (filterStatus !== status) {
-									e.currentTarget.style.borderColor = "#222222";
-								}
-							}}
-							onMouseLeave={(e) => {
-								if (filterStatus !== status) {
-									e.currentTarget.style.borderColor = "#DDDDDD";
-								}
-							}}
-						>
-							{status === "all" ? "All" : status}
-						</button>
-					))}
-				</div>
+		{/* Status Filter */}
+		<div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }} className="listings-filters">
+			{["all", "Pending", "Approved", "Sold", "Canceled"].map((status) => {
+				const getStatusLabel = (s) => {
+					if (s === "all") return getTranslation(displayLanguage, "admin.all");
+					if (s === "Pending") return getTranslation(displayLanguage, "admin.pending");
+					if (s === "Approved") return getTranslation(displayLanguage, "admin.approved");
+					if (s === "Sold") return getTranslation(displayLanguage, "admin.sold");
+					if (s === "Canceled") return "Canceled";
+					return s;
+				};
+				
+				return (
+					<button
+						key={status}
+						onClick={() => setFilterStatus(status)}
+						style={{
+							backgroundColor:
+								filterStatus === status ? "#222222" : "#FFFFFF",
+							color: filterStatus === status ? "#FFFFFF" : "#222222",
+							border: "1px solid #DDDDDD",
+							padding: "8px 16px",
+							borderRadius: "8px",
+							fontSize: "14px",
+							fontWeight: "500",
+							cursor: "pointer",
+							transition: "all 0.2s ease",
+						}}
+						onMouseEnter={(e) => {
+							if (filterStatus !== status) {
+								e.currentTarget.style.borderColor = "#222222";
+							}
+						}}
+						onMouseLeave={(e) => {
+							if (filterStatus !== status) {
+								e.currentTarget.style.borderColor = "#DDDDDD";
+							}
+						}}
+					>
+						{getStatusLabel(status)}
+					</button>
+				);
+			})}
+			</div>
 			</div>
 
 			{/* Listings Grid */}
@@ -172,245 +193,16 @@ const ListingsSection = ({ listings: initialListings }) => {
 				}}
 				className="listings-grid"
 			>
-				{filteredListings?.map((listing) => {
-					const mainImage = getListingImage(listing.imageSrc);
-					return (
-						<div
-							key={listing.id}
-							style={{
-								border: "1px solid #DDDDDD",
-								borderRadius: "12px",
-								overflow: "hidden",
-								transition: "all 0.2s ease",
-							}}
-							onMouseEnter={(e) => {
-								e.currentTarget.style.boxShadow =
-									"0 4px 12px rgba(0,0,0,0.1)";
-							}}
-							onMouseLeave={(e) => {
-								e.currentTarget.style.boxShadow = "none";
-							}}
-						>
-							{/* Image */}
-							<div
-								style={{
-									position: "relative",
-									width: "100%",
-									paddingTop: "60%",
-									backgroundColor: "#F7F7F7",
-								}}
-							>
-								{mainImage ? (
-									<Image
-										src={mainImage}
-										alt={listing.title}
-										fill
-										style={{ objectFit: "cover" }}
-										unoptimized
-									/>
-								) : (
-									<div
-										style={{
-											position: "absolute",
-											top: 0,
-											left: 0,
-											width: "100%",
-											height: "100%",
-											display: "flex",
-											alignItems: "center",
-											justifyContent: "center",
-											color: "#999",
-										}}
-									>
-										No Image
-									</div>
-								)}
-								<div
-									style={{
-										position: "absolute",
-										top: "12px",
-										right: "12px",
-									}}
-								>
-									{getStatusBadge(listing.status)}
-								</div>
-							</div>
-
-							{/* Content */}
-							<div style={{ padding: "16px" }}>
-								<h3
-									style={{
-										fontSize: "16px",
-										fontWeight: "600",
-										color: "#222222",
-										marginBottom: "8px",
-										overflow: "hidden",
-										textOverflow: "ellipsis",
-										whiteSpace: "nowrap",
-									}}
-								>
-									{listing.title}
-								</h3>
-
-								<div
-									style={{
-										fontSize: "14px",
-										color: "#717171",
-										marginBottom: "12px",
-									}}
-								>
-									<div>Category: {listing.category}</div>
-									<div>Location: {listing.location_value}</div>
-									<div>Created: {formatDate(listing.created_at)}</div>
-								</div>
-
-								{/* Actions */}
-								<div
-									style={{
-										display: "flex",
-										gap: "8px",
-										flexWrap: "wrap",
-									}}
-								>
-									<Link
-										href={`/listing/${listing.id}/${listing.slug}`}
-										style={{
-											flex: 1,
-											padding: "8px 16px",
-											backgroundColor: "#222222",
-											color: "#FFFFFF",
-											border: "none",
-											borderRadius: "8px",
-											fontSize: "14px",
-											fontWeight: "500",
-											textDecoration: "none",
-											textAlign: "center",
-											cursor: "pointer",
-											transition: "all 0.2s ease",
-										}}
-										onMouseEnter={(e) => {
-											e.currentTarget.style.backgroundColor = "#000000";
-										}}
-										onMouseLeave={(e) => {
-											e.currentTarget.style.backgroundColor = "#222222";
-										}}
-									>
-										View
-									</Link>
-
-									{listing.status === "Pending" && (
-										<button
-											onClick={() =>
-												handleStatusChange(listing.id, "Approved")
-											}
-											style={{
-												flex: 1,
-												padding: "8px 16px",
-												backgroundColor: "#FF385C",
-												color: "#FFFFFF",
-												border: "none",
-												borderRadius: "8px",
-												fontSize: "14px",
-												fontWeight: "500",
-												cursor: "pointer",
-												transition: "all 0.2s ease",
-											}}
-											onMouseEnter={(e) => {
-												e.currentTarget.style.backgroundColor = "#E61E4D";
-											}}
-											onMouseLeave={(e) => {
-												e.currentTarget.style.backgroundColor = "#FF385C";
-											}}
-										>
-											Approve
-										</button>
-									)}
-
-						{listing.status === "Approved" && listing.featureType !== "EXPERIENCES" && (
-							<button
-								onClick={() =>
-									handleStatusChange(listing.id, "Sold")
-								}
-								style={{
-									flex: 1,
-									padding: "8px 16px",
-									backgroundColor: "#10B981",
-									color: "#FFFFFF",
-									border: "none",
-									borderRadius: "8px",
-									fontSize: "14px",
-									fontWeight: "500",
-									cursor: "pointer",
-									transition: "all 0.2s ease",
-								}}
-								onMouseEnter={(e) => {
-									e.currentTarget.style.backgroundColor = "#059669";
-								}}
-								onMouseLeave={(e) => {
-									e.currentTarget.style.backgroundColor = "#10B981";
-								}}
-							>
-								Mark as Sold
-							</button>
-						)}
-
-						{listing.status === "Sold" && listing.featureType !== "EXPERIENCES" && (
-							<button
-								onClick={() =>
-									handleStatusChange(listing.id, "Approved")
-								}
-								style={{
-									flex: 1,
-									padding: "8px 16px",
-									backgroundColor: "#3B82F6",
-									color: "#FFFFFF",
-									border: "none",
-									borderRadius: "8px",
-									fontSize: "14px",
-									fontWeight: "500",
-									cursor: "pointer",
-									transition: "all 0.2s ease",
-								}}
-								onMouseEnter={(e) => {
-									e.currentTarget.style.backgroundColor = "#2563EB";
-								}}
-								onMouseLeave={(e) => {
-									e.currentTarget.style.backgroundColor = "#3B82F6";
-								}}
-							>
-								Unmark as Sold
-							</button>
-						)}
-
-							<button
-								onClick={() => handleDelete(listing.id)}
-										style={{
-											padding: "8px 16px",
-											backgroundColor: "#FFFFFF",
-											color: "#FF385C",
-											border: "1px solid #FF385C",
-											borderRadius: "8px",
-											fontSize: "14px",
-											fontWeight: "500",
-											cursor: "pointer",
-											transition: "all 0.2s ease",
-										}}
-										onMouseEnter={(e) => {
-											e.currentTarget.style.backgroundColor = "#FF385C";
-											e.currentTarget.style.color = "#FFFFFF";
-										}}
-										onMouseLeave={(e) => {
-											e.currentTarget.style.backgroundColor = "#FFFFFF";
-											e.currentTarget.style.color = "#FF385C";
-										}}
-									>
-										Delete
-									</button>
-								</div>
-							</div>
-						</div>
-					);
-				})}
+			{filteredListings?.map((listing) => (
+				<TranslatedListingCard
+					key={listing.id}
+					listing={listing}
+					displayLanguage={displayLanguage}
+					getStatusBadge={getStatusBadge}
+					handleStatusChange={handleStatusChange}
+					handleDelete={handleDelete}
+				/>
+			))}
 			</div>
 
 			{filteredListings?.length === 0 && (
@@ -419,12 +211,12 @@ const ListingsSection = ({ listings: initialListings }) => {
 						textAlign: "center",
 						padding: "64px 20px",
 						color: "#717171",
-					}}
-				>
-					<p style={{ fontSize: "16px", margin: 0 }}>
-						No listings found with status: {filterStatus}
-					</p>
-				</div>
+				}}
+			>
+				<p style={{ fontSize: "16px", margin: 0 }}>
+					{getTranslation(displayLanguage, "admin.noListingsFound")}
+				</p>
+			</div>
 			)}
 			<style jsx>{`
 				/* Tablet: 768px - 991px */

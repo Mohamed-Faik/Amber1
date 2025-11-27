@@ -6,8 +6,9 @@ import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { formatDate } from "@/utils/formatDate";
 import { Phone, MessageCircle, MapPin, Mail, Calendar, X } from "lucide-react";
+import { getTranslation } from "@/utils/translations";
 
-const UsersSection = ({ users }) => {
+const UsersSection = ({ users, displayLanguage = "en" }) => {
 	const router = useRouter();
 	const [searchTerm, setSearchTerm] = useState("");
 	const [selectedUser, setSelectedUser] = useState(null);
@@ -101,16 +102,16 @@ const UsersSection = ({ users }) => {
 						fontWeight: "600",
 						color: "#222222",
 						margin: 0,
-					}}
-				>
-					Manage Users
-				</h2>
+				}}
+			>
+				{getTranslation(displayLanguage, "admin.allUsers")}
+			</h2>
 
-				{/* Search */}
-				<input
-					type="text"
-					placeholder="Search users by name or email..."
-					value={searchTerm}
+			{/* Search */}
+			<input
+				type="text"
+				placeholder={getTranslation(displayLanguage, "admin.searchUsers")}
+				value={searchTerm}
 					onChange={(e) => setSearchTerm(e.target.value)}
 					style={{
 						padding: "10px 16px",
@@ -233,10 +234,10 @@ const UsersSection = ({ users }) => {
 									fontSize: "12px",
 									color: "#999",
 									marginBottom: "12px",
-								}}
-							>
-								Joined: {formatDate(user.created_at)}
-							</p>
+							}}
+						>
+							{getTranslation(displayLanguage, "admin.joinedDate")}: {formatDate(user.created_at)}
+						</p>
 
 							{/* Role Badge */}
 							<div style={{ display: "flex", gap: "8px", marginBottom: "0", flexWrap: "wrap" }}>
@@ -458,13 +459,13 @@ const UsersSection = ({ users }) => {
 										textTransform: "uppercase",
 										letterSpacing: "0.5px",
 									}}>
-										📞 Contact Information
+										{getTranslation(displayLanguage, "admin.contactInfo")}
 									</h5>
 									<div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
 										<div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
 											<Mail size={18} color="#717171" />
 											<div>
-												<p style={{ fontSize: "12px", color: "#999", margin: 0 }}>Email</p>
+												<p style={{ fontSize: "12px", color: "#999", margin: 0 }}>{getTranslation(displayLanguage, "admin.email")}</p>
 												<p style={{ fontSize: "14px", color: "#222", margin: 0, fontWeight: "500" }}>
 													{selectedUser.email || "N/A"}
 												</p>
@@ -474,7 +475,7 @@ const UsersSection = ({ users }) => {
 											<div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
 												<Phone size={18} color="#717171" />
 												<div>
-													<p style={{ fontSize: "12px", color: "#999", margin: 0 }}>Phone Number</p>
+													<p style={{ fontSize: "12px", color: "#999", margin: 0 }}>{getTranslation(displayLanguage, "admin.phoneNumber")}</p>
 													<p style={{ fontSize: "14px", color: "#222", margin: 0, fontWeight: "500" }}>
 														{selectedUser.profile.phone}
 													</p>
@@ -485,7 +486,7 @@ const UsersSection = ({ users }) => {
 											<div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
 												<MessageCircle size={18} color="#25D366" />
 												<div>
-													<p style={{ fontSize: "12px", color: "#999", margin: 0 }}>WhatsApp Number</p>
+													<p style={{ fontSize: "12px", color: "#999", margin: 0 }}>{getTranslation(displayLanguage, "admin.whatsappNumber")}</p>
 													<p style={{ fontSize: "14px", color: "#222", margin: 0, fontWeight: "500" }}>
 														{selectedUser.profile.whatsappNumber}
 													</p>
@@ -494,7 +495,7 @@ const UsersSection = ({ users }) => {
 										)}
 										{(!selectedUser.profile?.phone && !selectedUser.profile?.whatsappNumber) && (
 											<p style={{ fontSize: "13px", color: "#999", fontStyle: "italic" }}>
-												No contact numbers provided
+												{getTranslation(displayLanguage, "admin.noContactNumbers")}
 											</p>
 										)}
 									</div>
@@ -510,18 +511,18 @@ const UsersSection = ({ users }) => {
 										textTransform: "uppercase",
 										letterSpacing: "0.5px",
 									}}>
-										👤 Personal Information
+										{getTranslation(displayLanguage, "admin.personalInfo")}
 									</h5>
 									<div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
 										<div>
-											<p style={{ fontSize: "12px", color: "#999", margin: 0 }}>Full Name</p>
+											<p style={{ fontSize: "12px", color: "#999", margin: 0 }}>{getTranslation(displayLanguage, "admin.fullName")}</p>
 											<p style={{ fontSize: "14px", color: "#222", margin: 0, fontWeight: "500" }}>
 												{selectedUser.name || "N/A"}
 											</p>
 										</div>
 										{selectedUser.profile?.gender && (
 											<div>
-												<p style={{ fontSize: "12px", color: "#999", margin: 0 }}>Gender</p>
+												<p style={{ fontSize: "12px", color: "#999", margin: 0 }}>{getTranslation(displayLanguage, "admin.gender")}</p>
 												<p style={{ fontSize: "14px", color: "#222", margin: 0, fontWeight: "500" }}>
 													{selectedUser.profile.gender}
 												</p>
@@ -531,7 +532,7 @@ const UsersSection = ({ users }) => {
 											<div style={{ display: "flex", alignItems: "start", gap: "10px" }}>
 												<MapPin size={18} color="#717171" style={{ marginTop: "2px", flexShrink: 0 }} />
 												<div>
-													<p style={{ fontSize: "12px", color: "#999", margin: 0 }}>Address</p>
+													<p style={{ fontSize: "12px", color: "#999", margin: 0 }}>{getTranslation(displayLanguage, "admin.address")}</p>
 													<p style={{ fontSize: "14px", color: "#222", margin: 0, fontWeight: "500" }}>
 														{selectedUser.profile.address}
 													</p>
@@ -551,17 +552,17 @@ const UsersSection = ({ users }) => {
 										textTransform: "uppercase",
 										letterSpacing: "0.5px",
 									}}>
-										🔐 Account Information
+										{getTranslation(displayLanguage, "admin.accountInfo")}
 									</h5>
 									<div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
 										<div>
-											<p style={{ fontSize: "12px", color: "#999", margin: 0 }}>User ID</p>
+											<p style={{ fontSize: "12px", color: "#999", margin: 0 }}>{getTranslation(displayLanguage, "admin.userId")}</p>
 											<p style={{ fontSize: "14px", color: "#222", margin: 0, fontWeight: "500" }}>
 												#{selectedUser.id}
 											</p>
 										</div>
 										<div>
-											<p style={{ fontSize: "12px", color: "#999", margin: 0 }}>Account Created</p>
+											<p style={{ fontSize: "12px", color: "#999", margin: 0 }}>{getTranslation(displayLanguage, "admin.accountCreated")}</p>
 											<p style={{ fontSize: "14px", color: "#222", margin: 0, fontWeight: "500" }}>
 												{formatDate(selectedUser.created_at)}
 											</p>
@@ -580,7 +581,7 @@ const UsersSection = ({ users }) => {
 											textTransform: "uppercase",
 											letterSpacing: "0.5px",
 										}}>
-											🔗 Social Links
+											{getTranslation(displayLanguage, "admin.socialLinks")}
 										</h5>
 										<div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
 											{selectedUser.profile.website && (
@@ -594,7 +595,7 @@ const UsersSection = ({ users }) => {
 														textDecoration: "none",
 													}}
 												>
-													🌐 Website
+													🌐 {getTranslation(displayLanguage, "admin.website")}
 												</a>
 											)}
 											{selectedUser.profile.twitter && (
@@ -669,7 +670,7 @@ const UsersSection = ({ users }) => {
 										textTransform: "uppercase",
 										letterSpacing: "0.5px",
 									}}>
-										📝 Bio
+										{getTranslation(displayLanguage, "admin.bio")}
 									</h5>
 									<p style={{
 										fontSize: "14px",
@@ -693,7 +694,7 @@ const UsersSection = ({ users }) => {
 									color: "#222",
 									marginBottom: "16px",
 								}}>
-									Admin Actions
+									{getTranslation(displayLanguage, "admin.adminActions")}
 								</h5>
 								<div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
 									{/* Activate/Deactivate Button */}
@@ -729,14 +730,14 @@ const UsersSection = ({ users }) => {
 											} else {
 												e.currentTarget.style.backgroundColor = "#10B981";
 											}
-										}}
-									>
-										{selectedUser.status === "Active" ? "Deactivate User" : "Activate User"}
-									</button>
+									}}
+								>
+									{selectedUser.status === "Active" ? getTranslation(displayLanguage, "admin.deactivateUser") : getTranslation(displayLanguage, "admin.activateUser")}
+								</button>
 
-									{/* Role Change Dropdown */}
-									<div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-										<span style={{ fontSize: "14px", color: "#717171", fontWeight: "500" }}>Change Role:</span>
+								{/* Role Change Dropdown */}
+								<div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+									<span style={{ fontSize: "14px", color: "#717171", fontWeight: "500" }}>{getTranslation(displayLanguage, "admin.changeRole")}:</span>
 										<select
 											value={selectedUser.role || "USER"}
 											onChange={(e) => {
@@ -796,7 +797,7 @@ const UsersSection = ({ users }) => {
 											e.currentTarget.style.color = "#FF385C";
 										}}
 									>
-										Delete User
+										{getTranslation(displayLanguage, "admin.deleteUser")}
 									</button>
 								</div>
 							</div>

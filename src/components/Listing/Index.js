@@ -8,8 +8,17 @@ const MapWithNoSSR = dynamic(() => import("../Map"), {
 });
 import Features from "./Features";
 import DetailsImages from "./DetailsImages";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { getTranslation } from "@/utils/translations";
+import { useTranslatedContent } from "@/hooks/useTranslatedContent";
 
 const Index = ({ currentUser, listing, reviews }) => {
+	const { language, isDetecting } = useLanguage();
+	const displayLanguage = isDetecting ? "en" : language;
+	
+	// Translate listing title and description
+	const { translatedContent: translatedTitle } = useTranslatedContent(listing.title, displayLanguage, false);
+	const { translatedContent: translatedDescription } = useTranslatedContent(listing.description, displayLanguage, true);
 	return (
 		<div
 			style={{
@@ -27,20 +36,21 @@ const Index = ({ currentUser, listing, reviews }) => {
 				}}
 				className="listing-container"
 			>
-				{/* Header Section */}
-				<DetailsHead
-					{...listing}
-					currentUser={currentUser}
-					listingId={listing.id}
-				/>
+			{/* Header Section */}
+			<DetailsHead
+				{...listing}
+				title={translatedTitle}
+				currentUser={currentUser}
+				listingId={listing.id}
+			/>
 
 				{/* Image Gallery */}
 				<DetailsImages imageSrc={listing.imageSrc} />
 
 				{/* Mobile Booking Box - Shows only on mobile, after images */}
-				<div className="mobile-booking-box" style={{ display: "none" }}>
-					<RightSidebar listing={listing} user={listing.user} currentUser={currentUser} />
-				</div>
+			<div className="mobile-booking-box" style={{ display: "none" }}>
+				<RightSidebar listing={{...listing, title: translatedTitle}} user={listing.user} currentUser={currentUser} displayLanguage={displayLanguage} />
+			</div>
 
 				{/* Main Content Layout */}
 				<div
@@ -62,26 +72,26 @@ const Index = ({ currentUser, listing, reviews }) => {
 								borderBottom: "1px solid #ebebeb",
 							}}
 						>
-							<h2
-								style={{
-									fontSize: "22px",
-									fontWeight: "600",
-									color: "#222222",
-									marginBottom: "24px",
-								}}
-							>
-								About this place
-							</h2>
-							<div
-								dangerouslySetInnerHTML={{
-									__html: listing.description,
-								}}
-								style={{
-									fontSize: "16px",
-									lineHeight: "1.6",
-									color: "#222222",
-								}}
-							/>
+					<h2
+						style={{
+							fontSize: "22px",
+							fontWeight: "600",
+							color: "#222222",
+							marginBottom: "24px",
+						}}
+					>
+						{getTranslation(displayLanguage, "listings.aboutThisPlace")}
+					</h2>
+					<div
+						dangerouslySetInnerHTML={{
+							__html: translatedDescription,
+						}}
+						style={{
+							fontSize: "16px",
+							lineHeight: "1.6",
+							color: "#222222",
+						}}
+					/>
 						</div>
 
 						{/* Features */}
@@ -92,7 +102,7 @@ const Index = ({ currentUser, listing, reviews }) => {
 								borderBottom: "1px solid #ebebeb",
 							}}
 						>
-							<Features {...listing} />
+							<Features {...listing} displayLanguage={displayLanguage} />
 						</div>
 
 						{/* Map */}
@@ -104,16 +114,16 @@ const Index = ({ currentUser, listing, reviews }) => {
 									borderBottom: "1px solid #ebebeb",
 								}}
 							>
-								<h2
-									style={{
-										fontSize: "22px",
-										fontWeight: "600",
-										color: "#222222",
-										marginBottom: "24px",
-									}}
-								>
-									Where you'll be
-								</h2>
+							<h2
+								style={{
+									fontSize: "22px",
+									fontWeight: "600",
+									color: "#222222",
+									marginBottom: "24px",
+								}}
+							>
+								{getTranslation(displayLanguage, "listings.whereYoullBe")}
+							</h2>
 								<div
 									style={{
 										borderRadius: "12px",
@@ -141,9 +151,9 @@ const Index = ({ currentUser, listing, reviews }) => {
 					</div>
 
 					{/* Right Column - Sticky Sidebar (Desktop only) */}
-					<div className="desktop-booking-box">
-						<RightSidebar listing={listing} user={listing.user} currentUser={currentUser} />
-					</div>
+			<div className="desktop-booking-box">
+				<RightSidebar listing={{...listing, title: translatedTitle}} user={listing.user} currentUser={currentUser} displayLanguage={displayLanguage} />
+			</div>
 				</div>
 			</div>
 

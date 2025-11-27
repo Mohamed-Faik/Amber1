@@ -4,8 +4,9 @@ import axios from "axios";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { formatDate } from "@/utils/formatDate";
+import { getTranslation } from "@/utils/translations";
 
-const ReviewsSection = ({ reviews }) => {
+const ReviewsSection = ({ reviews, displayLanguage = "en" }) => {
 	const router = useRouter();
 	const [searchTerm, setSearchTerm] = useState("");
 
@@ -50,16 +51,16 @@ const ReviewsSection = ({ reviews }) => {
 						fontWeight: "600",
 						color: "#222222",
 						margin: 0,
-					}}
-				>
-					Manage Reviews
-				</h2>
+				}}
+			>
+				{getTranslation(displayLanguage, "admin.allReviews")}
+			</h2>
 
-				{/* Search */}
-				<input
-					type="text"
-					placeholder="Search reviews..."
-					value={searchTerm}
+			{/* Search */}
+			<input
+				type="text"
+				placeholder={getTranslation(displayLanguage, "admin.searchReviews")}
+				value={searchTerm}
 					onChange={(e) => setSearchTerm(e.target.value)}
 					style={{
 						padding: "10px 16px",
