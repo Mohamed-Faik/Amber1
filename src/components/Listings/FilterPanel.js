@@ -62,17 +62,10 @@ const FilterPanel = ({ featureType = "HOMES" }) => {
 
 		if (showFilters) {
 			document.addEventListener("mousedown", handleClickOutside);
-			// Prevent body scroll on mobile when filter is open
-			if (window.innerWidth <= 768) {
-				document.body.style.overflow = "hidden";
-			}
-		} else {
-			document.body.style.overflow = "unset";
 		}
 
 		return () => {
 			document.removeEventListener("mousedown", handleClickOutside);
-			document.body.style.overflow = "unset";
 		};
 	}, [showFilters]);
 
@@ -219,40 +212,23 @@ const FilterPanel = ({ featureType = "HOMES" }) => {
 
 		{/* Filter Panel */}
 		{showFilters && (
-			<>
-				{/* Backdrop for mobile */}
-				<div 
-					className="filter-backdrop"
-					onClick={() => setShowFilters(false)}
-					style={isMobile ? {
-						position: "fixed",
-						top: 0,
-						left: 0,
-						right: 0,
-						bottom: 0,
-						backgroundColor: "rgba(0, 0, 0, 0.5)",
-						zIndex: 9998,
-					} : {}}
-				/>
-				
 				<div 
 					className="filter-dropdown"
 					style={{
-						position: isMobile ? "fixed" : "absolute",
-						top: isMobile ? `${navbarHeight}px` : "calc(100% + 12px)",
-						left: isMobile ? "12px" : "auto",
-						right: isMobile ? "12px" : "0",
-						width: isMobile ? "calc(100% - 24px)" : "380px",
-						maxWidth: isMobile ? "calc(100% - 24px)" : "380px",
-						maxHeight: isMobile ? `calc(100vh - ${navbarHeight}px + 100px)` : "500px",
+						position: "absolute",
+						top: "calc(100% + 12px)",
+						left: "auto",
+						right: "0",
+						width: "380px",
+						maxWidth: "380px",
+						maxHeight: "500px",
 						overflowY: "auto",
 						backgroundColor: "#FFFFFF",
 						border: "1px solid #DDDDDD",
-						borderRadius: isMobile ? "8px" : "16px",
-						borderTop: isMobile ? "1px solid #E0E0E0" : "none",
+						borderRadius: "16px",
 						boxShadow: "0 8px 28px rgba(0, 0, 0, 0.12)",
-						zIndex: isMobile ? 9999 : 10,
-						padding: isMobile ? "14px 12px" : "24px",
+						zIndex: 10,
+						padding: "24px",
 						transition: "none",
 						opacity: 1,
 					}}>
@@ -575,7 +551,6 @@ const FilterPanel = ({ featureType = "HOMES" }) => {
 						</button>
 					</div>
 				</div>
-			</>
 			)}
 
 			{/* Mobile Responsive Styles */}
@@ -620,31 +595,22 @@ const FilterPanel = ({ featureType = "HOMES" }) => {
 					}
 
 					.filter-backdrop {
-						display: block;
-						position: fixed;
-						top: 0;
-						left: 0;
-						right: 0;
-						bottom: 0;
-						background-color: rgba(0, 0, 0, 0.5);
-						z-index: 9998 !important;
+						display: none !important;
 					}
 
 					.filter-dropdown {
-						position: fixed !important;
-						top: var(--navbar-height, 70px) !important;
-						left: 12px !important;
-						right: 12px !important;
+						position: absolute !important;
+						top: calc(100% + 12px) !important;
+						left: auto !important;
+						right: 0 !important;
 						transform: none !important;
 						width: calc(100% - 24px) !important;
 						max-width: calc(100% - 24px) !important;
-						max-height: calc(100vh - var(--navbar-height, 70px) + 100px) !important;
+						max-height: 500px !important;
 						height: auto !important;
 						border-radius: 8px !important;
-						border-left: 1px solid #DDDDDD !important;
-						border-right: 1px solid #DDDDDD !important;
-						border-top: 1px solid #E0E0E0 !important;
-						z-index: 9999 !important;
+						border: 1px solid #DDDDDD !important;
+						z-index: 100 !important;
 						padding: 14px 12px 20px 12px !important;
 						overflow-y: auto !important;
 						box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
