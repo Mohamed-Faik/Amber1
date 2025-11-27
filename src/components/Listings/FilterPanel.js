@@ -69,6 +69,29 @@ const FilterPanel = ({ featureType = "HOMES" }) => {
 		};
 	}, [showFilters]);
 
+	// Lock body scroll when filter is open on mobile
+	useEffect(() => {
+		if (isMobile && showFilters) {
+			// Save current scroll position
+			const scrollY = window.scrollY;
+			
+			// Lock body scroll
+			document.body.style.position = "fixed";
+			document.body.style.top = `-${scrollY}px`;
+			document.body.style.width = "100%";
+			document.body.style.overflow = "hidden";
+			
+			return () => {
+				// Restore scroll position and unlock
+				document.body.style.position = "";
+				document.body.style.top = "";
+				document.body.style.width = "";
+				document.body.style.overflow = "";
+				window.scrollTo(0, scrollY);
+			};
+		}
+	}, [isMobile, showFilters]);
+
 	const handleApplyFilters = () => {
 		const params = new URLSearchParams(searchParams.toString());
 		
@@ -151,7 +174,7 @@ const FilterPanel = ({ featureType = "HOMES" }) => {
 			className="filter-button-container" 
 			style={{ 
 				position: "relative",
-				zIndex: showFilters && !isMobile ? 10 : 1,
+				zIndex: showFilters ? 99999 : 100,
 				"--navbar-height": `${navbarHeight}px`
 			}}
 		>
@@ -211,25 +234,45 @@ const FilterPanel = ({ featureType = "HOMES" }) => {
 			</button>
 
 		{/* Filter Panel */}
+		{showFilters && isMobile && (
+			<div 
+				className="filter-backdrop"
+				onClick={() => setShowFilters(false)}
+				style={{
+					position: "fixed",
+					top: 0,
+					left: 0,
+					right: 0,
+					bottom: 0,
+					backgroundColor: "rgba(0, 0, 0, 0.5)",
+					zIndex: 99998,
+					transition: "opacity 0.3s ease-out",
+				}}
+			/>
+		)}
 		{showFilters && (
 				<div 
 					className="filter-dropdown"
 					style={{
-						position: "absolute",
-						top: "calc(100% + 12px)",
-						left: "auto",
-						right: "0",
-						width: "380px",
-						maxWidth: "380px",
-						maxHeight: "500px",
+						position: isMobile ? "fixed" : "absolute",
+						top: isMobile ? "0" : "calc(100% + 12px)",
+						left: isMobile ? "auto" : "auto",
+						right: isMobile ? "0" : "0",
+						width: isMobile ? "85%" : "380px",
+						maxWidth: isMobile ? "85%" : "380px",
+						height: isMobile ? "100vh" : "auto",
+						maxHeight: isMobile ? "100vh" : "500px",
 						overflowY: "auto",
 						backgroundColor: "#FFFFFF",
-						border: "1px solid #DDDDDD",
-						borderRadius: "16px",
-						boxShadow: "0 8px 28px rgba(0, 0, 0, 0.12)",
-						zIndex: 10,
-						padding: "24px",
-						transition: "none",
+						border: isMobile ? "none" : "1px solid #DDDDDD",
+						borderLeft: isMobile ? "1px solid #DDDDDD" : "none",
+						borderRadius: isMobile ? "0" : "16px",
+						boxShadow: isMobile ? "-4px 0 20px rgba(0, 0, 0, 0.15)" : "0 8px 28px rgba(0, 0, 0, 0.12)",
+						zIndex: 99999,
+						padding: isMobile ? `${navbarHeight + 20}px 16px 20px 16px` : "24px",
+						paddingTop: isMobile ? `${navbarHeight + 20}px` : undefined,
+						transition: isMobile ? "transform 0.3s ease-out" : "none",
+						transform: isMobile ? "translateX(0)" : "none",
 						opacity: 1,
 					}}>
 					{/* Header */}
@@ -599,21 +642,24 @@ const FilterPanel = ({ featureType = "HOMES" }) => {
 					}
 
 					.filter-dropdown {
-						position: absolute !important;
-						top: calc(100% + 12px) !important;
+						position: fixed !important;
+						top: 0 !important;
 						left: auto !important;
 						right: 0 !important;
-						transform: none !important;
-						width: calc(100% - 24px) !important;
-						max-width: calc(100% - 24px) !important;
-						max-height: 500px !important;
-						height: auto !important;
-						border-radius: 8px !important;
-						border: 1px solid #DDDDDD !important;
-						z-index: 100 !important;
-						padding: 14px 12px 20px 12px !important;
+						transform: translateX(0) !important;
+						width: 85% !important;
+						max-width: 85% !important;
+						height: 100vh !important;
+						max-height: 100vh !important;
+						border-radius: 0 !important;
+						border: none !important;
+						border-left: 1px solid #DDDDDD !important;
+						z-index: 99999 !important;
+						padding: calc(var(--navbar-height, 70px) + 20px) 16px 20px 16px !important;
 						overflow-y: auto !important;
-						box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+						box-shadow: -4px 0 20px rgba(0, 0, 0, 0.15) !important;
+						background-color: #FFFFFF !important;
+						transition: transform 0.3s ease-out !important;
 					}
 
 					.filter-dropdown > div:first-child {
