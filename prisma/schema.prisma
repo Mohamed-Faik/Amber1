@@ -175,6 +175,8 @@ enum user_status {
 enum listing_status {
   Pending
   Approved
+  Sold
+  Canceled
 }
 
 enum listing_type {

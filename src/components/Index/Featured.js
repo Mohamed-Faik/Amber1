@@ -42,21 +42,40 @@ const Featured = ({ currentUser }) => {
 					console.log("📋 Sample listing:", allListings[0]);
 				}
 
-				if (allListings.length === 0) {
-					console.warn("⚠️  No listings found in response");
-					setSections([]);
-					return;
-				}
+			if (allListings.length === 0) {
+				console.warn("⚠️  No listings found in response");
+				setSections([]);
+				return;
+			}
 
-				// Display all listings in a single section without grouping
-				const newSections = [{
-					title: "All Properties",
-					listings: allListings, // Show all listings
-					key: "all-listings",
-				}];
+			// Sort listings by price (highest first) for premium section
+			const sortedByPrice = [...allListings].sort((a, b) => b.price - a.price);
+			
+			// Get top 6 most expensive properties for premium section
+			const premiumListings = sortedByPrice.slice(0, 6);
+			
+		// Mark premium listings with isPremium flag
+		const premiumListingsWithFlag = premiumListings.map(listing => ({
+			...listing,
+			isPremium: true
+		}));
+		
+		// Create two sections: Premium Properties and All Properties
+		const newSections = [
+			{
+				title: "Our Premium Properties",
+				listings: premiumListingsWithFlag,
+				key: "premium-properties",
+			},
+			{
+				title: "All Properties",
+				listings: allListings,
+				key: "all-listings",
+			}
+		];
 
-				console.log("📦 Created sections:", newSections.length);
-				setSections(newSections);
+			console.log("📦 Created sections:", newSections.length);
+			setSections(newSections);
 			} catch (error) {
 				console.error("❌ Error fetching listings:", error);
 				console.error("   Error response:", error.response?.data);

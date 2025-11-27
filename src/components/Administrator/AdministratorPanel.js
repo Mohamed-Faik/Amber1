@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import Link from "next/link";
-import { Shield, LayoutGrid, Users, Star, FileText, FileEdit, Sparkles, ConciergeBell, Plus, Home } from "lucide-react";
+import { Shield, LayoutGrid, Users, Star, FileText, FileEdit, Sparkles, Plus, Home } from "lucide-react";
 import ListingsSection from "./ListingsSection";
 import UsersSection from "./UsersSection";
 import ReviewsSection from "./ReviewsSection";
@@ -161,40 +161,10 @@ const AdministratorPanel = ({
 								e.currentTarget.style.color = "#FF385C";
 							}}
 						>
-							<Plus size={18} />
-							<Sparkles size={18} />
-							<span>Create Experience</span>
-						</Link>
-						<Link
-							href="/administrator/services/new"
-							style={{
-								display: "flex",
-								alignItems: "center",
-								gap: "8px",
-								padding: "10px 20px",
-								backgroundColor: "#FFFFFF",
-								border: "2px solid #FF385C",
-								borderRadius: "10px",
-								color: "#FF385C",
-								fontSize: "14px",
-								fontWeight: "600",
-								textDecoration: "none",
-								transition: "all 0.2s ease",
-								cursor: "pointer",
-							}}
-							onMouseEnter={(e) => {
-								e.currentTarget.style.backgroundColor = "#FF385C";
-								e.currentTarget.style.color = "#FFFFFF";
-							}}
-							onMouseLeave={(e) => {
-								e.currentTarget.style.backgroundColor = "#FFFFFF";
-								e.currentTarget.style.color = "#FF385C";
-							}}
-						>
-							<Plus size={18} />
-							<ConciergeBell size={18} />
-							<span>Create Service</span>
-						</Link>
+					<Plus size={18} />
+					<Sparkles size={18} />
+					<span>Create Experience</span>
+				</Link>
 					</div>
 				</div>
 

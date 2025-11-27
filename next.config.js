@@ -13,6 +13,7 @@ const nextConfig = {
 			"lh3.googleusercontent.com",
 			"via.placeholder.com",
 			"developers.google.com",
+			"img.icons8.com",
 		],
 		remotePatterns: [
 			{

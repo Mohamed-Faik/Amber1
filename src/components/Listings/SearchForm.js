@@ -1,27 +1,56 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
-import { Search, Globe, MapPin, ArrowRight, DollarSign } from "lucide-react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
+import { Search, Globe, MapPin, ArrowRight, Sparkles } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-const SearchForm = ({ searchParams }) => {
+// Experience Categories
+const experienceCategories = [
+	{ value: "Adventure & Outdoor", label: "Adventure & Outdoor", icon: "🏔️" },
+	{ value: "Food & Drink", label: "Food & Drink", icon: "🍷" },
+	{ value: "Art & Culture", label: "Art & Culture", icon: "🎨" },
+	{ value: "Wellness", label: "Wellness", icon: "🧘" },
+	{ value: "Tours & Sightseeing", label: "Tours & Sightseeing", icon: "🗺️" },
+	{ value: "Classes & Workshops", label: "Classes & Workshops", icon: "📚" },
+	{ value: "Entertainment", label: "Entertainment", icon: "🎭" },
+	{ value: "Sports & Fitness", label: "Sports & Fitness", icon: "⚽" },
+	{ value: "Shopping", label: "Shopping", icon: "🛍️" },
+	{ value: "Nature & Wildlife", label: "Nature & Wildlife", icon: "🦁" },
+];
+
+const SearchForm = ({ searchParams, featureType }) => {
 	const [category, setCategory] = useState("");
 	const [locationValue, setLocationValue] = useState("");
-	const [minPrice, setMinPrice] = useState("");
-	const [maxPrice, setMaxPrice] = useState("");
 	const [listingType, setListingType] = useState("");
+	const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
+	const dropdownRef = useRef(null);
 	const router = useRouter();
 
 	useEffect(() => {
 		if (searchParams) {
-			const { category: cat, location_value: loc, min_price: min, max_price: max, listingType: lt } = searchParams;
+			const { category: cat, location_value: loc, listingType: lt } = searchParams;
 			setCategory(cat || "");
 			setLocationValue(loc || "");
-			setMinPrice(min || "");
-			setMaxPrice(max || "");
 			setListingType(lt || "");
 		}
 	}, [searchParams]);
+
+	// Close dropdown when clicking outside
+	useEffect(() => {
+		const handleClickOutside = (event) => {
+			if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+				setShowCategoryDropdown(false);
+			}
+		};
+
+		if (showCategoryDropdown) {
+			document.addEventListener("mousedown", handleClickOutside);
+		}
+
+		return () => {
+			document.removeEventListener("mousedown", handleClickOutside);
+		};
+	}, [showCategoryDropdown]);
 
 	const handleSearch = useCallback((e) => {
 		if (e) {
@@ -30,13 +59,234 @@ const SearchForm = ({ searchParams }) => {
 		const params = new URLSearchParams();
 		if (category) params.append("category", category);
 		if (locationValue) params.append("location_value", locationValue);
-		if (minPrice) params.append("min_price", minPrice);
-		if (maxPrice) params.append("max_price", maxPrice);
 		if (listingType) params.append("listingType", listingType);
 		
-		router.push(`/listings?${params.toString()}`);
-	}, [category, locationValue, minPrice, maxPrice, listingType, router]);
+		// Route to correct page based on feature type
+		const basePath = featureType === "EXPERIENCES" ? "/experiences" : "/listings";
+		router.push(`${basePath}?${params.toString()}`);
+	}, [category, locationValue, listingType, featureType, router]);
 
+	// Airbnb-style compact design for Experiences
+	if (featureType === "EXPERIENCES") {
+		return (
+			<form onSubmit={handleSearch} style={{ position: "relative", zIndex: 100 }}>
+				<div style={{
+					display: "flex",
+					alignItems: "center",
+					backgroundColor: "#FFFFFF",
+					border: "1px solid #DDDDDD",
+					borderRadius: "50px",
+					padding: "8px",
+					boxShadow: "0 1px 2px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.05)",
+					transition: "box-shadow 0.2s ease",
+					position: "relative",
+					zIndex: 10,
+				}}
+				onMouseEnter={(e) => {
+					e.currentTarget.style.boxShadow = "0 2px 4px rgba(0,0,0,0.1), 0 8px 16px rgba(0,0,0,0.1)";
+				}}
+				onMouseLeave={(e) => {
+					e.currentTarget.style.boxShadow = "0 1px 2px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.05)";
+				}}
+				>
+					{/* Where Section */}
+					<div style={{
+						flex: 1,
+						padding: "14px 24px",
+						cursor: "pointer",
+						borderRadius: "40px",
+						transition: "background-color 0.2s ease",
+					}}
+					onMouseEnter={(e) => {
+						e.currentTarget.style.backgroundColor = "#EBEBEB";
+					}}
+					onMouseLeave={(e) => {
+						e.currentTarget.style.backgroundColor = "transparent";
+					}}
+					>
+						<div style={{
+							fontSize: "12px",
+							fontWeight: "600",
+							color: "#222222",
+							marginBottom: "2px",
+						}}>
+							Where
+						</div>
+						<input
+							type="text"
+							placeholder="Search destinations"
+							value={locationValue}
+							onChange={(e) => setLocationValue(e.target.value)}
+							style={{
+								border: "none",
+								outline: "none",
+								fontSize: "14px",
+								color: "#717171",
+								backgroundColor: "transparent",
+								width: "100%",
+								padding: "0",
+								fontFamily: "inherit",
+							}}
+						/>
+					</div>
+
+					{/* Divider */}
+					<div style={{
+						width: "1px",
+						height: "32px",
+						backgroundColor: "#DDDDDD",
+					}} />
+
+					{/* Type of Service Section */}
+					<div 
+						ref={dropdownRef}
+						style={{
+							flex: 1,
+							padding: "14px 24px",
+							cursor: "pointer",
+							borderRadius: "40px",
+							transition: "background-color 0.2s ease",
+							position: "relative",
+							zIndex: 10,
+						}}
+						onClick={() => setShowCategoryDropdown(!showCategoryDropdown)}
+						onMouseEnter={(e) => {
+							e.currentTarget.style.backgroundColor = "#EBEBEB";
+						}}
+						onMouseLeave={(e) => {
+							e.currentTarget.style.backgroundColor = "transparent";
+						}}
+					>
+						<div style={{
+							fontSize: "12px",
+							fontWeight: "600",
+							color: "#222222",
+							marginBottom: "2px",
+						}}>
+							Type of service
+						</div>
+						<div style={{
+							fontSize: "14px",
+							color: category ? "#222222" : "#717171",
+							overflow: "hidden",
+							textOverflow: "ellipsis",
+							whiteSpace: "nowrap",
+						}}>
+							{category 
+								? experienceCategories.find(cat => cat.value === category)?.label
+								: "Add service"
+							}
+						</div>
+
+						{/* Dropdown Menu */}
+						{showCategoryDropdown && (
+							<div style={{
+								position: "absolute",
+								top: "calc(100% + 12px)",
+								left: 0,
+								right: 0,
+								backgroundColor: "#FFFFFF",
+								border: "1px solid #DDDDDD",
+								borderRadius: "16px",
+								boxShadow: "0 6px 20px rgba(0, 0, 0, 0.2)",
+								zIndex: 99999,
+								maxHeight: "400px",
+								overflowY: "auto",
+								minWidth: "240px",
+							}}>
+								{experienceCategories.map((cat) => (
+									<div
+										key={cat.value}
+										onClick={(e) => {
+											e.stopPropagation();
+											setCategory(cat.value);
+											setShowCategoryDropdown(false);
+										}}
+										style={{
+											padding: "12px 16px",
+											cursor: "pointer",
+											transition: "background-color 0.15s ease",
+											display: "flex",
+											alignItems: "center",
+											gap: "10px",
+											fontSize: "14px",
+											color: "#222222",
+											backgroundColor: category === cat.value ? "#F7F7F7" : "transparent",
+										}}
+										onMouseEnter={(e) => {
+											e.currentTarget.style.backgroundColor = "#F7F7F7";
+										}}
+										onMouseLeave={(e) => {
+											e.currentTarget.style.backgroundColor = category === cat.value ? "#F7F7F7" : "transparent";
+										}}
+									>
+										<span style={{ fontSize: "18px" }}>{cat.icon}</span>
+										<span>{cat.label}</span>
+									</div>
+								))}
+							</div>
+						)}
+					</div>
+
+					{/* Search Button */}
+					<button
+						type="submit"
+						style={{
+							background: "linear-gradient(to right, #E61E4D 0%, #D70466 100%)",
+							color: "#FFFFFF",
+							border: "none",
+							borderRadius: "50%",
+							width: "48px",
+							height: "48px",
+							display: "flex",
+							alignItems: "center",
+							justifyContent: "center",
+							cursor: "pointer",
+							transition: "transform 0.1s ease",
+							boxShadow: "0 2px 4px rgba(0,0,0,0.18)",
+						}}
+						onMouseEnter={(e) => {
+							e.currentTarget.style.transform = "scale(1.04)";
+						}}
+						onMouseLeave={(e) => {
+							e.currentTarget.style.transform = "scale(1)";
+						}}
+					>
+						<Search size={18} strokeWidth={3} />
+					</button>
+				</div>
+
+				{/* Mobile Responsive Styles */}
+				<style jsx>{`
+					@media (max-width: 768px) {
+						form > div {
+							flex-direction: column !important;
+							border-radius: 16px !important;
+							padding: 16px !important;
+						}
+						form > div > div:first-child,
+						form > div > div:nth-child(3) {
+							padding: 12px 0 !important;
+							width: 100%;
+						}
+						form > div > div:nth-child(2) {
+							width: 100%;
+							height: 1px;
+							margin: 8px 0;
+						}
+						form > div > button {
+							width: 100%;
+							border-radius: 8px !important;
+							height: 48px;
+							margin-top: 12px;
+						}
+					}
+				`}</style>
+			</form>
+		);
+	}
+
+	// Original design for other pages
 	return (
 		<form
 			onSubmit={handleSearch}
@@ -54,18 +304,119 @@ const SearchForm = ({ searchParams }) => {
 			}}
 			className="search-form-grid"
 			>
-				{/* Category/What Search Input */}
-				<div style={{ position: "relative", flex: 1 }}>
-					<label style={{
-						display: "block",
-						fontSize: "14px",
-						fontWeight: "600",
-						color: "#222222",
-						marginBottom: "8px",
-					}}>
-						What are you looking for?
-					</label>
-					<div style={{ position: "relative" }}>
+			{/* Category/What Search - Dropdown for Experiences, Text Input for Others */}
+			<div style={{ position: "relative", flex: 1 }} ref={dropdownRef}>
+				<label style={{
+					display: "block",
+					fontSize: "14px",
+					fontWeight: "600",
+					color: "#222222",
+					marginBottom: "8px",
+				}}>
+					{featureType === "EXPERIENCES" ? "Type of Experience" : "What are you looking for?"}
+				</label>
+				<div style={{ position: "relative" }}>
+					{featureType === "EXPERIENCES" ? (
+						// Dropdown for Experiences
+						<>
+							<div
+								onClick={() => setShowCategoryDropdown(!showCategoryDropdown)}
+								style={{
+									width: "100%",
+									padding: "16px 45px 16px 50px",
+									border: showCategoryDropdown ? "2px solid #FF385C" : "2px solid #E0E0E0",
+									borderRadius: "12px",
+									fontSize: "15px",
+									fontFamily: "inherit",
+									backgroundColor: "#FFFFFF",
+									color: category ? "#222222" : "#717171",
+									transition: "all 0.2s ease",
+									outline: "none",
+									boxSizing: "border-box",
+									cursor: "pointer",
+									display: "flex",
+									alignItems: "center",
+									justifyContent: "space-between",
+									boxShadow: showCategoryDropdown ? "0 0 0 4px rgba(255, 56, 92, 0.1)" : "none",
+								}}
+							>
+								<span>
+									{category 
+										? experienceCategories.find(cat => cat.value === category)?.icon + " " + category
+										: "Select experience type..."
+									}
+								</span>
+								<svg
+									width="16"
+									height="16"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									strokeWidth="2"
+									style={{
+										transform: showCategoryDropdown ? "rotate(180deg)" : "rotate(0deg)",
+										transition: "transform 0.2s ease",
+										color: "#717171",
+										position: "absolute",
+										right: "16px",
+									}}
+								>
+									<polyline points="6 9 12 15 18 9"></polyline>
+								</svg>
+							</div>
+							
+							{/* Dropdown Menu */}
+							{showCategoryDropdown && (
+								<div style={{
+									position: "absolute",
+									top: "calc(100% + 8px)",
+									left: 0,
+									right: 0,
+									backgroundColor: "#FFFFFF",
+									border: "1px solid #E0E0E0",
+									borderRadius: "12px",
+									boxShadow: "0 4px 16px rgba(0, 0, 0, 0.12)",
+									zIndex: 1000,
+									maxHeight: "320px",
+									overflowY: "auto",
+								}}>
+									{experienceCategories.map((cat) => (
+										<div
+											key={cat.value}
+											onClick={() => {
+												setCategory(cat.value);
+												setShowCategoryDropdown(false);
+											}}
+											style={{
+												padding: "14px 20px",
+												cursor: "pointer",
+												transition: "background-color 0.15s ease",
+												borderBottom: "1px solid #F7F7F7",
+												display: "flex",
+												alignItems: "center",
+												gap: "12px",
+												fontSize: "15px",
+												color: "#222222",
+												backgroundColor: category === cat.value ? "#FFF4F6" : "transparent",
+											}}
+											onMouseEnter={(e) => {
+												e.currentTarget.style.backgroundColor = "#FFF4F6";
+											}}
+											onMouseLeave={(e) => {
+												e.currentTarget.style.backgroundColor = category === cat.value ? "#FFF4F6" : "transparent";
+											}}
+										>
+											<span style={{ fontSize: "20px" }}>{cat.icon}</span>
+											<span style={{ fontWeight: category === cat.value ? "600" : "400" }}>
+												{cat.label}
+											</span>
+										</div>
+									))}
+								</div>
+							)}
+						</>
+					) : (
+						// Text Input for other pages
 						<input
 							type="text"
 							placeholder="Type what are you looking for..."
@@ -93,19 +444,24 @@ const SearchForm = ({ searchParams }) => {
 								e.currentTarget.style.boxShadow = "none";
 							}}
 						/>
-						<div style={{
-							position: "absolute",
-							left: "16px",
-							top: "50%",
-							transform: "translateY(-50%)",
-							display: "flex",
-							alignItems: "center",
-							pointerEvents: "none",
-						}}>
+					)}
+					<div style={{
+						position: "absolute",
+						left: "16px",
+						top: "50%",
+						transform: "translateY(-50%)",
+						display: "flex",
+						alignItems: "center",
+						pointerEvents: "none",
+					}}>
+						{featureType === "EXPERIENCES" ? (
+							<Sparkles size={20} color="#717171" strokeWidth={2} />
+						) : (
 							<Globe size={20} color="#717171" strokeWidth={2} />
-						</div>
+						)}
 					</div>
 				</div>
+			</div>
 
 				{/* Location Input */}
 				<div style={{ position: "relative", flex: 1 }}>
@@ -158,127 +514,9 @@ const SearchForm = ({ searchParams }) => {
 							<MapPin size={20} color="#717171" strokeWidth={2} />
 						</div>
 					</div>
-				</div>
+			</div>
 
-				{/* Min Price Input */}
-				<div style={{ position: "relative", flex: 1 }}>
-					<label style={{
-						display: "block",
-						fontSize: "14px",
-						fontWeight: "600",
-						color: "#222222",
-						marginBottom: "8px",
-					}}>
-						Min Price (MAD)
-					</label>
-					<div style={{ position: "relative" }}>
-						<input
-							type="number"
-							placeholder="Min price"
-							value={minPrice}
-							onChange={(e) => {
-								const value = e.target.value;
-								if (value === "" || (!isNaN(value) && parseInt(value) >= 0)) {
-									setMinPrice(value);
-								}
-							}}
-							min="0"
-							style={{
-								width: "100%",
-								padding: "16px 20px 16px 50px",
-								border: "2px solid #E0E0E0",
-								borderRadius: "12px",
-								fontSize: "15px",
-								fontFamily: "inherit",
-								backgroundColor: "#FFFFFF",
-								color: "#222222",
-								transition: "all 0.2s ease",
-								outline: "none",
-								boxSizing: "border-box",
-							}}
-							onFocus={(e) => {
-								e.currentTarget.style.borderColor = "#FF385C";
-								e.currentTarget.style.boxShadow = "0 0 0 4px rgba(255, 56, 92, 0.1)";
-							}}
-							onBlur={(e) => {
-								e.currentTarget.style.borderColor = "#E0E0E0";
-								e.currentTarget.style.boxShadow = "none";
-							}}
-						/>
-						<div style={{
-							position: "absolute",
-							left: "16px",
-							top: "50%",
-							transform: "translateY(-50%)",
-							display: "flex",
-							alignItems: "center",
-							pointerEvents: "none",
-						}}>
-							<DollarSign size={20} color="#717171" strokeWidth={2} />
-						</div>
-					</div>
-				</div>
-
-				{/* Max Price Input */}
-				<div style={{ position: "relative", flex: 1 }}>
-					<label style={{
-						display: "block",
-						fontSize: "14px",
-						fontWeight: "600",
-						color: "#222222",
-						marginBottom: "8px",
-					}}>
-						Max Price (MAD)
-					</label>
-					<div style={{ position: "relative" }}>
-						<input
-							type="number"
-							placeholder="Max price"
-							value={maxPrice}
-							onChange={(e) => {
-								const value = e.target.value;
-								if (value === "" || (!isNaN(value) && parseInt(value) >= 0)) {
-									setMaxPrice(value);
-								}
-							}}
-							min="0"
-							style={{
-								width: "100%",
-								padding: "16px 20px 16px 50px",
-								border: "2px solid #E0E0E0",
-								borderRadius: "12px",
-								fontSize: "15px",
-								fontFamily: "inherit",
-								backgroundColor: "#FFFFFF",
-								color: "#222222",
-								transition: "all 0.2s ease",
-								outline: "none",
-								boxSizing: "border-box",
-							}}
-							onFocus={(e) => {
-								e.currentTarget.style.borderColor = "#FF385C";
-								e.currentTarget.style.boxShadow = "0 0 0 4px rgba(255, 56, 92, 0.1)";
-							}}
-							onBlur={(e) => {
-								e.currentTarget.style.borderColor = "#E0E0E0";
-								e.currentTarget.style.boxShadow = "none";
-							}}
-						/>
-						<div style={{
-							position: "absolute",
-							left: "16px",
-							top: "50%",
-							transform: "translateY(-50%)",
-							display: "flex",
-							alignItems: "center",
-							pointerEvents: "none",
-						}}>
-							<DollarSign size={20} color="#717171" strokeWidth={2} />
-						</div>
-					</div>
-				</div>
-
-				{/* Listing Type Filter */}
+			{/* Listing Type Filter */}
 				<div style={{ position: "relative", flex: 1 }}>
 					<label style={{
 						display: "block",

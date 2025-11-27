@@ -4,7 +4,6 @@ import Link from "next/link";
 import { formatDate } from "@/utils/formatDate";
 import { formattedPrice } from "@/utils/formattedPrice";
 import { getListingImage } from "@/utils/getListingImage";
-import HeartButton from "@/components/HeartButton";
 import ContactButtons from "@/components/Listing/ContactButtons";
 import ListingImageCarousel from "@/components/Listing/ListingImageCarousel";
 import locationSvg from "../../../public/images/icon/location-pin.svg";
@@ -22,6 +21,7 @@ const ListingItem = ({
 	user,
 	location_value,
 	currentUser,
+	status,
 }) => {
 	const mainImage = getListingImage(imageSrc);
 	
@@ -69,14 +69,31 @@ const ListingItem = ({
 						listing={{ id, slug, title, location_value, price }}
 					/>
 				</div>
-				<div style={{
-					position: "absolute",
-					top: "12px",
-					right: "12px",
-				}}>
-					<HeartButton currentUser={currentUser} listingId={id} />
-				</div>
-			</Link>
+	{/* SOLD Badge Overlay - Diagonal from edge to edge */}
+	{status === "Sold" && (
+		<div
+			style={{
+				position: "absolute",
+				top: "50%",
+				left: "50%",
+				transform: "translate(-50%, -50%) rotate(-45deg)",
+				backgroundColor: "rgba(16, 185, 129, 0.5)",
+				color: "#FFFFFF",
+				padding: "20px 0",
+				fontSize: "32px",
+				fontWeight: "900",
+				textTransform: "uppercase",
+				zIndex: 15,
+				letterSpacing: "4px",
+				width: "150%",
+				textAlign: "center",
+				boxShadow: "0 4px 12px rgba(16, 185, 129, 0.4)",
+			}}
+		>
+			SOLD
+		</div>
+	)}
+		</Link>
 
 			<div style={{
 				padding: "20px",

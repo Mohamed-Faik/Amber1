@@ -65,15 +65,15 @@ export default async function getListings(params) {
 			}
 		}
 
-		// Status filter - only show approved for public, unless admin wants to see all
-		// For public users, only show Approved listings
-		if (!showAll && !status) {
-			whereClause.status = "Approved"; // Only show approved listings to public users
-		} else if (status) {
-			// Admin filtering by specific status
-			whereClause.status = status;
-		}
-		// If showAll is true and no status filter, admin sees all (including null/undefined status)
+	// Status filter - only show approved and sold for public, unless admin wants to see all
+	// For public users, show Approved and Sold listings
+	if (!showAll && !status) {
+		whereClause.status = { in: ["Approved", "Sold"] }; // Show approved and sold listings to public users
+	} else if (status) {
+		// Admin filtering by specific status
+		whereClause.status = status;
+	}
+	// If showAll is true and no status filter, admin sees all (including null/undefined status)
 
 		const skip = (parsedPage - 1) * parsedPageSize;
 		const totalListings = await prisma.listing.count({

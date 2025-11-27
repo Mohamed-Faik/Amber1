@@ -7,6 +7,7 @@ const StatusFilter = ({ currentStatus }) => {
 		{ status: "all", label: "All", color: "#6B7280" },
 		{ status: "Pending", label: "Pending", color: "#F59E0B" },
 		{ status: "Approved", label: "Approved", color: "#10B981" },
+		{ status: "Sold", label: "Sold", color: "#059669" },
 		{ status: "Canceled", label: "Canceled", color: "#EF4444" },
 	];
 

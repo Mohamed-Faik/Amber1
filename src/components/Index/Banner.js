@@ -19,8 +19,6 @@ const Banner = () => {
 	const [category, setCategory] = useState("");
 	const [location, setLocation] = useState("");
 	const [street, setStreet] = useState("");
-	const [minPrice, setMinPrice] = useState("");
-	const [maxPrice, setMaxPrice] = useState("");
 	const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
 	const [showSaleTypeDropdown, setShowSaleTypeDropdown] = useState(false);
 	const [locations, setLocations] = useState([]);
@@ -35,8 +33,6 @@ const Banner = () => {
 		const params = new URLSearchParams();
 		if (category) params.append("category", category);
 		if (location) params.append("location_value", location);
-		if (minPrice) params.append("min_price", minPrice);
-		if (maxPrice) params.append("max_price", maxPrice);
 		// Map saleType to listingType: "For sale" -> "SALE", "For rent" -> don't filter (let search page handle monthly/daily)
 		if (saleType === getTranslation(displayLanguage, "hero.forSale")) {
 			params.append("listingType", "SALE");
@@ -602,112 +598,9 @@ const Banner = () => {
 											onSelect={handleLocationSelect}
 										/>
 									)}
-								</div>
+							</div>
 
-								{/* Price Inputs Container - Side by Side */}
-								<div 
-									className="banner-price-inputs"
-									style={{
-										display: "flex",
-										gap: "12px",
-									}}
-								>
-									{/* Min Price */}
-									<div style={{ position: "relative", flex: "1" }}>
-										<input
-											type="number"
-											placeholder={`${getTranslation(displayLanguage, "hero.minPrice")} (MAD)`}
-											value={minPrice}
-											onChange={(e) => {
-												const value = e.target.value;
-												if (value === "" || (!isNaN(value) && parseInt(value) >= 0)) {
-													setMinPrice(value);
-												}
-											}}
-											min="0"
-											style={{
-												width: "100%",
-												padding: "14px 16px 14px 44px",
-												border: "1px solid #E0E0E0",
-												borderRadius: "12px",
-												backgroundColor: "#F7F7F7",
-												fontSize: "14px",
-												outline: "none",
-												transition: "all 0.2s ease",
-											}}
-											onFocus={(e) => {
-												e.currentTarget.style.borderColor = "#FF385C";
-												e.currentTarget.style.backgroundColor = "#FFFFFF";
-											}}
-											onBlur={(e) => {
-												e.currentTarget.style.borderColor = "#E0E0E0";
-												e.currentTarget.style.backgroundColor = "#F7F7F7";
-											}}
-										/>
-										<div
-											style={{
-												position: "absolute",
-												left: "16px",
-												top: "50%",
-												transform: "translateY(-50%)",
-												pointerEvents: "none",
-											}}
-										>
-											<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#717171" strokeWidth="2">
-												<path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
-											</svg>
-										</div>
-									</div>
-
-									{/* Max Price */}
-									<div style={{ position: "relative", flex: "1" }}>
-										<input
-											type="number"
-											placeholder={`${getTranslation(displayLanguage, "hero.maxPrice")} (MAD)`}
-											value={maxPrice}
-											onChange={(e) => {
-												const value = e.target.value;
-												if (value === "" || (!isNaN(value) && parseInt(value) >= 0)) {
-													setMaxPrice(value);
-												}
-											}}
-											min="0"
-											style={{
-												width: "100%",
-												padding: "14px 16px 14px 44px",
-												border: "1px solid #E0E0E0",
-												borderRadius: "12px",
-												backgroundColor: "#F7F7F7",
-												fontSize: "14px",
-												outline: "none",
-												transition: "all 0.2s ease",
-											}}
-											onFocus={(e) => {
-												e.currentTarget.style.borderColor = "#FF385C";
-												e.currentTarget.style.backgroundColor = "#FFFFFF";
-											}}
-											onBlur={(e) => {
-												e.currentTarget.style.borderColor = "#E0E0E0";
-												e.currentTarget.style.backgroundColor = "#F7F7F7";
-											}}
-										/>
-										<div
-											style={{
-												position: "absolute",
-												left: "16px",
-												top: "50%",
-												transform: "translateY(-50%)",
-												pointerEvents: "none",
-											}}
-										>
-											<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#717171" strokeWidth="2">
-												<path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
-											</svg>
-										</div>
-									</div>
-								</div>
-
-								{/* Search Button */}
+							{/* Search Button */}
 								<button
 									type="submit"
 									style={{

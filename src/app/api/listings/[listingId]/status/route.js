@@ -19,9 +19,9 @@ export async function PATCH(request, { params }) {
 	const { status } = body;
 
 	// Validate status
-	if (status !== "Approved" && status !== "Pending" && status !== "Canceled") {
+	if (status !== "Approved" && status !== "Pending" && status !== "Canceled" && status !== "Sold") {
 		return NextResponse.json(
-			{ message: "Invalid status. Must be 'Approved', 'Pending', or 'Canceled'." },
+			{ message: "Invalid status. Must be 'Approved', 'Pending', 'Sold', or 'Canceled'." },
 			{ status: 400 }
 		);
 	}

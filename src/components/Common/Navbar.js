@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Sparkles, ConciergeBell, Menu, X, Plus } from "lucide-react";
+import { Menu, X, Plus } from "lucide-react";
 import UserMenu from "./UserMenu";
 import NotificationBadge from "./NotificationBadge";
 import LanguageSwitcher from "./LanguageSwitcher";
@@ -50,17 +50,12 @@ const Navbar = ({ currentUser }) => {
     { 
       href: "/homes", 
       label: getTranslation(displayLanguage, "nav.homes"), 
-      icon: Home 
+      image: "https://img.icons8.com/?size=100&id=eIM3rBvyFbHA&format=png&color=000000"
     },
     { 
       href: "/experiences", 
       label: getTranslation(displayLanguage, "nav.experiences"), 
-      icon: Sparkles 
-    },
-    { 
-      href: "/services", 
-      label: getTranslation(displayLanguage, "nav.services"), 
-      icon: ConciergeBell 
+      image: "https://img.icons8.com/?size=100&id=PhN968WBxlkp&format=png&color=000000"
     },
   ];
 
@@ -133,44 +128,59 @@ const Navbar = ({ currentUser }) => {
               transition: "box-shadow 0.2s ease",
             }}
           >
-            {navLinks.map((link, index) => {
-              const Icon = link.icon;
-              const isActive =
-                link.href === "/" ? pathname === "/" : pathname?.startsWith(link.href);
-              return (
-                <React.Fragment key={link.href}>
-                  <Link
-                    href={link.href}
-                    style={{
-                      padding: "10px 18px",
-                      fontSize: "14px",
-                      fontWeight: "600",
-                      color: isActive ? "#222222" : "#717171",
-                      textDecoration: "none",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "8px",
-                      borderRadius: "32px",
-                      backgroundColor: isActive ? "#F7F7F7" : "transparent",
-                      transition: "all 0.2s ease",
-                      whiteSpace: "nowrap",
-                    }}
-                    onMouseEnter={(e) => {
-                      if (!isActive) {
-                        e.currentTarget.style.backgroundColor = "#F7F7F7";
-                        e.currentTarget.style.color = "#222222";
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      if (!isActive) {
-                        e.currentTarget.style.backgroundColor = "transparent";
-                        e.currentTarget.style.color = "#717171";
-                      }
-                    }}
-                  >
+          {navLinks.map((link, index) => {
+            const Icon = link.icon;
+            const isActive =
+              link.href === "/" ? pathname === "/" : pathname?.startsWith(link.href);
+            return (
+              <React.Fragment key={link.href}>
+                <Link
+                  href={link.href}
+                  style={{
+                    padding: "10px 18px",
+                    fontSize: "14px",
+                    fontWeight: "600",
+                    color: isActive ? "#222222" : "#717171",
+                    textDecoration: "none",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    borderRadius: "32px",
+                    backgroundColor: isActive ? "#F7F7F7" : "transparent",
+                    transition: "all 0.2s ease",
+                    whiteSpace: "nowrap",
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!isActive) {
+                      e.currentTarget.style.backgroundColor = "#F7F7F7";
+                      e.currentTarget.style.color = "#222222";
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isActive) {
+                      e.currentTarget.style.backgroundColor = "transparent";
+                      e.currentTarget.style.color = "#717171";
+                    }
+                  }}
+                >
+                  {link.image ? (
+                    <Image 
+                      src={link.image} 
+                      alt="" 
+                      width={32} 
+                      height={32} 
+                      style={{ 
+                        objectFit: "contain",
+                        display: "block"
+                      }} 
+                    />
+                  ) : link.emoji ? (
+                    <span style={{ fontSize: "24px", lineHeight: "1", display: "block" }}>{link.emoji}</span>
+                  ) : (
                     <Icon size={18} strokeWidth={2.5} />
-                    <span>{link.label}</span>
-                  </Link>
+                  )}
+                  <span>{link.label}</span>
+                </Link>
                   {index < navLinks.length - 1 && (
                     <div
                       style={{
@@ -374,48 +384,63 @@ const Navbar = ({ currentUser }) => {
             justifyContent: "center",
             alignItems: "center",
           }}>
-            {navLinks.map((link) => {
-              const Icon = link.icon;
-              const isActive =
-                link.href === "/" ? pathname === "/" : pathname?.startsWith(link.href);
-              return (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={`mobile-nav-pill ${isActive ? "active" : ""}`}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "6px",
-                    padding: "10px 18px",
-                    fontSize: "14px",
-                    fontWeight: isActive ? "700" : "600",
-                    color: isActive ? "#222222" : "#717171",
-                    textDecoration: "none",
-                    backgroundColor: isActive ? "#FFFFFF" : "transparent",
-                    border: "none",
-                    borderRadius: "28px",
-                    whiteSpace: "nowrap",
-                    boxShadow: isActive ? "0 2px 8px rgba(0,0,0,0.1)" : "none",
-                    transition: "all 0.2s ease",
-                  }}
-                  onMouseDown={(e) => {
-                    if (!isActive) {
-                      e.currentTarget.style.transform = "scale(0.96)";
-                    }
-                  }}
-                  onMouseUp={(e) => {
-                    e.currentTarget.style.transform = "scale(1)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = "scale(1)";
-                  }}
-                >
+          {navLinks.map((link) => {
+            const Icon = link.icon;
+            const isActive =
+              link.href === "/" ? pathname === "/" : pathname?.startsWith(link.href);
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={`mobile-nav-pill ${isActive ? "active" : ""}`}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "6px",
+                  padding: "10px 18px",
+                  fontSize: "14px",
+                  fontWeight: isActive ? "700" : "600",
+                  color: isActive ? "#222222" : "#717171",
+                  textDecoration: "none",
+                  backgroundColor: isActive ? "#FFFFFF" : "transparent",
+                  border: "none",
+                  borderRadius: "28px",
+                  whiteSpace: "nowrap",
+                  boxShadow: isActive ? "0 2px 8px rgba(0,0,0,0.1)" : "none",
+                  transition: "all 0.2s ease",
+                }}
+                onMouseDown={(e) => {
+                  if (!isActive) {
+                    e.currentTarget.style.transform = "scale(0.96)";
+                  }
+                }}
+                onMouseUp={(e) => {
+                  e.currentTarget.style.transform = "scale(1)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = "scale(1)";
+                }}
+              >
+                {link.image ? (
+                  <Image 
+                    src={link.image} 
+                    alt="" 
+                    width={32} 
+                    height={32} 
+                    style={{ 
+                      objectFit: "contain",
+                      display: "block"
+                    }} 
+                  />
+                ) : link.emoji ? (
+                  <span style={{ fontSize: "24px", lineHeight: "1", display: "block" }}>{link.emoji}</span>
+                ) : (
                   <Icon size={18} strokeWidth={isActive ? 2.5 : 2} />
-                  <span>{link.label}</span>
-                </Link>
-              );
-            })}
+                )}
+                <span>{link.label}</span>
+              </Link>
+            );
+          })}
           </div>
         </div>
       </header>

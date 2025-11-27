@@ -12,7 +12,6 @@ import profileSvg from "../../../../public/images/icon/profile.svg";
 import { formatDate } from "@/utils/formatDate";
 import { formattedPrice } from "@/utils/formattedPrice";
 import { getListingImage } from "@/utils/getListingImage";
-import HeartButton from "@/components/HeartButton";
 import ContactButtons from "@/components/Listing/ContactButtons";
 import ListingImageCarousel from "@/components/Listing/ListingImageCarousel";
 
@@ -37,6 +36,8 @@ const ListingItem = ({
 	const getStatusDisplay = () => {
 		if (status === "Approved") {
 			return { text: "Published", className: "bg-success" };
+		} else if (status === "Sold") {
+			return { text: "Sold", className: "bg-success" };
 		} else if (status === "Pending") {
 			return { text: "Pending", className: "bg-warning text-dark" };
 		} else if (status === "Canceled") {
@@ -112,6 +113,7 @@ const ListingItem = ({
 					position: "absolute",
 					top: "12px",
 					left: "12px",
+					zIndex: 10,
 				}}>
 					<span
 						style={{
@@ -120,7 +122,9 @@ const ListingItem = ({
 							fontSize: "12px",
 							fontWeight: "600",
 							backgroundColor:
-								status === "Approved"
+								status === "Sold"
+									? "#059669"
+									: status === "Approved"
 									? "#10b981"
 									: status === "Pending"
 									? "#f59e0b"
@@ -133,14 +137,30 @@ const ListingItem = ({
 						{statusDisplay.text}
 					</span>
 				</div>
-				{/* Heart Button */}
-				<div style={{
+	{/* SOLD Badge Overlay - Diagonal from edge to edge */}
+		{status === "Sold" && (
+			<div
+				style={{
 					position: "absolute",
-					top: "12px",
-					right: "12px",
-				}}>
-					<HeartButton currentUser={currentUser} listingId={id} />
-				</div>
+					top: "50%",
+					left: "50%",
+					transform: "translate(-50%, -50%) rotate(-45deg)",
+					backgroundColor: "rgba(16, 185, 129, 0.5)",
+					color: "#FFFFFF",
+					padding: "20px 0",
+					fontSize: "32px",
+					fontWeight: "900",
+					textTransform: "uppercase",
+					zIndex: 15,
+					letterSpacing: "4px",
+					width: "150%",
+					textAlign: "center",
+					boxShadow: "0 4px 12px rgba(16, 185, 129, 0.4)",
+				}}
+			>
+				SOLD
+			</div>
+		)}
 			</Link>
 
 			<div style={{

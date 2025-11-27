@@ -6,7 +6,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { formattedPrice } from "@/utils/formattedPrice";
 import { getListingImage } from "@/utils/getListingImage";
-import HeartButton from "../HeartButton";
 import ContactButtons from "../Listing/ContactButtons";
 import ListingImageCarousel from "../Listing/ListingImageCarousel";
 import rulerIcon from "../../../public/images/icon/ruler.svg";
@@ -29,6 +28,7 @@ const GridStyle = ({
 	bathrooms,
 	listingType,
 	featureType,
+	status,
 }) => {
 	const router = useRouter();
 	const mainImage = getListingImage(imageSrc);
@@ -73,48 +73,118 @@ const GridStyle = ({
 							flex: 1,
 						}}
 					>
-						{/* Image Container with Carousel */}
+					{/* Image Container with Carousel */}
+				<div
+					style={{
+						position: "relative",
+						width: "100%",
+						paddingTop: "75%",
+						overflow: "hidden",
+					}}
+				>
 					<div
 						style={{
-							position: "relative",
+							position: "absolute",
+							top: 0,
+							left: 0,
 							width: "100%",
-							paddingTop: "75%",
-							overflow: "hidden",
+							height: "100%",
 						}}
 					>
-						<div
-							style={{
-								position: "absolute",
-								top: 0,
-								left: 0,
-								width: "100%",
-								height: "100%",
-							}}
-						>
-							<ListingImageCarousel 
-								imageSrc={imageSrc} 
-								title={title}
-								listing={{ id, slug, title, location_value, price }}
-							/>
-						</div>
-						{/* Favorite Button Overlay */}
-						<div
-							style={{
-								position: "absolute",
-								top: "12px",
-								right: "12px",
-								zIndex: 10,
-							}}
-							onClick={(e) => e.stopPropagation()}
-						>
-							<HeartButton currentUser={currentUser} listingId={id} />
-						</div>
+						<ListingImageCarousel 
+							imageSrc={imageSrc} 
+							title={title}
+							listing={{ id, slug, title, location_value, price }}
+						/>
 					</div>
+	{/* SOLD Badge Overlay - Diagonal from edge to edge */}
+		{status === "Sold" && (
+			<div
+				style={{
+					position: "absolute",
+					top: "50%",
+					left: "50%",
+					transform: "translate(-50%, -50%) rotate(-45deg)",
+					backgroundColor: "rgba(16, 185, 129, 0.5)",
+					color: "#FFFFFF",
+					padding: "20px 0",
+					fontSize: "32px",
+					fontWeight: "900",
+					textTransform: "uppercase",
+					zIndex: 15,
+					letterSpacing: "4px",
+					width: "150%",
+					textAlign: "center",
+					boxShadow: "0 4px 12px rgba(16, 185, 129, 0.4)",
+				}}
+			>
+				SOLD
+			</div>
+		)}
+			</div>
 
-					{/* Content */}
-					<div style={{ padding: "16px" }}>
-						{/* FOR SALE / FOR RENT / DAILY RENT Badge */}
-						<div style={{ marginBottom: "8px" }}>
+				{/* Content */}
+				<div style={{ padding: "16px" }}>
+					{/* Owner Profile */}
+					{user && (
+						<div style={{ 
+							display: "flex", 
+							alignItems: "center", 
+							gap: "10px", 
+							marginBottom: "12px",
+							paddingBottom: "12px",
+							borderBottom: "1px solid #f0f0f0"
+						}}>
+						{user.image ? (
+							<img 
+								src={user.image} 
+								alt="AmberHomes User"
+								style={{
+									width: "40px",
+									height: "40px",
+									borderRadius: "50%",
+									objectFit: "cover",
+									border: "2px solid #FF385C"
+								}}
+							/>
+						) : (
+							<div style={{
+								width: "40px",
+								height: "40px",
+								borderRadius: "50%",
+								backgroundColor: "#FF385C",
+								display: "flex",
+								alignItems: "center",
+								justifyContent: "center",
+								color: "#FFFFFF",
+								fontWeight: "600",
+								fontSize: "16px"
+							}}>
+								A
+							</div>
+						)}
+						<div style={{ flex: 1 }}>
+							<div style={{ 
+								fontSize: "14px", 
+								fontWeight: "600", 
+								color: "#222222",
+								lineHeight: "1.3"
+							}}>
+								AmberHomes User
+							</div>
+							<div style={{ 
+								fontSize: "12px", 
+								color: "#717171",
+								lineHeight: "1.3"
+							}}>
+								Listed by owner
+							</div>
+						</div>
+						</div>
+					)}
+					
+					{/* FOR SALE / FOR RENT / DAILY RENT Badge */}
+					<div style={{ marginBottom: "8px" }}>
 							<span
 								style={{
 									display: "inline-block",
@@ -353,14 +423,34 @@ const GridStyle = ({
 						</div>
 					</div>
 					</div>
-				</Link>
-			
-			{/* Contact Buttons - Outside Link */}
+			</Link>
+		
+		{/* Contact Buttons or SOLD message - Outside Link */}
+		{status === "Sold" ? (
+			<div style={{ 
+				padding: "12px 16px 16px 16px", 
+				borderTop: "1px solid #f7f7f7",
+				textAlign: "center",
+			}}>
+				<div style={{
+					backgroundColor: "#D1FAE5",
+					color: "#065F46",
+					padding: "10px 16px",
+					borderRadius: "8px",
+					fontWeight: "600",
+					fontSize: "14px",
+					border: "1px solid #A7F3D0",
+				}}>
+					This property has been sold
+				</div>
+			</div>
+		) : (
 			<div style={{ padding: "12px 16px 16px 16px", borderTop: "1px solid #f7f7f7" }}>
 				<ContactButtons listing={{ id, slug, title, location_value, price }} />
 			</div>
-		</div>
-		</div>
+		)}
+	</div>
+	</div>
 	);
 };
 

@@ -26,31 +26,51 @@ export async function GET(request) {
 
 		let listings;
 
-		try {
-			if (category === "all") {
-				listings = await prisma.listing.findMany({
-					where: {
-						status: "Approved", // Only show approved listings on home page
-						featureType: "HOMES", // Only show HOMES on the home page
+	try {
+	if (category === "all") {
+		listings = await prisma.listing.findMany({
+			where: {
+				status: { in: ["Approved", "Sold"] }, // Show approved and sold listings on home page
+				featureType: "HOMES", // Only show HOMES on the home page
+			},
+			include: {
+				user: {
+					select: {
+						id: true,
+						name: true,
+						email: true,
+						image: true,
 					},
-					orderBy: {
-						created_at: "desc",
+				},
+			},
+			orderBy: {
+				created_at: "desc",
+			},
+			take: 100, // Get more listings for multiple sections
+		});
+	} else {
+		listings = await prisma.listing.findMany({
+			where: {
+				category: category,
+				status: { in: ["Approved", "Sold"] }, // Show approved and sold listings on home page
+				featureType: "HOMES", // Only show HOMES on the home page
+			},
+			include: {
+				user: {
+					select: {
+						id: true,
+						name: true,
+						email: true,
+						image: true,
 					},
-					take: 100, // Get more listings for multiple sections
-				});
-			} else {
-				listings = await prisma.listing.findMany({
-					where: {
-						category: category,
-						status: "Approved", // Only show approved listings on home page
-						featureType: "HOMES", // Only show HOMES on the home page
-					},
-					orderBy: {
-						created_at: "desc",
-					},
-					take: 100,
-				});
-			}
+				},
+			},
+			orderBy: {
+				created_at: "desc",
+			},
+			take: 100,
+		});
+	}
 		} catch (dbError) {
 			console.error("❌ Database query error:", dbError);
 			console.error("   Error code:", dbError.code);
@@ -109,27 +129,29 @@ export async function GET(request) {
 			return NextResponse.json([]);
 		}
 
-		// Return listings (user data is not critical for display)
-		// Format the response to match what the frontend expects
-		const formattedListings = listings.map((listing) => ({
-			id: listing.id,
-			title: listing.title,
-			slug: listing.slug,
-			imageSrc: listing.imageSrc,
-			category: listing.category,
-			price: listing.price,
-			location_value: listing.location_value,
-			address: listing.address,
-			created_at: listing.created_at,
-			userId: listing.userId,
-			area: listing.area,
-			bedrooms: listing.bedrooms,
-			bathrooms: listing.bathrooms,
-			listingType: listing.listingType || "SALE", // Include listingType field
-			featureType: listing.featureType || "HOMES", // Include featureType field
-			// Add default rating if not available (can be calculated from reviews later)
-			rating: null,
-		}));
+	// Return listings with user data
+	// Format the response to match what the frontend expects
+	const formattedListings = listings.map((listing) => ({
+		id: listing.id,
+		title: listing.title,
+		slug: listing.slug,
+		imageSrc: listing.imageSrc,
+		category: listing.category,
+		price: listing.price,
+		location_value: listing.location_value,
+		address: listing.address,
+		created_at: listing.created_at,
+		userId: listing.userId,
+		user: listing.user, // Include user data for profile display
+		area: listing.area,
+		bedrooms: listing.bedrooms,
+		bathrooms: listing.bathrooms,
+		listingType: listing.listingType || "SALE", // Include listingType field
+		featureType: listing.featureType || "HOMES", // Include featureType field
+		status: listing.status, // Include status field for SOLD badge
+		// Add default rating if not available (can be calculated from reviews later)
+		rating: null,
+	}));
 
 		console.log("📤 Returning formatted listings:", formattedListings.length);
 		return NextResponse.json(formattedListings);
