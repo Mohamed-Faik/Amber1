@@ -12,7 +12,8 @@ const TranslatedListingCard = ({
 	displayLanguage,
 	getStatusBadge,
 	handleStatusChange,
-	handleDelete 
+	handleDelete,
+	handlePremiumToggle 
 }) => {
 	const { translatedContent: translatedTitle } = useTranslatedContent(
 		listing.title, 
@@ -197,33 +198,66 @@ const TranslatedListingCard = ({
 						>
 							{getTranslation(displayLanguage, "admin.unmarkAsSold")}
 						</button>
-					)}
+				)}
 
-					<button
-						onClick={() => handleDelete(listing.id)}
-						style={{
-							padding: "8px 16px",
-							backgroundColor: "#FFFFFF",
-							color: "#FF385C",
-							border: "1px solid #FF385C",
-							borderRadius: "8px",
-							fontSize: "14px",
-							fontWeight: "500",
-							cursor: "pointer",
-							transition: "all 0.2s ease",
-						}}
-						onMouseEnter={(e) => {
-							e.currentTarget.style.backgroundColor = "#FF385C";
-							e.currentTarget.style.color = "#FFFFFF";
-						}}
-						onMouseLeave={(e) => {
+				{/* Premium Toggle Button */}
+				<button
+					onClick={() => handlePremiumToggle(listing.id, listing.isPremium)}
+					style={{
+						flex: 1,
+						padding: "8px 16px",
+						backgroundColor: listing.isPremium ? "#F59E0B" : "#FFFFFF",
+						color: listing.isPremium ? "#FFFFFF" : "#F59E0B",
+						border: `2px solid #F59E0B`,
+						borderRadius: "8px",
+						fontSize: "14px",
+						fontWeight: "600",
+						cursor: "pointer",
+						transition: "all 0.2s ease",
+					}}
+					onMouseEnter={(e) => {
+						if (listing.isPremium) {
+							e.currentTarget.style.backgroundColor = "#D97706";
+						} else {
+							e.currentTarget.style.backgroundColor = "#FEF3C7";
+						}
+					}}
+					onMouseLeave={(e) => {
+						if (listing.isPremium) {
+							e.currentTarget.style.backgroundColor = "#F59E0B";
+						} else {
 							e.currentTarget.style.backgroundColor = "#FFFFFF";
-							e.currentTarget.style.color = "#FF385C";
-						}}
-					>
-						{getTranslation(displayLanguage, "admin.delete")}
-					</button>
-				</div>
+						}
+					}}
+				>
+					{listing.isPremium ? "⭐ Premium" : "Mark Premium"}
+				</button>
+
+				<button
+					onClick={() => handleDelete(listing.id)}
+					style={{
+						padding: "8px 16px",
+						backgroundColor: "#FFFFFF",
+						color: "#FF385C",
+						border: "1px solid #FF385C",
+						borderRadius: "8px",
+						fontSize: "14px",
+						fontWeight: "500",
+						cursor: "pointer",
+						transition: "all 0.2s ease",
+					}}
+					onMouseEnter={(e) => {
+						e.currentTarget.style.backgroundColor = "#FF385C";
+						e.currentTarget.style.color = "#FFFFFF";
+					}}
+					onMouseLeave={(e) => {
+						e.currentTarget.style.backgroundColor = "#FFFFFF";
+						e.currentTarget.style.color = "#FF385C";
+					}}
+				>
+					{getTranslation(displayLanguage, "admin.delete")}
+				</button>
+			</div>
 			</div>
 		</div>
 	);

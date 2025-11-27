@@ -46,23 +46,19 @@ const Featured = ({ currentUser }) => {
 					console.log("📋 Sample listing:", allListings[0]);
 				}
 
-			if (allListings.length === 0) {
-				console.warn("⚠️  No listings found in response");
-				setSections([]);
-				return;
-			}
+		if (allListings.length === 0) {
+			console.warn("⚠️  No listings found in response");
+			setSections([]);
+			return;
+		}
 
-			// Sort listings by price (highest first) for premium section
-			const sortedByPrice = [...allListings].sort((a, b) => b.price - a.price);
-			
-			// Get top 6 most expensive properties for premium section
-			const premiumListings = sortedByPrice.slice(0, 6);
-			
-		// Mark premium listings with isPremium flag
-		const premiumListingsWithFlag = premiumListings.map(listing => ({
-			...listing,
-			isPremium: true
-		}));
+		// Filter listings that are marked as premium in the database
+		const premiumListings = allListings.filter(listing => listing.isPremium === true);
+		
+		console.log("⭐ Premium listings found:", premiumListings.length);
+		
+		// Premium listings already have isPremium flag from database
+		const premiumListingsWithFlag = premiumListings;
 		
 		// Create two sections: Premium Properties and All Properties
 		// Store sections without titles - titles will be computed on render for instant translation
@@ -166,9 +162,10 @@ const Featured = ({ currentUser }) => {
 					</div>
 				)}
 
-				{/* Loaded State - Actual Listings */}
-				{!isLoading && sections.map((section) => (
-					<div key={section.key}>
+			{/* Loaded State - Actual Listings */}
+			{!isLoading && sections.map((section, index) => (
+				<React.Fragment key={section.key}>
+					<div>
 						{/* Section Header */}
 						<div
 							style={{
@@ -208,7 +205,79 @@ const Featured = ({ currentUser }) => {
 							))}
 						</div>
 					</div>
-				))}
+
+					{/* Elegant Divider Between Sections */}
+					{index < sections.length - 1 && (
+						<div style={{ 
+							margin: "80px 0", 
+							position: "relative",
+							display: "flex",
+							alignItems: "center",
+							justifyContent: "center"
+						}}>
+							{/* Gradient Line */}
+							<div style={{
+								position: "absolute",
+								width: "100%",
+								height: "2px",
+								background: "linear-gradient(to right, transparent 0%, #E0E0E0 20%, #FF385C 50%, #E0E0E0 80%, transparent 100%)",
+								opacity: 0.6
+							}} />
+							
+							{/* Center Decoration */}
+							<div style={{
+								position: "relative",
+								backgroundColor: "#FFFFFF",
+								padding: "12px 32px",
+								borderRadius: "40px",
+								border: "2px solid #FF385C",
+								boxShadow: "0 4px 12px rgba(255, 56, 92, 0.15)",
+								display: "flex",
+								alignItems: "center",
+								gap: "12px"
+							}}>
+								<div style={{
+									width: "8px",
+									height: "8px",
+									borderRadius: "50%",
+									backgroundColor: "#FF385C",
+									animation: "pulse 2s infinite"
+								}} />
+								<span style={{
+									fontSize: "14px",
+									fontWeight: "600",
+									color: "#FF385C",
+									letterSpacing: "1px",
+									textTransform: "uppercase"
+								}}>
+									{getTranslation(displayLanguage, "listings.exploreMore")}
+								</span>
+								<div style={{
+									width: "8px",
+									height: "8px",
+									borderRadius: "50%",
+									backgroundColor: "#FF385C",
+									animation: "pulse 2s infinite 1s"
+								}} />
+							</div>
+
+							{/* Pulse Animation */}
+							<style jsx>{`
+								@keyframes pulse {
+									0%, 100% {
+										opacity: 1;
+										transform: scale(1);
+									}
+									50% {
+										opacity: 0.5;
+										transform: scale(0.8);
+									}
+								}
+							`}</style>
+						</div>
+					)}
+				</React.Fragment>
+			))}
 
 				{/* Empty State */}
 				{!isLoading && sections.length === 0 && (

@@ -149,6 +149,7 @@ export async function GET(request) {
 		listingType: listing.listingType || "SALE", // Include listingType field
 		featureType: listing.featureType || "HOMES", // Include featureType field
 		status: listing.status, // Include status field for SOLD badge
+		isPremium: listing.isPremium || false, // Include isPremium field
 		// Add default rating if not available (can be calculated from reviews later)
 		rating: null,
 	}));

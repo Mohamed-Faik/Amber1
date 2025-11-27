@@ -66,6 +66,34 @@ const ListingsSection = ({ listings: initialListings, displayLanguage = "en" }) 
 		}
 	};
 
+	const handlePremiumToggle = async (listingId, currentPremiumStatus) => {
+		const newStatus = !currentPremiumStatus;
+		try {
+			await axios.patch(`/api/listings/${listingId}/premium`, {
+				isPremium: newStatus,
+			});
+			toast.success(
+				newStatus
+					? "Listing marked as Premium!"
+					: "Listing unmarked as Premium!"
+			);
+			// Update local state
+			setListings((prev) =>
+				prev.map((listing) =>
+					listing.id === listingId
+						? { ...listing, isPremium: newStatus }
+						: listing
+				)
+			);
+			// Refresh server data
+			setTimeout(() => {
+				router.refresh();
+			}, 100);
+		} catch (error) {
+			toast.error("Failed to update premium status");
+		}
+	};
+
 	const getStatusBadge = (status) => {
 		const getStatusText = (s) => {
 			if (s === "Pending") return getTranslation(displayLanguage, "admin.pending");
@@ -193,16 +221,17 @@ const ListingsSection = ({ listings: initialListings, displayLanguage = "en" }) 
 				}}
 				className="listings-grid"
 			>
-			{filteredListings?.map((listing) => (
-				<TranslatedListingCard
-					key={listing.id}
-					listing={listing}
-					displayLanguage={displayLanguage}
-					getStatusBadge={getStatusBadge}
-					handleStatusChange={handleStatusChange}
-					handleDelete={handleDelete}
-				/>
-			))}
+		{filteredListings?.map((listing) => (
+			<TranslatedListingCard
+				key={listing.id}
+				listing={listing}
+				displayLanguage={displayLanguage}
+				getStatusBadge={getStatusBadge}
+				handleStatusChange={handleStatusChange}
+				handleDelete={handleDelete}
+				handlePremiumToggle={handlePremiumToggle}
+			/>
+		))}
 			</div>
 
 			{filteredListings?.length === 0 && (

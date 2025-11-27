@@ -64,6 +64,7 @@ model listing {
   status         listing_status @default(Pending)
   listingType    listing_type   @default(SALE)
   featureType    feature_type   @default(HOMES)
+  isPremium      Boolean        @default(false)
   latitude       Float
   longitude      Float
   category       String
