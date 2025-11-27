@@ -4,8 +4,12 @@ import axios from "axios";
 import FeaturedItem from "./FeaturedItem";
 import ListingSkeleton from "./ListingSkeleton";
 import { toast } from "react-hot-toast";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { getTranslation } from "@/utils/translations";
 
 const Featured = ({ currentUser }) => {
+	const { language, isDetecting } = useLanguage();
+	const displayLanguage = isDetecting ? "en" : language;
 	const [sections, setSections] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
 
@@ -63,12 +67,12 @@ const Featured = ({ currentUser }) => {
 		// Create two sections: Premium Properties and All Properties
 		const newSections = [
 			{
-				title: "Our Premium Properties",
+				title: getTranslation(displayLanguage, "listings.premiumProperties"),
 				listings: premiumListingsWithFlag,
 				key: "premium-properties",
 			},
 			{
-				title: "All Properties",
+				title: getTranslation(displayLanguage, "listings.allProperties"),
 				listings: allListings,
 				key: "all-listings",
 			}

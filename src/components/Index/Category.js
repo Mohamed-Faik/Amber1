@@ -67,20 +67,20 @@ const Category = () => {
 					className="category-slide"
 				>
 					{categories.map((cat) => (
-						<SwiperSlide key={cat.label}>
-							<div className="single-category">
-								<Link
-									href={`/listings/?category=${cat.value}`}
-									className="category-img"
-								>
-									<Image
-										src={cat.imageSrc}
-										width={400}
-										height={440}
-										alt="category"
-									/>
-									<i className="ri-add-circle-fill"></i>
-								</Link>
+					<SwiperSlide key={cat.label}>
+						<div className="single-category">
+							<Link
+								href={`/listings/?category=${cat.value}`}
+								className="category-img"
+							>
+								<Image
+									src={cat.imageSrc}
+									width={400}
+									height={440}
+									alt="category"
+								/>
+								<i className="ri-add-circle-fill"></i>
+							</Link>
 
 								<div className="category-content">
 									<h3>

@@ -138,7 +138,7 @@ const ListingItem = ({
 					</span>
 				</div>
 	{/* SOLD Badge Overlay - Diagonal from edge to edge */}
-		{status === "Sold" && (
+		{status === "Sold" && featureType !== "EXPERIENCES" && (
 			<div
 				style={{
 					position: "absolute",

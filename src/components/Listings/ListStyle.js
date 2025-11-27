@@ -108,7 +108,7 @@ const ListStyle = ({
 						/>
 					</div>
 	{/* SOLD Badge Overlay - Diagonal from edge to edge */}
-		{status === "Sold" && (
+		{status === "Sold" && featureType !== "EXPERIENCES" && (
 			<div
 				style={{
 					position: "absolute",
@@ -436,7 +436,7 @@ const ListStyle = ({
 			</Link>
 		
 		{/* Contact Buttons or SOLD message - Outside Link */}
-		{status === "Sold" ? (
+		{status === "Sold" && featureType !== "EXPERIENCES" ? (
 			<div style={{ 
 				padding: "12px 20px 20px 20px", 
 				borderTop: "1px solid #f7f7f7",

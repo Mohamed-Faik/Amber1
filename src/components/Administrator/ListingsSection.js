@@ -326,61 +326,61 @@ const ListingsSection = ({ listings: initialListings }) => {
 										</button>
 									)}
 
-							{listing.status === "Approved" && (
-								<button
-									onClick={() =>
-										handleStatusChange(listing.id, "Sold")
-									}
-									style={{
-										flex: 1,
-										padding: "8px 16px",
-										backgroundColor: "#10B981",
-										color: "#FFFFFF",
-										border: "none",
-										borderRadius: "8px",
-										fontSize: "14px",
-										fontWeight: "500",
-										cursor: "pointer",
-										transition: "all 0.2s ease",
-									}}
-									onMouseEnter={(e) => {
-										e.currentTarget.style.backgroundColor = "#059669";
-									}}
-									onMouseLeave={(e) => {
-										e.currentTarget.style.backgroundColor = "#10B981";
-									}}
-								>
-									Mark as Sold
-								</button>
-							)}
+						{listing.status === "Approved" && listing.featureType !== "EXPERIENCES" && (
+							<button
+								onClick={() =>
+									handleStatusChange(listing.id, "Sold")
+								}
+								style={{
+									flex: 1,
+									padding: "8px 16px",
+									backgroundColor: "#10B981",
+									color: "#FFFFFF",
+									border: "none",
+									borderRadius: "8px",
+									fontSize: "14px",
+									fontWeight: "500",
+									cursor: "pointer",
+									transition: "all 0.2s ease",
+								}}
+								onMouseEnter={(e) => {
+									e.currentTarget.style.backgroundColor = "#059669";
+								}}
+								onMouseLeave={(e) => {
+									e.currentTarget.style.backgroundColor = "#10B981";
+								}}
+							>
+								Mark as Sold
+							</button>
+						)}
 
-							{listing.status === "Sold" && (
-								<button
-									onClick={() =>
-										handleStatusChange(listing.id, "Approved")
-									}
-									style={{
-										flex: 1,
-										padding: "8px 16px",
-										backgroundColor: "#3B82F6",
-										color: "#FFFFFF",
-										border: "none",
-										borderRadius: "8px",
-										fontSize: "14px",
-										fontWeight: "500",
-										cursor: "pointer",
-										transition: "all 0.2s ease",
-									}}
-									onMouseEnter={(e) => {
-										e.currentTarget.style.backgroundColor = "#2563EB";
-									}}
-									onMouseLeave={(e) => {
-										e.currentTarget.style.backgroundColor = "#3B82F6";
-									}}
-								>
-									Unmark as Sold
-								</button>
-							)}
+						{listing.status === "Sold" && listing.featureType !== "EXPERIENCES" && (
+							<button
+								onClick={() =>
+									handleStatusChange(listing.id, "Approved")
+								}
+								style={{
+									flex: 1,
+									padding: "8px 16px",
+									backgroundColor: "#3B82F6",
+									color: "#FFFFFF",
+									border: "none",
+									borderRadius: "8px",
+									fontSize: "14px",
+									fontWeight: "500",
+									cursor: "pointer",
+									transition: "all 0.2s ease",
+								}}
+								onMouseEnter={(e) => {
+									e.currentTarget.style.backgroundColor = "#2563EB";
+								}}
+								onMouseLeave={(e) => {
+									e.currentTarget.style.backgroundColor = "#3B82F6";
+								}}
+							>
+								Unmark as Sold
+							</button>
+						)}
 
 							<button
 								onClick={() => handleDelete(listing.id)}

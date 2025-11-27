@@ -5,6 +5,8 @@ import { formattedPrice } from "@/utils/formattedPrice";
 import { getListingImage } from "@/utils/getListingImage";
 import ContactButtons from "../Listing/ContactButtons";
 import ListingImageCarousel from "../Listing/ListingImageCarousel";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { getTranslation } from "@/utils/translations";
 import rulerIcon from "../../../public/images/icon/ruler.svg";
 import bedIcon from "../../../public/images/icon/bed.svg";
 import bathroomIcon from "../../../public/images/icon/bathroom.svg";
@@ -30,6 +32,8 @@ const FeaturedItem = ({
 	isPremium,
 	...listing
 }) => {
+	const { language, isDetecting } = useLanguage();
+	const displayLanguage = isDetecting ? "en" : language;
 	const mainImage = getListingImage(imageSrc);
 	const displayPrice = formattedPrice(price);
 	const displayRating = rating || "4.8"; // Default rating if not available
@@ -51,6 +55,13 @@ const FeaturedItem = ({
 
 	// Check if listing is new (created within last 30 days)
 	const isNew = created_at ? (new Date() - new Date(created_at)) / (1000 * 60 * 60 * 24) < 30 : false;
+
+	// Translate category name
+	const translateCategory = (cat) => {
+		if (!cat) return "";
+		const categoryKey = cat.toLowerCase();
+		return getTranslation(displayLanguage, `categories.${categoryKey}`) || cat;
+	};
 
 	return (
 		<div
@@ -106,9 +117,9 @@ const FeaturedItem = ({
 							/>
 						</div>
 
-				{/* NEW Badge or SOLD Badge - Pink/Green rounded rectangle overlay */}
-				{status === "Sold" ? (
-					<div
+			{/* NEW Badge or SOLD Badge - Pink/Green rounded rectangle overlay */}
+			{status === "Sold" && featureType !== "EXPERIENCES" ? (
+				<div
 						style={{
 							position: "absolute",
 							top: "16px",
@@ -124,7 +135,7 @@ const FeaturedItem = ({
 							boxShadow: "0 2px 8px rgba(16, 185, 129, 0.4)",
 						}}
 					>
-						SOLD
+						{getTranslation(displayLanguage, "listings.sold")}
 					</div>
 				) : isNew && (
 					<div
@@ -143,12 +154,12 @@ const FeaturedItem = ({
 							boxShadow: "0 2px 8px rgba(255, 56, 92, 0.4)",
 						}}
 					>
-						NEW
+						{getTranslation(displayLanguage, "listings.new")}
 					</div>
 				)}
 
 		{/* SOLD Badge Overlay - Diagonal from edge to edge */}
-			{status === "Sold" && (
+			{status === "Sold" && featureType !== "EXPERIENCES" && (
 				<div
 					style={{
 						position: "absolute",
@@ -168,7 +179,7 @@ const FeaturedItem = ({
 						boxShadow: "0 4px 12px rgba(16, 185, 129, 0.4)",
 					}}
 				>
-					SOLD
+					{getTranslation(displayLanguage, "listings.sold")}
 				</div>
 			)}
 				</div>
@@ -223,7 +234,7 @@ const FeaturedItem = ({
 							alignItems: "center",
 							gap: "6px"
 						}}>
-						<span>AmberHomes User</span>
+						<span>{getTranslation(displayLanguage, "listings.amberHomesUser")}</span>
 						{isPremium && (
 							<svg 
 								width="16" 
@@ -261,7 +272,7 @@ const FeaturedItem = ({
 							letterSpacing: "0.5px",
 						}}
 					>
-						{displayListingType === "RENT" ? "FOR RENT" : displayListingType === "DAILY_RENT" ? "FOR RENT (DAILY)" : "FOR SALE"}
+						{displayListingType === "RENT" ? getTranslation(displayLanguage, "listings.forRent") : displayListingType === "DAILY_RENT" ? getTranslation(displayLanguage, "listings.forRentDaily") : getTranslation(displayLanguage, "listings.forSale")}
 					</span>
 					
 				{isPremium && (
@@ -286,7 +297,7 @@ const FeaturedItem = ({
 							height="14"
 							style={{ display: "block" }}
 						/>
-						Premium
+						{getTranslation(displayLanguage, "listings.premium")}
 					</span>
 				)}
 				</div>
@@ -333,17 +344,17 @@ const FeaturedItem = ({
 							</span>
 						</div>
 
-						{/* Property Type */}
-						<div
-							style={{
-								fontSize: "15px",
-								fontWeight: "500",
-								color: "#222222",
-								marginBottom: "8px",
-							}}
-						>
-							{category || "Property"}
-						</div>
+					{/* Property Type */}
+					<div
+						style={{
+							fontSize: "15px",
+							fontWeight: "500",
+							color: "#222222",
+							marginBottom: "8px",
+						}}
+					>
+						{translateCategory(category) || getTranslation(displayLanguage, "listings.title")}
+					</div>
 
 						{/* Location with Pin Icon */}
 						<div
@@ -457,7 +468,7 @@ const FeaturedItem = ({
 												style={{ flexShrink: 0, opacity: 0.7 }}
 											/>
 											<span style={{ fontWeight: "500" }}>
-												{bedrooms} {bedrooms === 1 ? "Chambre" : "Chambres"}
+												{bedrooms} {bedrooms === 1 ? getTranslation(displayLanguage, "listings.bedroom") : getTranslation(displayLanguage, "listings.bedrooms")}
 											</span>
 										</div>
 									)}
@@ -473,7 +484,7 @@ const FeaturedItem = ({
 												style={{ flexShrink: 0, opacity: 0.7 }}
 											/>
 											<span style={{ fontWeight: "500" }}>
-												{bathrooms} {bathrooms === 1 ? "Salle de bain" : "Salles de bain"}
+												{bathrooms} {bathrooms === 1 ? getTranslation(displayLanguage, "listings.bathroom") : getTranslation(displayLanguage, "listings.bathrooms")}
 											</span>
 										</div>
 									)}
@@ -486,7 +497,7 @@ const FeaturedItem = ({
 		</Link>
 		
 		{/* Contact Buttons or SOLD message - Outside Link to prevent navigation */}
-		{status === "Sold" ? (
+		{status === "Sold" && featureType !== "EXPERIENCES" ? (
 			<div style={{ 
 				padding: "12px 16px 16px 16px", 
 				backgroundColor: "#FFFFFF", 
@@ -502,7 +513,7 @@ const FeaturedItem = ({
 					fontSize: "14px",
 					border: "1px solid #A7F3D0",
 				}}>
-					This property has been sold
+					{getTranslation(displayLanguage, "listings.propertySold")}
 				</div>
 			</div>
 		) : (

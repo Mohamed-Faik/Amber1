@@ -2,8 +2,12 @@
 import React, { useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { getTranslation } from "@/utils/translations";
 
 const Footer = () => {
+	const { language, isDetecting } = useLanguage();
+	const displayLanguage = isDetecting ? "en" : language;
 	const footerRef = useRef(null);
 	
 	// Prevent duplicate rendering
@@ -20,21 +24,21 @@ const Footer = () => {
 	}, []);
 
 	const quickLinks = [
-		{ label: "About Us", href: "/about-us" },
-		{ label: "Contact", href: "/contact-us" },
-		{ label: "Blog", href: "/blog" },
-		{ label: "FAQ", href: "/faq" },
+		{ label: getTranslation(displayLanguage, "pages.aboutUs"), href: "/about-us" },
+		{ label: getTranslation(displayLanguage, "pages.contactUs"), href: "/contact-us" },
+		{ label: getTranslation(displayLanguage, "pages.blog"), href: "/blog" },
+		{ label: getTranslation(displayLanguage, "pages.faq"), href: "/faq" },
 	];
 
 	const legalLinks = [
-		{ label: "Terms & Conditions", href: "/terms-condition" },
-		{ label: "Privacy Policy", href: "/privacy-policy" },
+		{ label: getTranslation(displayLanguage, "pages.termsConditions"), href: "/terms-condition" },
+		{ label: getTranslation(displayLanguage, "pages.privacyPolicy"), href: "/privacy-policy" },
 	];
 
 	const listingLinks = [
-		{ label: "Browse Listings", href: "/listings" },
-		{ label: "Create Listing", href: "/listings/new" },
-		{ label: "My Listings", href: "/listings/my-listings" },
+		{ label: getTranslation(displayLanguage, "listings.title"), href: "/listings" },
+		{ label: getTranslation(displayLanguage, "listings.addListing"), href: "/listings/new" },
+		{ label: getTranslation(displayLanguage, "listings.myListings"), href: "/listings/my-listings" },
 	];
 
 	return (
@@ -101,7 +105,7 @@ const Footer = () => {
 								maxWidth: "280px",
 							}}
 						>
-							Find your perfect property. Discover amazing places to stay, work, and live.
+							{getTranslation(displayLanguage, "footer.description")}
 						</p>
 						{/* Social Media */}
 						<div
@@ -213,7 +217,7 @@ const Footer = () => {
 								marginBottom: "20px",
 							}}
 						>
-							Quick Links
+							{getTranslation(displayLanguage, "footer.quickLinks")}
 						</h3>
 						<ul
 							style={{
@@ -261,7 +265,7 @@ const Footer = () => {
 								marginBottom: "20px",
 							}}
 						>
-							Listings
+							{getTranslation(displayLanguage, "listings.title")}
 						</h3>
 						<ul
 							style={{
@@ -309,7 +313,7 @@ const Footer = () => {
 								marginBottom: "20px",
 							}}
 						>
-							Legal
+							{getTranslation(displayLanguage, "footer.legal")}
 						</h3>
 						<ul
 							style={{
@@ -374,7 +378,7 @@ const Footer = () => {
 								color: "#b0b0b0",
 							}}
 						>
-							© {new Date().getFullYear()} AmberHomes. All rights reserved.
+							© {new Date().getFullYear()} AmberHomes. {getTranslation(displayLanguage, "footer.copyright")}.
 						</span>
 					</div>
 					<div

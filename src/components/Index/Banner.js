@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import axios from "axios";
 import { categories as allCategories } from "@/libs/Categories";
+import { moroccanCities } from "@/libs/moroccanCities";
 import LocationFind from "./LocationFind";
 import { toast } from "react-hot-toast";
 import { Home, MapPin, Navigation, ChevronDown } from "lucide-react";
@@ -15,29 +16,38 @@ const Banner = () => {
 	const router = useRouter();
 	const { language, isDetecting } = useLanguage();
 	const displayLanguage = isDetecting ? "en" : language;
-	const [saleType, setSaleType] = useState(getTranslation(displayLanguage, "hero.forSale"));
+	const [saleType, setSaleType] = useState("forSale");
 	const [category, setCategory] = useState("");
 	const [location, setLocation] = useState("");
 	const [street, setStreet] = useState("");
 	const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
 	const [showSaleTypeDropdown, setShowSaleTypeDropdown] = useState(false);
+	const [showLocationDropdown, setShowLocationDropdown] = useState(false);
+	const [locationSearchTerm, setLocationSearchTerm] = useState("");
 	const [locations, setLocations] = useState([]);
 	const [locSuggest, setLocSuggest] = useState(false);
 	const categoryInputRef = useRef(null);
 	const saleTypeInputRef = useRef(null);
+	const locationInputRef = useRef(null);
 	const dropdownRef = useRef(null);
 	const saleTypeDropdownRef = useRef(null);
+	const locationDropdownRef = useRef(null);
 
 	const handleSearch = (e) => {
 		e.preventDefault();
 		const params = new URLSearchParams();
 		if (category) params.append("category", category);
 		if (location) params.append("location_value", location);
-		// Map saleType to listingType: "For sale" -> "SALE", "For rent" -> don't filter (let search page handle monthly/daily)
-		if (saleType === getTranslation(displayLanguage, "hero.forSale")) {
+		
+		// Map saleType to listingType
+		if (saleType === "forSale") {
 			params.append("listingType", "SALE");
+		} else if (saleType === "forRent") {
+			params.append("listingType", "RENT");
+		} else if (saleType === "forRentDaily") {
+			params.append("listingType", "DAILY_RENT");
 		}
-		// For "For rent", don't pass listingType - users can filter by monthly/daily on search page
+		
 		router.push(`/listings?${params.toString()}`);
 	};
 
@@ -63,10 +73,27 @@ const Banner = () => {
 		setShowSaleTypeDropdown((prev) => !prev);
 	};
 
+	const handleLocationClick = (e) => {
+		e.preventDefault();
+		e.stopPropagation();
+		setShowLocationDropdown((prev) => !prev);
+	};
+
+	const handleLocationCitySelect = (cityLabel) => {
+		setLocation(cityLabel);
+		setLocationSearchTerm(cityLabel);
+		setShowLocationDropdown(false);
+	};
+
 	const handleLocationSelect = (loc) => {
 		setLocSuggest(false);
 		setLocation(loc);
 	};
+
+	// Filter cities based on search term
+	const filteredCities = moroccanCities.filter((city) =>
+		city.label.toLowerCase().includes(locationSearchTerm.toLowerCase())
+	);
 
 	const locationFind = useCallback((locValue) => {
 		if (locValue) {
@@ -101,20 +128,35 @@ const Banner = () => {
 			) {
 				setShowSaleTypeDropdown(false);
 			}
+			if (
+				locationDropdownRef.current &&
+				!locationDropdownRef.current.contains(event.target) &&
+				locationInputRef.current &&
+				!locationInputRef.current.contains(event.target)
+			) {
+				setShowLocationDropdown(false);
+			}
 		};
 
-		if (showCategoryDropdown || showSaleTypeDropdown) {
+		if (showCategoryDropdown || showSaleTypeDropdown || showLocationDropdown) {
 			document.addEventListener("mousedown", handleClickOutside);
 		}
 		return () => {
 			document.removeEventListener("mousedown", handleClickOutside);
 		};
-	}, [showCategoryDropdown, showSaleTypeDropdown]);
+	}, [showCategoryDropdown, showSaleTypeDropdown, showLocationDropdown]);
 
 	const saleTypes = [
-		getTranslation(displayLanguage, "hero.forSale"),
-		getTranslation(displayLanguage, "hero.forRent")
+		{ key: "forSale", label: getTranslation(displayLanguage, "hero.forSale") },
+		{ key: "forRent", label: getTranslation(displayLanguage, "hero.forRent") },
+		{ key: "forRentDaily", label: getTranslation(displayLanguage, "hero.forRentDaily") }
 	];
+
+	// Get translated label for current saleType
+	const getSaleTypeLabel = (key) => {
+		const type = saleTypes.find(t => t.key === key);
+		return type ? type.label : key;
+	};
 
 	return (
 		<div
@@ -287,7 +329,7 @@ const Banner = () => {
 											}
 										}}
 									>
-										<span>{saleType}</span>
+										<span>{getSaleTypeLabel(saleType)}</span>
 										<ChevronDown 
 											size={18} 
 											color={showSaleTypeDropdown ? "#FF385C" : "#717171"}
@@ -331,55 +373,55 @@ const Banner = () => {
 											pointerEvents: showSaleTypeDropdown ? "auto" : "none",
 										}}
 									>
-										{saleTypes.map((type, index) => (
-											<div
-												key={type}
-												onClick={() => handleSaleTypeSelect(type)}
-												style={{
-													padding: "16px 20px",
-													cursor: "pointer",
-													borderBottom:
-														index !== saleTypes.length - 1
-															? "1px solid #F0F0F0"
-															: "none",
-														transition: "all 0.15s ease",
-														fontSize: "14px",
-														fontWeight: saleType === type ? "600" : "400",
-														color: saleType === type ? "#FF385C" : "#222222",
-														backgroundColor: saleType === type ? "#FFF5F7" : "#ffffff",
-														display: "flex",
-														alignItems: "center",
-														gap: "8px",
-													}}
-													onMouseEnter={(e) => {
-														if (saleType !== type) {
-															e.currentTarget.style.backgroundColor = "#F7F7F7";
-														}
-													}}
-													onMouseLeave={(e) => {
-														if (saleType !== type) {
-															e.currentTarget.style.backgroundColor = "#ffffff";
-														} else {
-															e.currentTarget.style.backgroundColor = "#FFF5F7";
-														}
-													}}
-												>
-													{saleType === type && (
-														<svg
-															width="16"
-															height="16"
-															viewBox="0 0 24 24"
-															fill="none"
-															stroke="#FF385C"
-															strokeWidth="3"
-															style={{ flexShrink: 0 }}
-														>
-															<polyline points="20 6 9 17 4 12"></polyline>
-														</svg>
-													)}
-													<span>{type}</span>
-												</div>
-											))}
+									{saleTypes.map((type, index) => (
+										<div
+											key={type.key}
+											onClick={() => handleSaleTypeSelect(type.key)}
+											style={{
+												padding: "16px 20px",
+												cursor: "pointer",
+												borderBottom:
+													index !== saleTypes.length - 1
+														? "1px solid #F0F0F0"
+														: "none",
+													transition: "all 0.15s ease",
+													fontSize: "14px",
+													fontWeight: saleType === type.key ? "600" : "400",
+													color: saleType === type.key ? "#FF385C" : "#222222",
+													backgroundColor: saleType === type.key ? "#FFF5F7" : "#ffffff",
+													display: "flex",
+													alignItems: "center",
+													gap: "8px",
+												}}
+												onMouseEnter={(e) => {
+													if (saleType !== type.key) {
+														e.currentTarget.style.backgroundColor = "#F7F7F7";
+													}
+												}}
+												onMouseLeave={(e) => {
+													if (saleType !== type.key) {
+														e.currentTarget.style.backgroundColor = "#ffffff";
+													} else {
+														e.currentTarget.style.backgroundColor = "#FFF5F7";
+													}
+												}}
+											>
+												{saleType === type.key && (
+													<svg
+														width="16"
+														height="16"
+														viewBox="0 0 24 24"
+														fill="none"
+														stroke="#FF385C"
+														strokeWidth="3"
+														style={{ flexShrink: 0 }}
+													>
+														<polyline points="20 6 9 17 4 12"></polyline>
+													</svg>
+												)}
+												<span>{type.label}</span>
+											</div>
+										))}
 										</div>
 								</div>
 
@@ -493,26 +535,26 @@ const Banner = () => {
 													}
 												}}
 											>
-												<div
-													style={{
-														width: "32px",
-														height: "32px",
-														borderRadius: "6px",
-														backgroundColor: "#f0f4f8",
-														display: "flex",
-														alignItems: "center",
-														justifyContent: "center",
-														flexShrink: 0,
-													}}
-												>
-													<Image
-														src={cat.imageSrc}
-														width={20}
-														height={20}
-														alt={cat.label}
-														style={{ objectFit: "contain" }}
-													/>
-												</div>
+											<div
+												style={{
+													width: "32px",
+													height: "32px",
+													borderRadius: "6px",
+													backgroundColor: "#f0f4f8",
+													display: "flex",
+													alignItems: "center",
+													justifyContent: "center",
+													flexShrink: 0,
+												}}
+											>
+											<Image
+												src={cat.imageSrc}
+												width={20}
+												height={20}
+												alt={cat.label}
+												style={{ objectFit: "contain" }}
+											/>
+											</div>
 												<div
 													style={{
 														fontSize: "14px",
@@ -547,38 +589,48 @@ const Banner = () => {
 								className="banner-form-bottom-row"
 								style={{
 									display: "grid",
-									gridTemplateColumns: "1fr 1fr auto",
+									gridTemplateColumns: "1fr auto",
 									gap: "16px",
 									alignItems: "end",
 								}}
 							>
-								{/* Where are you looking? */}
-								<div style={{ position: "relative" }}>
+								{/* City/Location Dropdown */}
+								<div style={{ position: "relative", zIndex: showLocationDropdown ? 1001 : 1 }} ref={locationInputRef}>
 									<input
 										type="text"
 										placeholder={getTranslation(displayLanguage, "hero.location")}
-										value={location}
+										value={locationSearchTerm}
 										onChange={(e) => {
+											setLocationSearchTerm(e.target.value);
 											setLocation(e.target.value);
-											locationFind(e.target.value);
+											setShowLocationDropdown(true);
 										}}
+										onClick={handleLocationClick}
 										style={{
 											width: "100%",
 											padding: "14px 16px 14px 44px",
-											border: "1px solid #E0E0E0",
+											border: showLocationDropdown ? "2px solid #FF385C" : "1px solid #E0E0E0",
 											borderRadius: "12px",
-											backgroundColor: "#F7F7F7",
+											backgroundColor: showLocationDropdown ? "#FFFFFF" : "#F7F7F7",
 											fontSize: "14px",
+											fontWeight: "500",
 											outline: "none",
+											cursor: "text",
+											color: locationSearchTerm ? "#222222" : "#717171",
 											transition: "all 0.2s ease",
+											boxShadow: showLocationDropdown ? "0 4px 12px rgba(255, 56, 92, 0.15)" : "none",
 										}}
-										onFocus={(e) => {
-											e.currentTarget.style.borderColor = "#FF385C";
-											e.currentTarget.style.backgroundColor = "#FFFFFF";
+										onMouseEnter={(e) => {
+											if (!showLocationDropdown) {
+												e.currentTarget.style.borderColor = "#FF385C";
+												e.currentTarget.style.backgroundColor = "#FFFFFF";
+											}
 										}}
-										onBlur={(e) => {
-											e.currentTarget.style.borderColor = "#E0E0E0";
-											e.currentTarget.style.backgroundColor = "#F7F7F7";
+										onMouseLeave={(e) => {
+											if (!showLocationDropdown) {
+												e.currentTarget.style.borderColor = "#E0E0E0";
+												e.currentTarget.style.backgroundColor = "#F7F7F7";
+											}
 										}}
 									/>
 									<div
@@ -588,16 +640,99 @@ const Banner = () => {
 											top: "50%",
 											transform: "translateY(-50%)",
 											pointerEvents: "none",
+											zIndex: 1,
 										}}
 									>
-										<MapPin size={18} color="#717171" />
+										<MapPin size={18} color={showLocationDropdown ? "#FF385C" : "#717171"} />
 									</div>
-									{locations.length > 0 && locSuggest && (
-										<LocationFind
-											locations={locations}
-											onSelect={handleLocationSelect}
-										/>
-									)}
+									{/* Location Dropdown */}
+									<div
+										ref={locationDropdownRef}
+										style={{
+											position: "absolute",
+											top: "calc(100% + 8px)",
+											left: 0,
+											right: 0,
+											backgroundColor: "#ffffff",
+											border: "1px solid #E0E0E0",
+											borderRadius: "12px",
+											boxShadow: "0 12px 32px rgba(0, 0, 0, 0.2), 0 4px 8px rgba(0, 0, 0, 0.1)",
+											zIndex: 1002,
+											overflow: "hidden",
+											maxHeight: "300px",
+											overflowY: "auto",
+											marginTop: "4px",
+											opacity: showLocationDropdown ? 1 : 0,
+											transform: showLocationDropdown ? "translateY(0)" : "translateY(-10px)",
+											visibility: showLocationDropdown ? "visible" : "hidden",
+											transition: "opacity 0.2s ease-out, transform 0.2s ease-out, visibility 0.2s ease-out",
+											pointerEvents: showLocationDropdown ? "auto" : "none",
+										}}
+									>
+										{filteredCities.length > 0 ? (
+											filteredCities.map((city, index) => (
+												<div
+													key={city.value}
+													onClick={() => handleLocationCitySelect(city.label)}
+													style={{
+														padding: "16px 20px",
+														cursor: "pointer",
+														borderBottom:
+															index !== filteredCities.length - 1
+																? "1px solid #F0F0F0"
+																: "none",
+														transition: "all 0.15s ease",
+														fontSize: "14px",
+														fontWeight: location === city.label ? "600" : "400",
+														color: location === city.label ? "#FF385C" : "#222222",
+														backgroundColor: location === city.label ? "#FFF5F7" : "#ffffff",
+														display: "flex",
+														alignItems: "center",
+														gap: "8px",
+													}}
+													onMouseEnter={(e) => {
+														if (location !== city.label) {
+															e.currentTarget.style.backgroundColor = "#F7F7F7";
+														}
+													}}
+													onMouseLeave={(e) => {
+														if (location !== city.label) {
+															e.currentTarget.style.backgroundColor = "#ffffff";
+														} else {
+															e.currentTarget.style.backgroundColor = "#FFF5F7";
+														}
+													}}
+												>
+													<MapPin size={16} color={location === city.label ? "#FF385C" : "#717171"} />
+													<span>{city.label}</span>
+													{location === city.label && (
+														<svg
+															width="16"
+															height="16"
+															viewBox="0 0 24 24"
+															fill="none"
+															stroke="#FF385C"
+															strokeWidth="3"
+															style={{ flexShrink: 0, marginLeft: "auto" }}
+														>
+															<polyline points="20 6 9 17 4 12"></polyline>
+														</svg>
+													)}
+												</div>
+											))
+										) : (
+											<div
+												style={{
+													padding: "16px 20px",
+													fontSize: "14px",
+													color: "#717171",
+													textAlign: "center",
+												}}
+											>
+												No cities found
+											</div>
+										)}
+									</div>
 							</div>
 
 							{/* Search Button */}

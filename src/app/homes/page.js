@@ -1,5 +1,5 @@
 import React from "react";
-import { Home, LayoutGrid } from "lucide-react";
+import { LayoutGrid } from "lucide-react";
 import Listings from "@/components/Listings/Index";
 import SearchForm from "@/components/Listings/SearchForm";
 import getListings from "@/actions/getListings";
@@ -48,67 +48,41 @@ const HomesPage = async ({ searchParams }) => {
 			
 			<div style={{ height: "80px" }} />
 			
-			{/* Search Form Section - Styled */}
-			<div className="homes-search-section" style={{
-				position: "relative",
-				zIndex: 1,
-				marginBottom: "48px",
+		{/* Compact Search Bar Section - Airbnb Style */}
+		<div className="homes-search-section" style={{
+			position: "relative",
+			zIndex: 100,
+			marginBottom: "32px",
+		}}>
+			<div className="homes-search-wrapper" style={{
+				maxWidth: "850px",
+				margin: "0 auto",
+				padding: "0 24px",
 			}}>
-				<div className="homes-search-wrapper" style={{
-					maxWidth: "1760px",
-					margin: "0 auto",
-					padding: "0 10px",
+				<div style={{
+					textAlign: "center",
+					marginBottom: "24px",
 				}}>
-					<div className="homes-search-card" style={{
-						backgroundColor: "#FFFFFF",
-						borderRadius: "16px",
-						padding: "40px",
-						boxShadow: "0 2px 12px rgba(0, 0, 0, 0.08)",
-						border: "1px solid #E0E0E0",
+					<h1 style={{
+						fontSize: "32px",
+						fontWeight: "600",
+						color: "#222222",
+						margin: "0 0 8px 0",
+						letterSpacing: "-0.5px",
 					}}>
-						<div className="homes-search-header" style={{
-							display: "flex",
-							alignItems: "center",
-							gap: "16px",
-							marginBottom: "32px",
-						}}>
-							<div style={{
-								width: "56px",
-								height: "56px",
-								borderRadius: "16px",
-								background: "linear-gradient(135deg, #FF385C 0%, #E61E4D 50%, #D70466 100%)",
-								display: "flex",
-								alignItems: "center",
-								justifyContent: "center",
-								boxShadow: "0 8px 24px rgba(255, 56, 92, 0.25)",
-							}}>
-								<Home size={28} color="#FFFFFF" strokeWidth={2.5} />
-							</div>
-							<div>
-								<h1 style={{
-									fontSize: "36px",
-									fontWeight: "700",
-									color: "#222222",
-									margin: "0 0 4px 0",
-									lineHeight: "1.1",
-									letterSpacing: "-0.5px",
-								}}>
-									Find Your Perfect Home
-								</h1>
-								<p style={{
-									fontSize: "15px",
-									color: "#717171",
-									margin: "0",
-									fontWeight: "500",
-								}}>
-									Search & Explore Properties
-								</p>
-							</div>
-						</div>
-						<SearchForm searchParams={searchParams} />
-					</div>
+						Find Your Perfect Home
+					</h1>
+					<p style={{
+						fontSize: "16px",
+						color: "#717171",
+						margin: "0",
+					}}>
+						Search & explore properties
+					</p>
 				</div>
+				<SearchForm searchParams={searchParams} featureType="HOMES" />
 			</div>
+		</div>
 
 			{/* Listings Section */}
 			<div className="homes-results-section" style={{

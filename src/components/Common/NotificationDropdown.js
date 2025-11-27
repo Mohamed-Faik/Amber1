@@ -3,7 +3,7 @@ import React from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
 import Image from "next/image";
-import { Bell, Home, User, FileText, X, Heart, CheckCircle } from "lucide-react";
+import { Bell, User, FileText, X, Heart, CheckCircle } from "lucide-react";
 import userImg from "../../../public/images/authors/author-1.jpg";
 
 /**

@@ -236,15 +236,15 @@ const SearchForm = () => {
 												"0 2px 4px rgba(0,0,0,0.05)",
 										}}
 									>
-										<Image
-											src={cat.imageSrc}
-											width={24}
-											height={24}
-											alt={cat.label}
-											style={{
-												objectFit: "contain",
-											}}
-										/>
+								<Image
+									src={cat.imageSrc}
+									width={24}
+									height={24}
+									alt={cat.label}
+									style={{
+										objectFit: "contain",
+									}}
+								/>
 									</div>
 									<div
 										style={{

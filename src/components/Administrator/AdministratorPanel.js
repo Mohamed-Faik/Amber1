@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import Link from "next/link";
-import { Shield, LayoutGrid, Users, Star, FileText, FileEdit, Sparkles, Plus, Home } from "lucide-react";
+import { Shield, LayoutGrid, Users, Star, FileText, FileEdit, Sparkles, Plus, Home as HomeIcon } from "lucide-react";
 import ListingsSection from "./ListingsSection";
 import UsersSection from "./UsersSection";
 import ReviewsSection from "./ReviewsSection";
@@ -132,7 +132,7 @@ const AdministratorPanel = ({
 							}}
 						>
 							<Plus size={18} />
-							<Home size={18} />
+							<HomeIcon size={18} />
 							<span>Create Home</span>
 						</Link>
 						<Link

@@ -98,7 +98,7 @@ const GridStyle = ({
 						/>
 					</div>
 	{/* SOLD Badge Overlay - Diagonal from edge to edge */}
-		{status === "Sold" && (
+		{status === "Sold" && featureType !== "EXPERIENCES" && (
 			<div
 				style={{
 					position: "absolute",
@@ -426,7 +426,7 @@ const GridStyle = ({
 			</Link>
 		
 		{/* Contact Buttons or SOLD message - Outside Link */}
-		{status === "Sold" ? (
+		{status === "Sold" && featureType !== "EXPERIENCES" ? (
 			<div style={{ 
 				padding: "12px 16px 16px 16px", 
 				borderTop: "1px solid #f7f7f7",

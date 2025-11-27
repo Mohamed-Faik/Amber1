@@ -18,6 +18,14 @@ const experienceCategories = [
 	{ value: "Nature & Wildlife", label: "Nature & Wildlife", icon: "🦁" },
 ];
 
+// Property Categories for Homes
+const propertyCategories = [
+	{ value: "Villa", label: "Villa", icon: "🏰" },
+	{ value: "Apartment", label: "Apartment", icon: "🏢" },
+	{ value: "House", label: "House", icon: "🏠" },
+	{ value: "Land", label: "Land", icon: "🌳" },
+];
+
 const SearchForm = ({ searchParams, featureType }) => {
 	const [category, setCategory] = useState("");
 	const [locationValue, setLocationValue] = useState("");
@@ -25,6 +33,9 @@ const SearchForm = ({ searchParams, featureType }) => {
 	const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
 	const dropdownRef = useRef(null);
 	const router = useRouter();
+
+	// Select categories based on feature type
+	const categories = featureType === "EXPERIENCES" ? experienceCategories : propertyCategories;
 
 	useEffect(() => {
 		if (searchParams) {
@@ -62,12 +73,16 @@ const SearchForm = ({ searchParams, featureType }) => {
 		if (listingType) params.append("listingType", listingType);
 		
 		// Route to correct page based on feature type
-		const basePath = featureType === "EXPERIENCES" ? "/experiences" : "/listings";
+		const basePath = featureType === "EXPERIENCES" 
+			? "/experiences" 
+			: featureType === "HOMES" 
+				? "/homes" 
+				: "/listings";
 		router.push(`${basePath}?${params.toString()}`);
 	}, [category, locationValue, listingType, featureType, router]);
 
-	// Airbnb-style compact design for Experiences
-	if (featureType === "EXPERIENCES") {
+	// Airbnb-style compact design for Experiences and Homes
+	if (featureType === "EXPERIENCES" || featureType === "HOMES") {
 		return (
 			<form onSubmit={handleSearch} style={{ position: "relative", zIndex: 100 }}>
 				<div style={{
@@ -157,14 +172,14 @@ const SearchForm = ({ searchParams, featureType }) => {
 							e.currentTarget.style.backgroundColor = "transparent";
 						}}
 					>
-						<div style={{
-							fontSize: "12px",
-							fontWeight: "600",
-							color: "#222222",
-							marginBottom: "2px",
-						}}>
-							Type of service
-						</div>
+					<div style={{
+						fontSize: "12px",
+						fontWeight: "600",
+						color: "#222222",
+						marginBottom: "2px",
+					}}>
+						{featureType === "EXPERIENCES" ? "Type of service" : "Property type"}
+					</div>
 						<div style={{
 							fontSize: "14px",
 							color: category ? "#222222" : "#717171",
@@ -173,8 +188,8 @@ const SearchForm = ({ searchParams, featureType }) => {
 							whiteSpace: "nowrap",
 						}}>
 							{category 
-								? experienceCategories.find(cat => cat.value === category)?.label
-								: "Add service"
+								? categories.find(cat => cat.value === category)?.label
+								: (featureType === "EXPERIENCES" ? "Add service" : "Add property type")
 							}
 						</div>
 
@@ -194,7 +209,7 @@ const SearchForm = ({ searchParams, featureType }) => {
 								overflowY: "auto",
 								minWidth: "240px",
 							}}>
-								{experienceCategories.map((cat) => (
+								{categories.map((cat) => (
 									<div
 										key={cat.value}
 										onClick={(e) => {
@@ -220,7 +235,7 @@ const SearchForm = ({ searchParams, featureType }) => {
 											e.currentTarget.style.backgroundColor = category === cat.value ? "#F7F7F7" : "transparent";
 										}}
 									>
-										<span style={{ fontSize: "18px" }}>{cat.icon}</span>
+								<span style={{ fontSize: "18px" }}>{cat.icon}</span>
 										<span>{cat.label}</span>
 									</div>
 								))}
@@ -340,12 +355,19 @@ const SearchForm = ({ searchParams, featureType }) => {
 									boxShadow: showCategoryDropdown ? "0 0 0 4px rgba(255, 56, 92, 0.1)" : "none",
 								}}
 							>
-								<span>
-									{category 
-										? experienceCategories.find(cat => cat.value === category)?.icon + " " + category
-										: "Select experience type..."
-									}
-								</span>
+						<span style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+							{category ? (
+								<>
+								{category 
+									? categories.find(cat => cat.value === category)?.icon + " " + category
+									: (featureType === "EXPERIENCES" ? "Select experience type..." : "Select property type...")
+								}
+									<span>{category}</span>
+								</>
+							) : (
+								<span>{featureType === "EXPERIENCES" ? "Select experience type..." : "Select property type..."}</span>
+							)}
+						</span>
 								<svg
 									width="16"
 									height="16"
@@ -380,7 +402,7 @@ const SearchForm = ({ searchParams, featureType }) => {
 									maxHeight: "320px",
 									overflowY: "auto",
 								}}>
-									{experienceCategories.map((cat) => (
+									{categories.map((cat) => (
 										<div
 											key={cat.value}
 											onClick={() => {
@@ -406,7 +428,7 @@ const SearchForm = ({ searchParams, featureType }) => {
 												e.currentTarget.style.backgroundColor = category === cat.value ? "#FFF4F6" : "transparent";
 											}}
 										>
-											<span style={{ fontSize: "20px" }}>{cat.icon}</span>
+									<span style={{ fontSize: "20px" }}>{cat.icon}</span>
 											<span style={{ fontWeight: category === cat.value ? "600" : "400" }}>
 												{cat.label}
 											</span>
