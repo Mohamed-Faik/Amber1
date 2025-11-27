@@ -1,29 +1,49 @@
 "use client";
 
 import React, { useState, useEffect, useCallback, useRef } from "react";
-import { Search, Globe, MapPin, ArrowRight, Sparkles } from "lucide-react";
+import { Search, Globe, MapPin, ArrowRight, Sparkles, Mountain, UtensilsCrossed, Palette, Heart, Map, BookOpen, Film, Dumbbell, ShoppingBag, Trees, Castle, Building2, Home as HomeIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
+
+// Get icon component by name
+const getIcon = (iconName, size = 18, color = "#FF385C") => {
+	const icons = {
+		Mountain: <Mountain size={size} strokeWidth={2} color={color} />,
+		UtensilsCrossed: <UtensilsCrossed size={size} strokeWidth={2} color={color} />,
+		Palette: <Palette size={size} strokeWidth={2} color={color} />,
+		Heart: <Heart size={size} strokeWidth={2} color={color} />,
+		Map: <Map size={size} strokeWidth={2} color={color} />,
+		BookOpen: <BookOpen size={size} strokeWidth={2} color={color} />,
+		Film: <Film size={size} strokeWidth={2} color={color} />,
+		Dumbbell: <Dumbbell size={size} strokeWidth={2} color={color} />,
+		ShoppingBag: <ShoppingBag size={size} strokeWidth={2} color={color} />,
+		Trees: <Trees size={size} strokeWidth={2} color={color} />,
+		Castle: <Castle size={size} strokeWidth={2} color={color} />,
+		Building2: <Building2 size={size} strokeWidth={2} color={color} />,
+		HomeIcon: <HomeIcon size={size} strokeWidth={2} color={color} />,
+	};
+	return icons[iconName] || null;
+};
 
 // Experience Categories
 const experienceCategories = [
-	{ value: "Adventure & Outdoor", label: "Adventure & Outdoor", icon: "🏔️" },
-	{ value: "Food & Drink", label: "Food & Drink", icon: "🍷" },
-	{ value: "Art & Culture", label: "Art & Culture", icon: "🎨" },
-	{ value: "Wellness", label: "Wellness", icon: "🧘" },
-	{ value: "Tours & Sightseeing", label: "Tours & Sightseeing", icon: "🗺️" },
-	{ value: "Classes & Workshops", label: "Classes & Workshops", icon: "📚" },
-	{ value: "Entertainment", label: "Entertainment", icon: "🎭" },
-	{ value: "Sports & Fitness", label: "Sports & Fitness", icon: "⚽" },
-	{ value: "Shopping", label: "Shopping", icon: "🛍️" },
-	{ value: "Nature & Wildlife", label: "Nature & Wildlife", icon: "🦁" },
+	{ value: "Adventure & Outdoor", label: "Adventure & Outdoor", icon: "Mountain" },
+	{ value: "Food & Drink", label: "Food & Drink", icon: "UtensilsCrossed" },
+	{ value: "Art & Culture", label: "Art & Culture", icon: "Palette" },
+	{ value: "Wellness", label: "Wellness", icon: "Heart" },
+	{ value: "Tours & Sightseeing", label: "Tours & Sightseeing", icon: "Map" },
+	{ value: "Classes & Workshops", label: "Classes & Workshops", icon: "BookOpen" },
+	{ value: "Entertainment", label: "Entertainment", icon: "Film" },
+	{ value: "Sports & Fitness", label: "Sports & Fitness", icon: "Dumbbell" },
+	{ value: "Shopping", label: "Shopping", icon: "ShoppingBag" },
+	{ value: "Nature & Wildlife", label: "Nature & Wildlife", icon: "Trees" },
 ];
 
 // Property Categories for Homes
 const propertyCategories = [
-	{ value: "Villa", label: "Villa", icon: "🏰" },
-	{ value: "Apartment", label: "Apartment", icon: "🏢" },
-	{ value: "House", label: "House", icon: "🏠" },
-	{ value: "Land", label: "Land", icon: "🌳" },
+	{ value: "Villa", label: "Villa", icon: "Castle" },
+	{ value: "Apartment", label: "Apartment", icon: "Building2" },
+	{ value: "House", label: "House", icon: "HomeIcon" },
+	{ value: "Land", label: "Land", icon: "Trees" },
 ];
 
 const SearchForm = ({ searchParams, featureType }) => {
@@ -235,7 +255,7 @@ const SearchForm = ({ searchParams, featureType }) => {
 											e.currentTarget.style.backgroundColor = category === cat.value ? "#F7F7F7" : "transparent";
 										}}
 									>
-								<span style={{ fontSize: "18px" }}>{cat.icon}</span>
+								{getIcon(cat.icon, 18, "#FF385C")}
 										<span>{cat.label}</span>
 									</div>
 								))}
@@ -355,19 +375,16 @@ const SearchForm = ({ searchParams, featureType }) => {
 									boxShadow: showCategoryDropdown ? "0 0 0 4px rgba(255, 56, 92, 0.1)" : "none",
 								}}
 							>
-						<span style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-							{category ? (
-								<>
-								{category 
-									? categories.find(cat => cat.value === category)?.icon + " " + category
-									: (featureType === "EXPERIENCES" ? "Select experience type..." : "Select property type...")
-								}
-									<span>{category}</span>
-								</>
-							) : (
-								<span>{featureType === "EXPERIENCES" ? "Select experience type..." : "Select property type..."}</span>
-							)}
-						</span>
+					<span style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+						{category ? (
+							<>
+								{getIcon(categories.find(cat => cat.value === category)?.icon, 18, "#FF385C")}
+								<span>{category}</span>
+							</>
+						) : (
+							<span>{featureType === "EXPERIENCES" ? "Select experience type..." : "Select property type..."}</span>
+						)}
+					</span>
 								<svg
 									width="16"
 									height="16"
@@ -428,7 +445,7 @@ const SearchForm = ({ searchParams, featureType }) => {
 												e.currentTarget.style.backgroundColor = category === cat.value ? "#FFF4F6" : "transparent";
 											}}
 										>
-									<span style={{ fontSize: "20px" }}>{cat.icon}</span>
+									{getIcon(cat.icon, 20, "#FF385C")}
 											<span style={{ fontWeight: category === cat.value ? "600" : "400" }}>
 												{cat.label}
 											</span>
