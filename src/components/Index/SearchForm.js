@@ -9,6 +9,7 @@ import globalIco from "../../../public/images/icon/global.svg";
 import LocationFind from "./LocationFind";
 import { toast } from "react-hot-toast";
 import { categories as allCategories } from "@/libs/Categories";
+import { moroccanCities, getNeighborhoodsByCity } from "@/libs/moroccanCities";
 
 const SearchForm = () => {
 	const [locations, setLocations] = useState([]);
@@ -71,14 +72,55 @@ const SearchForm = () => {
 
 	const locationFind = useCallback((locValue) => {
 		if (locValue) {
-			axios
-				.get(`/api/categories/location/${locValue}`)
-				.then((response) => {
-					setLocations(response.data);
-				})
-				.catch((error) => {
-					toast.error("Something went wromg!");
-				});
+			// First, check if it matches a city and show neighborhoods
+			const lowerValue = locValue.toLowerCase();
+			const matchedCity = moroccanCities.find(city => 
+				city.label.toLowerCase().includes(lowerValue) || 
+				lowerValue.includes(city.label.toLowerCase())
+			);
+			
+			// If searching for Marrakech or neighborhoods, show neighborhoods
+			if (matchedCity && (matchedCity.value === "marrakech" || lowerValue.includes("marrakech"))) {
+				const neighborhoods = getNeighborhoodsByCity("marrakech");
+				// Filter neighborhoods that match the search term
+				const filteredNeighborhoods = neighborhoods.filter(neighborhood =>
+					neighborhood.label.toLowerCase().includes(lowerValue) ||
+					lowerValue.includes(neighborhood.label.toLowerCase())
+				);
+				
+				// Format as location suggestions
+				const neighborhoodLocations = filteredNeighborhoods.map(neighborhood => ({
+					id: neighborhood.value,
+					location_value: `${neighborhood.label}, Marrakech`,
+				}));
+				
+				// Also get locations from database
+				axios
+					.get(`/api/categories/location/${locValue}`)
+					.then((response) => {
+						// Combine neighborhood suggestions with database results
+						const combined = [...neighborhoodLocations, ...response.data];
+						// Remove duplicates
+						const unique = combined.filter((loc, index, self) =>
+							index === self.findIndex(l => l.location_value === loc.location_value)
+						);
+						setLocations(unique);
+					})
+					.catch((error) => {
+						// If API fails, still show neighborhoods
+						setLocations(neighborhoodLocations);
+					});
+			} else {
+				// For other cities, use the API
+				axios
+					.get(`/api/categories/location/${locValue}`)
+					.then((response) => {
+						setLocations(response.data);
+					})
+					.catch((error) => {
+						toast.error("Something went wrong!");
+					});
+			}
 
 			setLocSuggest(true);
 		}
@@ -283,7 +325,7 @@ const SearchForm = () => {
 					>
 					<input
 						type="text"
-						placeholder="Neighborhood in Marrakech?"
+						placeholder="Search neighborhoods (e.g. Issil, Gueliz) or cities..."
 						value={LocationValue}
 						onChange={(e) => {
 							setLocationValue(e.target.value);
