@@ -3,9 +3,10 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Search, Globe, MapPin, ArrowRight, Sparkles, Mountain, UtensilsCrossed, Palette, Heart, Map, BookOpen, Film, Dumbbell, ShoppingBag, Trees, Castle, Building2, Home as HomeIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { moroccanCities } from "@/libs/moroccanCities";
+import { moroccanCities, getNeighborhoodsByCity } from "@/libs/moroccanCities";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { getTranslation } from "@/utils/translations";
+import axios from "axios";
 
 // Get icon component by name
 const getIcon = (iconName, size = 18, color = "#FF385C") => {
@@ -65,10 +66,38 @@ const SearchForm = ({ searchParams, featureType }) => {
 	// Select categories based on feature type
 	const categories = featureType === "EXPERIENCES" ? experienceCategories : propertyCategories;
 
+	// Filter cities and neighborhoods based on search term
+	const lowerSearchTerm = locationSearchTerm.toLowerCase();
+	
+	// Check if searching for Marrakech neighborhoods
+	const isMarrakechSearch = lowerSearchTerm.includes("marrakech") || 
+		moroccanCities.find(city => 
+			city.value === "marrakech" && 
+			(city.label.toLowerCase().includes(lowerSearchTerm) || lowerSearchTerm.includes(city.label.toLowerCase()))
+		);
+	
+	// Get neighborhoods if searching for Marrakech
+	let filteredNeighborhoods = [];
+	if (isMarrakechSearch || lowerSearchTerm.length > 0) {
+		const marrakechNeighborhoods = getNeighborhoodsByCity("marrakech");
+		filteredNeighborhoods = marrakechNeighborhoods.filter(neighborhood =>
+			neighborhood.label.toLowerCase().includes(lowerSearchTerm) ||
+			lowerSearchTerm.includes(neighborhood.label.toLowerCase()) ||
+			lowerSearchTerm.length === 0 // Show all if empty
+		).map(neighborhood => ({
+			value: `${neighborhood.label}, Marrakech`,
+			label: `${neighborhood.label}, Marrakech`,
+			isNeighborhood: true,
+		}));
+	}
+	
 	// Filter cities based on search term
 	const filteredCities = moroccanCities.filter((city) =>
-		city.label.toLowerCase().includes(locationSearchTerm.toLowerCase())
-	);
+		city.label.toLowerCase().includes(lowerSearchTerm)
+	).map(city => ({
+		...city,
+		isNeighborhood: false,
+	}));
 
 	useEffect(() => {
 		if (searchParams) {
@@ -208,7 +237,7 @@ const SearchForm = ({ searchParams, featureType }) => {
 						}}>
 							<input
 								type="text"
-								placeholder="Search cities..."
+								placeholder="Search cities or neighborhoods (e.g. Issil, Gueliz)..."
 								value={locationSearchTerm}
 								onChange={(e) => setLocationSearchTerm(e.target.value)}
 								onClick={(e) => e.stopPropagation()}
@@ -235,6 +264,79 @@ const SearchForm = ({ searchParams, featureType }) => {
 							/>
 						</div>
 						<div style={{ padding: "8px 0" }}>
+							{/* Show neighborhoods first if searching for Marrakech */}
+							{filteredNeighborhoods.length > 0 && (
+								<>
+									{filteredNeighborhoods.map((neighborhood, index) => (
+										<div
+											key={`neighborhood-${neighborhood.value}`}
+											onClick={(e) => {
+												e.stopPropagation();
+												setLocationValue(neighborhood.label);
+												setLocationSearchTerm(neighborhood.label);
+												setShowLocationDropdown(false);
+											}}
+											style={{
+												padding: "14px 20px",
+												margin: "4px 8px",
+												cursor: "pointer",
+												transition: "all 0.2s ease",
+												display: "flex",
+												alignItems: "center",
+												gap: "12px",
+												fontSize: "15px",
+												color: "#222222",
+												fontWeight: "500",
+												backgroundColor: locationValue === neighborhood.label ? "rgba(255, 56, 92, 0.08)" : "transparent",
+												borderRadius: "12px",
+											}}
+											onMouseEnter={(e) => {
+												e.currentTarget.style.backgroundColor = locationValue === neighborhood.label 
+													? "rgba(255, 56, 92, 0.12)" 
+													: "rgba(0, 0, 0, 0.04)";
+												e.currentTarget.style.transform = "translateX(4px)";
+											}}
+											onMouseLeave={(e) => {
+												e.currentTarget.style.backgroundColor = locationValue === neighborhood.label 
+													? "rgba(255, 56, 92, 0.08)" 
+													: "transparent";
+												e.currentTarget.style.transform = "translateX(0)";
+											}}
+										>
+											<div style={{
+												width: "32px",
+												height: "32px",
+												borderRadius: "10px",
+												background: "linear-gradient(135deg, #FF385C 0%, #E61E4D 100%)",
+												display: "flex",
+												alignItems: "center",
+												justifyContent: "center",
+												flexShrink: 0,
+											}}>
+												<MapPin size={16} color="#FFFFFF" strokeWidth={2.5} />
+											</div>
+											<span style={{ flex: 1 }}>{neighborhood.label}</span>
+											{locationValue === neighborhood.label && (
+												<div style={{
+													width: "6px",
+													height: "6px",
+													borderRadius: "50%",
+													background: "linear-gradient(135deg, #FF385C 0%, #E61E4D 100%)",
+												}} />
+											)}
+										</div>
+									))}
+									{/* Divider between neighborhoods and cities */}
+									{filteredCities.length > 0 && (
+										<div style={{
+											height: "1px",
+											backgroundColor: "rgba(0, 0, 0, 0.06)",
+											margin: "8px 16px",
+										}} />
+									)}
+								</>
+							)}
+							{/* Show cities */}
 							{filteredCities.map((city, index) => (
 								<div
 									key={city.value}

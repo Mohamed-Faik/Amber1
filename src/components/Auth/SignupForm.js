@@ -10,6 +10,7 @@ import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 import Link from "next/link";
 import googleImg from "../../../public/images/google.png";
+import ImageUpload from "../FormHelpers/ImageUpload";
 
 const SignupForm = () => {
   const router = useRouter();
@@ -35,6 +36,11 @@ const SignupForm = () => {
   const [address, setAddress] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  
+  // Part 3: Profile Picture Upload (shown after successful registration)
+  const [showProfilePictureStep, setShowProfilePictureStep] = useState(false);
+  const [profilePictureUrl, setProfilePictureUrl] = useState("");
+  const [newUserId, setNewUserId] = useState(null);
   
   const [isLoading, setIsLoading] = useState(false);
   const [isSocialLoading, setIsSocialLoading] = useState(false);
@@ -267,7 +273,10 @@ const SignupForm = () => {
 
   // Handle back button
   const handleBack = () => {
-    if (showSignupForm) {
+    if (showProfilePictureStep) {
+      // Can't go back from profile picture step, just skip it
+      handleSkipProfilePicture();
+    } else if (showSignupForm) {
       setShowSignupForm(false);
       setShowOtp(true);
     } else {
@@ -278,6 +287,54 @@ const SignupForm = () => {
       localStorage.removeItem("signup_email");
       localStorage.removeItem("signup_otp_time");
     }
+  };
+
+  // Handle profile picture upload completion
+  const handleProfilePictureSubmit = async () => {
+    if (!newUserId) {
+      toast.error("User ID not found. Please try signing in.");
+      handleSkipProfilePicture();
+      return;
+    }
+
+    // If no profile picture was uploaded, skip this step
+    if (!profilePictureUrl) {
+      handleSkipProfilePicture();
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const response = await axios.patch(`/api/users/${newUserId}/profile-picture`, {
+        imageUrl: profilePictureUrl,
+      });
+
+      if (response.data.success) {
+        toast.success("Profile picture uploaded successfully!");
+        // Clear localStorage and redirect
+        handleSkipProfilePicture();
+      }
+    } catch (error) {
+      console.error("Error uploading profile picture:", error);
+      toast.error("Failed to upload profile picture. You can add it later in settings.");
+      // Still redirect even if upload fails
+      handleSkipProfilePicture();
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Handle skip profile picture (or after successful upload)
+  const handleSkipProfilePicture = () => {
+    // Clear localStorage
+    localStorage.removeItem("signup_email");
+    localStorage.removeItem("signup_phone");
+    localStorage.removeItem("signup_otp");
+    localStorage.removeItem("signup_otp_time");
+    localStorage.removeItem("signup_phone_otp_time");
+    // Redirect to signin
+    router.push("/auth/signin");
   };
 
   // Handle email key press
@@ -549,15 +606,13 @@ const SignupForm = () => {
         gender: gender,
       });
 
-      if (response.data) {
-        toast.success("Account created successfully! Please sign in.");
-        // Clear localStorage
-        localStorage.removeItem("signup_email");
-        localStorage.removeItem("signup_phone");
-        localStorage.removeItem("signup_otp");
-        localStorage.removeItem("signup_otp_time");
-        localStorage.removeItem("signup_phone_otp_time");
-        router.push("/auth/signin");
+      if (response.data && response.data.id) {
+        // Store the new user ID
+        setNewUserId(response.data.id);
+        // Show profile picture upload step instead of redirecting
+        setShowSignupForm(false);
+        setShowProfilePictureStep(true);
+        toast.success("Account created successfully! Now add your profile picture.");
       }
     } catch (error) {
       const errorMessage =
@@ -584,7 +639,7 @@ const SignupForm = () => {
         {/* Back Arrow */}
         <div style={{ marginBottom: "auto" }}>
           <button
-            onClick={showOtp || showSignupForm ? handleBack : () => window.history.back()}
+            onClick={showOtp || showSignupForm || showProfilePictureStep ? handleBack : () => window.history.back()}
             style={{
               background: "none",
               border: "none",
@@ -603,7 +658,103 @@ const SignupForm = () => {
           width: "100%",
           margin: "0 auto",
         }}>
-          {!showOtp && !showSignupForm ? (
+          {showProfilePictureStep ? (
+            <>
+              {/* Part 3: Profile Picture Upload */}
+              <div style={{ marginBottom: "40px" }}>
+                <h1 style={{
+                  fontSize: "32px",
+                  fontWeight: "600",
+                  color: "#222222",
+                  marginBottom: "12px",
+                  lineHeight: "1.2",
+                }}>
+                  Add your profile picture
+                </h1>
+                <p style={{
+                  fontSize: "16px",
+                  color: "#767676",
+                  lineHeight: "1.5",
+                }}>
+                  Upload a photo to personalize your profile. You can skip this step and add it later.
+                </p>
+              </div>
+
+              {/* Profile Picture Upload */}
+              <div style={{ marginBottom: "24px" }}>
+                <ImageUpload
+                  value={profilePictureUrl}
+                  onChange={setProfilePictureUrl}
+                />
+              </div>
+
+              {/* Action Buttons */}
+              <div style={{ display: "flex", gap: "12px" }}>
+                <button
+                  onClick={handleSkipProfilePicture}
+                  disabled={isLoading}
+                  style={{
+                    flex: 1,
+                    padding: "14px 20px",
+                    backgroundColor: "#FFFFFF",
+                    border: "1px solid #E0E0E0",
+                    borderRadius: "8px",
+                    fontSize: "16px",
+                    fontWeight: "600",
+                    color: "#222222",
+                    cursor: isLoading ? "not-allowed" : "pointer",
+                    opacity: isLoading ? 0.6 : 1,
+                    transition: "all 0.2s",
+                  }}
+                  onMouseOver={(e) => {
+                    if (!isLoading) {
+                      e.currentTarget.style.borderColor = "#222222";
+                      e.currentTarget.style.backgroundColor = "#F8F8F8";
+                    }
+                  }}
+                  onMouseOut={(e) => {
+                    if (!isLoading) {
+                      e.currentTarget.style.borderColor = "#E0E0E0";
+                      e.currentTarget.style.backgroundColor = "#FFFFFF";
+                    }
+                  }}
+                >
+                  Skip for now
+                </button>
+                <button
+                  onClick={handleProfilePictureSubmit}
+                  disabled={isLoading || !profilePictureUrl}
+                  style={{
+                    flex: 1,
+                    padding: "14px 20px",
+                    background: profilePictureUrl
+                      ? "linear-gradient(to right, #E61E4D 0%, #E31C5F 50%, #D70466 100%)"
+                      : "linear-gradient(to right, #CCCCCC 0%, #BBBBBB 50%, #AAAAAA 100%)",
+                    color: "#FFFFFF",
+                    border: "none",
+                    borderRadius: "8px",
+                    fontSize: "16px",
+                    fontWeight: "600",
+                    cursor: isLoading || !profilePictureUrl ? "not-allowed" : "pointer",
+                    opacity: isLoading || !profilePictureUrl ? 0.5 : 1,
+                    transition: "all 0.2s",
+                  }}
+                  onMouseOver={(e) => {
+                    if (!isLoading && profilePictureUrl) {
+                      e.currentTarget.style.background = "linear-gradient(to right, #D01346 0%, #C7124D 50%, #B0035C 100%)";
+                    }
+                  }}
+                  onMouseOut={(e) => {
+                    if (!isLoading && profilePictureUrl) {
+                      e.currentTarget.style.background = "linear-gradient(to right, #E61E4D 0%, #E31C5F 50%, #D70466 100%)";
+                    }
+                  }}
+                >
+                  {isLoading ? "Uploading..." : "Continue"}
+                </button>
+              </div>
+            </>
+          ) : !showOtp && !showSignupForm ? (
             <>
               {/* Part 1: Email/Phone Choice */}
               <div style={{ marginBottom: "40px" }}>

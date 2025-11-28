@@ -40,9 +40,11 @@ export default async function getListings(params) {
 			whereClause.category = category;
 		}
 
-		// Location filter
+		// Location filter - use contains to support neighborhood search
 		if (location_value) {
-			whereClause.location_value = location_value;
+			whereClause.location_value = {
+				contains: location_value,
+			};
 		}
 
 		// Listing type filter (SALE, RENT, or DAILY_RENT)
