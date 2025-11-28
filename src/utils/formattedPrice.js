@@ -1,9 +1,31 @@
-export const formattedPrice = (price) => {
-	const formattedPriceMAD = new Intl.NumberFormat("fr-MA", {
+export const formattedPrice = (price, language = 'en') => {
+	// Determine currency and locale based on language
+	let currency, locale;
+
+	switch (language) {
+		case 'fr':  // French → Euro
+			currency = 'EUR';
+			locale = 'fr-FR';
+			break;
+		case 'nl':  // Belgian/Dutch → Euro
+			currency = 'EUR';
+			locale = 'nl-BE';
+			break;
+		case 'en':  // English → Pound
+			currency = 'GBP';
+			locale = 'en-GB';
+			break;
+		default:    // Default → Dollar
+			currency = 'USD';
+			locale = 'en-US';
+	}
+
+	const formattedPriceValue = new Intl.NumberFormat(locale, {
 		style: "currency",
-		currency: "MAD",
+		currency: currency,
 		minimumFractionDigits: 0,
 		maximumFractionDigits: 0,
 	}).format(price);
-	return formattedPriceMAD;
+
+	return formattedPriceValue;
 };

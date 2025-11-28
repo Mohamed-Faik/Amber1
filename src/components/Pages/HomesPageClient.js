@@ -1,10 +1,11 @@
 "use client";
-import React from "react";
-import { LayoutGrid } from "lucide-react";
+import React, { useState } from "react";
+import { LayoutGrid, SlidersHorizontal } from "lucide-react";
 import Listings from "@/components/Listings/Index";
 import SearchForm from "@/components/Listings/SearchForm";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { getTranslation } from "@/utils/translations";
+import FilterPopup from "@/components/Common/FilterPopup";
 
 const HomesPageClient = ({
 	listings,
@@ -19,7 +20,8 @@ const HomesPageClient = ({
 }) => {
 	const { language, isDetecting } = useLanguage();
 	const displayLanguage = isDetecting ? "en" : language;
-	
+	const [isFilterOpen, setIsFilterOpen] = useState(false);
+
 	const hasPremiumListings = premiumListings && premiumListings.length > 0;
 	const hasRegularListings = regularListings && regularListings.length > 0;
 
@@ -51,47 +53,47 @@ const HomesPageClient = ({
 				background: "linear-gradient(135deg, rgba(215, 4, 102, 0.05) 0%, rgba(255, 56, 92, 0.08) 100%)",
 				zIndex: 0,
 			}} />
-			
+
 			<div style={{ height: "80px" }} />
-			
-		{/* Compact Search Bar Section - Airbnb Style */}
-		<div className="homes-search-section" style={{
-			position: "relative",
-			zIndex: 100,
-			marginBottom: "32px",
-		}}>
-			<div className="homes-search-wrapper" style={{
-				maxWidth: "850px",
-				margin: "0 auto",
-				padding: "0 24px",
+
+			{/* Compact Search Bar Section - Airbnb Style */}
+			<div className="homes-search-section" style={{
+				position: "relative",
+				zIndex: 100,
+				marginBottom: "32px",
 			}}>
-				<div style={{
-					textAlign: "center",
-					marginBottom: "24px",
+				<div className="homes-search-wrapper" style={{
+					maxWidth: "850px",
+					margin: "0 auto",
+					padding: "0 24px",
 				}}>
-					<h1 style={{
-						fontSize: "32px",
-						fontWeight: "600",
-						color: "#222222",
-						margin: "0 0 8px 0",
-						letterSpacing: "-0.5px",
+					<div style={{
+						textAlign: "center",
+						marginBottom: "24px",
 					}}>
-						{getTranslation(displayLanguage, "listings.findYourPerfectHome")}
-					</h1>
-					<p style={{
-						fontSize: "16px",
-						color: "#717171",
-						margin: "0",
-					}}>
-						{getTranslation(displayLanguage, "listings.searchAndExploreProperties")}
-					</p>
+						<h1 style={{
+							fontSize: "32px",
+							fontWeight: "600",
+							color: "#222222",
+							margin: "0 0 8px 0",
+							letterSpacing: "-0.5px",
+						}}>
+							{getTranslation(displayLanguage, "listings.findYourPerfectHome")}
+						</h1>
+						<p style={{
+							fontSize: "16px",
+							color: "#717171",
+							margin: "0",
+						}}>
+							{getTranslation(displayLanguage, "listings.searchAndExploreProperties")}
+						</p>
+					</div>
+					<SearchForm searchParams={searchParams} featureType="HOMES" />
 				</div>
-				<SearchForm searchParams={searchParams} featureType="HOMES" />
 			</div>
-		</div>
-		
-	{/* Mobile Styles */}
-	<style jsx global>{`
+
+			{/* Mobile Styles */}
+			<style jsx global>{`
 		@keyframes pulse {
 			0%, 100% {
 				opacity: 1;
@@ -372,12 +374,12 @@ const HomesPageClient = ({
 		}
 	`}</style>
 
-		{/* Listings Section */}
-		<div className="homes-results-section" style={{
-			position: "relative",
-			zIndex: 0,
-			paddingBottom: "48px",
-		}}>
+			{/* Listings Section */}
+			<div className="homes-results-section" style={{
+				position: "relative",
+				zIndex: 0,
+				paddingBottom: "48px",
+			}}>
 				<div className="homes-results-wrapper" style={{
 					maxWidth: "1760px",
 					margin: "0 auto",
@@ -390,183 +392,222 @@ const HomesPageClient = ({
 						boxShadow: "0 2px 12px rgba(0, 0, 0, 0.08)",
 						border: "1px solid #E0E0E0",
 					}}>
-			{/* Header */}
-			<div className="homes-header" style={{
-				display: "flex",
-				alignItems: "flex-start",
-				justifyContent: "space-between",
-				gap: "16px",
-				marginBottom: "32px",
-				paddingBottom: "24px",
-				borderBottom: "1px solid #E0E0E0",
-				flexWrap: "wrap",
-			}}>
-				<div style={{ 
-					display: "flex", 
-					alignItems: "center", 
-					gap: "16px",
-					flex: "1 1 auto",
-					minWidth: "200px",
-					paddingTop: "4px"
-				}}>
-						<div style={{
-							width: "44px",
-							height: "44px",
-							borderRadius: "12px",
-							background: "linear-gradient(135deg, #FF385C 0%, #E61E4D 50%, #D70466 100%)",
+						{/* Header */}
+						<div className="homes-header" style={{
 							display: "flex",
-							alignItems: "center",
-							justifyContent: "center",
-							flexShrink: 0
-						}}>
-							<LayoutGrid size={22} color="#FFFFFF" strokeWidth={2.5} />
-						</div>
-						<h2 style={{
-							fontSize: "28px",
-							fontWeight: "700",
-							color: "#222222",
-							margin: "0",
-							letterSpacing: "-0.5px",
-							lineHeight: "1.2"
-						}}>
-							{getTranslation(displayLanguage, "listings.availableHomes")}
-						</h2>
-					</div>
-				</div>
-
-					{/* Premium Listings Section */}
-					{hasPremiumListings && (
-						<>
-						<div style={{
+							alignItems: "flex-start",
+							justifyContent: "space-between",
+							gap: "16px",
 							marginBottom: "32px",
-							paddingBottom: "16px",
-							borderBottom: "2px solid #FF385C20"
+							paddingBottom: "24px",
+							borderBottom: "1px solid #E0E0E0",
+							flexWrap: "wrap",
 						}}>
-							<h3 className="section-title" style={{
-								fontSize: "24px",
-								fontWeight: "700",
-								color: "#FF385C",
-								margin: "0 0 24px 0",
-								letterSpacing: "-0.3px",
+							<div style={{
 								display: "flex",
 								alignItems: "center",
-								gap: "10px",
-								flexWrap: "wrap",
-								lineHeight: "1.3"
+								gap: "16px",
+								flex: "1 1 auto",
+								minWidth: "200px",
+								paddingTop: "4px"
 							}}>
-								<span style={{ fontSize: "24px" }}>⭐</span>
-								<span>{getTranslation(displayLanguage, "listings.premiumProperties")}</span>
-							</h3>
-								<Listings
-									currentUser={currentUser}
-									totalPages={1}
-									listings={premiumListings}
-									searchParams={searchParams}
-									totalCount={premiumListings.length}
-									startListingNumber={1}
-									endListingNumber={premiumListings.length}
-								/>
-							</div>
-
-							{/* Elegant Divider */}
-							{hasRegularListings && (
-								<div style={{ 
-									margin: "60px 0", 
-									position: "relative",
+								<div style={{
+									width: "44px",
+									height: "44px",
+									borderRadius: "12px",
+									background: "linear-gradient(135deg, #FF385C 0%, #E61E4D 50%, #D70466 100%)",
 									display: "flex",
 									alignItems: "center",
-									justifyContent: "center"
+									justifyContent: "center",
+									flexShrink: 0
 								}}>
-									{/* Gradient Line */}
-									<div style={{
-										position: "absolute",
-										width: "100%",
-										height: "2px",
-										background: "linear-gradient(to right, transparent 0%, #E0E0E0 20%, #FF385C 50%, #E0E0E0 80%, transparent 100%)",
-										opacity: 0.6
-									}} />
-									
-									{/* Center Decoration */}
-									<div style={{
-										position: "relative",
-										backgroundColor: "#FFFFFF",
-										padding: "12px 32px",
-										borderRadius: "40px",
-										border: "2px solid #FF385C",
-										boxShadow: "0 4px 12px rgba(255, 56, 92, 0.15)",
+									<LayoutGrid size={22} color="#FFFFFF" strokeWidth={2.5} />
+								</div>
+								<h2 style={{
+									fontSize: "28px",
+									fontWeight: "700",
+									color: "#222222",
+									margin: "0",
+									letterSpacing: "-0.5px",
+									lineHeight: "1.2"
+								}}>
+									{getTranslation(displayLanguage, "listings.availableHomes")}
+								</h2>
+							</div>
+
+							{/* Filter Button */}
+							<div className="sticky-filter-wrapper">
+								<button
+									onClick={() => setIsFilterOpen(true)}
+									style={{
 										display: "flex",
 										alignItems: "center",
-										gap: "12px"
-									}}>
-										<div style={{
-											width: "8px",
-											height: "8px",
-											borderRadius: "50%",
-											backgroundColor: "#FF385C",
-											animation: "pulse 2s infinite"
-										}} />
-										<span style={{
-											fontSize: "14px",
-											fontWeight: "600",
-											color: "#FF385C",
-											letterSpacing: "1px",
-											textTransform: "uppercase"
-										}}>
-											{getTranslation(displayLanguage, "listings.exploreMore")}
-										</span>
-										<div style={{
-											width: "8px",
-											height: "8px",
-											borderRadius: "50%",
-											backgroundColor: "#FF385C",
-											animation: "pulse 2s infinite 1s"
-										}} />
-									</div>
-								</div>
-							)}
-						</>
-					)}
+										gap: "8px",
+										padding: "10px 16px",
+										backgroundColor: "#FFFFFF",
+										border: "1px solid #DDDDDD",
+										borderRadius: "12px",
+										fontSize: "14px",
+										fontWeight: "600",
+										color: "#222222",
+										cursor: "pointer",
+										transition: "all 0.2s ease",
+										boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
+									}}
+									onMouseOver={(e) => {
+										e.currentTarget.style.backgroundColor = "#F7F7F7";
+										e.currentTarget.style.borderColor = "#222222";
+									}}
+									onMouseOut={(e) => {
+										e.currentTarget.style.backgroundColor = "#FFFFFF";
+										e.currentTarget.style.borderColor = "#DDDDDD";
+									}}
+								>
+									<SlidersHorizontal size={16} />
+									<span>{getTranslation(displayLanguage, "Filters") || "Filters"}</span>
+								</button>
+							</div>
+						</div>
 
-					{/* Regular Listings Section */}
-					{hasRegularListings && (
-						<div>
-							<h3 className="section-title" style={{
-								fontSize: "24px",
-								fontWeight: "700",
-								color: "#222222",
-								margin: "0 0 24px 0",
-								letterSpacing: "-0.3px",
-								lineHeight: "1.3"
-							}}>
-								{hasPremiumListings ? getTranslation(displayLanguage, "listings.allProperties") : getTranslation(displayLanguage, "listings.availableHomes")}
-							</h3>
+						{/* Premium Listings Section */}
+						{hasPremiumListings && (
+							<>
+								<div style={{
+									marginBottom: "32px",
+									paddingBottom: "16px",
+									borderBottom: "2px solid #FF385C20"
+								}}>
+									<h3 className="section-title" style={{
+										fontSize: "24px",
+										fontWeight: "700",
+										color: "#FF385C",
+										margin: "0 0 24px 0",
+										letterSpacing: "-0.3px",
+										display: "flex",
+										alignItems: "center",
+										gap: "10px",
+										flexWrap: "wrap",
+										lineHeight: "1.3"
+									}}>
+										<span style={{ fontSize: "24px" }}>⭐</span>
+										<span>{getTranslation(displayLanguage, "listings.premiumProperties")}</span>
+									</h3>
+									<Listings
+										currentUser={currentUser}
+										totalPages={1}
+										listings={premiumListings}
+										searchParams={searchParams}
+										totalCount={premiumListings.length}
+										startListingNumber={1}
+										endListingNumber={premiumListings.length}
+									/>
+								</div>
+
+								{/* Elegant Divider */}
+								{hasRegularListings && (
+									<div style={{
+										margin: "60px 0",
+										position: "relative",
+										display: "flex",
+										alignItems: "center",
+										justifyContent: "center"
+									}}>
+										{/* Gradient Line */}
+										<div style={{
+											position: "absolute",
+											width: "100%",
+											height: "2px",
+											background: "linear-gradient(to right, transparent 0%, #E0E0E0 20%, #FF385C 50%, #E0E0E0 80%, transparent 100%)",
+											opacity: 0.6
+										}} />
+
+										{/* Center Decoration */}
+										<div style={{
+											position: "relative",
+											backgroundColor: "#FFFFFF",
+											padding: "12px 32px",
+											borderRadius: "40px",
+											border: "2px solid #FF385C",
+											boxShadow: "0 4px 12px rgba(255, 56, 92, 0.15)",
+											display: "flex",
+											alignItems: "center",
+											gap: "12px"
+										}}>
+											<div style={{
+												width: "8px",
+												height: "8px",
+												borderRadius: "50%",
+												backgroundColor: "#FF385C",
+												animation: "pulse 2s infinite"
+											}} />
+											<span style={{
+												fontSize: "14px",
+												fontWeight: "600",
+												color: "#FF385C",
+												letterSpacing: "1px",
+												textTransform: "uppercase"
+											}}>
+												{getTranslation(displayLanguage, "listings.exploreMore")}
+											</span>
+											<div style={{
+												width: "8px",
+												height: "8px",
+												borderRadius: "50%",
+												backgroundColor: "#FF385C",
+												animation: "pulse 2s infinite 1s"
+											}} />
+										</div>
+									</div>
+								)}
+							</>
+						)}
+
+						{/* Regular Listings Section */}
+						{hasRegularListings && (
+							<div>
+								<h3 className="section-title" style={{
+									fontSize: "24px",
+									fontWeight: "700",
+									color: "#222222",
+									margin: "0 0 24px 0",
+									letterSpacing: "-0.3px",
+									lineHeight: "1.3"
+								}}>
+									{hasPremiumListings ? getTranslation(displayLanguage, "listings.allProperties") : getTranslation(displayLanguage, "listings.availableHomes")}
+								</h3>
+								<Listings
+									currentUser={currentUser}
+									totalPages={totalPages}
+									listings={hasRegularListings ? regularListings : listings}
+									searchParams={searchParams}
+									totalCount={totalCount}
+									startListingNumber={startListingNumber}
+									endListingNumber={endListingNumber}
+								/>
+							</div>
+						)}
+
+						{/* If no premium and using default listings */}
+						{!hasPremiumListings && !hasRegularListings && (
 							<Listings
 								currentUser={currentUser}
 								totalPages={totalPages}
-								listings={hasRegularListings ? regularListings : listings}
+								listings={listings}
 								searchParams={searchParams}
 								totalCount={totalCount}
 								startListingNumber={startListingNumber}
 								endListingNumber={endListingNumber}
 							/>
-						</div>
-					)}
-
-					{/* If no premium and using default listings */}
-					{!hasPremiumListings && !hasRegularListings && (
-						<Listings
-							currentUser={currentUser}
-							totalPages={totalPages}
-							listings={listings}
-							searchParams={searchParams}
-							totalCount={totalCount}
-							startListingNumber={startListingNumber}
-							endListingNumber={endListingNumber}
-						/>
-					)}
-				</div>
+						)}
+					</div>
 				</div>
 			</div>
+
+			<FilterPopup
+				isOpen={isFilterOpen}
+				onClose={() => setIsFilterOpen(false)}
+				featureType="HOMES"
+			/>
 		</div>
 	);
 };

@@ -47,14 +47,14 @@ const Navbar = ({ currentUser }) => {
   }
 
   const navLinks = [
-    { 
-      href: "/homes", 
-      label: getTranslation(displayLanguage, "nav.homes"), 
+    {
+      href: "/homes",
+      label: getTranslation(displayLanguage, "nav.homes"),
       image: "https://img.icons8.com/?size=100&id=eIM3rBvyFbHA&format=png&color=000000"
     },
-    { 
-      href: "/experiences", 
-      label: getTranslation(displayLanguage, "nav.experiences"), 
+    {
+      href: "/experiences",
+      label: getTranslation(displayLanguage, "nav.experiences"),
       image: "https://img.icons8.com/?size=100&id=PhN968WBxlkp&format=png&color=000000"
     },
   ];
@@ -85,6 +85,7 @@ const Navbar = ({ currentUser }) => {
             alignItems: "center",
             justifyContent: "space-between",
             height: "80px",
+            position: "relative",
           }}
         >
           {/* Logo - Left */}
@@ -126,61 +127,64 @@ const Navbar = ({ currentUser }) => {
               padding: "6px 8px",
               boxShadow: "0 1px 2px rgba(0,0,0,0.08)",
               transition: "box-shadow 0.2s ease",
+              position: "absolute",
+              left: "50%",
+              transform: "translateX(-50%)",
             }}
           >
-          {navLinks.map((link, index) => {
-            const Icon = link.icon;
-            const isActive =
-              link.href === "/" ? pathname === "/" : pathname?.startsWith(link.href);
-            return (
-              <React.Fragment key={link.href}>
-                <Link
-                  href={link.href}
-                  style={{
-                    padding: "10px 18px",
-                    fontSize: "14px",
-                    fontWeight: "600",
-                    color: isActive ? "#222222" : "#717171",
-                    textDecoration: "none",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "8px",
-                    borderRadius: "32px",
-                    backgroundColor: isActive ? "#F7F7F7" : "transparent",
-                    transition: "all 0.2s ease",
-                    whiteSpace: "nowrap",
-                  }}
-                  onMouseEnter={(e) => {
-                    if (!isActive) {
-                      e.currentTarget.style.backgroundColor = "#F7F7F7";
-                      e.currentTarget.style.color = "#222222";
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (!isActive) {
-                      e.currentTarget.style.backgroundColor = "transparent";
-                      e.currentTarget.style.color = "#717171";
-                    }
-                  }}
-                >
-                  {link.image ? (
-                    <Image 
-                      src={link.image} 
-                      alt="" 
-                      width={32} 
-                      height={32} 
-                      style={{ 
-                        objectFit: "contain",
-                        display: "block"
-                      }} 
-                    />
-                  ) : link.emoji ? (
-                    <span style={{ fontSize: "24px", lineHeight: "1", display: "block" }}>{link.emoji}</span>
-                  ) : (
-                    <Icon size={18} strokeWidth={2.5} />
-                  )}
-                  <span>{link.label}</span>
-                </Link>
+            {navLinks.map((link, index) => {
+              const Icon = link.icon;
+              const isActive =
+                link.href === "/" ? pathname === "/" : pathname?.startsWith(link.href);
+              return (
+                <React.Fragment key={link.href}>
+                  <Link
+                    href={link.href}
+                    style={{
+                      padding: "10px 18px",
+                      fontSize: "14px",
+                      fontWeight: "600",
+                      color: isActive ? "#222222" : "#717171",
+                      textDecoration: "none",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "8px",
+                      borderRadius: "32px",
+                      backgroundColor: isActive ? "#F7F7F7" : "transparent",
+                      transition: "all 0.2s ease",
+                      whiteSpace: "nowrap",
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!isActive) {
+                        e.currentTarget.style.backgroundColor = "#F7F7F7";
+                        e.currentTarget.style.color = "#222222";
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!isActive) {
+                        e.currentTarget.style.backgroundColor = "transparent";
+                        e.currentTarget.style.color = "#717171";
+                      }
+                    }}
+                  >
+                    {link.image ? (
+                      <Image
+                        src={link.image}
+                        alt=""
+                        width={32}
+                        height={32}
+                        style={{
+                          objectFit: "contain",
+                          display: "block"
+                        }}
+                      />
+                    ) : link.emoji ? (
+                      <span style={{ fontSize: "24px", lineHeight: "1", display: "block" }}>{link.emoji}</span>
+                    ) : (
+                      <Icon size={18} strokeWidth={2.5} />
+                    )}
+                    <span>{link.label}</span>
+                  </Link>
                   {index < navLinks.length - 1 && (
                     <div
                       style={{
@@ -255,7 +259,7 @@ const Navbar = ({ currentUser }) => {
           >
             {/* When logged in: Show Language, Notification, Add Listing, Profile (no menu icon) */}
             {currentUser ? (
-              <div 
+              <div
                 className="mobile-logged-in-icons"
                 style={{
                   display: "flex",
@@ -270,7 +274,7 @@ const Navbar = ({ currentUser }) => {
                 </div>
 
                 {/* Notification Badge - Mobile */}
-                <div 
+                <div
                   className="mobile-notification-wrapper"
                   style={{
                     display: "flex",
@@ -330,7 +334,7 @@ const Navbar = ({ currentUser }) => {
                 <div className="mobile-language-wrapper">
                   <LanguageSwitcher />
                 </div>
-                
+
                 {/* Menu Button */}
                 <button
                   className="mobile-menu-btn"
@@ -377,70 +381,70 @@ const Navbar = ({ currentUser }) => {
             display: "none",
           }}
         >
-          <div style={{ 
-            display: "flex", 
-            gap: "6px", 
-            minWidth: "min-content", 
+          <div style={{
+            display: "flex",
+            gap: "6px",
+            minWidth: "min-content",
             justifyContent: "center",
             alignItems: "center",
           }}>
-          {navLinks.map((link) => {
-            const Icon = link.icon;
-            const isActive =
-              link.href === "/" ? pathname === "/" : pathname?.startsWith(link.href);
-            return (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={`mobile-nav-pill ${isActive ? "active" : ""}`}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "6px",
-                  padding: "10px 18px",
-                  fontSize: "14px",
-                  fontWeight: isActive ? "700" : "600",
-                  color: isActive ? "#222222" : "#717171",
-                  textDecoration: "none",
-                  backgroundColor: isActive ? "#FFFFFF" : "transparent",
-                  border: "none",
-                  borderRadius: "28px",
-                  whiteSpace: "nowrap",
-                  boxShadow: isActive ? "0 2px 8px rgba(0,0,0,0.1)" : "none",
-                  transition: "all 0.2s ease",
-                }}
-                onMouseDown={(e) => {
-                  if (!isActive) {
-                    e.currentTarget.style.transform = "scale(0.96)";
-                  }
-                }}
-                onMouseUp={(e) => {
-                  e.currentTarget.style.transform = "scale(1)";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = "scale(1)";
-                }}
-              >
-                {link.image ? (
-                  <Image 
-                    src={link.image} 
-                    alt="" 
-                    width={32} 
-                    height={32} 
-                    style={{ 
-                      objectFit: "contain",
-                      display: "block"
-                    }} 
-                  />
-                ) : link.emoji ? (
-                  <span style={{ fontSize: "24px", lineHeight: "1", display: "block" }}>{link.emoji}</span>
-                ) : (
-                  <Icon size={18} strokeWidth={isActive ? 2.5 : 2} />
-                )}
-                <span>{link.label}</span>
-              </Link>
-            );
-          })}
+            {navLinks.map((link) => {
+              const Icon = link.icon;
+              const isActive =
+                link.href === "/" ? pathname === "/" : pathname?.startsWith(link.href);
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={`mobile-nav-pill ${isActive ? "active" : ""}`}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "6px",
+                    padding: "10px 18px",
+                    fontSize: "14px",
+                    fontWeight: isActive ? "700" : "600",
+                    color: isActive ? "#222222" : "#717171",
+                    textDecoration: "none",
+                    backgroundColor: isActive ? "#FFFFFF" : "transparent",
+                    border: "none",
+                    borderRadius: "28px",
+                    whiteSpace: "nowrap",
+                    boxShadow: isActive ? "0 2px 8px rgba(0,0,0,0.1)" : "none",
+                    transition: "all 0.2s ease",
+                  }}
+                  onMouseDown={(e) => {
+                    if (!isActive) {
+                      e.currentTarget.style.transform = "scale(0.96)";
+                    }
+                  }}
+                  onMouseUp={(e) => {
+                    e.currentTarget.style.transform = "scale(1)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = "scale(1)";
+                  }}
+                >
+                  {link.image ? (
+                    <Image
+                      src={link.image}
+                      alt=""
+                      width={32}
+                      height={32}
+                      style={{
+                        objectFit: "contain",
+                        display: "block"
+                      }}
+                    />
+                  ) : link.emoji ? (
+                    <span style={{ fontSize: "24px", lineHeight: "1", display: "block" }}>{link.emoji}</span>
+                  ) : (
+                    <Icon size={18} strokeWidth={isActive ? 2.5 : 2} />
+                  )}
+                  <span>{link.label}</span>
+                </Link>
+              );
+            })}
           </div>
         </div>
       </header>
@@ -479,130 +483,28 @@ const Navbar = ({ currentUser }) => {
               paddingTop: "20px",
             }}
           >
-          <div style={{ padding: "0 24px 24px" }}>
-            {/* Close Button */}
-            <div style={{ 
-              display: "flex", 
-              justifyContent: "flex-end", 
-              alignItems: "center",
-              marginBottom: "24px",
-              paddingBottom: "16px",
-              borderBottom: "1px solid #F0F0F0"
-            }}>
-              <button
-                onClick={() => setIsMobileMenuOpen(false)}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  width: "40px",
-                  height: "40px",
-                  border: "none",
-                  backgroundColor: "#F7F7F7",
-                  borderRadius: "50%",
-                  cursor: "pointer",
-                  transition: "all 0.2s ease",
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = "#EBEBEB";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = "#F7F7F7";
-                }}
-                onMouseDown={(e) => {
-                  e.currentTarget.style.transform = "scale(0.95)";
-                }}
-                onMouseUp={(e) => {
-                  e.currentTarget.style.transform = "scale(1)";
-                }}
-                aria-label="Close menu"
-              >
-                <X size={22} color="#222222" strokeWidth={2.5} />
-              </button>
-            </div>
-
-            {/* User Actions */}
-            {currentUser ? (
-              <div style={{ 
-                marginBottom: "32px", 
-                paddingBottom: "24px", 
-                borderBottom: "1px solid #F0F0F0" 
-              }}>
-                <Link
-                  href="/listings/new"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: "12px",
-                    padding: "14px 18px",
-                    fontSize: "16px",
-                    fontWeight: "600",
-                    color: "#222222",
-                    textDecoration: "none",
-                    backgroundColor: "#F7F7F7",
-                    borderRadius: "12px",
-                    transition: "all 0.2s ease",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = "#EBEBEB";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = "#F7F7F7";
-                  }}
-                >
-                  <span>{getTranslation(displayLanguage, "nav.addListing")}</span>
-                </Link>
-              </div>
-            ) : (
-              <div style={{ 
-                marginBottom: "32px", 
-                paddingBottom: "24px", 
-                borderBottom: "1px solid #F0F0F0",
+            <div style={{ padding: "0 24px 24px" }}>
+              {/* Close Button */}
+              <div style={{
                 display: "flex",
-                flexDirection: "column",
-                gap: "10px",
+                justifyContent: "flex-end",
+                alignItems: "center",
+                marginBottom: "24px",
+                paddingBottom: "16px",
+                borderBottom: "1px solid #F0F0F0"
               }}>
-                <Link
-                  href="/auth/signin"
+                <button
                   onClick={() => setIsMobileMenuOpen(false)}
                   style={{
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    padding: "14px 18px",
-                    fontSize: "16px",
-                    fontWeight: "600",
-                    color: "#FFFFFF",
-                    textDecoration: "none",
-                    backgroundColor: "#222222",
-                    borderRadius: "12px",
-                    transition: "all 0.2s ease",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = "#000000";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = "#222222";
-                  }}
-                >
-                  Log in
-                </Link>
-                <Link
-                  href="/auth/signup"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    padding: "14px 18px",
-                    fontSize: "16px",
-                    fontWeight: "600",
-                    color: "#222222",
-                    textDecoration: "none",
+                    width: "40px",
+                    height: "40px",
+                    border: "none",
                     backgroundColor: "#F7F7F7",
-                    borderRadius: "12px",
+                    borderRadius: "50%",
+                    cursor: "pointer",
                     transition: "all 0.2s ease",
                   }}
                   onMouseEnter={(e) => {
@@ -611,40 +513,142 @@ const Navbar = ({ currentUser }) => {
                   onMouseLeave={(e) => {
                     e.currentTarget.style.backgroundColor = "#F7F7F7";
                   }}
+                  onMouseDown={(e) => {
+                    e.currentTarget.style.transform = "scale(0.95)";
+                  }}
+                  onMouseUp={(e) => {
+                    e.currentTarget.style.transform = "scale(1)";
+                  }}
+                  aria-label="Close menu"
                 >
-                  Sign up
-                </Link>
-                <Link
-                  href="/listings/new"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    padding: "14px 18px",
-                    fontSize: "16px",
-                    fontWeight: "600",
-                    color: "#222222",
-                    textDecoration: "none",
-                    backgroundColor: "transparent",
-                    border: "1px solid #DDDDDD",
-                    borderRadius: "12px",
-                    transition: "all 0.2s ease",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = "#F7F7F7";
-                    e.currentTarget.style.borderColor = "#CCCCCC";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = "transparent";
-                    e.currentTarget.style.borderColor = "#DDDDDD";
-                  }}
-                >
-                  {getTranslation(displayLanguage, "nav.becomeHost")}
-                </Link>
+                  <X size={22} color="#222222" strokeWidth={2.5} />
+                </button>
               </div>
-            )}
-          </div>
+
+              {/* User Actions */}
+              {currentUser ? (
+                <div style={{
+                  marginBottom: "32px",
+                  paddingBottom: "24px",
+                  borderBottom: "1px solid #F0F0F0"
+                }}>
+                  <Link
+                    href="/listings/new"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: "12px",
+                      padding: "14px 18px",
+                      fontSize: "16px",
+                      fontWeight: "600",
+                      color: "#222222",
+                      textDecoration: "none",
+                      backgroundColor: "#F7F7F7",
+                      borderRadius: "12px",
+                      transition: "all 0.2s ease",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = "#EBEBEB";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = "#F7F7F7";
+                    }}
+                  >
+                    <span>{getTranslation(displayLanguage, "nav.addListing")}</span>
+                  </Link>
+                </div>
+              ) : (
+                <div style={{
+                  marginBottom: "32px",
+                  paddingBottom: "24px",
+                  borderBottom: "1px solid #F0F0F0",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "10px",
+                }}>
+                  <Link
+                    href="/auth/signin"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      padding: "14px 18px",
+                      fontSize: "16px",
+                      fontWeight: "600",
+                      color: "#FFFFFF",
+                      textDecoration: "none",
+                      backgroundColor: "#222222",
+                      borderRadius: "12px",
+                      transition: "all 0.2s ease",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = "#000000";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = "#222222";
+                    }}
+                  >
+                    Log in
+                  </Link>
+                  <Link
+                    href="/auth/signup"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      padding: "14px 18px",
+                      fontSize: "16px",
+                      fontWeight: "600",
+                      color: "#222222",
+                      textDecoration: "none",
+                      backgroundColor: "#F7F7F7",
+                      borderRadius: "12px",
+                      transition: "all 0.2s ease",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = "#EBEBEB";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = "#F7F7F7";
+                    }}
+                  >
+                    Sign up
+                  </Link>
+                  <Link
+                    href="/listings/new"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      padding: "14px 18px",
+                      fontSize: "16px",
+                      fontWeight: "600",
+                      color: "#222222",
+                      textDecoration: "none",
+                      backgroundColor: "transparent",
+                      border: "1px solid #DDDDDD",
+                      borderRadius: "12px",
+                      transition: "all 0.2s ease",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = "#F7F7F7";
+                      e.currentTarget.style.borderColor = "#CCCCCC";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = "transparent";
+                      e.currentTarget.style.borderColor = "#DDDDDD";
+                    }}
+                  >
+                    {getTranslation(displayLanguage, "nav.becomeHost")}
+                  </Link>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       )}
@@ -668,7 +672,6 @@ const Navbar = ({ currentUser }) => {
           }
         }
 
-<<<<<<< HEAD
         /* Mobile: < 768px */
         @media (max-width: 767px) {
           .mobile-nav {
@@ -935,6 +938,7 @@ const Navbar = ({ currentUser }) => {
           
           .mobile-language-wrapper button:hover {
             background-color: #EBEBEB !important;
+            border: none !important;
           }
         }
 

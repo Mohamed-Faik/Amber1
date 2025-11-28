@@ -49,7 +49,7 @@ const Banner = () => {
 		const params = new URLSearchParams();
 		if (category) params.append("category", category);
 		if (location) params.append("location_value", location);
-		
+
 		// Map saleType to listingType
 		if (saleType === "forSale") {
 			params.append("listingType", "SALE");
@@ -58,7 +58,7 @@ const Banner = () => {
 		} else if (saleType === "forRentDaily") {
 			params.append("listingType", "DAILY_RENT");
 		}
-		
+
 		router.push(`/listings?${params.toString()}`);
 	};
 
@@ -341,8 +341,8 @@ const Banner = () => {
 										}}
 									>
 										<span>{getSaleTypeLabel(saleType)}</span>
-										<ChevronDown 
-											size={18} 
+										<ChevronDown
+											size={18}
 											color={showSaleTypeDropdown ? "#FF385C" : "#717171"}
 											style={{
 												transform: showSaleTypeDropdown ? "rotate(180deg)" : "rotate(0deg)",
@@ -405,14 +405,14 @@ const Banner = () => {
 														borderRadius: "12px",
 													}}
 													onMouseEnter={(e) => {
-														e.currentTarget.style.backgroundColor = saleType === type.key 
-															? "rgba(255, 56, 92, 0.12)" 
+														e.currentTarget.style.backgroundColor = saleType === type.key
+															? "rgba(255, 56, 92, 0.12)"
 															: "rgba(0, 0, 0, 0.04)";
 														e.currentTarget.style.transform = "translateX(2px)";
 													}}
 													onMouseLeave={(e) => {
-														e.currentTarget.style.backgroundColor = saleType === type.key 
-															? "rgba(255, 56, 92, 0.08)" 
+														e.currentTarget.style.backgroundColor = saleType === type.key
+															? "rgba(255, 56, 92, 0.08)"
 															: "transparent";
 														e.currentTarget.style.transform = "translateX(0)";
 													}}
@@ -421,8 +421,8 @@ const Banner = () => {
 														width: "36px",
 														height: "36px",
 														borderRadius: "10px",
-														background: saleType === type.key 
-															? "linear-gradient(135deg, #FF385C 0%, #E61E4D 100%)" 
+														background: saleType === type.key
+															? "linear-gradient(135deg, #FF385C 0%, #E61E4D 100%)"
 															: "rgba(0, 0, 0, 0.06)",
 														display: "flex",
 														alignItems: "center",
@@ -430,7 +430,7 @@ const Banner = () => {
 														flexShrink: 0,
 														transition: "all 0.2s ease",
 													}}>
-														<Home 
+														<Home
 															size={18}
 															color={saleType === type.key ? "#FFFFFF" : "#717171"}
 															strokeWidth={2.5}
@@ -486,8 +486,8 @@ const Banner = () => {
 										}}
 									>
 										<span>{category ? getTranslation(displayLanguage, `categories.${category.toLowerCase()}`) : getTranslation(displayLanguage, "hero.category")}</span>
-										<ChevronDown 
-											size={18} 
+										<ChevronDown
+											size={18}
 											color={showCategoryDropdown ? "#FF385C" : "#717171"}
 											style={{
 												transform: showCategoryDropdown ? "rotate(180deg)" : "rotate(0deg)",
@@ -552,14 +552,14 @@ const Banner = () => {
 														borderRadius: "12px",
 													}}
 													onMouseEnter={(e) => {
-														e.currentTarget.style.backgroundColor = category === cat.label 
-															? "rgba(255, 56, 92, 0.12)" 
+														e.currentTarget.style.backgroundColor = category === cat.label
+															? "rgba(255, 56, 92, 0.12)"
 															: "rgba(0, 0, 0, 0.04)";
 														e.currentTarget.style.transform = "translateX(2px)";
 													}}
 													onMouseLeave={(e) => {
-														e.currentTarget.style.backgroundColor = category === cat.label 
-															? "rgba(255, 56, 92, 0.08)" 
+														e.currentTarget.style.backgroundColor = category === cat.label
+															? "rgba(255, 56, 92, 0.08)"
 															: "transparent";
 														e.currentTarget.style.transform = "translateX(0)";
 													}}
@@ -569,8 +569,8 @@ const Banner = () => {
 															width: "36px",
 															height: "36px",
 															borderRadius: "10px",
-															background: category === cat.label 
-																? "linear-gradient(135deg, #FF385C 0%, #E61E4D 100%)" 
+															background: category === cat.label
+																? "linear-gradient(135deg, #FF385C 0%, #E61E4D 100%)"
 																: "rgba(0, 0, 0, 0.06)",
 															display: "flex",
 															alignItems: "center",
@@ -713,14 +713,14 @@ const Banner = () => {
 															borderRadius: "12px",
 														}}
 														onMouseEnter={(e) => {
-															e.currentTarget.style.backgroundColor = location === city.label 
-																? "rgba(255, 56, 92, 0.12)" 
+															e.currentTarget.style.backgroundColor = location === city.label
+																? "rgba(255, 56, 92, 0.12)"
 																: "rgba(0, 0, 0, 0.04)";
 															e.currentTarget.style.transform = "translateX(2px)";
 														}}
 														onMouseLeave={(e) => {
-															e.currentTarget.style.backgroundColor = location === city.label 
-																? "rgba(255, 56, 92, 0.08)" 
+															e.currentTarget.style.backgroundColor = location === city.label
+																? "rgba(255, 56, 92, 0.08)"
 																: "transparent";
 															e.currentTarget.style.transform = "translateX(0)";
 														}}
@@ -729,8 +729,8 @@ const Banner = () => {
 															width: "36px",
 															height: "36px",
 															borderRadius: "10px",
-															background: location === city.label 
-																? "linear-gradient(135deg, #FF385C 0%, #E61E4D 100%)" 
+															background: location === city.label
+																? "linear-gradient(135deg, #FF385C 0%, #E61E4D 100%)"
 																: "rgba(0, 0, 0, 0.06)",
 															display: "flex",
 															alignItems: "center",
@@ -738,7 +738,7 @@ const Banner = () => {
 															flexShrink: 0,
 															transition: "all 0.2s ease",
 														}}>
-															<MapPin 
+															<MapPin
 																size={16}
 																color={location === city.label ? "#FFFFFF" : "#717171"}
 																strokeWidth={2.5}
@@ -769,9 +769,9 @@ const Banner = () => {
 											)}
 										</div>
 									</div>
-							</div>
+								</div>
 
-							{/* Search Button */}
+								{/* Search Button */}
 								<button
 									type="submit"
 									style={{
@@ -820,8 +820,8 @@ const Banner = () => {
 				</div>
 			</div>
 
-		{/* Dropdown Animations & Scrollbar Styles */}
-		<style jsx global>{`
+			{/* Dropdown Animations & Scrollbar Styles */}
+			<style jsx global>{`
 			@keyframes dropdownFadeIn {
 				from {
 					opacity: 0;
@@ -855,9 +855,9 @@ const Banner = () => {
 				background: linear-gradient(135deg, #E61E4D 0%, #D70466 100%);
 			}
 		`}</style>
-		
-		{/* Responsive Styles */}
-		<style jsx>{`
+
+			{/* Responsive Styles */}
+			<style jsx>{`
 			/* Tablet: 768px - 991px */
 			@media (max-width: 991px) {
 					.hero-banner-container {
@@ -1001,7 +1001,7 @@ const Banner = () => {
 					.banner-form-top-row input,
 					.banner-form-top-row div[style*="padding"],
 					.banner-form-bottom-row input {
-						padding: 12px 14px 12px 40px !important;
+						// padding: 12px 14px 12px 40px !important;
 						font-size: 13px !important;
 					}
 
