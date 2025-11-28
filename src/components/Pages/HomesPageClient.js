@@ -59,7 +59,7 @@ const HomesPageClient = ({
 			{/* Compact Search Bar Section - Airbnb Style */}
 			<div className="homes-search-section" style={{
 				position: "relative",
-				zIndex: 100,
+				zIndex: 50,
 				marginBottom: "32px",
 			}}>
 				<div className="homes-search-wrapper" style={{
@@ -116,7 +116,7 @@ const HomesPageClient = ({
 		@media (max-width: 768px) {
 			/* Search Section */
 			.homes-search-section {
-				z-index: 1 !important;
+				z-index: 100 !important;
 			}
 			
 			.homes-search-wrapper,
@@ -235,7 +235,7 @@ const HomesPageClient = ({
 			.sticky-filter-wrapper {
 				position: sticky !important;
 				top: 70px !important;
-				z-index: 10 !important;
+				z-index: 1 !important;
 				align-self: flex-start !important;
 				margin-left: auto !important;
 				flex-shrink: 0 !important;
@@ -613,4 +613,3 @@ const HomesPageClient = ({
 };
 
 export default HomesPageClient;
-
