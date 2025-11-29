@@ -5,6 +5,7 @@ import Link from "next/link";
 import { signOut } from "next-auth/react";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
+import ProfileImage from "./ProfileImage";
 import { LayoutDashboard, ListChecks, Plus, Heart, UserPen, Settings, Eye, LogOut } from "lucide-react";
 import userImg from "../../../public/images/authors/author-1.jpg";
 
@@ -292,7 +293,7 @@ const UserMenu = ({ currentUser }) => {
 								}}
 							>
 								{currentUser?.image ? (
-									<Image
+									<ProfileImage
 										src={currentUser.image}
 										alt={currentUser.name || "User"}
 										width={30}
@@ -372,7 +373,7 @@ const UserMenu = ({ currentUser }) => {
 											}}
 										>
 											{currentUser?.image ? (
-												<Image
+												<ProfileImage
 													src={currentUser.image}
 													alt={currentUser.name || "User"}
 													width={52}
