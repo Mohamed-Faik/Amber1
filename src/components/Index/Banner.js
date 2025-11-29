@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import axios from "axios";
 import { categories as allCategories } from "@/libs/Categories";
-import { moroccanCities } from "@/libs/moroccanCities";
+import { moroccanCities, getNeighborhoodsByCity } from "@/libs/moroccanCities";
 import LocationFind from "./LocationFind";
 import { toast } from "react-hot-toast";
 import { Home, MapPin, Navigation, ChevronDown, Castle, Building2, Trees } from "lucide-react";
@@ -101,10 +101,30 @@ const Banner = () => {
 		setLocation(loc);
 	};
 
+	// Filter cities and neighborhoods based on search term
+	const lowerSearchTerm = locationSearchTerm.toLowerCase();
+	
 	// Filter cities based on search term
 	const filteredCities = moroccanCities.filter((city) =>
-		city.label.toLowerCase().includes(locationSearchTerm.toLowerCase())
-	);
+		city.label.toLowerCase().includes(lowerSearchTerm)
+	).map(city => ({
+		...city,
+		isNeighborhood: false,
+	}));
+	
+	// Get neighborhoods only when user is actively searching (has typed something)
+	let filteredNeighborhoods = [];
+	if (lowerSearchTerm.length > 0) {
+		const marrakechNeighborhoods = getNeighborhoodsByCity("marrakech");
+		filteredNeighborhoods = marrakechNeighborhoods.filter(neighborhood =>
+			neighborhood.label.toLowerCase().includes(lowerSearchTerm) ||
+			lowerSearchTerm.includes(neighborhood.label.toLowerCase())
+		).map(neighborhood => ({
+			value: `${neighborhood.label}, Marrakech`,
+			label: `${neighborhood.label}, Marrakech`,
+			isNeighborhood: true,
+		}));
+	}
 
 	const locationFind = useCallback((locValue) => {
 		if (locValue) {
@@ -620,7 +640,7 @@ const Banner = () => {
 								<div style={{ position: "relative", zIndex: showLocationDropdown ? 1001 : 1 }} ref={locationInputRef}>
 									<input
 										type="text"
-										placeholder={getTranslation(displayLanguage, "hero.location")}
+										placeholder="Search neighborhoods (e.g. Issil, Gueliz) or cities..."
 										value={locationSearchTerm}
 										onChange={(e) => {
 											setLocationSearchTerm(e.target.value);
@@ -693,6 +713,7 @@ const Banner = () => {
 										className="location-dropdown"
 									>
 										<div style={{ padding: "8px 0" }}>
+											{/* Show cities first (always visible) */}
 											{filteredCities.length > 0 ? (
 												filteredCities.map((city, index) => (
 													<div
@@ -755,7 +776,85 @@ const Banner = () => {
 														)}
 													</div>
 												))
-											) : (
+											) : null}
+											
+											{/* Show neighborhoods only when user is searching (has typed something) */}
+											{filteredNeighborhoods.length > 0 && (
+												<>
+													{/* Divider between cities and neighborhoods */}
+													{filteredCities.length > 0 && (
+														<div style={{
+															height: "1px",
+															backgroundColor: "rgba(0, 0, 0, 0.06)",
+															margin: "8px 16px",
+														}} />
+													)}
+													{filteredNeighborhoods.map((neighborhood, index) => (
+														<div
+															key={`neighborhood-${neighborhood.value}`}
+															onClick={() => handleLocationCitySelect(neighborhood.label)}
+															style={{
+																padding: "14px 20px",
+																margin: "4px 8px",
+																cursor: "pointer",
+																transition: "all 0.2s ease",
+																fontSize: "15px",
+																fontWeight: "500",
+																color: "#222222",
+																backgroundColor: location === neighborhood.label ? "rgba(255, 56, 92, 0.08)" : "transparent",
+																display: "flex",
+																alignItems: "center",
+																gap: "14px",
+																borderRadius: "12px",
+															}}
+															onMouseEnter={(e) => {
+																e.currentTarget.style.backgroundColor = location === neighborhood.label
+																	? "rgba(255, 56, 92, 0.12)"
+																	: "rgba(0, 0, 0, 0.04)";
+																e.currentTarget.style.transform = "translateX(2px)";
+															}}
+															onMouseLeave={(e) => {
+																e.currentTarget.style.backgroundColor = location === neighborhood.label
+																	? "rgba(255, 56, 92, 0.08)"
+																	: "transparent";
+																e.currentTarget.style.transform = "translateX(0)";
+															}}
+														>
+															<div style={{
+																width: "36px",
+																height: "36px",
+																borderRadius: "10px",
+																background: location === neighborhood.label
+																	? "linear-gradient(135deg, #FF385C 0%, #E61E4D 100%)"
+																	: "rgba(0, 0, 0, 0.06)",
+																display: "flex",
+																alignItems: "center",
+																justifyContent: "center",
+																flexShrink: 0,
+																transition: "all 0.2s ease",
+															}}>
+																<MapPin
+																	size={16}
+																	color={location === neighborhood.label ? "#FFFFFF" : "#717171"}
+																	strokeWidth={2.5}
+																/>
+															</div>
+															<span style={{ flex: 1 }}>{neighborhood.label}</span>
+															{location === neighborhood.label && (
+																<div style={{
+																	width: "6px",
+																	height: "6px",
+																	borderRadius: "50%",
+																	background: "linear-gradient(135deg, #FF385C 0%, #E61E4D 100%)",
+																}} />
+															)}
+														</div>
+													))}
+												</>
+											)}
+											
+											{/* Show message if no results */}
+											{filteredCities.length === 0 && filteredNeighborhoods.length === 0 && (
 												<div
 													style={{
 														padding: "16px 20px",
@@ -764,7 +863,7 @@ const Banner = () => {
 														textAlign: "center",
 													}}
 												>
-													No cities found
+													No locations found
 												</div>
 											)}
 										</div>
