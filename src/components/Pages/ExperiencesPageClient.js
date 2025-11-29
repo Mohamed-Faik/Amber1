@@ -54,7 +54,7 @@ const ExperiencesPageClient = ({
 			{/* Compact Search Bar Section - Airbnb Style */}
 			<div className="experiences-search-section" style={{
 				position: "relative",
-				zIndex: 100,
+				zIndex: 50,
 				marginBottom: "32px",
 			}}>
 				<div className="experiences-search-wrapper" style={{
@@ -91,7 +91,7 @@ const ExperiencesPageClient = ({
 			<style jsx global>{`
 			@media (max-width: 768px) {
 				.experiences-search-section {
-					z-index: 1 !important;
+					z-index: 100 !important;
 				}
 				
 				.experiences-search-wrapper,
@@ -145,7 +145,7 @@ const ExperiencesPageClient = ({
 				.experiences-page-container .sticky-filter-wrapper {
 					position: sticky !important;
 					top: 70px !important;
-					z-index: 10 !important;
+					z-index: 1 !important;
 					align-self: flex-start !important;
 					margin-left: auto !important;
 					flex-shrink: 0 !important;
@@ -299,4 +299,3 @@ const ExperiencesPageClient = ({
 };
 
 export default ExperiencesPageClient;
-
