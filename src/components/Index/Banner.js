@@ -243,8 +243,22 @@ const Banner = () => {
 					right: 0,
 					bottom: 0,
 					background:
-						"linear-gradient(to bottom, rgb(255 56 92 / 18%), rgb(0 0 0 / 30%))",
+						"linear-gradient(to bottom, rgba(255, 56, 92, 0.15) 0%, rgba(0, 0, 0, 0.25) 40%, rgba(0, 0, 0, 0.5) 100%)",
 					zIndex: 2,
+				}}
+			/>
+
+			{/* Gradient Overlay Enhancement */}
+			<div
+				style={{
+					position: "absolute",
+					top: 0,
+					left: 0,
+					right: 0,
+					bottom: 0,
+					background: "linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.6) 100%)",
+					zIndex: 2,
+					pointerEvents: "none",
 				}}
 			/>
 
@@ -259,7 +273,7 @@ const Banner = () => {
 					flexDirection: "column",
 					alignItems: "center",
 					justifyContent: "flex-end",
-					paddingBottom: "40px",
+					paddingBottom: "60px",
 					overflow: "visible",
 				}}
 			>
@@ -277,28 +291,49 @@ const Banner = () => {
 						className="banner-quote-text"
 						style={{
 							textAlign: "center",
-							marginBottom: "32px",
+							marginBottom: "40px",
 							marginTop: "0",
 							width: "100%",
+							animation: "fadeInUp 0.8s ease-out",
 						}}
 					>
 						<p
 							style={{
-								fontSize: "clamp(32px, 5vw, 64px)",
-								fontWeight: "400",
+								fontSize: "clamp(36px, 5.5vw, 72px)",
+								fontWeight: "500",
 								color: "#FFFFFF",
 								fontFamily: "var(--font-brush), 'Caveat Brush', 'Brush Script MT', cursive",
-								lineHeight: "1.2",
-								textShadow: "0 2px 8px rgba(0, 0, 0, 0.3), 0 4px 12px rgba(0, 0, 0, 0.2)",
+								lineHeight: "1.3",
+								textShadow: "0 4px 16px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.3), 0 2px 4px rgba(0, 0, 0, 0.5)",
 								margin: 0,
 								display: "inline-block",
-								letterSpacing: "1px",
+								letterSpacing: "2px",
 								fontStyle: "normal",
+								position: "relative",
+								padding: "0 20px",
 							}}
 						>
-							<span style={{ color: "#FF385C" }}>"</span>
+							<span 
+								style={{ 
+									color: "#FF385C",
+									fontSize: "1.3em",
+									textShadow: "0 2px 8px rgba(255, 56, 92, 0.5)",
+									display: "inline-block",
+									transform: "rotate(-10deg)",
+									marginRight: "8px",
+								}}
+							>"</span>
 							{getTranslation(displayLanguage, "hero.quote")}
-							<span style={{ color: "#FF385C" }}>"</span>
+							<span 
+								style={{ 
+									color: "#FF385C",
+									fontSize: "1.3em",
+									textShadow: "0 2px 8px rgba(255, 56, 92, 0.5)",
+									display: "inline-block",
+									transform: "rotate(10deg)",
+									marginLeft: "8px",
+								}}
+							>"</span>
 						</p>
 					</div>
 
@@ -307,12 +342,17 @@ const Banner = () => {
 						className="banner-search-form"
 						style={{
 							backgroundColor: "#FFFFFF",
-							borderRadius: "29px",
+							borderRadius: "24px",
 							padding: "24px",
-							boxShadow: "0 8px 32px rgba(0, 0, 0, 0.15)",
-							width: "100%",
+							boxShadow: "0 24px 80px rgba(0, 0, 0, 0.16), 0 8px 32px rgba(0, 0, 0, 0.12)",
+							width: "85%",
+							maxWidth: "800px",
+							margin: "0 auto",
 							position: "relative",
 							zIndex: 1000,
+							border: "2px solid rgba(255, 255, 255, 0.9)",
+							background: "linear-gradient(135deg, #FFFFFF 0%, #FAFAFA 100%)",
+							animation: "fadeInUp 1s ease-out 0.2s both",
 						}}
 					>
 						<form onSubmit={handleSearch}>
@@ -322,8 +362,10 @@ const Banner = () => {
 								style={{
 									display: "grid",
 									gridTemplateColumns: "1fr 1fr",
-									gap: "16px",
-									marginBottom: "16px",
+									gap: "12px",
+									marginBottom: "12px",
+									paddingBottom: "12px",
+									borderBottom: "2px solid #F0F0F0",
 								}}
 							>
 								{/* For Sale Dropdown */}
@@ -332,37 +374,43 @@ const Banner = () => {
 										onClick={handleSaleTypeClick}
 										style={{
 											width: "100%",
-											padding: "14px 16px 14px 44px",
-											border: showSaleTypeDropdown ? "2px solid #FF385C" : "1px solid #E0E0E0",
-											borderRadius: "12px",
-											backgroundColor: showSaleTypeDropdown ? "#FFFFFF" : "#F7F7F7",
+											padding: "12px 16px 12px 44px",
+											border: showSaleTypeDropdown ? "3px solid #FF385C" : "2px solid #E0E0E0",
+											borderRadius: "14px",
+											backgroundColor: showSaleTypeDropdown ? "#FFF5F7" : "#F8F8F8",
 											fontSize: "14px",
-											fontWeight: "500",
+											fontWeight: "600",
 											outline: "none",
 											cursor: "pointer",
 											display: "flex",
 											alignItems: "center",
 											justifyContent: "space-between",
-											color: saleType ? "#222222" : "#717171",
-											transition: "all 0.2s ease",
-											boxShadow: showSaleTypeDropdown ? "0 4px 12px rgba(255, 56, 92, 0.15)" : "none",
+											color: saleType ? "#1A1A1A" : "#666666",
+											transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+											boxShadow: showSaleTypeDropdown 
+												? "0 12px 32px rgba(255, 56, 92, 0.25), 0 4px 12px rgba(255, 56, 92, 0.15)" 
+												: "0 4px 8px rgba(0, 0, 0, 0.06)",
 										}}
 										onMouseEnter={(e) => {
 											if (!showSaleTypeDropdown) {
 												e.currentTarget.style.borderColor = "#FF385C";
 												e.currentTarget.style.backgroundColor = "#FFFFFF";
+												e.currentTarget.style.boxShadow = "0 4px 12px rgba(255, 56, 92, 0.15)";
+												e.currentTarget.style.transform = "translateY(-1px)";
 											}
 										}}
 										onMouseLeave={(e) => {
 											if (!showSaleTypeDropdown) {
-												e.currentTarget.style.borderColor = "#E0E0E0";
-												e.currentTarget.style.backgroundColor = "#F7F7F7";
+												e.currentTarget.style.borderColor = "#E8E8E8";
+												e.currentTarget.style.backgroundColor = "#FAFAFA";
+												e.currentTarget.style.boxShadow = "0 2px 4px rgba(0, 0, 0, 0.04)";
+												e.currentTarget.style.transform = "translateY(0)";
 											}
 										}}
 									>
 										<span>{getSaleTypeLabel(saleType)}</span>
 										<ChevronDown
-											size={18}
+											size={16}
 											color={showSaleTypeDropdown ? "#FF385C" : "#717171"}
 											style={{
 												transform: showSaleTypeDropdown ? "rotate(180deg)" : "rotate(0deg)",
@@ -378,9 +426,17 @@ const Banner = () => {
 											transform: "translateY(-50%)",
 											pointerEvents: "none",
 											zIndex: 1,
+											display: "flex",
+											alignItems: "center",
+											justifyContent: "center",
+											width: "20px",
+											height: "20px",
+											backgroundColor: showSaleTypeDropdown ? "rgba(255, 56, 92, 0.1)" : "rgba(0, 0, 0, 0.05)",
+											borderRadius: "8px",
+											transition: "all 0.3s ease",
 										}}
 									>
-										<Home size={18} color={showSaleTypeDropdown ? "#FF385C" : "#717171"} />
+										<Home size={18} color={showSaleTypeDropdown ? "#FF385C" : "#666666"} strokeWidth={2.5} />
 									</div>
 									{/* Sale Type Dropdown */}
 									<div
@@ -391,9 +447,9 @@ const Banner = () => {
 											left: 0,
 											right: 0,
 											backgroundColor: "#FFFFFF",
-											border: "1px solid rgba(0, 0, 0, 0.08)",
-											borderRadius: "20px",
-											boxShadow: "0 10px 40px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.08)",
+											border: "1px solid rgba(0, 0, 0, 0.06)",
+											borderRadius: "16px",
+											boxShadow: "0 20px 60px rgba(0, 0, 0, 0.15), 0 8px 24px rgba(0, 0, 0, 0.1)",
 											zIndex: 1002,
 											overflow: "hidden",
 											marginTop: "4px",
@@ -411,18 +467,18 @@ const Banner = () => {
 													key={type.key}
 													onClick={() => handleSaleTypeSelect(type.key)}
 													style={{
-														padding: "14px 20px",
-														margin: "4px 8px",
+														padding: "10px 18px",
+														margin: "3px 6px",
 														cursor: "pointer",
 														transition: "all 0.2s ease",
-														fontSize: "15px",
+														fontSize: "14px",
 														fontWeight: "500",
 														color: "#222222",
 														backgroundColor: saleType === type.key ? "rgba(255, 56, 92, 0.08)" : "transparent",
 														display: "flex",
 														alignItems: "center",
-														gap: "14px",
-														borderRadius: "12px",
+														gap: "12px",
+														borderRadius: "8px",
 													}}
 													onMouseEnter={(e) => {
 														e.currentTarget.style.backgroundColor = saleType === type.key
@@ -438,9 +494,9 @@ const Banner = () => {
 													}}
 												>
 													<div style={{
-														width: "36px",
-														height: "36px",
-														borderRadius: "10px",
+														width: "32px",
+														height: "32px",
+														borderRadius: "8px",
 														background: saleType === type.key
 															? "linear-gradient(135deg, #FF385C 0%, #E61E4D 100%)"
 															: "rgba(0, 0, 0, 0.06)",
@@ -451,7 +507,7 @@ const Banner = () => {
 														transition: "all 0.2s ease",
 													}}>
 														<Home
-															size={18}
+															size={16}
 															color={saleType === type.key ? "#FFFFFF" : "#717171"}
 															strokeWidth={2.5}
 														/>
@@ -477,37 +533,43 @@ const Banner = () => {
 										onClick={handleCategoryClick}
 										style={{
 											width: "100%",
-											padding: "14px 16px 14px 44px",
-											border: showCategoryDropdown ? "2px solid #FF385C" : "1px solid #E0E0E0",
-											borderRadius: "12px",
-											backgroundColor: showCategoryDropdown ? "#FFFFFF" : "#F7F7F7",
+											padding: "12px 16px 12px 44px",
+											border: showCategoryDropdown ? "3px solid #FF385C" : "2px solid #E0E0E0",
+											borderRadius: "14px",
+											backgroundColor: showCategoryDropdown ? "#FFF5F7" : "#F8F8F8",
 											fontSize: "14px",
-											fontWeight: "500",
+											fontWeight: "600",
 											outline: "none",
 											cursor: "pointer",
 											display: "flex",
 											alignItems: "center",
 											justifyContent: "space-between",
-											color: category ? "#222222" : "#717171",
-											transition: "all 0.2s ease",
-											boxShadow: showCategoryDropdown ? "0 4px 12px rgba(255, 56, 92, 0.15)" : "none",
+											color: category ? "#1A1A1A" : "#666666",
+											transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+											boxShadow: showCategoryDropdown 
+												? "0 12px 32px rgba(255, 56, 92, 0.25), 0 4px 12px rgba(255, 56, 92, 0.15)" 
+												: "0 4px 8px rgba(0, 0, 0, 0.06)",
 										}}
 										onMouseEnter={(e) => {
 											if (!showCategoryDropdown) {
 												e.currentTarget.style.borderColor = "#FF385C";
 												e.currentTarget.style.backgroundColor = "#FFFFFF";
+												e.currentTarget.style.boxShadow = "0 4px 12px rgba(255, 56, 92, 0.15)";
+												e.currentTarget.style.transform = "translateY(-1px)";
 											}
 										}}
 										onMouseLeave={(e) => {
 											if (!showCategoryDropdown) {
-												e.currentTarget.style.borderColor = "#E0E0E0";
-												e.currentTarget.style.backgroundColor = "#F7F7F7";
+												e.currentTarget.style.borderColor = "#E8E8E8";
+												e.currentTarget.style.backgroundColor = "#FAFAFA";
+												e.currentTarget.style.boxShadow = "0 2px 4px rgba(0, 0, 0, 0.04)";
+												e.currentTarget.style.transform = "translateY(0)";
 											}
 										}}
 									>
 										<span>{category ? getTranslation(displayLanguage, `categories.${category.toLowerCase()}`) : getTranslation(displayLanguage, "hero.category")}</span>
 										<ChevronDown
-											size={18}
+											size={16}
 											color={showCategoryDropdown ? "#FF385C" : "#717171"}
 											style={{
 												transform: showCategoryDropdown ? "rotate(180deg)" : "rotate(0deg)",
@@ -523,9 +585,17 @@ const Banner = () => {
 											transform: "translateY(-50%)",
 											pointerEvents: "none",
 											zIndex: 1,
+											display: "flex",
+											alignItems: "center",
+											justifyContent: "center",
+											width: "20px",
+											height: "20px",
+											backgroundColor: showCategoryDropdown ? "rgba(255, 56, 92, 0.1)" : "rgba(0, 0, 0, 0.05)",
+											borderRadius: "8px",
+											transition: "all 0.3s ease",
 										}}
 									>
-										<Home size={18} color={showCategoryDropdown ? "#FF385C" : "#717171"} />
+										<Home size={18} color={showCategoryDropdown ? "#FF385C" : "#666666"} strokeWidth={2.5} />
 									</div>
 									{/* Category Dropdown */}
 									<div
@@ -536,9 +606,9 @@ const Banner = () => {
 											left: 0,
 											right: 0,
 											backgroundColor: "#FFFFFF",
-											border: "1px solid rgba(0, 0, 0, 0.08)",
-											borderRadius: "20px",
-											boxShadow: "0 10px 40px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.08)",
+											border: "1px solid rgba(0, 0, 0, 0.06)",
+											borderRadius: "16px",
+											boxShadow: "0 20px 60px rgba(0, 0, 0, 0.15), 0 8px 24px rgba(0, 0, 0, 0.1)",
 											zIndex: 1002,
 											maxHeight: "360px",
 											overflowY: "auto",
@@ -558,18 +628,18 @@ const Banner = () => {
 													key={cat.value}
 													onClick={() => handleCategorySelect(cat.label)}
 													style={{
-														padding: "14px 20px",
-														margin: "4px 8px",
+														padding: "10px 18px",
+														margin: "3px 6px",
 														cursor: "pointer",
 														transition: "all 0.2s ease",
 														display: "flex",
 														alignItems: "center",
-														gap: "14px",
-														fontSize: "15px",
+														gap: "12px",
+														fontSize: "14px",
 														fontWeight: "500",
 														color: "#222222",
 														backgroundColor: category === cat.label ? "rgba(255, 56, 92, 0.08)" : "transparent",
-														borderRadius: "12px",
+														borderRadius: "10px",
 													}}
 													onMouseEnter={(e) => {
 														e.currentTarget.style.backgroundColor = category === cat.label
@@ -586,9 +656,9 @@ const Banner = () => {
 												>
 													<div
 														style={{
-															width: "36px",
-															height: "36px",
-															borderRadius: "10px",
+															width: "32px",
+															height: "32px",
+															borderRadius: "8px",
 															background: category === cat.label
 																? "linear-gradient(135deg, #FF385C 0%, #E61E4D 100%)"
 																: "rgba(0, 0, 0, 0.06)",
@@ -603,7 +673,7 @@ const Banner = () => {
 															const IconComponent = getCategoryIcon(cat.label);
 															return (
 																<IconComponent
-																	size={18}
+																	size={16}
 																	color={category === cat.label ? "#FFFFFF" : "#717171"}
 																	strokeWidth={2}
 																/>
@@ -632,7 +702,7 @@ const Banner = () => {
 								style={{
 									display: "grid",
 									gridTemplateColumns: "1fr auto",
-									gap: "16px",
+									gap: "12px",
 									alignItems: "end",
 								}}
 							>
@@ -650,17 +720,19 @@ const Banner = () => {
 										onClick={handleLocationClick}
 										style={{
 											width: "100%",
-											padding: "14px 16px 14px 44px",
-											border: showLocationDropdown ? "2px solid #FF385C" : "1px solid #E0E0E0",
-											borderRadius: "12px",
-											backgroundColor: showLocationDropdown ? "#FFFFFF" : "#F7F7F7",
+											padding: "12px 16px 12px 44px",
+											border: showLocationDropdown ? "3px solid #FF385C" : "2px solid #E0E0E0",
+											borderRadius: "14px",
+											backgroundColor: showLocationDropdown ? "#FFF5F7" : "#F8F8F8",
 											fontSize: "14px",
-											fontWeight: "500",
+											fontWeight: "600",
 											outline: "none",
 											cursor: "text",
-											color: locationSearchTerm ? "#222222" : "#717171",
-											transition: "all 0.2s ease",
-											boxShadow: showLocationDropdown ? "0 4px 12px rgba(255, 56, 92, 0.15)" : "none",
+											color: locationSearchTerm ? "#1A1A1A" : "#666666",
+											transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+											boxShadow: showLocationDropdown 
+												? "0 12px 32px rgba(255, 56, 92, 0.25), 0 4px 12px rgba(255, 56, 92, 0.15)" 
+												: "0 4px 8px rgba(0, 0, 0, 0.06)",
 										}}
 										onMouseEnter={(e) => {
 											if (!showLocationDropdown) {
@@ -683,9 +755,17 @@ const Banner = () => {
 											transform: "translateY(-50%)",
 											pointerEvents: "none",
 											zIndex: 1,
+											display: "flex",
+											alignItems: "center",
+											justifyContent: "center",
+											width: "20px",
+											height: "20px",
+											backgroundColor: showLocationDropdown ? "rgba(255, 56, 92, 0.1)" : "rgba(0, 0, 0, 0.05)",
+											borderRadius: "8px",
+											transition: "all 0.3s ease",
 										}}
 									>
-										<MapPin size={18} color={showLocationDropdown ? "#FF385C" : "#717171"} />
+										<MapPin size={18} color={showLocationDropdown ? "#FF385C" : "#666666"} strokeWidth={2.5} />
 									</div>
 									{/* Location Dropdown */}
 									<div
@@ -696,9 +776,9 @@ const Banner = () => {
 											left: 0,
 											right: 0,
 											backgroundColor: "#FFFFFF",
-											border: "1px solid rgba(0, 0, 0, 0.08)",
-											borderRadius: "20px",
-											boxShadow: "0 10px 40px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.08)",
+											border: "1px solid rgba(0, 0, 0, 0.06)",
+											borderRadius: "16px",
+											boxShadow: "0 20px 60px rgba(0, 0, 0, 0.15), 0 8px 24px rgba(0, 0, 0, 0.1)",
 											zIndex: 1002,
 											maxHeight: "360px",
 											overflowY: "auto",
@@ -720,18 +800,18 @@ const Banner = () => {
 														key={city.value}
 														onClick={() => handleLocationCitySelect(city.label)}
 														style={{
-															padding: "14px 20px",
-															margin: "4px 8px",
+															padding: "10px 18px",
+															margin: "3px 6px",
 															cursor: "pointer",
 															transition: "all 0.2s ease",
-															fontSize: "15px",
+															fontSize: "14px",
 															fontWeight: "500",
 															color: "#222222",
 															backgroundColor: location === city.label ? "rgba(255, 56, 92, 0.08)" : "transparent",
 															display: "flex",
 															alignItems: "center",
-															gap: "14px",
-															borderRadius: "12px",
+															gap: "12px",
+															borderRadius: "10px",
 														}}
 														onMouseEnter={(e) => {
 															e.currentTarget.style.backgroundColor = location === city.label
@@ -747,9 +827,9 @@ const Banner = () => {
 														}}
 													>
 														<div style={{
-															width: "36px",
-															height: "36px",
-															borderRadius: "10px",
+															width: "32px",
+															height: "32px",
+															borderRadius: "8px",
 															background: location === city.label
 																? "linear-gradient(135deg, #FF385C 0%, #E61E4D 100%)"
 																: "rgba(0, 0, 0, 0.06)",
@@ -760,7 +840,7 @@ const Banner = () => {
 															transition: "all 0.2s ease",
 														}}>
 															<MapPin
-																size={16}
+																size={14}
 																color={location === city.label ? "#FFFFFF" : "#717171"}
 																strokeWidth={2.5}
 															/>
@@ -794,18 +874,18 @@ const Banner = () => {
 															key={`neighborhood-${neighborhood.value}`}
 															onClick={() => handleLocationCitySelect(neighborhood.label)}
 															style={{
-																padding: "14px 20px",
-																margin: "4px 8px",
+																padding: "10px 18px",
+																margin: "3px 6px",
 																cursor: "pointer",
 																transition: "all 0.2s ease",
-																fontSize: "15px",
+																fontSize: "14px",
 																fontWeight: "500",
 																color: "#222222",
 																backgroundColor: location === neighborhood.label ? "rgba(255, 56, 92, 0.08)" : "transparent",
 																display: "flex",
 																alignItems: "center",
-																gap: "14px",
-																borderRadius: "12px",
+																gap: "12px",
+																borderRadius: "10px",
 															}}
 															onMouseEnter={(e) => {
 																e.currentTarget.style.backgroundColor = location === neighborhood.label
@@ -821,9 +901,9 @@ const Banner = () => {
 															}}
 														>
 															<div style={{
-																width: "36px",
-																height: "36px",
-																borderRadius: "10px",
+																width: "32px",
+																height: "32px",
+																borderRadius: "8px",
 																background: location === neighborhood.label
 																	? "linear-gradient(135deg, #FF385C 0%, #E61E4D 100%)"
 																	: "rgba(0, 0, 0, 0.06)",
@@ -834,7 +914,7 @@ const Banner = () => {
 																transition: "all 0.2s ease",
 															}}>
 																<MapPin
-																	size={16}
+																	size={14}
 																	color={location === neighborhood.label ? "#FFFFFF" : "#717171"}
 																	strokeWidth={2.5}
 																/>
@@ -875,34 +955,43 @@ const Banner = () => {
 									type="submit"
 									style={{
 										padding: "14px 32px",
-										borderRadius: "12px",
-										backgroundColor: "#FF385C",
+										borderRadius: "14px",
+										background: "linear-gradient(135deg, #FF385C 0%, #E61E4D 100%)",
 										color: "#FFFFFF",
 										border: "none",
-										fontSize: "16px",
-										fontWeight: "600",
+										fontSize: "15px",
+										fontWeight: "700",
 										cursor: "pointer",
 										display: "flex",
 										alignItems: "center",
 										gap: "8px",
-										transition: "all 0.2s ease",
+										transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
 										whiteSpace: "nowrap",
-										boxShadow: "0 4px 12px rgba(255, 56, 92, 0.3)",
+										boxShadow: "0 12px 40px rgba(255, 56, 92, 0.4), 0 6px 20px rgba(255, 56, 92, 0.3)",
+										position: "relative",
+										overflow: "hidden",
+										letterSpacing: "0.3px",
 									}}
 									onMouseEnter={(e) => {
-										e.currentTarget.style.backgroundColor = "#E61E4D";
-										e.currentTarget.style.transform = "translateY(-2px)";
-										e.currentTarget.style.boxShadow = "0 6px 16px rgba(255, 56, 92, 0.4)";
+										e.currentTarget.style.background = "linear-gradient(135deg, #E61E4D 0%, #D91A3D 100%)";
+										e.currentTarget.style.transform = "translateY(-2px) scale(1.02)";
+										e.currentTarget.style.boxShadow = "0 12px 32px rgba(255, 56, 92, 0.45), 0 6px 16px rgba(255, 56, 92, 0.3)";
 									}}
 									onMouseLeave={(e) => {
-										e.currentTarget.style.backgroundColor = "#FF385C";
-										e.currentTarget.style.transform = "translateY(0)";
-										e.currentTarget.style.boxShadow = "0 4px 12px rgba(255, 56, 92, 0.3)";
+										e.currentTarget.style.background = "linear-gradient(135deg, #FF385C 0%, #E61E4D 100%)";
+										e.currentTarget.style.transform = "translateY(0) scale(1)";
+										e.currentTarget.style.boxShadow = "0 8px 24px rgba(255, 56, 92, 0.35), 0 4px 12px rgba(255, 56, 92, 0.2)";
+									}}
+									onMouseDown={(e) => {
+										e.currentTarget.style.transform = "translateY(0) scale(0.98)";
+									}}
+									onMouseUp={(e) => {
+										e.currentTarget.style.transform = "translateY(-2px) scale(1.02)";
 									}}
 								>
 									<svg
-										width="20"
-										height="20"
+										width="18"
+										height="18"
 										viewBox="0 0 24 24"
 										fill="none"
 										stroke="currentColor"
@@ -921,6 +1010,17 @@ const Banner = () => {
 
 			{/* Dropdown Animations & Scrollbar Styles */}
 			<style jsx global>{`
+			@keyframes fadeInUp {
+				from {
+					opacity: 0;
+					transform: translateY(30px);
+				}
+				to {
+					opacity: 1;
+					transform: translateY(0);
+				}
+			}
+
 			@keyframes dropdownFadeIn {
 				from {
 					opacity: 0;

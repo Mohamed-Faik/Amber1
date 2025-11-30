@@ -112,14 +112,14 @@ const SearchForm = () => {
 					});
 			} else {
 				// For other cities, use the API
-				axios
-					.get(`/api/categories/location/${locValue}`)
-					.then((response) => {
-						setLocations(response.data);
-					})
-					.catch((error) => {
+			axios
+				.get(`/api/categories/location/${locValue}`)
+				.then((response) => {
+					setLocations(response.data);
+				})
+				.catch((error) => {
 						toast.error("Something went wrong!");
-					});
+				});
 			}
 
 			setLocSuggest(true);
