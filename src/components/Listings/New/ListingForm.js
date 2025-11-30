@@ -14,6 +14,8 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import useCountries from "@/hooks/useCountries";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { getTranslation } from "@/utils/translations";
 const RichTextEditor = dynamic(() => import("@mantine/rte"), {
 	ssr: false,
 	loading: () => null,
@@ -75,6 +77,8 @@ const ListingForm = ({ initialData = null, featureType = null }) => {
 	const router = useRouter();
 	const isEditMode = Boolean(initialData);
 	const { getAll } = useCountries();
+	const { language, isDetecting } = useLanguage();
+	const displayLanguage = isDetecting ? "en" : language;
 	const countryOptions = getAll();
 
 	const defaultValues = useMemo(() => {
@@ -358,17 +362,17 @@ const ListingForm = ({ initialData = null, featureType = null }) => {
 							lineHeight: "1.3",
 						}}
 					>
-						{isEditMode 
-							? featureType === "EXPERIENCES" 
-								? "Edit Experience" 
-								: featureType === "SERVICES" 
-								? "Edit Service" 
-								: "Edit Listing"
-							: featureType === "EXPERIENCES"
-							? "Create a New Experience"
-							: featureType === "SERVICES"
-							? "Create a New Service"
-							: "Create a New Listing"}
+					{isEditMode 
+						? featureType === "EXPERIENCES" 
+							? getTranslation(displayLanguage, "listings.editExperience")
+							: featureType === "SERVICES" 
+							? getTranslation(displayLanguage, "listings.editService")
+							: getTranslation(displayLanguage, "listings.editListing")
+						: featureType === "EXPERIENCES"
+						? getTranslation(displayLanguage, "listings.createNewExperience")
+						: featureType === "SERVICES"
+						? getTranslation(displayLanguage, "listings.createNewService")
+						: getTranslation(displayLanguage, "listings.createListing")}
 					</h1>
 					<p
 						style={{
@@ -378,13 +382,13 @@ const ListingForm = ({ initialData = null, featureType = null }) => {
 							lineHeight: "1.5",
 						}}
 					>
-						{isEditMode
-							? "Update your listing details. Changes to published listings will move back to admin review."
-							: featureType === "EXPERIENCES"
-							? "Create an amazing experience for your guests. Share activities, tours, and unique local experiences."
-							: featureType === "SERVICES"
-							? "Offer professional services to help homeowners and guests. From cleaning to property management."
-							: "Share your property with potential buyers. All listings require admin approval."}
+					{isEditMode
+						? getTranslation(displayLanguage, "listings.updateListingDescription")
+						: featureType === "EXPERIENCES"
+						? getTranslation(displayLanguage, "listings.createExperienceDescription")
+						: featureType === "SERVICES"
+						? getTranslation(displayLanguage, "listings.createServiceDescription")
+						: getTranslation(displayLanguage, "listings.sharePropertyDescription")}
 					</p>
 				</div>
 
@@ -470,14 +474,14 @@ const ListingForm = ({ initialData = null, featureType = null }) => {
 						{/* Section 1: Basic Information */}
 						<div className="form-section-card">
 							<h2 className="form-section-title">
-								Basic Information
+								{getTranslation(displayLanguage, "listings.basicInformation")}
 							</h2>
 							<div className="form-field-group">
 								<Input
-									label="Property Title"
+									label={getTranslation(displayLanguage, "listings.propertyTitle")}
 									id="title"
 									type="text"
-									placeholder="e.g., Beautiful 3-bedroom house in downtown"
+									placeholder={getTranslation(displayLanguage, "listings.propertyTitlePlaceholder")}
 									disabled={isLoading}
 									register={register}
 									errors={errors}
@@ -486,7 +490,7 @@ const ListingForm = ({ initialData = null, featureType = null }) => {
 
 								<div className="form-group">
 									<label className="form-label-custom">
-										Description <span style={{ color: "#FF385C" }}>*</span>
+										{getTranslation(displayLanguage, "listings.description")} <span style={{ color: "#FF385C" }}>*</span>
 									</label>
 									<Controller
 										name="description"
@@ -496,7 +500,7 @@ const ListingForm = ({ initialData = null, featureType = null }) => {
 											<RichTextEditor
 												controls={RTEControls}
 												{...field}
-												placeholder="Describe your property in detail..."
+												placeholder={getTranslation(displayLanguage, "listings.describePropertyPlaceholder")}
 												style={{
 													border: "1px solid #e0e0e0",
 													borderRadius: "8px",
@@ -512,13 +516,15 @@ const ListingForm = ({ initialData = null, featureType = null }) => {
 						{/* Section 2: Images */}
 						<div className="form-section-card">
 							<h2 className="form-section-title">
-								Property Images
+								{getTranslation(displayLanguage, "listings.propertyImages")}
 							</h2>
 							<MultiImageUpload
 								onChange={(value) =>
 									setCustomValue("imageSrc", value)
 								}
 								value={imageSrc}
+								uploadText={getTranslation(displayLanguage, "listings.clickToUpload")}
+								fileTypesText={getTranslation(displayLanguage, "listings.fileTypesText")}
 							/>
 						</div>
 					</div>
@@ -528,16 +534,17 @@ const ListingForm = ({ initialData = null, featureType = null }) => {
 						{/* Section 3: Location & Category */}
 						<div className="form-section-card">
 							<h2 className="form-section-title">
-								Location & Category
+								{getTranslation(displayLanguage, "listings.locationCategory")}
 							</h2>
 							<div className="form-field-group">
 								<div className="form-group" style={{ marginBottom: 0 }}>
 									<label className="form-label-custom" style={{ marginBottom: "8px", display: "block" }}>
-										City <span style={{ color: "#FF385C" }}>*</span>
+										{getTranslation(displayLanguage, "listings.city")} <span style={{ color: "#FF385C" }}>*</span>
 									</label>
 									<div style={{ width: "100%" }}>
 										<MoroccanCitySelect
 											value={city}
+											placeholder={getTranslation(displayLanguage, "listings.selectCity")}
 											onChange={(value) => {
 												setCustomValue("city", value);
 												// Clear neighborhood when city changes
@@ -551,12 +558,14 @@ const ListingForm = ({ initialData = null, featureType = null }) => {
 
 								<div className="form-group" style={{ marginBottom: 0 }}>
 									<label className="form-label-custom" style={{ marginBottom: "8px", display: "block" }}>
-										Neighborhood
+										{getTranslation(displayLanguage, "listings.neighborhood")}
 									</label>
 									<div style={{ width: "100%" }}>
 										<MoroccanNeighborhoodSelect
 											city={city}
 											value={neighborhood}
+											selectCityFirstPlaceholder={getTranslation(displayLanguage, "listings.selectNeighborhood")}
+											placeholder={getTranslation(displayLanguage, "listings.selectNeighborhood")}
 											onChange={(value) =>
 												setCustomValue("neighborhood", value)
 											}
@@ -567,10 +576,10 @@ const ListingForm = ({ initialData = null, featureType = null }) => {
 								<div style={{ position: "relative", zIndex: 1 }}>
 									<label className="form-label-custom" style={{ position: "relative", zIndex: 2 }}>
 										{featureType === "EXPERIENCES" 
-											? "Experience Type" 
+											? getTranslation(displayLanguage, "listings.experienceType")
 											: featureType === "SERVICES" 
-											? "Service Type" 
-											: "Property Type"} <span style={{ color: "#FF385C" }}>*</span>
+											? getTranslation(displayLanguage, "listings.serviceType")
+											: getTranslation(displayLanguage, "listings.propertyType")} <span style={{ color: "#FF385C" }}>*</span>
 									</label>
 									<div style={{ position: "relative", zIndex: 1 }}>
 									<Select
@@ -579,10 +588,10 @@ const ListingForm = ({ initialData = null, featureType = null }) => {
 										classNamePrefix="select"
 										placeholder={
 											featureType === "EXPERIENCES" 
-												? "Select Experience Type" 
+												? getTranslation(displayLanguage, "listings.selectExperienceType")
 												: featureType === "SERVICES" 
-												? "Select Service Type" 
-												: "Select Property Type (Villa, Apartment, House, or Land)"
+												? getTranslation(displayLanguage, "listings.selectServiceType")
+												: getTranslation(displayLanguage, "listings.selectPropertyType")
 										}
 										isClearable
 										isSearchable
@@ -704,10 +713,10 @@ const ListingForm = ({ initialData = null, featureType = null }) => {
 							{/* Full Address - Only for HOMES */}
 							{!featureType && (
 								<Input
-									label="Full Address"
+									label={getTranslation(displayLanguage, "listings.fullAddress")}
 									id="address"
 									type="text"
-									placeholder="e.g., 123 Main Street, City, State"
+									placeholder={getTranslation(displayLanguage, "listings.fullAddressPlaceholder")}
 									disabled={isLoading}
 									register={register}
 									errors={errors}
@@ -748,10 +757,10 @@ const ListingForm = ({ initialData = null, featureType = null }) => {
 										}}
 									>
 										{featureType === "EXPERIENCES" 
-											? "Experience Details" 
+											? getTranslation(displayLanguage, "listings.experienceDetails")
 											: featureType === "SERVICES" 
-											? "Service Details" 
-											: "Property Details"}
+											? getTranslation(displayLanguage, "listings.serviceDetails")
+											: getTranslation(displayLanguage, "listings.propertyDetails")}
 									</h3>
 									
 									{/* HOMES - Property Details */}
@@ -768,10 +777,10 @@ const ListingForm = ({ initialData = null, featureType = null }) => {
 										>
 											{(category === "Villa" || category === "Apartment" || category === "House" || category === "Land") && (
 												<Input
-													label="Area (Square Meters)"
+													label={getTranslation(displayLanguage, "listings.areaSquareMeters")}
 													id="area"
 													type="number"
-													placeholder="e.g., 150"
+													placeholder={getTranslation(displayLanguage, "listings.areaPlaceholder")}
 													disabled={isLoading}
 													register={register}
 													errors={errors}
@@ -782,20 +791,20 @@ const ListingForm = ({ initialData = null, featureType = null }) => {
 											{(category === "Villa" || category === "Apartment" || category === "House") && (
 												<>
 													<Input
-														label={category === "Apartment" ? "Chambers (Bedrooms)" : "Bedrooms"}
+														label={category === "Apartment" ? getTranslation(displayLanguage, "listings.chambers") : getTranslation(displayLanguage, "listings.bedrooms")}
 														id="bedrooms"
 														type="number"
-														placeholder={category === "Apartment" ? "e.g., 2" : "e.g., 3"}
+														placeholder={getTranslation(displayLanguage, "listings.bedroomsPlaceholder")}
 														disabled={isLoading}
 														register={register}
 														errors={errors}
 														required
 													/>
 													<Input
-														label="Bathrooms"
+														label={getTranslation(displayLanguage, "listings.bathrooms")}
 														id="bathrooms"
 														type="number"
-														placeholder="e.g., 2"
+														placeholder={getTranslation(displayLanguage, "listings.bathroomsPlaceholder")}
 														disabled={isLoading}
 														register={register}
 														errors={errors}
@@ -818,20 +827,20 @@ const ListingForm = ({ initialData = null, featureType = null }) => {
 												}}
 											>
 												<Input
-													label="Duration (Hours)"
+													label={getTranslation(displayLanguage, "listings.durationHours")}
 													id="area"
 													type="number"
-													placeholder="e.g., 3"
+													placeholder={getTranslation(displayLanguage, "listings.durationPlaceholder")}
 													disabled={isLoading}
 													register={register}
 													errors={errors}
 													required
 												/>
 												<Input
-													label="Group Size (Max Guests)"
+													label={getTranslation(displayLanguage, "listings.groupSizeMaxGuests")}
 													id="bedrooms"
 													type="number"
-													placeholder="e.g., 10"
+													placeholder={getTranslation(displayLanguage, "listings.groupSizePlaceholder")}
 													disabled={isLoading}
 													register={register}
 													errors={errors}
@@ -855,37 +864,37 @@ const ListingForm = ({ initialData = null, featureType = null }) => {
 											}}
 										>
 											<Input
-												label="Service Duration"
+												label={getTranslation(displayLanguage, "listings.serviceDuration")}
 												id="area"
 												type="text"
-												placeholder="e.g., 2 hours, Ongoing"
+												placeholder={getTranslation(displayLanguage, "listings.serviceDurationPlaceholder")}
 												disabled={isLoading}
 												register={register}
 												errors={errors}
 											/>
 											<Input
-												label="Availability"
+												label={getTranslation(displayLanguage, "listings.availability")}
 												id="bedrooms"
 												type="text"
-												placeholder="e.g., Daily, Weekly, On-demand"
+												placeholder={getTranslation(displayLanguage, "listings.availabilityPlaceholder")}
 												disabled={isLoading}
 												register={register}
 												errors={errors}
 											/>
 											<Input
-												label="Service Area Coverage"
+												label={getTranslation(displayLanguage, "listings.serviceAreaCoverage")}
 												id="bathrooms"
 												type="text"
-												placeholder="e.g., All of Casablanca"
+												placeholder={getTranslation(displayLanguage, "listings.serviceAreaPlaceholder")}
 												disabled={isLoading}
 												register={register}
 												errors={errors}
 											/>
 											<Input
-												label="Response Time"
+												label={getTranslation(displayLanguage, "listings.responseTime")}
 												id="features"
 												type="text"
-												placeholder="e.g., Within 24 hours"
+												placeholder={getTranslation(displayLanguage, "listings.responseTimePlaceholder")}
 												disabled={isLoading}
 												register={register}
 												errors={errors}
@@ -899,12 +908,12 @@ const ListingForm = ({ initialData = null, featureType = null }) => {
 						{/* Section 4: Details & Pricing */}
 						<div className="form-section-card">
 							<h2 className="form-section-title">
-								Details & Pricing
+								{getTranslation(displayLanguage, "listings.detailsPricing")}
 							</h2>
 							<div className="form-field-group">
 								<div className="form-group">
 									<label className="form-label-custom">
-										Features & Amenities
+										{getTranslation(displayLanguage, "listings.featuresAmenities")}
 									</label>
 									<Controller
 										name="features"
@@ -914,7 +923,7 @@ const ListingForm = ({ initialData = null, featureType = null }) => {
 											<RichTextEditor
 												controls={RTEControls}
 												{...field}
-												placeholder="List the features and amenities of your property..."
+												placeholder={getTranslation(displayLanguage, "listings.listFeaturesPlaceholder")}
 												style={{
 													border: "1px solid #e0e0e0",
 													borderRadius: "8px",
@@ -929,25 +938,25 @@ const ListingForm = ({ initialData = null, featureType = null }) => {
 							{!featureType && (
 								<div style={{ position: "relative", zIndex: 1 }}>
 									<label className="form-label-custom" style={{ position: "relative", zIndex: 2 }}>
-										Listing Type <span style={{ color: "#FF385C" }}>*</span>
+										{getTranslation(displayLanguage, "listings.listingType")} <span style={{ color: "#FF385C" }}>*</span>
 									</label>
 									<div style={{ position: "relative", zIndex: 1 }}>
 										<Select
 											id="react-select-listing-type"
 											className="select-input"
 											classNamePrefix="select"
-											placeholder="Select Listing Type"
+											placeholder={getTranslation(displayLanguage, "listings.selectListingType")}
 											isSearchable={false}
 											menuPortalTarget={typeof document !== "undefined" ? document.body : null}
 											menuPosition="fixed"
 											options={[
-												{ value: "SALE", label: "For Sale" },
-												{ value: "RENT", label: "For Rent (Monthly)" },
-												{ value: "DAILY_RENT", label: "For Rent (Daily)" }
+												{ value: "SALE", label: getTranslation(displayLanguage, "listings.forSale") },
+												{ value: "RENT", label: getTranslation(displayLanguage, "listings.forRent") },
+												{ value: "DAILY_RENT", label: getTranslation(displayLanguage, "listings.forRentDaily") }
 											]}
 											value={
 												listingTypeValue
-													? [{ value: "SALE", label: "For Sale" }, { value: "RENT", label: "For Rent (Monthly)" }, { value: "DAILY_RENT", label: "For Rent (Daily)" }].find(
+													? [{ value: "SALE", label: getTranslation(displayLanguage, "listings.forSale") }, { value: "RENT", label: getTranslation(displayLanguage, "listings.forRent") }, { value: "DAILY_RENT", label: getTranslation(displayLanguage, "listings.forRentDaily") }].find(
 															(x) => x.value === listingTypeValue
 													  )
 													: null
@@ -1026,10 +1035,14 @@ const ListingForm = ({ initialData = null, featureType = null }) => {
 						<Input
 								label={
 									featureType === "EXPERIENCES" 
-										? "Price (per person)" 
+										? getTranslation(displayLanguage, "listings.pricePerPerson")
 										: featureType === "SERVICES" 
-										? "Price (starting from)" 
-										: `Price ${listingType === "RENT" ? "(per month)" : listingType === "DAILY_RENT" ? "(per day)" : ""}`
+										? getTranslation(displayLanguage, "listings.priceStartingFrom")
+										: listingType === "RENT" 
+										? `${getTranslation(displayLanguage, "listings.price")} (${getTranslation(displayLanguage, "listings.pricePerMonth")})`
+										: listingType === "DAILY_RENT" 
+										? `${getTranslation(displayLanguage, "listings.price")} (${getTranslation(displayLanguage, "listings.pricePerDay")})`
+										: getTranslation(displayLanguage, "listings.price")
 								}
 								id="price"
 								type="number"
@@ -1082,7 +1095,7 @@ const ListingForm = ({ initialData = null, featureType = null }) => {
 								}
 							}}
 						>
-							Cancel
+							{getTranslation(displayLanguage, "listings.cancel")}
 						</button>
 						<button
 							type="submit"
@@ -1120,11 +1133,11 @@ const ListingForm = ({ initialData = null, featureType = null }) => {
 						>
 							{isLoading
 								? isEditMode
-									? "Saving..."
-									: "Creating..."
+									? getTranslation(displayLanguage, "listings.saving")
+									: getTranslation(displayLanguage, "listings.creating")
 								: isEditMode
-								? "Save Changes"
-								: "Create Listing"}
+								? getTranslation(displayLanguage, "listings.saveChanges")
+								: getTranslation(displayLanguage, "listings.createListing")}
 						</button>
 					</div>
 				</form>

@@ -4,7 +4,7 @@ import { useCallback, useState, useRef } from "react";
 import { toast } from "react-hot-toast";
 import imageCompression from "browser-image-compression";
 
-const MultiImageUpload = ({ onChange, value }) => {
+const MultiImageUpload = ({ onChange, value, uploadText, fileTypesText }) => {
 	const [isUploading, setIsUploading] = useState(false);
 	const [uploadingIndex, setUploadingIndex] = useState(null);
 	const [images, setImages] = useState(Array.isArray(value) ? value : value ? [value] : []);
@@ -246,7 +246,7 @@ const MultiImageUpload = ({ onChange, value }) => {
 								marginBottom: "8px",
 							}}
 						>
-							Click to upload or drag and drop multiple images
+							{uploadText || "Click to upload or drag and drop multiple images"}
 						</div>
 						<div
 							style={{
@@ -254,7 +254,7 @@ const MultiImageUpload = ({ onChange, value }) => {
 								color: "#717171",
 							}}
 						>
-							PNG, JPG, WEBP up to 10MB each
+							{fileTypesText || "PNG, JPG, WEBP up to 10MB each"}
 						</div>
 					</>
 				)}

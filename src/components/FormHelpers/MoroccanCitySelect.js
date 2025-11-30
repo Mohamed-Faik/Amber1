@@ -3,7 +3,7 @@
 import Select from "react-select";
 import { moroccanCities } from "@/libs/moroccanCities";
 
-const MoroccanCitySelect = ({ value, onChange }) => {
+const MoroccanCitySelect = ({ value, onChange, placeholder }) => {
 	const cityOptions = moroccanCities.map((city) => ({
 		value: city.value,
 		label: city.label,
@@ -12,7 +12,7 @@ const MoroccanCitySelect = ({ value, onChange }) => {
 
 	return (
 		<Select
-			placeholder="Select City"
+			placeholder={placeholder || "Select City"}
 			isClearable
 			isSearchable
 			options={cityOptions}

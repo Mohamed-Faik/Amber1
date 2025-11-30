@@ -3,11 +3,11 @@
 import Select from "react-select";
 import { getNeighborhoodsByCity, getCityByValue } from "@/libs/moroccanCities";
 
-const MoroccanNeighborhoodSelect = ({ city, value, onChange }) => {
+const MoroccanNeighborhoodSelect = ({ city, value, onChange, placeholder, selectCityFirstPlaceholder }) => {
 	if (!city || !city.value) {
 		return (
 			<Select
-				placeholder="Select a city first"
+				placeholder={selectCityFirstPlaceholder || "Select a city first"}
 				isDisabled
 				options={[]}
 				styles={{
@@ -44,7 +44,7 @@ const MoroccanNeighborhoodSelect = ({ city, value, onChange }) => {
 
 	return (
 		<Select
-			placeholder={`Select neighborhood in ${cityData.label}`}
+			placeholder={placeholder ? `${placeholder} ${cityData.label}` : `Select neighborhood in ${cityData.label}`}
 			isClearable
 			isSearchable
 			options={neighborhoodOptions}
