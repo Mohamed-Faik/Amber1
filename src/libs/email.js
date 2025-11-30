@@ -5,16 +5,22 @@ import { randomBytes } from "crypto";
 function createTransporter() {
 	const smtpUser = process.env.SMTP_USER;
 	const smtpPass = process.env.SMTP_PASSWORD;
-	const smtpHost = process.env.SMTP_HOST || "smtp-relay.brevo.com";
+	const smtpHost = process.env.SMTP_HOST || "smtp.gmail.com";
 	const smtpPort = parseInt(process.env.SMTP_PORT || "587");
 
 	console.log("📧 SMTP Configuration:");
 	console.log("  Host:", smtpHost);
 	console.log("  Port:", smtpPort);
-	console.log("  User:", smtpUser ? `${smtpUser.substring(0, 3)}***` : "NOT SET");
-	console.log("  Password:", smtpPass ? "***SET***" : "NOT SET");
+	// Show full username for debugging (not in production)
+	if (process.env.NODE_ENV === "development") {
+		console.log("  User (FULL):", smtpUser || "NOT SET");
+	} else {
+		console.log("  User:", smtpUser ? `${smtpUser.substring(0, 3)}***` : "NOT SET");
+	}
+	console.log("  Password:", smtpPass ? (smtpPass.startsWith("xsmtpsib-") ? "✅ Brevo SMTP Key (VALID)" : "⚠️ Check format") : "NOT SET");
+	console.log("  Password Length:", smtpPass ? smtpPass.length : 0);
 	console.log("  From Email:", process.env.SMTP_FROM || process.env.SMTP_USER || "NOT SET");
-	console.log("  Provider:", smtpHost.includes("brevo") ? "✅ Brevo" : smtpHost.includes("gmail") ? "⚠️ Gmail (OLD)" : "❓ Unknown");
+	console.log("  Provider:", smtpHost.includes("gmail") ? "✅ Gmail" : smtpHost.includes("mailtrap") ? "✅ Mailtrap" : smtpHost.includes("brevo") ? "✅ Brevo" : "❓ Unknown");
 
 	if (!smtpUser || !smtpPass) {
 		console.error("❌ SMTP credentials not configured!");
@@ -74,18 +80,59 @@ export async function sendOTPEmail(email, otpCode, isSignup = false) {
 			throw new Error("SMTP credentials not configured. Please set SMTP_USER and SMTP_PASSWORD environment variables.");
 		}
 
-		// Verify connection
+		// Verify connection with detailed error logging
 		try {
+			console.log("🔍 Verifying SMTP connection...");
 			await transporter.verify();
-			console.log("✅ SMTP server connection verified");
+			console.log("✅ SMTP server connection verified successfully");
 		} catch (verifyError) {
-			console.error("❌ SMTP verification failed:", verifyError.message);
-			throw new Error(`SMTP connection failed: ${verifyError.message}`);
+			console.error("❌ SMTP verification failed!");
+			console.error("   Error message:", verifyError.message);
+			console.error("   Error code:", verifyError.code);
+			console.error("   Error response:", verifyError.response);
+			console.error("   Error responseCode:", verifyError.responseCode);
+			
+			// Provide helpful error messages for common issues
+			if (verifyError.code === "EAUTH") {
+				console.error("   💡 This is an authentication error. Check:");
+				console.error("      - SMTP_USER is correct");
+				console.error("      - SMTP_PASSWORD is the SMTP key (starts with xsmtpsib-)");
+				console.error("      - Credentials are correct in your .env file");
+			} else if (verifyError.code === "ECONNECTION") {
+				console.error("   💡 This is a connection error. Check:");
+				console.error("      - SMTP_HOST is correct (smtp-relay.brevo.com)");
+				console.error("      - SMTP_PORT is correct (587)");
+				console.error("      - Your internet connection");
+			}
+			
+			throw new Error(`SMTP connection failed: ${verifyError.message} (Code: ${verifyError.code || "UNKNOWN"})`);
 		}
 
 		const fromEmail = process.env.SMTP_FROM || process.env.SMTP_USER;
 		const appUrl = process.env.NEXTAUTH_URL || process.env.NEXT_PUBLIC_APP_URL || "https://amberhomes-liart.vercel.app";
 		const messageId = generateMessageId();
+		
+		// Warn if using Gmail or invalid sender for Mailtrap
+		if (fromEmail && (fromEmail.includes("@gmail.com") || fromEmail.includes("@googlemail.com"))) {
+			console.warn("");
+			console.warn("⚠️  ⚠️  ⚠️  WARNING! ⚠️  ⚠️  ⚠️");
+			console.warn("   Mailtrap does NOT allow sending from Gmail addresses!");
+			console.warn("   Error: 550 5.7.1 Sending from domain gmail.com is not allowed");
+			console.warn("");
+			console.warn("   💡 SOLUTION:");
+			console.warn("   1. Use a custom domain email (e.g., noreply@yourdomain.com)");
+			console.warn("   2. OR use a non-Gmail email address");
+			console.warn("   3. Update SMTP_FROM in .env file");
+			console.warn("   4. Restart your server");
+			console.warn("   Current sender: " + fromEmail);
+			console.warn("");
+			console.warn("   💡 SOLUTION:");
+			console.warn("   1. Use a custom domain email (e.g., noreply@amberhomes.com)");
+			console.warn("   2. OR use a test domain (e.g., noreply@mailtrap.io)");
+			console.warn("   3. Update SMTP_FROM in .env file");
+			console.warn("   4. Restart server");
+			console.warn("");
+		}
 		
 		// Log the email being sent for debugging
 		console.log("📤 Email Details:");
@@ -164,22 +211,56 @@ AmberHomes Team`;
 		};
 
 		console.log(`📤 Sending email to: ${email}`);
+		console.log(`   From: ${fromEmail}`);
+		console.log(`   Subject: ${mailOptions.subject}`);
+		
 		const info = await transporter.sendMail(mailOptions);
 		console.log("✅ Email sent successfully!");
 		console.log("   Message ID:", info.messageId);
 		console.log("   Response:", info.response);
+		console.log("   Accepted:", info.accepted);
+		console.log("   Rejected:", info.rejected);
+		
+		if (info.rejected && info.rejected.length > 0) {
+			console.warn("⚠️  Some recipients were rejected:", info.rejected);
+		}
 		
 		return { success: true, messageId: info.messageId, response: info.response };
 	} catch (error) {
 		console.error("❌ Error sending email:");
 		console.error("   Error message:", error.message);
 		console.error("   Error code:", error.code);
-		console.error("   Full error:", error);
+		console.error("   Error response:", error.response);
+		console.error("   Error responseCode:", error.responseCode);
+		console.error("   Command:", error.command);
+		console.error("   Full error:", JSON.stringify(error, Object.getOwnPropertyNames(error)));
+		
+		// Provide helpful troubleshooting info
+		if (error.code === "EAUTH") {
+			console.error("\n💡 AUTHENTICATION ERROR - Possible fixes:");
+			console.error("   1. Verify SMTP_USER in .env file");
+			console.error("   2. Verify SMTP_PASSWORD is the SMTP key (starts with xsmtpsib-)");
+			console.error("   3. Check Brevo dashboard for correct credentials");
+			console.error("   4. Make sure SMTP key is active in Brevo");
+		} else if (error.code === "ECONNECTION") {
+			console.error("\n💡 CONNECTION ERROR - Possible fixes:");
+			console.error("   1. Check SMTP_HOST: smtp-relay.brevo.com");
+			console.error("   2. Check SMTP_PORT: 587");
+			console.error("   3. Check your internet connection");
+			console.error("   4. Check firewall settings");
+		} else if (error.responseCode === 535) {
+			console.error("\n💡 AUTHENTICATION FAILED (535) - Possible fixes:");
+			console.error("   1. SMTP_USER or SMTP_PASSWORD is incorrect");
+			console.error("   2. SMTP key may have been regenerated - get new key from Brevo");
+			console.error("   3. Check Brevo account is active");
+		}
 		
 		return { 
 			success: false, 
 			error: error.message,
 			code: error.code,
+			responseCode: error.responseCode,
+			response: error.response,
 			stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
 		};
 	}

@@ -5,7 +5,7 @@
 ```env
 SMTP_HOST=smtp-relay.brevo.com
 SMTP_PORT=587
-SMTP_USER=7bd403001@smtp-brevo.com
+SMTP_USER=aniffour.dev@gmail.com
 SMTP_PASSWORD=YOUR_SMTP_PASSWORD_KEY
 SMTP_FROM=noreply@yourdomain.com  ⚠️ CHANGE THIS to your actual domain!
 ```
@@ -23,7 +23,7 @@ Go to: **Vercel Dashboard** → **Settings** → **Environment Variables**
 Add these 5 variables:
 - `SMTP_HOST` = `smtp-relay.brevo.com`
 - `SMTP_PORT` = `587`
-- `SMTP_USER` = `7bd403001@smtp-brevo.com`
+- `SMTP_USER` = `aniffour.dev@gmail.com`
 - `SMTP_PASSWORD` = `YOUR_SMTP_PASSWORD_KEY`
 - `SMTP_FROM` = `noreply@yourdomain.com` (change to your domain!)
 

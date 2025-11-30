@@ -1,7 +1,7 @@
 # 🔄 How to Update SMTP Environment Variables
 
 ## ⚠️ Problem
-You're still receiving emails from the old Gmail address (`7bd403001@smtp-brevo.com`) instead of Brevo because your environment variables haven't been updated yet.
+You're still receiving emails from the old Gmail address (`aniffour.dev@gmail.com`) instead of Brevo because your environment variables haven't been updated yet.
 
 ## ✅ Solution: Update Environment Variables
 
@@ -20,7 +20,7 @@ You're still receiving emails from the old Gmail address (`7bd403001@smtp-brevo.
 # NEW Brevo Settings (ADD OR UPDATE TO THESE):
 SMTP_HOST=smtp-relay.brevo.com
 SMTP_PORT=587
-SMTP_USER=7bd403001@smtp-brevo.com
+SMTP_USER=aniffour.dev@gmail.com
 SMTP_PASSWORD=YOUR_SMTP_PASSWORD_KEY
 SMTP_FROM=noreply@yourdomain.com
 ```

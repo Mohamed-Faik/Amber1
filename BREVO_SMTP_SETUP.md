@@ -4,7 +4,7 @@
 
 **SMTP Server:** `smtp-relay.brevo.com`  
 **Port:** `587`  
-**Login:** `7bd403001@smtp-brevo.com`  
+**Login:** `aniffour.dev@gmail.com`  
 **SMTP Key:** `YOUR_SMTP_PASSWORD_KEY`
 
 ## 🔧 Step 1: Update Environment Variables
@@ -17,7 +17,7 @@ Update your `.env` or `.env.local` file with these values:
 # Brevo SMTP Configuration
 SMTP_HOST=smtp-relay.brevo.com
 SMTP_PORT=587
-SMTP_USER=7bd403001@smtp-brevo.com
+SMTP_USER=aniffour.dev@gmail.com
 SMTP_PASSWORD=YOUR_SMTP_PASSWORD_KEY
 SMTP_FROM=noreply@yourdomain.com
 ```
@@ -38,7 +38,7 @@ SMTP_FROM=noreply@yourdomain.com
      - **Environment:** Production, Preview, Development (select all)
    
    - **Variable Name:** `SMTP_USER`
-     - **Value:** `7bd403001@smtp-brevo.com`
+     - **Value:** `aniffour.dev@gmail.com`
      - **Environment:** Production, Preview, Development (select all)
    
    - **Variable Name:** `SMTP_PASSWORD`
