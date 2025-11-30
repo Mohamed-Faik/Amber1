@@ -20,6 +20,24 @@ const nextConfig = {
 				protocol: "https",
 				hostname: "**.public.blob.vercel-storage.com",
 			},
+			{
+				protocol: "https",
+				hostname: "*.public.blob.vercel-storage.com",
+			},
+			{
+				protocol: "https",
+				hostname: "public.blob.vercel-storage.com",
+			},
+			// Allow all Vercel Blob Storage subdomains
+			{
+				protocol: "https",
+				hostname: "*.blob.vercel-storage.com",
+			},
+			// More permissive pattern for any Vercel Blob URL
+			{
+				protocol: "https",
+				hostname: "**.blob.vercel-storage.com",
+			},
 		],
 	},
 	env: {
