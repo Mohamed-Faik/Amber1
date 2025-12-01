@@ -72,55 +72,40 @@ const SearchForm = () => {
 
 	const locationFind = useCallback((locValue) => {
 		if (locValue) {
-			// First, check if it matches a city and show neighborhoods
 			const lowerValue = locValue.toLowerCase();
-			const matchedCity = moroccanCities.find(city => 
-				city.label.toLowerCase().includes(lowerValue) || 
-				lowerValue.includes(city.label.toLowerCase())
-			);
 			
-			// If searching for Marrakech or neighborhoods, show neighborhoods
-			if (matchedCity && (matchedCity.value === "marrakech" || lowerValue.includes("marrakech"))) {
-				const neighborhoods = getNeighborhoodsByCity("marrakech");
-				// Filter neighborhoods that match the search term
-				const filteredNeighborhoods = neighborhoods.filter(neighborhood =>
+			// Get neighborhoods from all Moroccan cities that match the search
+			const allNeighborhoodLocations = [];
+			moroccanCities.forEach(city => {
+				const cityNeighborhoods = getNeighborhoodsByCity(city.value);
+				const matchingNeighborhoods = cityNeighborhoods.filter(neighborhood =>
 					neighborhood.label.toLowerCase().includes(lowerValue) ||
-					lowerValue.includes(neighborhood.label.toLowerCase())
-				);
-				
-				// Format as location suggestions
-				const neighborhoodLocations = filteredNeighborhoods.map(neighborhood => ({
+					lowerValue.includes(neighborhood.label.toLowerCase()) ||
+					neighborhood.value.toLowerCase().includes(lowerValue) ||
+					city.label.toLowerCase().includes(lowerValue)
+				).map(neighborhood => ({
 					id: neighborhood.value,
-					location_value: `${neighborhood.label}, Marrakech`,
+					location_value: `${neighborhood.label}, ${city.label}`,
 				}));
-				
-				// Also get locations from database
-				axios
-					.get(`/api/categories/location/${locValue}`)
-					.then((response) => {
-						// Combine neighborhood suggestions with database results
-						const combined = [...neighborhoodLocations, ...response.data];
-						// Remove duplicates
-						const unique = combined.filter((loc, index, self) =>
-							index === self.findIndex(l => l.location_value === loc.location_value)
-						);
-						setLocations(unique);
-					})
-					.catch((error) => {
-						// If API fails, still show neighborhoods
-						setLocations(neighborhoodLocations);
-					});
-			} else {
-				// For other cities, use the API
+				allNeighborhoodLocations.push(...matchingNeighborhoods);
+			});
+			
+			// Also get locations from database
 			axios
 				.get(`/api/categories/location/${locValue}`)
 				.then((response) => {
-					setLocations(response.data);
+					// Combine neighborhood suggestions with database results
+					const combined = [...allNeighborhoodLocations, ...response.data];
+					// Remove duplicates
+					const unique = combined.filter((loc, index, self) =>
+						index === self.findIndex(l => l.location_value === loc.location_value)
+					);
+					setLocations(unique);
 				})
 				.catch((error) => {
-						toast.error("Something went wrong!");
+					// If API fails, still show neighborhoods
+					setLocations(allNeighborhoodLocations);
 				});
-			}
 
 			setLocSuggest(true);
 		}

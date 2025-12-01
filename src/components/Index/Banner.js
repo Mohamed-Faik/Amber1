@@ -112,18 +112,24 @@ const Banner = () => {
 		isNeighborhood: false,
 	}));
 	
-	// Get neighborhoods only when user is actively searching (has typed something)
+	// Get neighborhoods from all cities when user is actively searching
 	let filteredNeighborhoods = [];
 	if (lowerSearchTerm.length > 0) {
-		const marrakechNeighborhoods = getNeighborhoodsByCity("marrakech");
-		filteredNeighborhoods = marrakechNeighborhoods.filter(neighborhood =>
-			neighborhood.label.toLowerCase().includes(lowerSearchTerm) ||
-			lowerSearchTerm.includes(neighborhood.label.toLowerCase())
-		).map(neighborhood => ({
-			value: `${neighborhood.label}, Marrakech`,
-			label: `${neighborhood.label}, Marrakech`,
-			isNeighborhood: true,
-		}));
+		// Get neighborhoods from all Moroccan cities
+		moroccanCities.forEach(city => {
+			const cityNeighborhoods = getNeighborhoodsByCity(city.value);
+			const matchingNeighborhoods = cityNeighborhoods.filter(neighborhood =>
+				neighborhood.label.toLowerCase().includes(lowerSearchTerm) ||
+				lowerSearchTerm.includes(neighborhood.label.toLowerCase()) ||
+				neighborhood.value.toLowerCase().includes(lowerSearchTerm)
+			).map(neighborhood => ({
+				value: `${neighborhood.label}, ${city.label}`,
+				label: `${neighborhood.label}, ${city.label}`,
+				isNeighborhood: true,
+				city: city.label,
+			}));
+			filteredNeighborhoods = [...filteredNeighborhoods, ...matchingNeighborhoods];
+		});
 	}
 
 	const locationFind = useCallback((locValue) => {
@@ -292,7 +298,7 @@ const Banner = () => {
 						style={{
 							textAlign: "center",
 							marginBottom: "40px",
-							marginTop: "0",
+							marginTop: "clamp(60px, 10vw, 120px)",
 							width: "100%",
 							animation: "fadeInUp 0.8s ease-out",
 							position: "relative",
@@ -639,7 +645,7 @@ const Banner = () => {
 											}
 										}}
 									>
-										<span>{category ? getTranslation(displayLanguage, `categories.${category.toLowerCase()}`) : getTranslation(displayLanguage, "hero.category")}</span>
+										<span>{category ? (getTranslation(displayLanguage, `categories.${category.toLowerCase()}`) || category) : getTranslation(displayLanguage, "hero.category")}</span>
 										<ChevronDown
 											size={16}
 											color={showCategoryDropdown ? "#FF385C" : "#717171"}
@@ -752,7 +758,7 @@ const Banner = () => {
 															);
 														})()}
 													</div>
-													<span style={{ flex: 1 }}>{getTranslation(displayLanguage, `categories.${cat.label.toLowerCase()}`)}</span>
+													<span style={{ flex: 1 }}>{getTranslation(displayLanguage, `categories.${cat.label.toLowerCase()}`) || cat.label}</span>
 													{category === cat.label && (
 														<div style={{
 															width: "6px",
@@ -1182,20 +1188,18 @@ const Banner = () => {
 				@media (max-width: 767px) {
 					.hero-banner-container {
 						height: auto !important;
-						min-height: 600px !important;
+						min-height: 700px !important;
 					}
 
 					.banner-content-container {
-						justify-content: flex-start !important;
-						padding-bottom: 20px !important;
-						padding-top: 80px !important;
+						justify-content: center !important;
+						padding-bottom: 32px !important;
+						padding-top: 60px !important;
 					}
 
 					.banner-quote-text {
-						margin-top: 0 !important;
-						margin-bottom: 40px !important;
-						padding: 0 16px !important;
-						min-height: auto !important;
+						margin-top: clamp(80px, 15vw, 140px) !important;
+						margin-bottom: 32px !important;
 					}
 
 					.banner-content-wrapper {
@@ -1203,9 +1207,8 @@ const Banner = () => {
 					}
 
 					.banner-search-form {
-						padding: 20px !important;
-						border-radius: 24px !important;
-						margin-top: 0 !important;
+						padding: 16px !important;
+						border-radius: 20px !important;
 					}
 
 					.banner-form-top-row {
@@ -1232,47 +1235,23 @@ const Banner = () => {
 						gap: 10px !important;
 						flex-direction: row !important;
 					}
-
-					/* Quote text adjustments for mobile */
-					.banner-quote-text > div:first-child {
-						margin-bottom: 8px !important;
-					}
-
-					.banner-quote-text > div:first-child > div {
-						font-size: clamp(28px, 8vw, 48px) !important;
-						padding-left: clamp(35px, 6vw, 60px) !important;
-					}
-
-					.banner-quote-text > div:last-child {
-						padding-left: clamp(50px, 8vw, 100px) !important;
-						margin-top: 8px !important;
-					}
-
-					.banner-quote-text > div:last-child > div {
-						font-size: clamp(28px, 8vw, 48px) !important;
-					}
-
-					.banner-quote-text span[style*="color: \"#FF385C\""] {
-						font-size: clamp(40px, 10vw, 80px) !important;
-					}
 				}
 
 				/* Small Mobile: < 480px */
 				@media (max-width: 480px) {
 					.hero-banner-container {
-						min-height: 550px !important;
+						min-height: 650px !important;
 					}
 
 					.banner-content-container {
-						justify-content: flex-start !important;
-						padding-bottom: 16px !important;
-						padding-top: 60px !important;
+						justify-content: center !important;
+						padding-bottom: 24px !important;
+						padding-top: 50px !important;
 					}
 
 					.banner-quote-text {
-						margin-top: 0 !important;
-						margin-bottom: 32px !important;
-						padding: 0 12px !important;
+						margin-top: clamp(70px, 14vw, 120px) !important;
+						margin-bottom: 28px !important;
 					}
 
 					.banner-content-wrapper {
@@ -1280,8 +1259,8 @@ const Banner = () => {
 					}
 
 					.banner-search-form {
-						padding: 16px !important;
-						border-radius: 20px !important;
+						padding: 12px !important;
+						border-radius: 16px !important;
 					}
 
 					.banner-form-top-row,
@@ -1307,24 +1286,6 @@ const Banner = () => {
 					.banner-form-bottom-row button {
 						padding: 12px 24px !important;
 						font-size: 14px !important;
-					}
-
-					/* Quote text smaller on small mobile */
-					.banner-quote-text > div:first-child > div {
-						font-size: clamp(24px, 7vw, 40px) !important;
-						padding-left: clamp(30px, 5vw, 50px) !important;
-					}
-
-					.banner-quote-text > div:last-child {
-						padding-left: clamp(40px, 7vw, 80px) !important;
-					}
-
-					.banner-quote-text > div:last-child > div {
-						font-size: clamp(24px, 7vw, 40px) !important;
-					}
-
-					.banner-quote-text span[style*="color: \"#FF385C\""] {
-						font-size: clamp(36px, 9vw, 70px) !important;
 					}
 				}
 

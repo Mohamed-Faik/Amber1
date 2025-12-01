@@ -166,6 +166,8 @@ export const moroccanCities = [
 			{ value: "complexe-issil-area", label: "Complexe Issil Area" },
 			{ value: "jnane-issil", label: "Jnane Issil" },
 			{ value: "residence-issil-extension", label: "Résidence Issil Extension" },
+			{ value: "izdihar", label: "Izdihar" },
+			{ value: "izdihar-marrakech", label: "Izdihar, Marrakech" },
 		],
 	},
 	{

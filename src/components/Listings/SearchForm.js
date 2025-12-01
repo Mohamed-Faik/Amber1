@@ -48,6 +48,13 @@ const propertyCategories = [
 	{ value: "Apartment", label: "Apartment", icon: "Building2" },
 	{ value: "House", label: "House", icon: "HomeIcon" },
 	{ value: "Land", label: "Land", icon: "Trees" },
+	{ value: "Dwelling", label: "Dwelling", icon: "HomeIcon" },
+	{ value: "Riads", label: "Riads", icon: "Castle" },
+	{ value: "Soil", label: "Soil", icon: "Trees" },
+	{ value: "Office", label: "Office", icon: "Building2" },
+	{ value: "Commercial", label: "Commercial", icon: "Building2" },
+	{ value: "Industrial", label: "Industrial", icon: "Building2" },
+	{ value: "Investment property", label: "Investment property", icon: "Building2" },
 ];
 
 const SearchForm = ({ searchParams, featureType }) => {
@@ -77,18 +84,24 @@ const SearchForm = ({ searchParams, featureType }) => {
 		isNeighborhood: false,
 	}));
 	
-	// Get neighborhoods only when user is actively searching (has typed something)
+	// Get neighborhoods from all cities when user is actively searching
 	let filteredNeighborhoods = [];
 	if (lowerSearchTerm.length > 0) {
-		const marrakechNeighborhoods = getNeighborhoodsByCity("marrakech");
-		filteredNeighborhoods = marrakechNeighborhoods.filter(neighborhood =>
-			neighborhood.label.toLowerCase().includes(lowerSearchTerm) ||
-			lowerSearchTerm.includes(neighborhood.label.toLowerCase())
-		).map(neighborhood => ({
-			value: `${neighborhood.label}, Marrakech`,
-			label: `${neighborhood.label}, Marrakech`,
-			isNeighborhood: true,
-		}));
+		// Get neighborhoods from all Moroccan cities
+		moroccanCities.forEach(city => {
+			const cityNeighborhoods = getNeighborhoodsByCity(city.value);
+			const matchingNeighborhoods = cityNeighborhoods.filter(neighborhood =>
+				neighborhood.label.toLowerCase().includes(lowerSearchTerm) ||
+				lowerSearchTerm.includes(neighborhood.label.toLowerCase()) ||
+				neighborhood.value.toLowerCase().includes(lowerSearchTerm)
+			).map(neighborhood => ({
+				value: `${neighborhood.label}, ${city.label}`,
+				label: `${neighborhood.label}, ${city.label}`,
+				isNeighborhood: true,
+				city: city.label,
+			}));
+			filteredNeighborhoods = [...filteredNeighborhoods, ...matchingNeighborhoods];
+		});
 	}
 
 	useEffect(() => {

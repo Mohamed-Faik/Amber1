@@ -1,7 +1,7 @@
 import React from "react";
 import { Search, LayoutGrid } from "lucide-react";
 import Listings from "@/components/Listings/Index";
-import SearchForm from "@/components/Listings/SearchForm";
+import ExperiencesStyleSearchForm from "@/components/Listings/ExperiencesStyleSearchForm";
 import getListings from "@/actions/getListings";
 import { getCurrentUser } from "@/actions/getCurrentUser";
 
@@ -51,62 +51,17 @@ const page = async ({ searchParams }) => {
 			{/* Search Form Section - Styled */}
 			<div className="listings-search-section" style={{
 				position: "relative",
-				zIndex: 1,
+				zIndex: 100,
 				marginBottom: "48px",
 			}}>
 				<div className="listings-search-wrapper" style={{
 					maxWidth: "1760px",
 					margin: "0 auto",
 					padding: "0 10px",
+					display: "flex",
+					justifyContent: "center",
 				}}>
-					<div className="listings-search-card" style={{
-						backgroundColor: "#FFFFFF",
-						borderRadius: "16px",
-						padding: "40px",
-						boxShadow: "0 2px 12px rgba(0, 0, 0, 0.08)",
-						border: "1px solid #E0E0E0",
-					}}>
-						<div className="listings-search-header" style={{
-							display: "flex",
-							alignItems: "center",
-							gap: "16px",
-							marginBottom: "32px",
-						}}>
-							<div style={{
-								width: "56px",
-								height: "56px",
-								borderRadius: "16px",
-								background: "linear-gradient(135deg, #FF385C 0%, #E61E4D 50%, #D70466 100%)",
-								display: "flex",
-								alignItems: "center",
-								justifyContent: "center",
-								boxShadow: "0 8px 24px rgba(255, 56, 92, 0.25)",
-							}}>
-								<Search size={28} color="#FFFFFF" strokeWidth={2.5} />
-							</div>
-							<div>
-								<h1 style={{
-									fontSize: "36px",
-									fontWeight: "700",
-									color: "#222222",
-									margin: "0 0 4px 0",
-									lineHeight: "1.1",
-									letterSpacing: "-0.5px",
-								}}>
-									Find Your Perfect Property
-								</h1>
-								<p style={{
-									fontSize: "15px",
-									color: "#717171",
-									margin: "0",
-									fontWeight: "500",
-								}}>
-									Search & Explore Listings
-								</p>
-							</div>
-						</div>
-						<SearchForm searchParams={searchParams} />
-					</div>
+					<ExperiencesStyleSearchForm searchParams={searchParams} />
 				</div>
 			</div>
 

@@ -1,17 +1,46 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import FeaturedItem from "./FeaturedItem";
 import ListingSkeleton from "./ListingSkeleton";
 import { toast } from "react-hot-toast";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { getTranslation } from "@/utils/translations";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const Featured = ({ currentUser }) => {
 	const { language, isDetecting } = useLanguage();
 	const displayLanguage = isDetecting ? "en" : language;
 	const [sections, setSections] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
+	const [premiumCurrentIndex, setPremiumCurrentIndex] = useState(0);
+	const premiumCarouselRef = useRef(null);
+	const [listingsPerSlide, setListingsPerSlide] = useState(5);
+
+	// Update listings per slide based on screen size
+	useEffect(() => {
+		const updateListingsPerSlide = () => {
+			let newValue;
+			if (window.innerWidth <= 480) {
+				newValue = 1;
+			} else if (window.innerWidth <= 768) {
+				newValue = 2;
+			} else if (window.innerWidth <= 1100) {
+				newValue = 3;
+			} else if (window.innerWidth <= 1400) {
+				newValue = 4;
+			} else {
+				newValue = 5;
+			}
+			setListingsPerSlide(newValue);
+			// Reset carousel index when screen size changes
+			setPremiumCurrentIndex(0);
+		};
+
+		updateListingsPerSlide();
+		window.addEventListener("resize", updateListingsPerSlide);
+		return () => window.removeEventListener("resize", updateListingsPerSlide);
+	}, []);
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -163,7 +192,19 @@ const Featured = ({ currentUser }) => {
 				)}
 
 			{/* Loaded State - Actual Listings */}
-			{!isLoading && sections.map((section, index) => (
+			{!isLoading && sections.map((section, index) => {
+				const isPremiumSection = section.key === "premium-properties";
+				const totalSlides = isPremiumSection 
+					? Math.ceil(section.listings.length / listingsPerSlide)
+					: 1;
+				const visibleListings = isPremiumSection
+					? section.listings.slice(
+						premiumCurrentIndex * listingsPerSlide,
+						(premiumCurrentIndex + 1) * listingsPerSlide
+					)
+					: section.listings;
+
+				return (
 				<React.Fragment key={section.key}>
 					<div>
 						{/* Section Header */}
@@ -185,25 +226,173 @@ const Featured = ({ currentUser }) => {
 						>
 							{getTranslation(displayLanguage, section.titleKey)}
 						</h2>
+						{/* Carousel Navigation Buttons - Only for Premium Section */}
+						{isPremiumSection && section.listings.length > listingsPerSlide && totalSlides > 1 && (
+							<div
+								style={{
+									display: "flex",
+									gap: "12px",
+									alignItems: "center",
+								}}
+							>
+								<button
+									onClick={() => {
+										setPremiumCurrentIndex((prev) => 
+											prev > 0 ? prev - 1 : totalSlides - 1
+										);
+									}}
+									style={{
+										width: "40px",
+										height: "40px",
+										borderRadius: "50%",
+										border: "1px solid #DDDDDD",
+										backgroundColor: "#FFFFFF",
+										display: "flex",
+										alignItems: "center",
+										justifyContent: "center",
+										cursor: "pointer",
+										transition: "all 0.2s ease",
+									}}
+									onMouseEnter={(e) => {
+										e.currentTarget.style.borderColor = "#FF385C";
+										e.currentTarget.style.backgroundColor = "#FFF5F7";
+									}}
+									onMouseLeave={(e) => {
+										e.currentTarget.style.borderColor = "#DDDDDD";
+										e.currentTarget.style.backgroundColor = "#FFFFFF";
+									}}
+								>
+									<ChevronLeft size={20} color="#222222" />
+								</button>
+								<button
+									onClick={() => {
+										setPremiumCurrentIndex((prev) => 
+											prev < totalSlides - 1 ? prev + 1 : 0
+										);
+									}}
+									style={{
+										width: "40px",
+										height: "40px",
+										borderRadius: "50%",
+										border: "1px solid #DDDDDD",
+										backgroundColor: "#FFFFFF",
+										display: "flex",
+										alignItems: "center",
+										justifyContent: "center",
+										cursor: "pointer",
+										transition: "all 0.2s ease",
+									}}
+									onMouseEnter={(e) => {
+										e.currentTarget.style.borderColor = "#FF385C";
+										e.currentTarget.style.backgroundColor = "#FFF5F7";
+									}}
+									onMouseLeave={(e) => {
+										e.currentTarget.style.borderColor = "#DDDDDD";
+										e.currentTarget.style.backgroundColor = "#FFFFFF";
+									}}
+								>
+									<ChevronRight size={20} color="#222222" />
+								</button>
+							</div>
+						)}
 						</div>
 
-						{/* Grid Layout */}
-						<div
-							className="featured-grid"
-							style={{
-								display: "grid",
-								gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
-								gap: "32px",
-							}}
-						>
-							{section.listings.map((list) => (
-								<FeaturedItem
-									key={list.id}
-									currentUser={currentUser}
-									{...list}
-								/>
-							))}
-						</div>
+						{/* Carousel Container for Premium Section, Grid for Others */}
+						{isPremiumSection ? (
+							<div
+								ref={premiumCarouselRef}
+								style={{
+									position: "relative",
+									overflow: "hidden",
+								}}
+							>
+								<div
+									className="featured-grid premium-carousel"
+									style={{
+										display: "grid",
+										gridTemplateColumns: "repeat(5, 1fr)",
+										gap: "32px",
+										transition: "transform 0.5s ease",
+									}}
+								>
+									{visibleListings.map((list) => (
+										<FeaturedItem
+											key={list.id}
+											currentUser={currentUser}
+											{...list}
+										/>
+									))}
+								</div>
+								<style jsx>{`
+									@media (max-width: 1400px) {
+										.premium-carousel {
+											gridTemplateColumns: repeat(4, 1fr) !important;
+										}
+									}
+									@media (max-width: 1100px) {
+										.premium-carousel {
+											gridTemplateColumns: repeat(3, 1fr) !important;
+										}
+									}
+									@media (max-width: 768px) {
+										.premium-carousel {
+											gridTemplateColumns: repeat(2, 1fr) !important;
+											gap: 16px !important;
+										}
+									}
+									@media (max-width: 480px) {
+										.premium-carousel {
+											gridTemplateColumns: repeat(1, 1fr) !important;
+											gap: 16px !important;
+										}
+									}
+								`}</style>
+								{/* Slide Indicators */}
+								{totalSlides > 1 && (
+									<div
+										style={{
+											display: "flex",
+											justifyContent: "center",
+											gap: "8px",
+											marginTop: "24px",
+										}}
+									>
+										{Array.from({ length: totalSlides }).map((_, slideIndex) => (
+											<button
+												key={slideIndex}
+												onClick={() => setPremiumCurrentIndex(slideIndex)}
+												style={{
+													width: slideIndex === premiumCurrentIndex ? "24px" : "8px",
+													height: "8px",
+													borderRadius: "4px",
+													backgroundColor: slideIndex === premiumCurrentIndex ? "#FF385C" : "#DDDDDD",
+													border: "none",
+													cursor: "pointer",
+													transition: "all 0.3s ease",
+												}}
+											/>
+										))}
+									</div>
+								)}
+							</div>
+						) : (
+							<div
+								className="featured-grid"
+								style={{
+									display: "grid",
+									gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
+									gap: "32px",
+								}}
+							>
+								{section.listings.map((list) => (
+									<FeaturedItem
+										key={list.id}
+										currentUser={currentUser}
+										{...list}
+									/>
+								))}
+							</div>
+						)}
 					</div>
 
 					{/* Elegant Divider Between Sections */}
@@ -277,7 +466,8 @@ const Featured = ({ currentUser }) => {
 						</div>
 					)}
 				</React.Fragment>
-			))}
+				);
+			})}
 
 				{/* Empty State */}
 				{!isLoading && sections.length === 0 && (
