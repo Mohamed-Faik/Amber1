@@ -194,7 +194,7 @@ const Banner = () => {
 			className="hero-banner-container"
 			style={{
 				position: "relative",
-				height: "660px",
+				height: "750px",
 				overflow: "visible",
 			}}
 		>
@@ -295,46 +295,118 @@ const Banner = () => {
 							marginTop: "0",
 							width: "100%",
 							animation: "fadeInUp 0.8s ease-out",
+							position: "relative",
+							padding: "0 20px",
+							minHeight: "clamp(120px, 15vw, 200px)",
+							display: "flex",
+							flexDirection: "column",
+							alignItems: "center",
 						}}
 					>
-						<p
+						{/* First Line - Upper Left with Opening Quote */}
+						<div
 							style={{
-								fontSize: "clamp(36px, 5.5vw, 72px)",
-								fontWeight: "500",
-								color: "#FFFFFF",
-								fontFamily: "var(--font-brush), 'Caveat Brush', 'Brush Script MT', cursive",
-								lineHeight: "1.3",
-								textShadow: "0 4px 16px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.3), 0 2px 4px rgba(0, 0, 0, 0.5)",
-								margin: 0,
-								display: "inline-block",
-								letterSpacing: "2px",
-								fontStyle: "normal",
+								display: "flex",
+								alignItems: "flex-start",
+								marginBottom: "0",
 								position: "relative",
-								padding: "0 20px",
+								zIndex: 2,
+								justifyContent: "center",
 							}}
 						>
+							{/* Opening Quote Mark */}
 							<span 
 								style={{ 
 									color: "#FF385C",
-									fontSize: "1.3em",
-									textShadow: "0 2px 8px rgba(255, 56, 92, 0.5)",
+									fontSize: "clamp(64px, 9vw, 128px)",
+									fontWeight: "400",
+									lineHeight: "0.7",
 									display: "inline-block",
-									transform: "rotate(-10deg)",
-									marginRight: "8px",
+									fontFamily: "Georgia, serif",
+									opacity: "1",
+									marginRight: "clamp(8px, 1vw, 16px)",
+									alignSelf: "flex-start",
 								}}
 							>"</span>
-							{getTranslation(displayLanguage, "hero.quote")}
+							
+							<div
+								style={{
+									fontSize: "clamp(40px, 6vw, 80px)",
+									fontWeight: "700",
+									color: "#FFFFFF",
+									fontFamily: "var(--font-satisfy), 'Satisfy', cursive",
+									lineHeight: "1.2",
+									textShadow: "0 4px 16px rgba(0, 0, 0, 0.5), 0 8px 24px rgba(0, 0, 0, 0.4)",
+									margin: 0,
+									letterSpacing: "1.5px",
+									whiteSpace: "nowrap",
+									fontStyle: "italic",
+								}}
+							>
+								{(() => {
+									const quote = getTranslation(displayLanguage, "hero.quote");
+									if (quote.includes(",")) {
+										return quote.split(",")[0] + ",";
+									} else if (quote.includes(" not")) {
+										return quote.split(" not")[0];
+									}
+									return quote;
+								})()}
+							</div>
+						</div>
+						
+						{/* Second Line - Lower Right, Slightly Indented with Closing Quote */}
+						<div
+							style={{
+								display: "flex",
+								alignItems: "center",
+								marginTop: "clamp(8px, 1.5vw, 16px)",
+								paddingLeft: "clamp(40px, 5vw, 80px)",
+								position: "relative",
+								zIndex: 2,
+								justifyContent: "center",
+							}}
+						>
+							<div
+								style={{
+									fontSize: "clamp(40px, 6vw, 80px)",
+									fontWeight: "700",
+									color: "#FFFFFF",
+									fontFamily: "var(--font-satisfy), 'Satisfy', cursive",
+									lineHeight: "1.2",
+									textShadow: "0 4px 16px rgba(0, 0, 0, 0.5), 0 8px 24px rgba(0, 0, 0, 0.4)",
+									margin: 0,
+									letterSpacing: "1.5px",
+									whiteSpace: "nowrap",
+									fontStyle: "italic",
+								}}
+							>
+								{(() => {
+									const quote = getTranslation(displayLanguage, "hero.quote");
+									if (quote.includes(",")) {
+										return quote.split(",").slice(1).join(",").trim();
+									} else if (quote.includes(" not")) {
+										return "not" + quote.split(" not")[1];
+									}
+									return quote;
+								})()}
+							</div>
+							
+							{/* Closing Quote Mark */}
 							<span 
 								style={{ 
 									color: "#FF385C",
-									fontSize: "1.3em",
-									textShadow: "0 2px 8px rgba(255, 56, 92, 0.5)",
+									fontSize: "clamp(64px, 9vw, 128px)",
+									fontWeight: "400",
+									lineHeight: "0.7",
 									display: "inline-block",
-									transform: "rotate(10deg)",
-									marginLeft: "8px",
+									marginLeft: "clamp(8px, 1vw, 16px)",
+									fontFamily: "Georgia, serif",
+									opacity: "1",
+									alignSelf: "flex-start",
 								}}
 							>"</span>
-						</p>
+						</div>
 					</div>
 
 					{/* Search Form Container */}
@@ -1114,14 +1186,16 @@ const Banner = () => {
 					}
 
 					.banner-content-container {
-						justify-content: center !important;
-						padding-bottom: 32px !important;
-						padding-top: 32px !important;
+						justify-content: flex-start !important;
+						padding-bottom: 20px !important;
+						padding-top: 80px !important;
 					}
 
 					.banner-quote-text {
-						margin-top: 60px !important;
-						margin-bottom: 32px !important;
+						margin-top: 0 !important;
+						margin-bottom: 40px !important;
+						padding: 0 16px !important;
+						min-height: auto !important;
 					}
 
 					.banner-content-wrapper {
@@ -1129,8 +1203,9 @@ const Banner = () => {
 					}
 
 					.banner-search-form {
-						padding: 16px !important;
-						border-radius: 20px !important;
+						padding: 20px !important;
+						border-radius: 24px !important;
+						margin-top: 0 !important;
 					}
 
 					.banner-form-top-row {
@@ -1158,10 +1233,27 @@ const Banner = () => {
 						flex-direction: row !important;
 					}
 
-					/* Quote text adjustments */
-					p[style*="fontSize: \"clamp(32px, 5vw, 64px)\""] {
-						font-size: clamp(24px, 6vw, 40px) !important;
-						margin-bottom: 24px !important;
+					/* Quote text adjustments for mobile */
+					.banner-quote-text > div:first-child {
+						margin-bottom: 8px !important;
+					}
+
+					.banner-quote-text > div:first-child > div {
+						font-size: clamp(28px, 8vw, 48px) !important;
+						padding-left: clamp(35px, 6vw, 60px) !important;
+					}
+
+					.banner-quote-text > div:last-child {
+						padding-left: clamp(50px, 8vw, 100px) !important;
+						margin-top: 8px !important;
+					}
+
+					.banner-quote-text > div:last-child > div {
+						font-size: clamp(28px, 8vw, 48px) !important;
+					}
+
+					.banner-quote-text span[style*="color: \"#FF385C\""] {
+						font-size: clamp(40px, 10vw, 80px) !important;
 					}
 				}
 
@@ -1172,14 +1264,15 @@ const Banner = () => {
 					}
 
 					.banner-content-container {
-						justify-content: center !important;
-						padding-bottom: 24px !important;
-						padding-top: 24px !important;
+						justify-content: flex-start !important;
+						padding-bottom: 16px !important;
+						padding-top: 60px !important;
 					}
 
 					.banner-quote-text {
-						margin-top: 50px !important;
-						margin-bottom: 28px !important;
+						margin-top: 0 !important;
+						margin-bottom: 32px !important;
+						padding: 0 12px !important;
 					}
 
 					.banner-content-wrapper {
@@ -1187,8 +1280,8 @@ const Banner = () => {
 					}
 
 					.banner-search-form {
-						padding: 12px !important;
-						border-radius: 16px !important;
+						padding: 16px !important;
+						border-radius: 20px !important;
 					}
 
 					.banner-form-top-row,
@@ -1200,7 +1293,6 @@ const Banner = () => {
 					.banner-form-top-row input,
 					.banner-form-top-row div[style*="padding"],
 					.banner-form-bottom-row input {
-						// padding: 12px 14px 12px 40px !important;
 						font-size: 13px !important;
 					}
 
@@ -1218,9 +1310,21 @@ const Banner = () => {
 					}
 
 					/* Quote text smaller on small mobile */
-					p[style*="fontSize: \"clamp(32px, 5vw, 64px)\""] {
-						font-size: clamp(20px, 5vw, 32px) !important;
-						margin-bottom: 20px !important;
+					.banner-quote-text > div:first-child > div {
+						font-size: clamp(24px, 7vw, 40px) !important;
+						padding-left: clamp(30px, 5vw, 50px) !important;
+					}
+
+					.banner-quote-text > div:last-child {
+						padding-left: clamp(40px, 7vw, 80px) !important;
+					}
+
+					.banner-quote-text > div:last-child > div {
+						font-size: clamp(24px, 7vw, 40px) !important;
+					}
+
+					.banner-quote-text span[style*="color: \"#FF385C\""] {
+						font-size: clamp(36px, 9vw, 70px) !important;
 					}
 				}
 

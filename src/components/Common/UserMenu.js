@@ -148,10 +148,20 @@ const UserMenu = ({ currentUser }) => {
 						margin-top: 0 !important;
 					}
 					.user-menu-button {
-						padding: 4px 10px 4px 13px !important;
-						width: auto !important;
+						padding: 0 !important;
+						width: 42px !important;
 						height: 42px !important;
+						border-radius: 50% !important;
 						margin-top: 0 !important;
+						background-color: #FFFFFF !important;
+						border: none !important;
+						gap: 0 !important;
+					}
+					.user-menu-button:hover {
+						background-color: #EBEBEB !important;
+					}
+					.user-menu-icon-desktop {
+						display: none !important;
 					}
 				}
 				
@@ -239,25 +249,22 @@ const UserMenu = ({ currentUser }) => {
 							justifyContent: "center",
 							gap: "15px",
 							padding: "4px 10px 4px 13px",
-							borderRadius: "21px",
-							border: "1px solid #DDDDDD",
+							borderRadius: "50%",
+							border: "none",
 							cursor: "pointer",
 							transition: "all 0.2s ease",
-							backgroundColor: isOpen ? "#F7F7F7" : "transparent",
+							backgroundColor: "#FFFFFF",
+							width: "42px",
 							height: "42px",
 							marginTop: 0,
 						}}
 							onClick={toggleDropdown}
 							onMouseDown={(e) => e.stopPropagation()}
 							onMouseEnter={(e) => {
-								if (!isOpen) {
-									e.currentTarget.style.boxShadow = "0 2px 4px rgba(0,0,0,0.12)";
-								}
+								e.currentTarget.style.backgroundColor = "#EBEBEB";
 							}}
 							onMouseLeave={(e) => {
-								if (!isOpen) {
-									e.currentTarget.style.boxShadow = "none";
-								}
+								e.currentTarget.style.backgroundColor = "#FFFFFF";
 							}}
 						>
 							{/* Desktop: Show menu icon + profile */}
@@ -267,7 +274,7 @@ const UserMenu = ({ currentUser }) => {
 								height="16"
 								viewBox="0 0 24 24"
 								fill="none"
-								stroke="#717171"
+								stroke="#222222"
 								strokeWidth="2"
 								style={{ flexShrink: 0 }}
 							>

@@ -156,10 +156,10 @@ const NotificationBadge = ({ currentUser }) => {
 					display: "flex",
 					alignItems: "center",
 					justifyContent: "center",
-					width: "40px",
-					height: "40px",
+					width: "42px",
+					height: "42px",
 					borderRadius: "50%",
-					backgroundColor: isDropdownOpen ? "#F7F7F7" : "transparent",
+					backgroundColor: "#FFFFFF",
 					border: "none",
 					cursor: "pointer",
 					transition: "all 0.2s ease",
@@ -170,14 +170,10 @@ const NotificationBadge = ({ currentUser }) => {
 				verticalAlign: "middle",
 			}}
 				onMouseEnter={(e) => {
-					if (!isDropdownOpen) {
-						e.currentTarget.style.backgroundColor = "#F7F7F7";
-					}
+					e.currentTarget.style.backgroundColor = "#EBEBEB";
 				}}
 				onMouseLeave={(e) => {
-					if (!isDropdownOpen) {
-						e.currentTarget.style.backgroundColor = "transparent";
-					}
+					e.currentTarget.style.backgroundColor = "#FFFFFF";
 				}}
 				title={
 					isLoading 

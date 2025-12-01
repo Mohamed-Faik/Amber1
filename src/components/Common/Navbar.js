@@ -16,8 +16,11 @@ const Navbar = ({ currentUser }) => {
   const { language, isDetecting } = useLanguage();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isRightMenuOpen, setIsRightMenuOpen] = useState(false);
+  const [isLeftMenuOpen, setIsLeftMenuOpen] = useState(false);
 
   const displayLanguage = isDetecting ? "en" : language;
+  const isHomePage = pathname === "/";
 
   useEffect(() => {
     const handleScroll = () => {
@@ -29,10 +32,12 @@ const Navbar = ({ currentUser }) => {
 
   useEffect(() => {
     setIsMobileMenuOpen(false);
+    setIsRightMenuOpen(false);
+    setIsLeftMenuOpen(false);
   }, [pathname]);
 
   useEffect(() => {
-    if (isMobileMenuOpen) {
+    if (isMobileMenuOpen || isRightMenuOpen || isLeftMenuOpen) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "unset";
@@ -40,7 +45,7 @@ const Navbar = ({ currentUser }) => {
     return () => {
       document.body.style.overflow = "unset";
     };
-  }, [isMobileMenuOpen]);
+  }, [isMobileMenuOpen, isRightMenuOpen, isLeftMenuOpen]);
 
   if (pathname?.startsWith("/auth") || pathname?.startsWith("/admin/login")) {
     return null;
@@ -73,19 +78,29 @@ const Navbar = ({ currentUser }) => {
     <>
       <header
         style={{
-          position: "sticky",
+          position: (isHomePage && !isScrolled) ? "absolute" : "sticky",
           top: 0,
           left: 0,
           right: 0,
-          zIndex: 1000,
-          backgroundColor: isScrolled ? "#FFFFFF" : "rgba(255, 255, 255, 0.95)",
-          borderBottom: isScrolled ? "2px solid #F0F0F0" : "1px solid rgba(0,0,0,0.04)",
-          boxShadow: isScrolled
-            ? "0 12px 40px rgba(0,0,0,0.1), 0 4px 16px rgba(0,0,0,0.06)"
-            : "0 4px 16px rgba(0,0,0,0.04)",
+          zIndex: isHomePage ? 100 : 1000,
+          backgroundColor: isHomePage 
+            ? (isScrolled ? "#FFFFFF" : "transparent")
+            : isScrolled 
+              ? "#FFFFFF" 
+              : "rgba(255, 255, 255, 0.95)",
+          borderBottom: isHomePage 
+            ? (isScrolled ? "2px solid #F0F0F0" : "none")
+            : isScrolled 
+              ? "2px solid #F0F0F0" 
+              : "1px solid rgba(0,0,0,0.04)",
+          boxShadow: isHomePage 
+            ? (isScrolled ? "0 12px 40px rgba(0,0,0,0.1), 0 4px 16px rgba(0,0,0,0.06)" : "none")
+            : isScrolled
+              ? "0 12px 40px rgba(0,0,0,0.1), 0 4px 16px rgba(0,0,0,0.06)"
+              : "0 4px 16px rgba(0,0,0,0.04)",
           transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
-          backdropFilter: "blur(20px) saturate(180%)",
-          WebkitBackdropFilter: "blur(20px) saturate(180%)",
+          backdropFilter: isHomePage && !isScrolled ? "none" : "blur(20px) saturate(180%)",
+          WebkitBackdropFilter: isHomePage && !isScrolled ? "none" : "blur(20px) saturate(180%)",
         }}
       >
         <nav
@@ -96,10 +111,60 @@ const Navbar = ({ currentUser }) => {
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            height: "80px",
+            height: isScrolled ? "70px" : "80px",
             position: "relative",
+            transition: "height 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
           }}
         >
+          {/* Left Menu Button - Desktop Only */}
+          {!currentUser && (
+            <div
+              className="desktop-left-menu"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                flex: "0 0 auto",
+              }}
+            >
+              <button
+                onClick={() => setIsLeftMenuOpen(!isLeftMenuOpen)}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  width: "44px",
+                  height: "44px",
+                  border: "none",
+                  backgroundColor: isHomePage && !isScrolled 
+                    ? "rgba(255, 255, 255, 0.2)" 
+                    : "#F7F7F7",
+                  borderRadius: "14px",
+                  cursor: "pointer",
+                  transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                  boxShadow: isHomePage && !isScrolled 
+                    ? "0 2px 4px rgba(0, 0, 0, 0.1)" 
+                    : "0 2px 4px rgba(0, 0, 0, 0.05)",
+                  backdropFilter: isHomePage && !isScrolled ? "blur(10px)" : "none",
+                }}
+                aria-label="Toggle menu"
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = isHomePage && !isScrolled 
+                    ? "rgba(255, 255, 255, 0.3)" 
+                    : "#EBEBEB";
+                  e.currentTarget.style.transform = "scale(1.05)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = isHomePage && !isScrolled 
+                    ? "rgba(255, 255, 255, 0.2)" 
+                    : "#F7F7F7";
+                  e.currentTarget.style.transform = "scale(1)";
+                }}
+              >
+                <Menu size={22} color={isHomePage && !isScrolled ? "#FFFFFF" : "#222222"} strokeWidth={2.5} />
+              </button>
+            </div>
+          )}
+
           {/* Left Navigation Links */}
           <div
             className="desktop-nav-left"
@@ -117,6 +182,9 @@ const Navbar = ({ currentUser }) => {
             {leftNavLinks.map((link) => {
               const isActive =
                 link.href === "/" ? pathname === "/" : pathname?.startsWith(link.href);
+              const textColor = isHomePage 
+                ? (isScrolled ? (isActive ? "#1A1A1A" : "#666666") : "#FFFFFF")
+                : (isActive ? "#1A1A1A" : "#666666");
               return (
                 <Link
                   key={link.href}
@@ -124,39 +192,34 @@ const Navbar = ({ currentUser }) => {
                   style={{
                     fontSize: "15px",
                     fontWeight: isActive ? "600" : "500",
-                    color: isActive ? "#1A1A1A" : "#666666",
+                    color: textColor,
                     textDecoration: "none",
                     transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
                     whiteSpace: "nowrap",
-                    padding: "10px 20px",
-                    borderRadius: "14px",
-                    backgroundColor: isActive ? "rgba(255, 56, 92, 0.1)" : "transparent",
+                    padding: "0",
+                    borderRadius: "0",
+                    backgroundColor: "transparent",
                     position: "relative",
-                    border: isActive ? "1px solid rgba(255, 56, 92, 0.2)" : "1px solid transparent",
-                    boxShadow: isActive ? "0 4px 12px rgba(255, 56, 92, 0.15)" : "none",
+                    border: "none",
+                    boxShadow: "none",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
                   }}
                   onMouseEnter={(e) => {
-                    if (!isActive) {
-                      e.currentTarget.style.color = "#FF385C";
-                      e.currentTarget.style.backgroundColor = "rgba(255, 56, 92, 0.08)";
-                      e.currentTarget.style.borderColor = "rgba(255, 56, 92, 0.3)";
-                      e.currentTarget.style.transform = "translateY(-2px)";
-                      e.currentTarget.style.boxShadow = "0 6px 16px rgba(255, 56, 92, 0.2)";
+                    if (isHomePage && !isScrolled) {
+                      e.currentTarget.style.color = "#FFFFFF";
+                      e.currentTarget.style.opacity = "0.8";
                     } else {
-                      e.currentTarget.style.boxShadow = "0 6px 20px rgba(255, 56, 92, 0.25)";
-                      e.currentTarget.style.transform = "translateY(-1px)";
+                      e.currentTarget.style.color = "#FF385C";
                     }
                   }}
                   onMouseLeave={(e) => {
-                    if (!isActive) {
-                      e.currentTarget.style.color = "#666666";
-                      e.currentTarget.style.backgroundColor = "transparent";
-                      e.currentTarget.style.borderColor = "transparent";
-                      e.currentTarget.style.transform = "translateY(0)";
-                      e.currentTarget.style.boxShadow = "none";
+                    if (isHomePage && !isScrolled) {
+                      e.currentTarget.style.color = "#FFFFFF";
+                      e.currentTarget.style.opacity = "1";
                     } else {
-                      e.currentTarget.style.boxShadow = "0 4px 12px rgba(255, 56, 92, 0.15)";
-                      e.currentTarget.style.transform = "translateY(0)";
+                      e.currentTarget.style.color = textColor;
                     }
                   }}
                 >
@@ -167,14 +230,18 @@ const Navbar = ({ currentUser }) => {
           </div>
 
           {/* Logo - Center */}
-          {/* Left Section - Logo and Language (Mobile) */}
+          {/* Mobile Logo - Left */}
           <div 
             className="navbar-left-mobile"
             style={{ 
               display: "none",
               flex: "0 0 auto",
               alignItems: "center",
-              gap: "8px",
+              justifyContent: "flex-start",
+              position: "relative",
+              left: "0",
+              transform: "none",
+              zIndex: 10,
             }}
           >
             <div 
@@ -193,25 +260,7 @@ const Navbar = ({ currentUser }) => {
                 style={{
                   display: "block",
                   textDecoration: "none",
-                  padding: "10px 16px",
-                  borderRadius: "16px",
-                  transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
-                  position: "relative",
-                  background: "linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(250, 250, 250, 0.9) 100%)",
-                  border: "1px solid rgba(255, 56, 92, 0.1)",
-                  boxShadow: "0 4px 12px rgba(0, 0, 0, 0.05)",
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = "rgba(255, 56, 92, 0.05)";
-                  e.currentTarget.style.borderColor = "rgba(255, 56, 92, 0.2)";
-                  e.currentTarget.style.transform = "scale(1.08) translateY(-2px)";
-                  e.currentTarget.style.boxShadow = "0 8px 24px rgba(255, 56, 92, 0.2)";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = "transparent";
-                  e.currentTarget.style.borderColor = "rgba(255, 56, 92, 0.1)";
-                  e.currentTarget.style.transform = "scale(1) translateY(0)";
-                  e.currentTarget.style.boxShadow = "0 4px 12px rgba(0, 0, 0, 0.05)";
+                  padding: "0",
                 }}
               >
                 <Image
@@ -225,8 +274,7 @@ const Navbar = ({ currentUser }) => {
                     maxHeight: "52px",
                     maxWidth: "200px",
                     objectFit: "contain",
-                    transition: "all 0.4s ease",
-                    filter: "drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1))",
+                    filter: (isHomePage && !isScrolled) ? "brightness(0) invert(1)" : "none",
                   }}
                   className="navbar-logo"
                   priority
@@ -234,17 +282,12 @@ const Navbar = ({ currentUser }) => {
                 />
               </Link>
             </div>
-            
-            {/* Language Switcher - Mobile Left */}
-            <div className="mobile-language-wrapper-left">
-              <LanguageSwitcher />
-            </div>
           </div>
 
           {/* Desktop Logo - Centered */}
           <div 
             className="navbar-logo-container"
-            style={{ 
+            style={{
               flex: "0 0 auto",
               position: "absolute",
               left: "calc(50% - 80px)",
@@ -258,25 +301,7 @@ const Navbar = ({ currentUser }) => {
               style={{
                 display: "block",
                 textDecoration: "none",
-                padding: "10px 16px",
-                borderRadius: "16px",
-                transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
-                position: "relative",
-                background: "linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(250, 250, 250, 0.9) 100%)",
-                border: "1px solid rgba(255, 56, 92, 0.1)",
-                boxShadow: "0 4px 12px rgba(0, 0, 0, 0.05)",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = "rgba(255, 56, 92, 0.05)";
-                e.currentTarget.style.borderColor = "rgba(255, 56, 92, 0.2)";
-                e.currentTarget.style.transform = "scale(1.08) translateY(-2px)";
-                e.currentTarget.style.boxShadow = "0 8px 24px rgba(255, 56, 92, 0.2)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = "transparent";
-                e.currentTarget.style.borderColor = "rgba(255, 56, 92, 0.1)";
-                e.currentTarget.style.transform = "scale(1) translateY(0)";
-                e.currentTarget.style.boxShadow = "0 4px 12px rgba(0, 0, 0, 0.05)";
+                padding: "0",
               }}
             >
               <Image
@@ -290,8 +315,7 @@ const Navbar = ({ currentUser }) => {
                   maxHeight: "52px",
                   maxWidth: "200px",
                   objectFit: "contain",
-                  transition: "all 0.4s ease",
-                  filter: "drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1))",
+                  filter: (isHomePage && !isScrolled) ? "brightness(0) invert(1)" : "none",
                 }}
                 className="navbar-logo"
                 priority
@@ -300,66 +324,61 @@ const Navbar = ({ currentUser }) => {
             </Link>
           </div>
 
-          {/* Right Navigation Links */}
-          <div
-            className="desktop-nav-right"
-            style={{
-              display: "flex",
-              alignItems: "center",
+            {/* Right Navigation Links */}
+            <div
+              className="desktop-nav-right"
+              style={{
+                display: "flex",
+                alignItems: "center",
               gap: "44px",
               flex: "0 0 auto",
               position: "absolute",
               left: "calc(50% - 80px)",
               transform: "translateX(calc(-50% + 300px))",
               zIndex: 9,
-            }}
-          >
-            {rightNavLinks.map((link) => {
+              }}
+            >
+              {rightNavLinks.map((link) => {
               const isActive =
                 link.href === "/" ? pathname === "/" : pathname?.startsWith(link.href);
-              return (
-                <Link
+              const textColor = isHomePage 
+                ? (isScrolled ? (isActive ? "#1A1A1A" : "#666666") : "#FFFFFF")
+                : (isActive ? "#1A1A1A" : "#666666");
+                return (
+                    <Link
                   key={link.href}
-                  href={link.href}
-                  style={{
-                    fontSize: "15px",
+                      href={link.href}
+                      style={{
+                        fontSize: "15px",
                     fontWeight: isActive ? "600" : "500",
-                    color: isActive ? "#1A1A1A" : "#666666",
-                    textDecoration: "none",
+                    color: textColor,
+                        textDecoration: "none",
                     transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-                    whiteSpace: "nowrap",
-                    padding: "10px 20px",
-                    borderRadius: "14px",
-                    backgroundColor: isActive ? "rgba(255, 56, 92, 0.1)" : "transparent",
+                        whiteSpace: "nowrap",
+                    padding: "0",
+                    borderRadius: "0",
+                    backgroundColor: "transparent",
                     position: "relative",
-                    border: isActive ? "1px solid rgba(255, 56, 92, 0.2)" : "1px solid transparent",
-                    boxShadow: isActive ? "0 4px 12px rgba(255, 56, 92, 0.15)" : "none",
-                    display: "flex",
-                    alignItems: "center",
+                    border: "none",
+                    boxShadow: "none",
+                          display: "flex",
+                          alignItems: "center",
                     gap: "8px",
-                  }}
-                  onMouseEnter={(e) => {
-                    if (!isActive) {
+                        }}
+                        onMouseEnter={(e) => {
+                    if (isHomePage && !isScrolled) {
+                      e.currentTarget.style.color = "#FFFFFF";
+                      e.currentTarget.style.opacity = "0.8";
+                    } else {
                       e.currentTarget.style.color = "#FF385C";
-                      e.currentTarget.style.backgroundColor = "rgba(255, 56, 92, 0.08)";
-                      e.currentTarget.style.borderColor = "rgba(255, 56, 92, 0.3)";
-                      e.currentTarget.style.transform = "translateY(-2px)";
-                      e.currentTarget.style.boxShadow = "0 6px 16px rgba(255, 56, 92, 0.2)";
-                    } else {
-                      e.currentTarget.style.boxShadow = "0 6px 20px rgba(255, 56, 92, 0.25)";
-                      e.currentTarget.style.transform = "translateY(-1px)";
                     }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (!isActive) {
-                      e.currentTarget.style.color = "#666666";
-                      e.currentTarget.style.backgroundColor = "transparent";
-                      e.currentTarget.style.borderColor = "transparent";
-                      e.currentTarget.style.transform = "translateY(0)";
-                      e.currentTarget.style.boxShadow = "none";
+                        }}
+                        onMouseLeave={(e) => {
+                    if (isHomePage && !isScrolled) {
+                      e.currentTarget.style.color = "#FFFFFF";
+                      e.currentTarget.style.opacity = "1";
                     } else {
-                      e.currentTarget.style.boxShadow = "0 4px 12px rgba(255, 56, 92, 0.15)";
-                      e.currentTarget.style.transform = "translateY(0)";
+                      e.currentTarget.style.color = textColor;
                     }
                   }}
                 >
@@ -380,9 +399,9 @@ const Navbar = ({ currentUser }) => {
                   )}
                   {link.label}
                 </Link>
-              );
-            })}
-          </div>
+                );
+              })}
+            </div>
 
           {/* Desktop Right Actions */}
           <div
@@ -396,16 +415,16 @@ const Navbar = ({ currentUser }) => {
             }}
           >
             {/* Become a Host / Add Listing */}
-            <Link
-              href="/listings/new"
+                <Link
+                  href="/listings/new"
               className="host-button-desktop"
-              style={{
+                  style={{
                 padding: "14px 24px",
                 borderRadius: "16px",
                 fontSize: "14px",
                 fontWeight: "600",
                 color: "#FFFFFF",
-                textDecoration: "none",
+                    textDecoration: "none",
                 transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
                 whiteSpace: "nowrap",
                 background: "linear-gradient(135deg, #FF385C 0%, #E61E4D 100%)",
@@ -413,40 +432,40 @@ const Navbar = ({ currentUser }) => {
                 boxShadow: "0 6px 20px rgba(255, 56, 92, 0.3), 0 2px 8px rgba(255, 56, 92, 0.2)",
                 position: "relative",
                 overflow: "hidden",
-              }}
-              onMouseEnter={(e) => {
+                  }}
+                  onMouseEnter={(e) => {
                 e.currentTarget.style.background = "linear-gradient(135deg, #E61E4D 0%, #D91A3D 100%)";
                 e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.3)";
                 e.currentTarget.style.transform = "translateY(-2px) scale(1.02)";
                 e.currentTarget.style.boxShadow = "0 10px 32px rgba(255, 56, 92, 0.4), 0 4px 12px rgba(255, 56, 92, 0.3)";
-              }}
-              onMouseLeave={(e) => {
+                  }}
+                  onMouseLeave={(e) => {
                 e.currentTarget.style.background = "linear-gradient(135deg, #FF385C 0%, #E61E4D 100%)";
                 e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.2)";
                 e.currentTarget.style.transform = "translateY(0) scale(1)";
                 e.currentTarget.style.boxShadow = "0 6px 20px rgba(255, 56, 92, 0.3), 0 2px 8px rgba(255, 56, 92, 0.2)";
-              }}
-              onMouseDown={(e) => {
+                  }}
+                  onMouseDown={(e) => {
                 e.currentTarget.style.transform = "translateY(0) scale(0.98)";
-              }}
-              onMouseUp={(e) => {
+                  }}
+                  onMouseUp={(e) => {
                 e.currentTarget.style.transform = "translateY(-2px) scale(1.02)";
-              }}
-            >
+                  }}
+                >
               {currentUser
                 ? getTranslation(displayLanguage, "nav.addListing")
                 : getTranslation(displayLanguage, "nav.becomeHost")}
-            </Link>
+                </Link>
 
-            {/* Language Switcher */}
-            <LanguageSwitcher />
+                {/* Language Switcher */}
+                  <LanguageSwitcher />
 
             {/* Notification Badge */}
             {currentUser && <NotificationBadge currentUser={currentUser} />}
 
-            {/* User Menu */}
-            <UserMenu currentUser={currentUser} />
-          </div>
+            {/* User Menu - Only show when logged in */}
+            {currentUser && <UserMenu currentUser={currentUser} />}
+                </div>
 
           {/* Mobile Right Actions */}
           <div
@@ -459,6 +478,11 @@ const Navbar = ({ currentUser }) => {
               marginLeft: "auto",
             }}
           >
+            {/* Language Switcher - Mobile Right */}
+            <div className="mobile-language-wrapper-right">
+              <LanguageSwitcher />
+            </div>
+
             {/* Profile/User Menu - Mobile Right */}
             {currentUser && (
               <div className="mobile-user-menu-wrapper-right">
@@ -468,39 +492,40 @@ const Navbar = ({ currentUser }) => {
 
             {/* Menu Button */}
             <button
-              className="mobile-menu-btn"
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
+                  className="mobile-menu-btn"
+                  onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
                 width: "44px",
                 height: "44px",
-                border: "none",
-                backgroundColor: "#F7F7F7",
+                    border: "none",
+                    backgroundColor: isHomePage ? "rgba(255, 255, 255, 0.2)" : "#F7F7F7",
                 borderRadius: "14px",
-                cursor: "pointer",
+                    cursor: "pointer",
                 transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-                boxShadow: "0 2px 4px rgba(0, 0, 0, 0.05)",
-              }}
-              aria-label="Toggle menu"
+                boxShadow: isHomePage ? "0 2px 4px rgba(0, 0, 0, 0.1)" : "0 2px 4px rgba(0, 0, 0, 0.05)",
+                    backdropFilter: isHomePage ? "blur(10px)" : "none",
+                  }}
+                  aria-label="Toggle menu"
               onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = "#EBEBEB";
+                e.currentTarget.style.backgroundColor = isHomePage ? "rgba(255, 255, 255, 0.3)" : "#EBEBEB";
                 e.currentTarget.style.transform = "scale(1.05)";
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = "#F7F7F7";
+                e.currentTarget.style.backgroundColor = isHomePage ? "rgba(255, 255, 255, 0.2)" : "#F7F7F7";
                 e.currentTarget.style.transform = "scale(1)";
               }}
-              onMouseDown={(e) => {
-                e.currentTarget.style.transform = "scale(0.95)";
-              }}
-              onMouseUp={(e) => {
+                  onMouseDown={(e) => {
+                    e.currentTarget.style.transform = "scale(0.95)";
+                  }}
+                  onMouseUp={(e) => {
                 e.currentTarget.style.transform = "scale(1.05)";
-              }}
-            >
-              <Menu size={22} color="#222222" strokeWidth={2.5} />
-            </button>
+                  }}
+                >
+                  <Menu size={22} color={isHomePage ? "#FFFFFF" : "#222222"} strokeWidth={2.5} />
+                </button>
           </div>
         </nav>
 
@@ -669,41 +694,41 @@ const Navbar = ({ currentUser }) => {
               {/* User Actions */}
               {currentUser ? (
                 <>
-                  <div style={{
+                <div style={{
                     marginBottom: "24px",
-                    paddingBottom: "24px",
-                    borderBottom: "1px solid #F0F0F0"
-                  }}>
-                    <Link
-                      href="/listings/new"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        gap: "12px",
-                        padding: "14px 18px",
-                        fontSize: "16px",
-                        fontWeight: "600",
+                  paddingBottom: "24px",
+                  borderBottom: "1px solid #F0F0F0"
+                }}>
+                  <Link
+                    href="/listings/new"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: "12px",
+                      padding: "14px 18px",
+                      fontSize: "16px",
+                      fontWeight: "600",
                         color: "#FFFFFF",
-                        textDecoration: "none",
+                      textDecoration: "none",
                         background: "linear-gradient(135deg, #FF385C 0%, #E61E4D 100%)",
-                        borderRadius: "12px",
-                        transition: "all 0.2s ease",
+                      borderRadius: "12px",
+                      transition: "all 0.2s ease",
                         boxShadow: "0 4px 12px rgba(255, 56, 92, 0.3)",
-                      }}
-                      onMouseEnter={(e) => {
+                    }}
+                    onMouseEnter={(e) => {
                         e.currentTarget.style.background = "linear-gradient(135deg, #E61E4D 0%, #D91A3D 100%)";
                         e.currentTarget.style.boxShadow = "0 6px 16px rgba(255, 56, 92, 0.4)";
-                      }}
-                      onMouseLeave={(e) => {
+                    }}
+                    onMouseLeave={(e) => {
                         e.currentTarget.style.background = "linear-gradient(135deg, #FF385C 0%, #E61E4D 100%)";
                         e.currentTarget.style.boxShadow = "0 4px 12px rgba(255, 56, 92, 0.3)";
-                      }}
-                    >
-                      <span>{getTranslation(displayLanguage, "nav.addListing")}</span>
-                    </Link>
-                  </div>
+                    }}
+                  >
+                    <span>{getTranslation(displayLanguage, "nav.addListing")}</span>
+                  </Link>
+                </div>
                   
                   {/* User Profile Section */}
                   <div style={{
@@ -719,7 +744,6 @@ const Navbar = ({ currentUser }) => {
                       backgroundColor: "#F7F7F7",
                       borderRadius: "12px",
                     }}>
-                      <UserMenu currentUser={currentUser} />
                       <div style={{ flex: 1 }}>
                         <div style={{
                           fontSize: "16px",
@@ -832,6 +856,324 @@ const Navbar = ({ currentUser }) => {
         </div>
       )}
 
+      {/* Right Menu Drawer */}
+      {isRightMenuOpen && (
+        <div
+          className="right-menu-overlay"
+          onClick={() => setIsRightMenuOpen(false)}
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            zIndex: 1001,
+            animation: "fadeIn 0.2s ease-out",
+          }}
+        >
+          <div
+            className="right-menu-drawer"
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              position: "fixed",
+              top: "0",
+              right: "0",
+              bottom: "0",
+              width: "100%",
+              maxWidth: "400px",
+              backgroundColor: "#FFFFFF",
+              zIndex: 1002,
+              overflowY: "auto",
+              animation: "slideInRight 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+              boxShadow: "-4px 0 24px rgba(0, 0, 0, 0.15)",
+              paddingTop: "20px",
+            }}
+          >
+            <div style={{ padding: "0 24px 24px" }}>
+              {/* Close Button */}
+              <div style={{
+                display: "flex",
+                justifyContent: "flex-end",
+                alignItems: "center",
+                marginBottom: "24px",
+                paddingBottom: "16px",
+                borderBottom: "1px solid #F0F0F0"
+              }}>
+                <button
+                  onClick={() => setIsRightMenuOpen(false)}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    width: "40px",
+                    height: "40px",
+                    border: "none",
+                    backgroundColor: "#F7F7F7",
+                    borderRadius: "50%",
+                    cursor: "pointer",
+                    transition: "all 0.2s ease",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = "#EBEBEB";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = "#F7F7F7";
+                  }}
+                  onMouseDown={(e) => {
+                    e.currentTarget.style.transform = "scale(0.95)";
+                  }}
+                  onMouseUp={(e) => {
+                    e.currentTarget.style.transform = "scale(1)";
+                  }}
+                  aria-label="Close menu"
+                >
+                  <X size={22} color="#222222" strokeWidth={2.5} />
+                </button>
+              </div>
+
+              {/* Menu Links */}
+                <div style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "12px",
+              }}>
+                {/* Become a Host */}
+                  <Link
+                    href="/listings/new"
+                  onClick={() => setIsRightMenuOpen(false)}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      padding: "14px 18px",
+                      fontSize: "16px",
+                      fontWeight: "600",
+                    color: "#FFFFFF",
+                      textDecoration: "none",
+                    background: "linear-gradient(135deg, #FF385C 0%, #E61E4D 100%)",
+                      borderRadius: "12px",
+                      transition: "all 0.2s ease",
+                    boxShadow: "0 4px 12px rgba(255, 56, 92, 0.3)",
+                    }}
+                    onMouseEnter={(e) => {
+                    e.currentTarget.style.background = "linear-gradient(135deg, #E61E4D 0%, #D91A3D 100%)";
+                    e.currentTarget.style.boxShadow = "0 6px 16px rgba(255, 56, 92, 0.4)";
+                    }}
+                    onMouseLeave={(e) => {
+                    e.currentTarget.style.background = "linear-gradient(135deg, #FF385C 0%, #E61E4D 100%)";
+                    e.currentTarget.style.boxShadow = "0 4px 12px rgba(255, 56, 92, 0.3)";
+                    }}
+                  >
+                  {getTranslation(displayLanguage, "nav.becomeHost")}
+                  </Link>
+
+                {/* Login */}
+                  <Link
+                    href="/auth/signin"
+                  onClick={() => setIsRightMenuOpen(false)}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      padding: "14px 18px",
+                      fontSize: "16px",
+                      fontWeight: "600",
+                      color: "#FFFFFF",
+                      textDecoration: "none",
+                      backgroundColor: "#222222",
+                      borderRadius: "12px",
+                      transition: "all 0.2s ease",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = "#000000";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = "#222222";
+                    }}
+                  >
+                  {getTranslation(displayLanguage, "common.login")}
+                  </Link>
+
+                {/* Signup */}
+                  <Link
+                    href="/auth/signup"
+                  onClick={() => setIsRightMenuOpen(false)}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      padding: "14px 18px",
+                      fontSize: "16px",
+                      fontWeight: "600",
+                      color: "#222222",
+                      textDecoration: "none",
+                      backgroundColor: "#F7F7F7",
+                      borderRadius: "12px",
+                      transition: "all 0.2s ease",
+                    border: "1px solid #DDDDDD",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = "#EBEBEB";
+                    e.currentTarget.style.borderColor = "#CCCCCC";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = "#F7F7F7";
+                    e.currentTarget.style.borderColor = "#DDDDDD";
+                    }}
+                  >
+                  {getTranslation(displayLanguage, "common.signup")}
+                  </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Left Menu Drawer */}
+      {isLeftMenuOpen && (
+        <div
+          className="left-menu-overlay"
+          onClick={() => setIsLeftMenuOpen(false)}
+                    style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            zIndex: 1001,
+            animation: "fadeIn 0.2s ease-out",
+          }}
+        >
+          <div
+            className="left-menu-drawer"
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              position: "fixed",
+              top: "0",
+              left: "0",
+              bottom: "0",
+              width: "100%",
+              maxWidth: "400px",
+              backgroundColor: "#FFFFFF",
+              zIndex: 1002,
+              overflowY: "auto",
+              animation: "slideInLeft 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+              boxShadow: "4px 0 24px rgba(0, 0, 0, 0.15)",
+              paddingTop: "20px",
+            }}
+          >
+            <div style={{ padding: "0 24px 24px" }}>
+              {/* Close Button */}
+              <div style={{
+                display: "flex",
+                justifyContent: "flex-end",
+                alignItems: "center",
+                marginBottom: "24px",
+                paddingBottom: "16px",
+                borderBottom: "1px solid #F0F0F0"
+              }}>
+                <button
+                  onClick={() => setIsLeftMenuOpen(false)}
+                  style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    width: "40px",
+                    height: "40px",
+                    border: "none",
+                    backgroundColor: "#F7F7F7",
+                    borderRadius: "50%",
+                    cursor: "pointer",
+                    transition: "all 0.2s ease",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = "#EBEBEB";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = "#F7F7F7";
+                  }}
+                  onMouseDown={(e) => {
+                    e.currentTarget.style.transform = "scale(0.95)";
+                  }}
+                  onMouseUp={(e) => {
+                    e.currentTarget.style.transform = "scale(1)";
+                  }}
+                  aria-label="Close menu"
+                >
+                  <X size={22} color="#222222" strokeWidth={2.5} />
+                </button>
+              </div>
+
+              {/* Menu Links */}
+              <div style={{
+                display: "flex",
+                flexDirection: "column",
+                      gap: "12px",
+              }}>
+                {/* Login */}
+                <Link
+                  href="/auth/signin"
+                  onClick={() => setIsLeftMenuOpen(false)}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    padding: "14px 18px",
+                    fontSize: "16px",
+                    fontWeight: "600",
+                    color: "#FFFFFF",
+                    textDecoration: "none",
+                    backgroundColor: "#222222",
+                    borderRadius: "12px",
+                    transition: "all 0.2s ease",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = "#000000";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = "#222222";
+                  }}
+                >
+                  {getTranslation(displayLanguage, "common.login")}
+                </Link>
+
+                {/* Signup */}
+                <Link
+                  href="/auth/signup"
+                  onClick={() => setIsLeftMenuOpen(false)}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                      padding: "14px 18px",
+                      fontSize: "16px",
+                      fontWeight: "600",
+                      color: "#222222",
+                      textDecoration: "none",
+                    backgroundColor: "#F7F7F7",
+                      borderRadius: "12px",
+                      transition: "all 0.2s ease",
+                    border: "1px solid #DDDDDD",
+                    }}
+                    onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = "#EBEBEB";
+                      e.currentTarget.style.borderColor = "#CCCCCC";
+                    }}
+                    onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = "#F7F7F7";
+                      e.currentTarget.style.borderColor = "#DDDDDD";
+                    }}
+                  >
+                  {getTranslation(displayLanguage, "common.signup")}
+                  </Link>
+                  </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       <style jsx>{`
         @keyframes fadeIn {
           from {
@@ -851,8 +1193,21 @@ const Navbar = ({ currentUser }) => {
           }
         }
 
+        @keyframes slideInLeft {
+          from {
+            transform: translateX(-100%);
+          }
+          to {
+            transform: translateX(0);
+          }
+        }
+
         /* Mobile: < 768px */
         @media (max-width: 767px) {
+          .desktop-left-menu {
+            display: none !important;
+          }
+
           .mobile-nav {
             padding: 0 12px !important;
             height: 64px !important;
@@ -973,6 +1328,9 @@ const Navbar = ({ currentUser }) => {
             padding: 0 24px !important;
             height: 70px !important;
           }
+          .desktop-left-menu {
+            display: none !important;
+          }
           .desktop-nav-left,
           .desktop-nav-right {
             display: none !important;
@@ -1018,9 +1376,22 @@ const Navbar = ({ currentUser }) => {
           
           .navbar-left-mobile {
             display: flex !important;
+            position: relative !important;
+            left: 0 !important;
+            transform: none !important;
+            justify-content: flex-start !important;
           }
           
           .navbar-logo-container:not(.navbar-left-mobile .navbar-logo-container) {
+            display: none !important;
+          }
+          
+          .mobile-language-wrapper-right {
+            display: flex !important;
+            align-items: center !important;
+          }
+          
+          .mobile-language-wrapper-left {
             display: none !important;
           }
           
@@ -1096,17 +1467,16 @@ const Navbar = ({ currentUser }) => {
           }
           
           .navbar-left-mobile .navbar-logo-link {
-            padding: 6px 10px !important;
+            padding: 0 !important;
           }
           
           .navbar-left-mobile .navbar-logo {
             maxHeight: 32px !important;
-            maxWidth: 120px !important;
+            maxWidth: 180px !important;
           }
           
           .mobile-language-wrapper-left {
-            display: flex !important;
-            align-items: center !important;
+            display: none !important;
           }
           
           .mobile-language-wrapper {
@@ -1184,17 +1554,16 @@ const Navbar = ({ currentUser }) => {
           }
           
           .navbar-left-mobile .navbar-logo-link {
-            padding: 4px 8px !important;
+            padding: 0 !important;
           }
           
           .navbar-left-mobile .navbar-logo {
             maxHeight: 28px !important;
-            maxWidth: 100px !important;
+            maxWidth: 150px !important;
           }
           
-          .mobile-language-wrapper-left button {
-            width: 40px !important;
-            height: 40px !important;
+          .mobile-language-wrapper-left {
+            display: none !important;
           }
           .mobile-nav-pills {
             display: none !important;

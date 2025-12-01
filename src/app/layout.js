@@ -17,7 +17,7 @@ import TosterProvider from "@/providers/TosterProvider";
 import SessionProvider from "@/providers/SessionProvider";
 import { getCurrentUser } from "@/actions/getCurrentUser";
 import localFont from "next/font/local";
-import { Dancing_Script } from "next/font/google";
+import { Dancing_Script, Satisfy } from "next/font/google";
 
 export const metadata = {
   title: {
@@ -104,11 +104,19 @@ const dancingScript = Dancing_Script({
   display: "swap",
 });
 
+// Satisfy font for hero quote
+const satisfy = Satisfy({
+  weight: ["400"],
+  subsets: ["latin"],
+  variable: "--font-satisfy",
+  display: "swap",
+});
+
 export default async function RootLayout({ children }) {
   const currentUser = await getCurrentUser();
 
   return (
-    <html lang="en" className={`${cereal.variable} ${dancingScript.variable}`}>
+    <html lang="en" className={`${cereal.variable} ${dancingScript.variable} ${satisfy.variable}`}>
       <body suppressHydrationWarning={true}>
         <SessionProvider>
           <TosterProvider />
