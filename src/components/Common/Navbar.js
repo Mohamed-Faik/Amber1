@@ -524,7 +524,7 @@ const Navbar = ({ currentUser }) => {
                 e.currentTarget.style.transform = "scale(1.05)";
                   }}
                 >
-                  <Menu size={22} color={isHomePage ? "#FFFFFF" : "#222222"} strokeWidth={2.5} />
+                  <Menu size={22} color="#000000" strokeWidth={2.5} />
                 </button>
           </div>
         </nav>
