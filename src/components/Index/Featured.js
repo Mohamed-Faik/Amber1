@@ -197,12 +197,9 @@ const Featured = ({ currentUser }) => {
 				const totalSlides = isPremiumSection 
 					? Math.ceil(section.listings.length / listingsPerSlide)
 					: 1;
-				const visibleListings = isPremiumSection
-					? section.listings.slice(
-						premiumCurrentIndex * listingsPerSlide,
-						(premiumCurrentIndex + 1) * listingsPerSlide
-					)
-					: section.listings;
+				const translatePercent = isPremiumSection && listingsPerSlide > 0
+					? (premiumCurrentIndex * 100) / listingsPerSlide
+					: 0;
 
 				return (
 				<React.Fragment key={section.key}>
@@ -214,6 +211,8 @@ const Featured = ({ currentUser }) => {
 								justifyContent: "space-between",
 								alignItems: "center",
 								marginBottom: "32px",
+								flexWrap: "wrap",
+								gap: "16px",
 							}}
 						>
 						<h2
@@ -222,6 +221,7 @@ const Featured = ({ currentUser }) => {
 								fontWeight: "600",
 								color: "#222222",
 								margin: 0,
+								flex: "1 1 auto",
 							}}
 						>
 							{getTranslation(displayLanguage, section.titleKey)}
@@ -229,10 +229,12 @@ const Featured = ({ currentUser }) => {
 						{/* Carousel Navigation Buttons - Only for Premium Section */}
 						{isPremiumSection && section.listings.length > listingsPerSlide && totalSlides > 1 && (
 							<div
+								className="premium-carousel-nav"
 								style={{
 									display: "flex",
-									gap: "12px",
+									gap: "8px",
 									alignItems: "center",
+									flexShrink: 0,
 								}}
 							>
 								<button
@@ -242,8 +244,8 @@ const Featured = ({ currentUser }) => {
 										);
 									}}
 									style={{
-										width: "40px",
-										height: "40px",
+										width: "32px",
+										height: "32px",
 										borderRadius: "50%",
 										border: "1px solid #DDDDDD",
 										backgroundColor: "#FFFFFF",
@@ -262,7 +264,7 @@ const Featured = ({ currentUser }) => {
 										e.currentTarget.style.backgroundColor = "#FFFFFF";
 									}}
 								>
-									<ChevronLeft size={20} color="#222222" />
+									<ChevronLeft size={18} color="#222222" />
 								</button>
 								<button
 									onClick={() => {
@@ -271,8 +273,8 @@ const Featured = ({ currentUser }) => {
 										);
 									}}
 									style={{
-										width: "40px",
-										height: "40px",
+										width: "32px",
+										height: "32px",
 										borderRadius: "50%",
 										border: "1px solid #DDDDDD",
 										backgroundColor: "#FFFFFF",
@@ -291,7 +293,7 @@ const Featured = ({ currentUser }) => {
 										e.currentTarget.style.backgroundColor = "#FFFFFF";
 									}}
 								>
-									<ChevronRight size={20} color="#222222" />
+									<ChevronRight size={18} color="#222222" />
 								</button>
 							</div>
 						)}
@@ -301,52 +303,39 @@ const Featured = ({ currentUser }) => {
 						{isPremiumSection ? (
 							<div
 								ref={premiumCarouselRef}
+								className="premium-carousel-container"
 								style={{
 									position: "relative",
 									overflow: "hidden",
+									width: "100%",
 								}}
 							>
 								<div
-									className="featured-grid premium-carousel"
+									className="premium-carousel-wrapper"
 									style={{
-										display: "grid",
-										gridTemplateColumns: "repeat(5, 1fr)",
-										gap: "32px",
-										transition: "transform 0.5s ease",
+										display: "flex",
+										transform: `translateX(-${translatePercent}%)`,
+										transition: "transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)",
 									}}
 								>
-									{visibleListings.map((list) => (
-										<FeaturedItem
+									{section.listings.map((list) => (
+										<div
 											key={list.id}
-											currentUser={currentUser}
-											{...list}
-										/>
+											className="premium-carousel-item"
+											style={{
+												flexShrink: 0,
+												padding: "0 16px",
+												minWidth: 0,
+												boxSizing: "border-box",
+											}}
+										>
+											<FeaturedItem
+												currentUser={currentUser}
+												{...list}
+											/>
+										</div>
 									))}
 								</div>
-								<style jsx>{`
-									@media (max-width: 1400px) {
-										.premium-carousel {
-											gridTemplateColumns: repeat(4, 1fr) !important;
-										}
-									}
-									@media (max-width: 1100px) {
-										.premium-carousel {
-											gridTemplateColumns: repeat(3, 1fr) !important;
-										}
-									}
-									@media (max-width: 768px) {
-										.premium-carousel {
-											gridTemplateColumns: repeat(2, 1fr) !important;
-											gap: 16px !important;
-										}
-									}
-									@media (max-width: 480px) {
-										.premium-carousel {
-											gridTemplateColumns: repeat(1, 1fr) !important;
-											gap: 16px !important;
-										}
-									}
-								`}</style>
 								{/* Slide Indicators */}
 								{totalSlides > 1 && (
 									<div
@@ -449,20 +438,6 @@ const Featured = ({ currentUser }) => {
 									animation: "pulse 2s infinite 1s"
 								}} />
 							</div>
-
-							{/* Pulse Animation */}
-							<style jsx>{`
-								@keyframes pulse {
-									0%, 100% {
-										opacity: 1;
-										transform: scale(1);
-									}
-									50% {
-										opacity: 0.5;
-										transform: scale(0.8);
-									}
-								}
-							`}</style>
 						</div>
 					)}
 				</React.Fragment>
@@ -505,8 +480,71 @@ const Featured = ({ currentUser }) => {
 					</div>
 				)}
 			</div>
+			
+			{/* Premium Carousel Styles */}
+			<style jsx global>{`
+				@keyframes pulse {
+					0%, 100% {
+						opacity: 1;
+						transform: scale(1);
+					}
+					50% {
+						opacity: 0.5;
+						transform: scale(0.8);
+					}
+				}
+				
+				.premium-carousel-container {
+					width: 100% !important;
+					overflow: hidden !important;
+				}
+				
+				.premium-carousel-wrapper {
+					display: flex !important;
+				}
+				
+				.premium-carousel-item {
+					flex: 0 0 20% !important;
+					width: 20% !important;
+				}
+				
+				@media (max-width: 1400px) {
+					.premium-carousel-item {
+						flex: 0 0 25% !important;
+						width: 25% !important;
+					}
+				}
+				@media (max-width: 1100px) {
+					.premium-carousel-item {
+						flex: 0 0 33.333% !important;
+						width: 33.333% !important;
+					}
+				}
+				@media (max-width: 768px) {
+					.premium-carousel-item {
+						flex: 0 0 50% !important;
+						width: 50% !important;
+						padding: 0 8px !important;
+					}
+					.premium-carousel-nav {
+						gap: 6px !important;
+					}
+					.premium-carousel-nav button {
+						width: 36px !important;
+						height: 36px !important;
+					}
+				}
+				@media (max-width: 480px) {
+					.premium-carousel-item {
+						flex: 0 0 100% !important;
+						width: 100% !important;
+						padding: 0 !important;
+					}
+				}
+			`}</style>
 		</div>
 	);
 };
 
 export default Featured;
+
