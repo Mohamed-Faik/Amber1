@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useRef, useEffect } from "react";
-import { Heart, ChevronRight, ChevronLeft, MapPin, Calendar, Users } from "lucide-react";
+import { Heart, ChevronRight, ChevronLeft, MapPin, Calendar, Users, Search, ChevronDown, X } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -33,6 +33,8 @@ const ExperiencesPageClient = ({
 	const [isFavorite, setIsFavorite] = useState({});
 	const originalsScrollRef = useRef(null);
 	const [mounted, setMounted] = useState(false);
+	const [showMobileSearchModal, setShowMobileSearchModal] = useState(false);
+	const [isMobile, setIsMobile] = useState(false);
 
 	// Guest selector state
 	const [adults, setAdults] = useState(0);
@@ -74,6 +76,14 @@ const ExperiencesPageClient = ({
 
 	useEffect(() => {
 		setMounted(true);
+		
+		// Check if mobile
+		const checkMobile = () => {
+			setIsMobile(window.innerWidth <= 768);
+		};
+		checkMobile();
+		window.addEventListener("resize", checkMobile);
+		return () => window.removeEventListener("resize", checkMobile);
 	}, []);
 
 	// Update whoValue when guests change
@@ -170,8 +180,28 @@ const ExperiencesPageClient = ({
 			params.append("infants", infants.toString());
 		}
 		
+		// Close mobile modal if open
+		if (isMobile) {
+			setShowMobileSearchModal(false);
+		}
+		
 		// Navigate to experiences page with search params
 		router.push(`/experiences?${params.toString()}`);
+	};
+
+	// Clear all search values
+	const handleClearAll = () => {
+		setWhereValue("");
+		setWhenValue("");
+		setWhoValue("");
+		setSelectedDate(null);
+		setAdults(0);
+		setChildren(0);
+		setInfants(0);
+		setWhereSearchTerm("");
+		setShowWhereDropdown(false);
+		setShowWhenDropdown(false);
+		setShowWhoDropdown(false);
 	};
 
 	// Experience Card Component
@@ -504,25 +534,55 @@ const ExperiencesPageClient = ({
 					zIndex: 100,
 					backgroundColor: "#FFFFFF",
 					borderBottom: "1px solid #E0E0E0",
-					padding: "24px 0",
+					padding: isMobile ? "16px" : "24px 0",
 					display: "flex",
 					justifyContent: "center",
 					alignItems: "center",
 				}}
 			>
-				<div
-					style={{
-						display: "flex",
-						alignItems: "center",
-						backgroundColor: "#F7F7F7",
-						borderRadius: "40px",
-						padding: "4px 4px 4px 20px",
-						boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
-						maxWidth: "850px",
-						width: "100%",
-						margin: "0 auto",
-					}}
-				>
+				{/* Mobile Search Button */}
+				{isMobile && !showMobileSearchModal && (
+					<button
+						onClick={() => setShowMobileSearchModal(true)}
+						style={{
+							width: "100%",
+							maxWidth: "600px",
+							padding: "14px 20px",
+							borderRadius: "30px",
+							border: "none",
+							backgroundColor: "#FFFFFF",
+							boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+							display: "flex",
+							alignItems: "center",
+							justifyContent: "center",
+							gap: "12px",
+							cursor: "pointer",
+							fontSize: "14px",
+							fontWeight: "500",
+							color: "#222222",
+						}}
+					>
+						<Search size={18} color="#222222" />
+						<span>Start your search</span>
+					</button>
+				)}
+
+				{/* Desktop Search Form */}
+				{!isMobile && (
+					<div
+						className="desktop-search-form"
+						style={{
+							display: "flex",
+							alignItems: "center",
+							backgroundColor: "#F7F7F7",
+							borderRadius: "40px",
+							padding: "4px 4px 4px 20px",
+							boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+							maxWidth: "850px",
+							width: "100%",
+							margin: "0 auto",
+						}}
+					>
 						{/* Where */}
 						<div
 							className="where-dropdown-container"
@@ -1347,6 +1407,822 @@ const ExperiencesPageClient = ({
 							</svg>
 						</button>
 					</div>
+				)}
+
+				{/* Mobile Search Modal */}
+				{isMobile && showMobileSearchModal && (
+					<div
+						style={{
+							position: "fixed",
+							top: 0,
+							left: 0,
+							right: 0,
+							bottom: 0,
+							backgroundColor: "#F7F7F7",
+							zIndex: 1000,
+							overflowY: "auto",
+							padding: "16px",
+						}}
+						onClick={(e) => {
+							if (e.target === e.currentTarget) {
+								setShowMobileSearchModal(false);
+							}
+						}}
+					>
+						{/* Modal Content */}
+						<div
+							style={{
+								maxWidth: "600px",
+								margin: "0 auto",
+								backgroundColor: "#FFFFFF",
+								borderRadius: "16px",
+								padding: "24px",
+								marginTop: "40px",
+								boxShadow: "0 4px 16px rgba(0,0,0,0.1)",
+								position: "relative",
+							}}
+							onClick={(e) => e.stopPropagation()}
+						>
+							{/* Close Button */}
+							<button
+								onClick={() => setShowMobileSearchModal(false)}
+								style={{
+									position: "absolute",
+									top: "16px",
+									right: "16px",
+									width: "32px",
+									height: "32px",
+									borderRadius: "50%",
+									border: "none",
+									backgroundColor: "#F7F7F7",
+									display: "flex",
+									alignItems: "center",
+									justifyContent: "center",
+									cursor: "pointer",
+								}}
+							>
+								<X size={18} color="#222222" />
+							</button>
+							{/* Where Section */}
+							<div style={{ marginBottom: "16px" }}>
+								<h2
+									style={{
+										fontSize: "22px",
+										fontWeight: "600",
+										color: "#222222",
+										marginBottom: "16px",
+									}}
+								>
+									Where?
+								</h2>
+								<div
+									className="where-dropdown-container"
+									style={{
+										position: "relative",
+									}}
+								>
+									<div
+										style={{
+											display: "flex",
+											alignItems: "center",
+											padding: "16px",
+											border: "1px solid #DDDDDD",
+											borderRadius: "12px",
+											backgroundColor: "#FFFFFF",
+											cursor: "pointer",
+										}}
+										onClick={(e) => {
+											e.stopPropagation();
+											setShowWhereDropdown(!showWhereDropdown);
+											setShowWhenDropdown(false);
+											setShowWhoDropdown(false);
+										}}
+									>
+										<Search size={20} color="#717171" style={{ marginRight: "12px" }} />
+										<span
+											style={{
+												flex: 1,
+												fontSize: "16px",
+												color: whereValue ? "#222222" : "#717171",
+											}}
+										>
+											{whereValue || "Search destinations"}
+										</span>
+										<ChevronDown
+											size={20}
+											color="#717171"
+											style={{
+												transform: showWhereDropdown ? "rotate(180deg)" : "rotate(0deg)",
+												transition: "transform 0.2s",
+											}}
+										/>
+									</div>
+									{showWhereDropdown && (
+										<div
+											style={{
+												position: "absolute",
+												top: "100%",
+												left: 0,
+												right: 0,
+												backgroundColor: "#FFFFFF",
+												border: "1px solid #DDDDDD",
+												borderRadius: "12px",
+												marginTop: "8px",
+												boxShadow: "0 4px 16px rgba(0,0,0,0.15)",
+												maxHeight: "300px",
+												overflowY: "auto",
+												zIndex: 1000,
+											}}
+											onClick={(e) => e.stopPropagation()}
+										>
+											<input
+												type="text"
+												placeholder="Search cities..."
+												value={whereSearchTerm}
+												onChange={(e) => setWhereSearchTerm(e.target.value)}
+												style={{
+													width: "100%",
+													padding: "12px 16px",
+													border: "none",
+													borderBottom: "1px solid #E0E0E0",
+													fontSize: "14px",
+												}}
+											/>
+											{filteredCities.map((city) => (
+												<button
+													key={city.value}
+													onClick={() => {
+														setWhereValue(city.label);
+														setShowWhereDropdown(false);
+													}}
+													style={{
+														width: "100%",
+														padding: "12px 16px",
+														border: "none",
+														backgroundColor: "transparent",
+														textAlign: "left",
+														cursor: "pointer",
+														fontSize: "14px",
+													}}
+													onMouseEnter={(e) => {
+														e.currentTarget.style.backgroundColor = "#F7F7F7";
+													}}
+													onMouseLeave={(e) => {
+														e.currentTarget.style.backgroundColor = "transparent";
+													}}
+												>
+													{city.label}
+												</button>
+											))}
+										</div>
+									)}
+								</div>
+							</div>
+
+							{/* When Section */}
+							<div
+								ref={whenDropdownRef}
+								style={{
+									marginBottom: "16px",
+									position: "relative",
+								}}
+							>
+								<div
+									style={{
+										display: "flex",
+										alignItems: "center",
+										justifyContent: "space-between",
+										padding: "16px",
+										backgroundColor: "#F7F7F7",
+										borderRadius: "12px",
+										cursor: "pointer",
+									}}
+									onClick={(e) => {
+										e.stopPropagation();
+										setShowWhenDropdown(!showWhenDropdown);
+										setShowWhereDropdown(false);
+										setShowWhoDropdown(false);
+									}}
+								>
+									<span
+										style={{
+											fontSize: "16px",
+											fontWeight: "600",
+											color: "#222222",
+										}}
+									>
+										When
+									</span>
+									<span
+										style={{
+											fontSize: "16px",
+											color: whenValue ? "#222222" : "#717171",
+										}}
+									>
+										{whenValue || "Add dates"}
+									</span>
+								</div>
+								{showWhenDropdown && (
+									<div
+										style={{
+											position: "absolute",
+											top: "100%",
+											left: 0,
+											right: 0,
+											backgroundColor: "#FFFFFF",
+											border: "1px solid #DDDDDD",
+											borderRadius: "12px",
+											marginTop: "8px",
+											boxShadow: "0 4px 16px rgba(0,0,0,0.15)",
+											zIndex: 1000,
+											padding: "16px",
+										}}
+										onClick={(e) => e.stopPropagation()}
+									>
+										{/* Quick Date Options */}
+										<div style={{ marginBottom: "16px" }}>
+											<button
+												onClick={() => {
+													const today = new Date();
+													setSelectedDate(today);
+													setWhenValue(today.toLocaleDateString("en-US", { month: "short", day: "numeric" }));
+													setShowWhenDropdown(false);
+												}}
+												style={{
+													width: "100%",
+													padding: "12px",
+													border: "none",
+													backgroundColor: "transparent",
+													textAlign: "left",
+													cursor: "pointer",
+													borderRadius: "8px",
+													marginBottom: "8px",
+												}}
+											>
+												<div style={{ fontSize: "14px", fontWeight: "600", marginBottom: "4px" }}>
+													Today
+												</div>
+												<div style={{ fontSize: "12px", color: "#717171" }}>
+													{new Date().toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+												</div>
+											</button>
+											<button
+												onClick={() => {
+													const tomorrow = new Date();
+													tomorrow.setDate(tomorrow.getDate() + 1);
+													setSelectedDate(tomorrow);
+													setWhenValue(tomorrow.toLocaleDateString("en-US", { month: "short", day: "numeric" }));
+													setShowWhenDropdown(false);
+												}}
+												style={{
+													width: "100%",
+													padding: "12px",
+													border: "none",
+													backgroundColor: "transparent",
+													textAlign: "left",
+													cursor: "pointer",
+													borderRadius: "8px",
+													marginBottom: "8px",
+												}}
+											>
+												<div style={{ fontSize: "14px", fontWeight: "600", marginBottom: "4px" }}>
+													Tomorrow
+												</div>
+												<div style={{ fontSize: "12px", color: "#717171" }}>
+													{(() => {
+														const tomorrow = new Date();
+														tomorrow.setDate(tomorrow.getDate() + 1);
+														return tomorrow.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+													})()}
+												</div>
+											</button>
+										</div>
+										{/* Simple Calendar */}
+										<div>
+											<div
+												style={{
+													display: "flex",
+													alignItems: "center",
+													justifyContent: "space-between",
+													marginBottom: "16px",
+												}}
+											>
+												<button
+													onClick={() => {
+														const prevMonth = new Date(currentMonth);
+														prevMonth.setMonth(prevMonth.getMonth() - 1);
+														setCurrentMonth(prevMonth);
+													}}
+													style={{
+														width: "32px",
+														height: "32px",
+														borderRadius: "50%",
+														border: "1px solid #DDDDDD",
+														backgroundColor: "#FFFFFF",
+														display: "flex",
+														alignItems: "center",
+														justifyContent: "center",
+														cursor: "pointer",
+													}}
+												>
+													<ChevronLeft size={16} />
+												</button>
+												<div
+													style={{
+														fontSize: "16px",
+														fontWeight: "600",
+														color: "#222222",
+													}}
+												>
+													{currentMonth.toLocaleDateString("en-US", { month: "long", year: "numeric" })}
+												</div>
+												<button
+													onClick={() => {
+														const nextMonth = new Date(currentMonth);
+														nextMonth.setMonth(nextMonth.getMonth() + 1);
+														setCurrentMonth(nextMonth);
+													}}
+													style={{
+														width: "32px",
+														height: "32px",
+														borderRadius: "50%",
+														border: "1px solid #DDDDDD",
+														backgroundColor: "#FFFFFF",
+														display: "flex",
+														alignItems: "center",
+														justifyContent: "center",
+														cursor: "pointer",
+													}}
+												>
+													<ChevronRight size={16} />
+												</button>
+											</div>
+											<div>
+												<div
+													style={{
+														display: "grid",
+														gridTemplateColumns: "repeat(7, 1fr)",
+														gap: "4px",
+														marginBottom: "8px",
+													}}
+												>
+													{["S", "M", "T", "W", "T", "F", "S"].map((day, idx) => (
+														<div
+															key={idx}
+															style={{
+																textAlign: "center",
+																fontSize: "12px",
+																fontWeight: "600",
+																color: "#717171",
+																padding: "8px",
+															}}
+														>
+															{day}
+														</div>
+													))}
+												</div>
+												<div
+													style={{
+														display: "grid",
+														gridTemplateColumns: "repeat(7, 1fr)",
+														gap: "4px",
+													}}
+												>
+													{(() => {
+														const year = currentMonth.getFullYear();
+														const month = currentMonth.getMonth();
+														const firstDay = new Date(year, month, 1);
+														const lastDay = new Date(year, month + 1, 0);
+														const daysInMonth = lastDay.getDate();
+														const startingDayOfWeek = firstDay.getDay();
+														const days = [];
+
+														for (let i = 0; i < startingDayOfWeek; i++) {
+															days.push(null);
+														}
+
+														for (let day = 1; day <= daysInMonth; day++) {
+															days.push(day);
+														}
+
+														return days.map((day, idx) => {
+															if (day === null) {
+																return <div key={idx} style={{ padding: "8px" }} />;
+															}
+															const date = new Date(year, month, day);
+															const isToday = date.toDateString() === new Date().toDateString();
+															const isSelected = selectedDate && date.toDateString() === selectedDate.toDateString();
+
+															return (
+																<button
+																	key={idx}
+																	onClick={() => {
+																		setSelectedDate(date);
+																		setWhenValue(date.toLocaleDateString("en-US", { month: "short", day: "numeric" }));
+																		setShowWhenDropdown(false);
+																	}}
+																	style={{
+																		padding: "8px",
+																		border: "none",
+																		backgroundColor: isSelected ? "#222222" : isToday ? "#F7F7F7" : "transparent",
+																		color: isSelected ? "#FFFFFF" : "#222222",
+																		borderRadius: "8px",
+																		cursor: "pointer",
+																		fontSize: "14px",
+																		fontWeight: isSelected ? "600" : "400",
+																	}}
+																>
+																	{day}
+																</button>
+															);
+														});
+													})()}
+												</div>
+											</div>
+										</div>
+									</div>
+								)}
+							</div>
+
+							{/* What/Who Section */}
+							<div
+								ref={whoDropdownRef}
+								style={{
+									marginBottom: "24px",
+									position: "relative",
+								}}
+							>
+								<div
+									style={{
+										display: "flex",
+										alignItems: "center",
+										justifyContent: "space-between",
+										padding: "16px",
+										backgroundColor: "#F7F7F7",
+										borderRadius: "12px",
+										cursor: "pointer",
+									}}
+									onClick={(e) => {
+										e.stopPropagation();
+										setShowWhoDropdown(!showWhoDropdown);
+										setShowWhereDropdown(false);
+										setShowWhenDropdown(false);
+									}}
+								>
+									<span
+										style={{
+											fontSize: "16px",
+											fontWeight: "600",
+											color: "#222222",
+										}}
+									>
+										What
+									</span>
+									<span
+										style={{
+											fontSize: "16px",
+											color: whoValue ? "#222222" : "#717171",
+										}}
+									>
+										{whoValue || "Add service"}
+									</span>
+								</div>
+								{showWhoDropdown && (
+									<div
+										style={{
+											position: "absolute",
+											top: "100%",
+											left: 0,
+											right: 0,
+											backgroundColor: "#FFFFFF",
+											border: "1px solid #DDDDDD",
+											borderRadius: "12px",
+											marginTop: "8px",
+											boxShadow: "0 4px 16px rgba(0,0,0,0.15)",
+											zIndex: 1000,
+											padding: "16px",
+										}}
+										onClick={(e) => e.stopPropagation()}
+									>
+										{/* Adults */}
+										<div
+											style={{
+												display: "flex",
+												alignItems: "center",
+												justifyContent: "space-between",
+												padding: "16px 0",
+												borderBottom: "1px solid #E0E0E0",
+											}}
+										>
+											<div>
+												<div
+													style={{
+														fontSize: "16px",
+														fontWeight: "600",
+														color: "#222222",
+														marginBottom: "4px",
+													}}
+												>
+													Adults
+												</div>
+												<div
+													style={{
+														fontSize: "14px",
+														color: "#717171",
+													}}
+												>
+													Ages 13 or above
+												</div>
+											</div>
+											<div
+												style={{
+													display: "flex",
+													alignItems: "center",
+													gap: "16px",
+												}}
+											>
+												<button
+													onClick={() => setAdults(Math.max(0, adults - 1))}
+													disabled={adults === 0}
+													style={{
+														width: "32px",
+														height: "32px",
+														borderRadius: "50%",
+														border: "1px solid #B0B0B0",
+														backgroundColor: adults === 0 ? "#F7F7F7" : "#FFFFFF",
+														color: adults === 0 ? "#B0B0B0" : "#222222",
+														display: "flex",
+														alignItems: "center",
+														justifyContent: "center",
+														cursor: adults === 0 ? "not-allowed" : "pointer",
+														fontSize: "18px",
+														fontWeight: "600",
+													}}
+												>
+													−
+												</button>
+												<span
+													style={{
+														fontSize: "16px",
+														fontWeight: "600",
+														color: "#222222",
+														minWidth: "24px",
+														textAlign: "center",
+													}}
+												>
+													{adults}
+												</span>
+												<button
+													onClick={() => setAdults(adults + 1)}
+													style={{
+														width: "32px",
+														height: "32px",
+														borderRadius: "50%",
+														border: "1px solid #222222",
+														backgroundColor: "#FFFFFF",
+														color: "#222222",
+														display: "flex",
+														alignItems: "center",
+														justifyContent: "center",
+														cursor: "pointer",
+														fontSize: "18px",
+														fontWeight: "600",
+													}}
+												>
+													+
+												</button>
+											</div>
+										</div>
+
+										{/* Children */}
+										<div
+											style={{
+												display: "flex",
+												alignItems: "center",
+												justifyContent: "space-between",
+												padding: "16px 0",
+												borderBottom: "1px solid #E0E0E0",
+											}}
+										>
+											<div>
+												<div
+													style={{
+														fontSize: "16px",
+														fontWeight: "600",
+														color: "#222222",
+														marginBottom: "4px",
+													}}
+												>
+													Children
+												</div>
+												<div
+													style={{
+														fontSize: "14px",
+														color: "#717171",
+													}}
+												>
+													Ages 2-12
+												</div>
+											</div>
+											<div
+												style={{
+													display: "flex",
+													alignItems: "center",
+													gap: "16px",
+												}}
+											>
+												<button
+													onClick={() => setChildren(Math.max(0, children - 1))}
+													disabled={children === 0}
+													style={{
+														width: "32px",
+														height: "32px",
+														borderRadius: "50%",
+														border: "1px solid #B0B0B0",
+														backgroundColor: children === 0 ? "#F7F7F7" : "#FFFFFF",
+														color: children === 0 ? "#B0B0B0" : "#222222",
+														display: "flex",
+														alignItems: "center",
+														justifyContent: "center",
+														cursor: children === 0 ? "not-allowed" : "pointer",
+														fontSize: "18px",
+														fontWeight: "600",
+													}}
+												>
+													−
+												</button>
+												<span
+													style={{
+														fontSize: "16px",
+														fontWeight: "600",
+														color: "#222222",
+														minWidth: "24px",
+														textAlign: "center",
+													}}
+												>
+													{children}
+												</span>
+												<button
+													onClick={() => setChildren(children + 1)}
+													style={{
+														width: "32px",
+														height: "32px",
+														borderRadius: "50%",
+														border: "1px solid #222222",
+														backgroundColor: "#FFFFFF",
+														color: "#222222",
+														display: "flex",
+														alignItems: "center",
+														justifyContent: "center",
+														cursor: "pointer",
+														fontSize: "18px",
+														fontWeight: "600",
+													}}
+												>
+													+
+												</button>
+											</div>
+										</div>
+
+										{/* Infants */}
+										<div
+											style={{
+												display: "flex",
+												alignItems: "center",
+												justifyContent: "space-between",
+												padding: "16px 0",
+											}}
+										>
+											<div>
+												<div
+													style={{
+														fontSize: "16px",
+														fontWeight: "600",
+														color: "#222222",
+														marginBottom: "4px",
+													}}
+												>
+													Infants
+												</div>
+												<div
+													style={{
+														fontSize: "14px",
+														color: "#717171",
+													}}
+												>
+													Under 2
+												</div>
+											</div>
+											<div
+												style={{
+													display: "flex",
+													alignItems: "center",
+													gap: "16px",
+												}}
+											>
+												<button
+													onClick={() => setInfants(Math.max(0, infants - 1))}
+													disabled={infants === 0}
+													style={{
+														width: "32px",
+														height: "32px",
+														borderRadius: "50%",
+														border: "1px solid #B0B0B0",
+														backgroundColor: infants === 0 ? "#F7F7F7" : "#FFFFFF",
+														color: infants === 0 ? "#B0B0B0" : "#222222",
+														display: "flex",
+														alignItems: "center",
+														justifyContent: "center",
+														cursor: infants === 0 ? "not-allowed" : "pointer",
+														fontSize: "18px",
+														fontWeight: "600",
+													}}
+												>
+													−
+												</button>
+												<span
+													style={{
+														fontSize: "16px",
+														fontWeight: "600",
+														color: "#222222",
+														minWidth: "24px",
+														textAlign: "center",
+													}}
+												>
+													{infants}
+												</span>
+												<button
+													onClick={() => setInfants(infants + 1)}
+													style={{
+														width: "32px",
+														height: "32px",
+														borderRadius: "50%",
+														border: "1px solid #222222",
+														backgroundColor: "#FFFFFF",
+														color: "#222222",
+														display: "flex",
+														alignItems: "center",
+														justifyContent: "center",
+														cursor: "pointer",
+														fontSize: "18px",
+														fontWeight: "600",
+													}}
+												>
+													+
+												</button>
+											</div>
+										</div>
+									</div>
+								)}
+							</div>
+
+							{/* Footer Actions */}
+							<div
+								style={{
+									display: "flex",
+									alignItems: "center",
+									justifyContent: "space-between",
+									paddingTop: "16px",
+									borderTop: "1px solid #E0E0E0",
+								}}
+							>
+								<button
+									onClick={handleClearAll}
+									style={{
+										border: "none",
+										backgroundColor: "transparent",
+										cursor: "pointer",
+										fontSize: "16px",
+										fontWeight: "600",
+										color: "#222222",
+										textDecoration: "underline",
+									}}
+								>
+									Clear all
+								</button>
+								<button
+									onClick={handleSearch}
+									style={{
+										padding: "14px 24px",
+										borderRadius: "8px",
+										border: "none",
+										background: "linear-gradient(to right, #FF385C, #E61E4D)",
+										color: "#FFFFFF",
+										fontSize: "16px",
+										fontWeight: "600",
+										cursor: "pointer",
+										display: "flex",
+										alignItems: "center",
+										gap: "8px",
+									}}
+								>
+									<Search size={18} color="#FFFFFF" />
+									Search
+								</button>
+							</div>
+						</div>
+					</div>
+				)}
 			</div>
 
 			{/* Main Content */}
@@ -1354,7 +2230,7 @@ const ExperiencesPageClient = ({
 				style={{
 					maxWidth: "1760px",
 					margin: "0 auto",
-					padding: "48px 80px",
+					padding: isMobile ? "24px 16px" : "48px 80px",
 				}}
 			>
 				{/* Airbnb Originals Section */}
