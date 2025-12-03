@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState, useCallback } from "react";
 import Select from "react-select";
 import { toast } from "react-hot-toast";
 import { useForm, useController, Controller } from "react-hook-form";
@@ -105,7 +105,7 @@ const ListingForm = ({ initialData = null, featureType = null }) => {
 		// Format: "Neighborhood, City" or just "City"
 		let cityOption = null;
 		let neighborhoodOption = null;
-		
+
 		if (initialData.location_value) {
 			const parts = initialData.location_value.split(",").map(p => p.trim());
 			if (parts.length >= 2) {
@@ -113,17 +113,17 @@ const ListingForm = ({ initialData = null, featureType = null }) => {
 				const cityName = parts[parts.length - 1]; // Last part is city
 				const neighborhoodName = parts.slice(0, -1).join(", "); // Everything before last part is neighborhood
 				// Try to find city and neighborhood
-				cityOption = moroccanCities.find(c => 
+				cityOption = moroccanCities.find(c =>
 					c.label.toLowerCase() === cityName.toLowerCase()
 				);
 				if (cityOption) {
-					neighborhoodOption = cityOption.neighborhoods.find(n => 
+					neighborhoodOption = cityOption.neighborhoods.find(n =>
 						n.label.toLowerCase() === neighborhoodName.toLowerCase()
 					);
 				}
 			} else if (parts.length === 1) {
 				// Just city
-				cityOption = moroccanCities.find(c => 
+				cityOption = moroccanCities.find(c =>
 					c.label.toLowerCase() === parts[0].toLowerCase()
 				);
 			}
@@ -146,13 +146,13 @@ const ListingForm = ({ initialData = null, featureType = null }) => {
 		};
 	}, [initialData]);
 
-	const setCustomValue = (id, value) => {
+	const setCustomValue = useCallback((id, value) => {
 		setValue(id, value, {
 			shouldDirty: true,
 			shouldTouch: true,
 			shouldValidate: true,
 		});
-	};
+	}, [setValue]);
 
 	const {
 		register,
@@ -177,9 +177,9 @@ const ListingForm = ({ initialData = null, featureType = null }) => {
 
 	const {
 		field: { value: listingTypeValue, onChange: listingTypeOnChange, ...restListingTypeField },
-	} = useController({ 
-		name: "listingType", 
-		control, 
+	} = useController({
+		name: "listingType",
+		control,
 		defaultValue: "SALE",
 		rules: {
 			required: "Listing type is required",
@@ -213,7 +213,7 @@ const ListingForm = ({ initialData = null, featureType = null }) => {
 		console.log("Form submitted with data:", data);
 		console.log("Listing type value:", data.listingType);
 		console.log("Listing type value type:", typeof data.listingType);
-		
+
 		// Ensure imageSrc is an array and has at least one image
 		if (!data.imageSrc || !Array.isArray(data.imageSrc) || data.imageSrc.length === 0) {
 			toast.error("Please upload at least one image");
@@ -242,7 +242,7 @@ const ListingForm = ({ initialData = null, featureType = null }) => {
 
 		// Validate conditional fields based on feature type
 		const propertyType = data.category;
-		
+
 		// HOMES validation
 		if (isHomes) {
 			// Area is required for all property types except Land (optional for Land)
@@ -314,10 +314,10 @@ const ListingForm = ({ initialData = null, featureType = null }) => {
 					isEditMode
 						? "Listing updated! Changes will be reviewed before going live."
 						: featureType === "EXPERIENCES"
-						? "Experience created successfully!"
-						: featureType === "SERVICES"
-						? "Service created successfully!"
-						: "Listing created! It is pending admin approval and will be visible once approved."
+							? "Experience created successfully!"
+							: featureType === "SERVICES"
+								? "Service created successfully!"
+								: "Listing created! It is pending admin approval and will be visible once approved."
 				);
 				// Redirect based on feature type
 				if (featureType === "EXPERIENCES") {
@@ -362,17 +362,17 @@ const ListingForm = ({ initialData = null, featureType = null }) => {
 							lineHeight: "1.3",
 						}}
 					>
-					{isEditMode 
-						? featureType === "EXPERIENCES" 
-							? getTranslation(displayLanguage, "listings.editExperience")
-							: featureType === "SERVICES" 
-							? getTranslation(displayLanguage, "listings.editService")
-							: getTranslation(displayLanguage, "listings.editListing")
-						: featureType === "EXPERIENCES"
-						? getTranslation(displayLanguage, "listings.createNewExperience")
-						: featureType === "SERVICES"
-						? getTranslation(displayLanguage, "listings.createNewService")
-						: getTranslation(displayLanguage, "listings.createListing")}
+						{isEditMode
+							? featureType === "EXPERIENCES"
+								? getTranslation(displayLanguage, "listings.editExperience")
+								: featureType === "SERVICES"
+									? getTranslation(displayLanguage, "listings.editService")
+									: getTranslation(displayLanguage, "listings.editListing")
+							: featureType === "EXPERIENCES"
+								? getTranslation(displayLanguage, "listings.createNewExperience")
+								: featureType === "SERVICES"
+									? getTranslation(displayLanguage, "listings.createNewService")
+									: getTranslation(displayLanguage, "listings.createListing")}
 					</h1>
 					<p
 						style={{
@@ -382,13 +382,13 @@ const ListingForm = ({ initialData = null, featureType = null }) => {
 							lineHeight: "1.5",
 						}}
 					>
-					{isEditMode
-						? getTranslation(displayLanguage, "listings.updateListingDescription")
-						: featureType === "EXPERIENCES"
-						? getTranslation(displayLanguage, "listings.createExperienceDescription")
-						: featureType === "SERVICES"
-						? getTranslation(displayLanguage, "listings.createServiceDescription")
-						: getTranslation(displayLanguage, "listings.sharePropertyDescription")}
+						{isEditMode
+							? getTranslation(displayLanguage, "listings.updateListingDescription")
+							: featureType === "EXPERIENCES"
+								? getTranslation(displayLanguage, "listings.createExperienceDescription")
+								: featureType === "SERVICES"
+									? getTranslation(displayLanguage, "listings.createServiceDescription")
+									: getTranslation(displayLanguage, "listings.sharePropertyDescription")}
 					</p>
 				</div>
 
@@ -575,163 +575,163 @@ const ListingForm = ({ initialData = null, featureType = null }) => {
 
 								<div style={{ position: "relative", zIndex: 1 }}>
 									<label className="form-label-custom" style={{ position: "relative", zIndex: 2 }}>
-										{featureType === "EXPERIENCES" 
+										{featureType === "EXPERIENCES"
 											? getTranslation(displayLanguage, "listings.experienceType")
-											: featureType === "SERVICES" 
-											? getTranslation(displayLanguage, "listings.serviceType")
-											: getTranslation(displayLanguage, "listings.propertyType")} <span style={{ color: "#FF385C" }}>*</span>
+											: featureType === "SERVICES"
+												? getTranslation(displayLanguage, "listings.serviceType")
+												: getTranslation(displayLanguage, "listings.propertyType")} <span style={{ color: "#FF385C" }}>*</span>
 									</label>
 									<div style={{ position: "relative", zIndex: 1 }}>
-									<Select
-										id="react-select-2-live-region"
-										className="select-input"
-										classNamePrefix="select"
-										placeholder={
-											featureType === "EXPERIENCES" 
-												? getTranslation(displayLanguage, "listings.selectExperienceType")
-												: featureType === "SERVICES" 
-												? getTranslation(displayLanguage, "listings.selectServiceType")
-												: getTranslation(displayLanguage, "listings.selectPropertyType")
-										}
-										isClearable
-										isSearchable
-										menuPortalTarget={typeof document !== "undefined" ? document.body : null}
-										menuPosition="fixed"
-										options={
-											featureType === "EXPERIENCES" 
-												? experienceCategories 
-												: featureType === "SERVICES" 
-												? serviceCategories 
-												: categories
-										}
-										value={
-											catValue
-												? (featureType === "EXPERIENCES" 
-														? experienceCategories 
-														: featureType === "SERVICES" 
-														? serviceCategories 
-														: categories
-													).find((x) => x.value === catValue)
-												: catValue
-										}
-										onChange={(option) => {
-											catOnChange(option ? option.value : option);
-											// Clear bedrooms and bathrooms when switching to Land (only for HOMES)
-											if (!featureType && (!option || option.value === "Land")) {
-												setCustomValue("bedrooms", "");
-												setCustomValue("bathrooms", "");
+										<Select
+											id="react-select-2-live-region"
+											className="select-input"
+											classNamePrefix="select"
+											placeholder={
+												featureType === "EXPERIENCES"
+													? getTranslation(displayLanguage, "listings.selectExperienceType")
+													: featureType === "SERVICES"
+														? getTranslation(displayLanguage, "listings.selectServiceType")
+														: getTranslation(displayLanguage, "listings.selectPropertyType")
 											}
-										}}
-										{...restCategoryField}
-										styles={{
-											control: (base, state) => ({
-												...base,
-												border: state.isFocused ? "2px solid #FF385C" : "1px solid #e0e0e0",
-												borderRadius: "8px",
-												padding: "4px",
-												boxShadow: state.isFocused ? "0 0 0 3px rgba(255, 56, 92, 0.1)" : "none",
-												minHeight: "48px",
-												"&:hover": {
-													borderColor: state.isFocused ? "#FF385C" : "#222222",
+											isClearable
+											isSearchable
+											menuPortalTarget={typeof document !== "undefined" ? document.body : null}
+											menuPosition="fixed"
+											options={
+												featureType === "EXPERIENCES"
+													? experienceCategories
+													: featureType === "SERVICES"
+														? serviceCategories
+														: categories
+											}
+											value={
+												catValue
+													? (featureType === "EXPERIENCES"
+														? experienceCategories
+														: featureType === "SERVICES"
+															? serviceCategories
+															: categories
+													).find((x) => x.value === catValue)
+													: catValue
+											}
+											onChange={(option) => {
+												catOnChange(option ? option.value : option);
+												// Clear bedrooms and bathrooms when switching to Land (only for HOMES)
+												if (!featureType && (!option || option.value === "Land")) {
+													setCustomValue("bedrooms", "");
+													setCustomValue("bathrooms", "");
+												}
+											}}
+											{...restCategoryField}
+											styles={{
+												control: (base, state) => ({
+													...base,
+													border: state.isFocused ? "2px solid #FF385C" : "1px solid #e0e0e0",
+													borderRadius: "8px",
+													padding: "4px",
+													boxShadow: state.isFocused ? "0 0 0 3px rgba(255, 56, 92, 0.1)" : "none",
+													minHeight: "48px",
+													"&:hover": {
+														borderColor: state.isFocused ? "#FF385C" : "#222222",
+													},
+												}),
+												placeholder: (base) => ({
+													...base,
+													color: "#717171",
+													fontSize: "14px",
+												}),
+												singleValue: (base) => ({
+													...base,
+													color: "#222222",
+													fontSize: "14px",
+												}),
+												menu: (base) => ({
+													...base,
+													borderRadius: "8px",
+													boxShadow: "0 8px 24px rgba(0, 0, 0, 0.15), 0 2px 8px rgba(0, 0, 0, 0.1)",
+													border: "1px solid #e0e0e0",
+													zIndex: 9999,
+												}),
+												menuPortal: (base) => ({
+													...base,
+													zIndex: 9999,
+												}),
+												menuList: (base) => ({
+													...base,
+													padding: "4px",
+												}),
+												option: (base, state) => ({
+													...base,
+													backgroundColor: state.isSelected
+														? "#FF385C"
+														: state.isFocused
+															? "#FFF5F7"
+															: "white",
+													color: state.isSelected ? "white" : "#222222",
+													padding: "12px 16px",
+													fontSize: "14px",
+													cursor: "pointer",
+													borderRadius: "6px",
+													margin: "2px 0",
+													"&:hover": {
+														backgroundColor: state.isSelected ? "#FF385C" : "#FFF5F7",
+													},
+												}),
+												indicatorSeparator: () => ({
+													display: "none",
+												}),
+												dropdownIndicator: (base) => ({
+													...base,
+													color: "#717171",
+													"&:hover": {
+														color: "#FF385C",
+													},
+												}),
+												clearIndicator: (base) => ({
+													...base,
+													color: "#717171",
+													"&:hover": {
+														color: "#FF385C",
+													},
+												}),
+											}}
+											theme={(theme) => ({
+												...theme,
+												borderRadius: 8,
+												colors: {
+													...theme.colors,
+													primary: "#FF385C",
+													primary25: "#FFF5F7",
+													primary50: "#FFE5EA",
+													primary75: "#FFB8C5",
 												},
-											}),
-											placeholder: (base) => ({
-												...base,
-												color: "#717171",
-												fontSize: "14px",
-											}),
-											singleValue: (base) => ({
-												...base,
-												color: "#222222",
-												fontSize: "14px",
-											}),
-											menu: (base) => ({
-												...base,
-												borderRadius: "8px",
-												boxShadow: "0 8px 24px rgba(0, 0, 0, 0.15), 0 2px 8px rgba(0, 0, 0, 0.1)",
-												border: "1px solid #e0e0e0",
-												zIndex: 9999,
-											}),
-											menuPortal: (base) => ({
-												...base,
-												zIndex: 9999,
-											}),
-											menuList: (base) => ({
-												...base,
-												padding: "4px",
-											}),
-											option: (base, state) => ({
-												...base,
-												backgroundColor: state.isSelected
-													? "#FF385C"
-													: state.isFocused
-													? "#FFF5F7"
-													: "white",
-												color: state.isSelected ? "white" : "#222222",
-												padding: "12px 16px",
-												fontSize: "14px",
-												cursor: "pointer",
-												borderRadius: "6px",
-												margin: "2px 0",
-												"&:hover": {
-													backgroundColor: state.isSelected ? "#FF385C" : "#FFF5F7",
-												},
-											}),
-											indicatorSeparator: () => ({
-												display: "none",
-											}),
-											dropdownIndicator: (base) => ({
-												...base,
-												color: "#717171",
-												"&:hover": {
-													color: "#FF385C",
-												},
-											}),
-											clearIndicator: (base) => ({
-												...base,
-												color: "#717171",
-												"&:hover": {
-													color: "#FF385C",
-												},
-											}),
-										}}
-										theme={(theme) => ({
-											...theme,
-											borderRadius: 8,
-											colors: {
-												...theme.colors,
-												primary: "#FF385C",
-												primary25: "#FFF5F7",
-												primary50: "#FFE5EA",
-												primary75: "#FFB8C5",
-											},
-										})}
-									/>
+											})}
+										/>
 									</div>
 								</div>
 
-							{/* Full Address - Only for HOMES */}
-							{!featureType && (
-								<Input
-									label={getTranslation(displayLanguage, "listings.fullAddress")}
-									id="address"
-									type="text"
-									placeholder={getTranslation(displayLanguage, "listings.fullAddressPlaceholder")}
-									disabled={isLoading}
-									register={register}
-									errors={errors}
-									required={!featureType}
-								/>
-							)}
-							
-							{/* For Experiences and Services - Register address as optional hidden field */}
-							{featureType && (
-								<input
-									type="hidden"
-									{...register("address")}
-									value=""
-								/>
-							)}
+								{/* Full Address - Only for HOMES */}
+								{!featureType && (
+									<Input
+										label={getTranslation(displayLanguage, "listings.fullAddress")}
+										id="address"
+										type="text"
+										placeholder={getTranslation(displayLanguage, "listings.fullAddressPlaceholder")}
+										disabled={isLoading}
+										register={register}
+										errors={errors}
+										required={!featureType}
+									/>
+								)}
+
+								{/* For Experiences and Services - Register address as optional hidden field */}
+								{featureType && (
+									<input
+										type="hidden"
+										{...register("address")}
+										value=""
+									/>
+								)}
 							</div>
 
 							{/* Conditional Fields based on Feature Type */}
@@ -756,20 +756,20 @@ const ListingForm = ({ initialData = null, featureType = null }) => {
 											marginTop: 0,
 										}}
 									>
-										{featureType === "EXPERIENCES" 
+										{featureType === "EXPERIENCES"
 											? getTranslation(displayLanguage, "listings.experienceDetails")
-											: featureType === "SERVICES" 
-											? getTranslation(displayLanguage, "listings.serviceDetails")
-											: getTranslation(displayLanguage, "listings.propertyDetails")}
+											: featureType === "SERVICES"
+												? getTranslation(displayLanguage, "listings.serviceDetails")
+												: getTranslation(displayLanguage, "listings.propertyDetails")}
 									</h3>
-									
+
 									{/* HOMES - Property Details */}
 									{!featureType && (
 										<div
 											style={{
 												display: "grid",
-												gridTemplateColumns: (category === "Villa" || category === "Apartment" || category === "House") 
-													? "repeat(3, 1fr)" 
+												gridTemplateColumns: (category === "Villa" || category === "Apartment" || category === "House")
+													? "repeat(3, 1fr)"
 													: "1fr",
 												gap: "20px",
 												width: "100%",
@@ -932,126 +932,126 @@ const ListingForm = ({ initialData = null, featureType = null }) => {
 											/>
 										)}
 									/>
-							</div>
-
-							{/* Listing Type - Sale or Rent - Only for HOMES */}
-							{!featureType && (
-								<div style={{ position: "relative", zIndex: 1 }}>
-									<label className="form-label-custom" style={{ position: "relative", zIndex: 2 }}>
-										{getTranslation(displayLanguage, "listings.listingType")} <span style={{ color: "#FF385C" }}>*</span>
-									</label>
-									<div style={{ position: "relative", zIndex: 1 }}>
-										<Select
-											id="react-select-listing-type"
-											className="select-input"
-											classNamePrefix="select"
-											placeholder={getTranslation(displayLanguage, "listings.selectListingType")}
-											isSearchable={false}
-											menuPortalTarget={typeof document !== "undefined" ? document.body : null}
-											menuPosition="fixed"
-											options={[
-												{ value: "SALE", label: getTranslation(displayLanguage, "listings.forSale") },
-												{ value: "RENT", label: getTranslation(displayLanguage, "listings.forRent") },
-												{ value: "DAILY_RENT", label: getTranslation(displayLanguage, "listings.forRentDaily") }
-											]}
-											value={
-												listingTypeValue
-													? [{ value: "SALE", label: getTranslation(displayLanguage, "listings.forSale") }, { value: "RENT", label: getTranslation(displayLanguage, "listings.forRent") }, { value: "DAILY_RENT", label: getTranslation(displayLanguage, "listings.forRentDaily") }].find(
-															(x) => x.value === listingTypeValue
-													  )
-													: null
-											}
-											onChange={(option) => {
-												const value = option ? option.value : null;
-												console.log("Listing type changed to:", value);
-												// Call the field's onChange to update react-hook-form
-												listingTypeOnChange(value);
-												// Also update via setValue to ensure it's registered
-												setCustomValue("listingType", value);
-												// Clear any existing errors when a valid option is selected
-												if (value && (value === "SALE" || value === "RENT" || value === "DAILY_RENT")) {
-													setError("listingType", null);
-												}
-											}}
-											onBlur={restListingTypeField.onBlur}
-											name={restListingTypeField.name}
-											ref={restListingTypeField.ref}
-											styles={{
-												control: (base, state) => ({
-													...base,
-													border: state.isFocused ? "2px solid #FF385C" : "1px solid #e0e0e0",
-													borderRadius: "8px",
-													padding: "4px",
-													boxShadow: state.isFocused ? "0 0 0 3px rgba(255, 56, 92, 0.1)" : "none",
-													minHeight: "48px",
-													"&:hover": {
-														borderColor: state.isFocused ? "#FF385C" : "#222222",
-													},
-												}),
-												placeholder: (base) => ({
-													...base,
-													color: "#717171",
-													fontSize: "14px",
-												}),
-												singleValue: (base) => ({
-													...base,
-													color: "#222222",
-													fontSize: "14px",
-												}),
-												menu: (base) => ({
-													...base,
-													borderRadius: "8px",
-													boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
-													zIndex: 9999,
-												}),
-												option: (base, state) => ({
-													...base,
-													backgroundColor: state.isSelected
-														? "#FFF5F7"
-														: state.isFocused
-														? "#FFF5F7"
-														: "#ffffff",
-													color: state.isSelected ? "#FF385C" : "#222222",
-													fontWeight: state.isSelected ? "600" : "400",
-													"&:active": {
-														backgroundColor: "#FFF5F7",
-													},
-												}),
-												menuPortal: (base) => ({
-													...base,
-													zIndex: 9999,
-												}),
-											}}
-										/>
-									</div>
-									{errors.listingType && (
-										<p style={{ color: "#FF385C", fontSize: "12px", marginTop: "4px", marginBottom: 0 }}>
-											{errors.listingType.message}
-										</p>
-									)}
 								</div>
-							)}
 
-						<Input
-								label={
-									featureType === "EXPERIENCES" 
-										? getTranslation(displayLanguage, "listings.pricePerPerson")
-										: featureType === "SERVICES" 
-										? getTranslation(displayLanguage, "listings.priceStartingFrom")
-										: listingType === "RENT" 
-										? `${getTranslation(displayLanguage, "listings.price")} (${getTranslation(displayLanguage, "listings.pricePerMonth")})`
-										: listingType === "DAILY_RENT" 
-										? `${getTranslation(displayLanguage, "listings.price")} (${getTranslation(displayLanguage, "listings.pricePerDay")})`
-										: getTranslation(displayLanguage, "listings.price")
-								}
-								id="price"
-								type="number"
-								placeholder="0"
-								disabled={isLoading}
-								register={register}
-								errors={errors}
-								required
-							/>
+								{/* Listing Type - Sale or Rent - Only for HOMES */}
+								{!featureType && (
+									<div style={{ position: "relative", zIndex: 1 }}>
+										<label className="form-label-custom" style={{ position: "relative", zIndex: 2 }}>
+											{getTranslation(displayLanguage, "listings.listingType")} <span style={{ color: "#FF385C" }}>*</span>
+										</label>
+										<div style={{ position: "relative", zIndex: 1 }}>
+											<Select
+												id="react-select-listing-type"
+												className="select-input"
+												classNamePrefix="select"
+												placeholder={getTranslation(displayLanguage, "listings.selectListingType")}
+												isSearchable={false}
+												menuPortalTarget={typeof document !== "undefined" ? document.body : null}
+												menuPosition="fixed"
+												options={[
+													{ value: "SALE", label: getTranslation(displayLanguage, "listings.forSale") },
+													{ value: "RENT", label: getTranslation(displayLanguage, "listings.forRent") },
+													{ value: "DAILY_RENT", label: getTranslation(displayLanguage, "listings.forRentDaily") }
+												]}
+												value={
+													listingTypeValue
+														? [{ value: "SALE", label: getTranslation(displayLanguage, "listings.forSale") }, { value: "RENT", label: getTranslation(displayLanguage, "listings.forRent") }, { value: "DAILY_RENT", label: getTranslation(displayLanguage, "listings.forRentDaily") }].find(
+															(x) => x.value === listingTypeValue
+														)
+														: null
+												}
+												onChange={(option) => {
+													const value = option ? option.value : null;
+													console.log("Listing type changed to:", value);
+													// Call the field's onChange to update react-hook-form
+													listingTypeOnChange(value);
+													// Also update via setValue to ensure it's registered
+													setCustomValue("listingType", value);
+													// Clear any existing errors when a valid option is selected
+													if (value && (value === "SALE" || value === "RENT" || value === "DAILY_RENT")) {
+														setError("listingType", null);
+													}
+												}}
+												onBlur={restListingTypeField.onBlur}
+												name={restListingTypeField.name}
+												ref={restListingTypeField.ref}
+												styles={{
+													control: (base, state) => ({
+														...base,
+														border: state.isFocused ? "2px solid #FF385C" : "1px solid #e0e0e0",
+														borderRadius: "8px",
+														padding: "4px",
+														boxShadow: state.isFocused ? "0 0 0 3px rgba(255, 56, 92, 0.1)" : "none",
+														minHeight: "48px",
+														"&:hover": {
+															borderColor: state.isFocused ? "#FF385C" : "#222222",
+														},
+													}),
+													placeholder: (base) => ({
+														...base,
+														color: "#717171",
+														fontSize: "14px",
+													}),
+													singleValue: (base) => ({
+														...base,
+														color: "#222222",
+														fontSize: "14px",
+													}),
+													menu: (base) => ({
+														...base,
+														borderRadius: "8px",
+														boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+														zIndex: 9999,
+													}),
+													option: (base, state) => ({
+														...base,
+														backgroundColor: state.isSelected
+															? "#FFF5F7"
+															: state.isFocused
+																? "#FFF5F7"
+																: "#ffffff",
+														color: state.isSelected ? "#FF385C" : "#222222",
+														fontWeight: state.isSelected ? "600" : "400",
+														"&:active": {
+															backgroundColor: "#FFF5F7",
+														},
+													}),
+													menuPortal: (base) => ({
+														...base,
+														zIndex: 9999,
+													}),
+												}}
+											/>
+										</div>
+										{errors.listingType && (
+											<p style={{ color: "#FF385C", fontSize: "12px", marginTop: "4px", marginBottom: 0 }}>
+												{errors.listingType.message}
+											</p>
+										)}
+									</div>
+								)}
+
+								<Input
+									label={
+										featureType === "EXPERIENCES"
+											? getTranslation(displayLanguage, "listings.pricePerPerson")
+											: featureType === "SERVICES"
+												? getTranslation(displayLanguage, "listings.priceStartingFrom")
+												: listingType === "RENT"
+													? `${getTranslation(displayLanguage, "listings.price")} (${getTranslation(displayLanguage, "listings.pricePerMonth")})`
+													: listingType === "DAILY_RENT"
+														? `${getTranslation(displayLanguage, "listings.price")} (${getTranslation(displayLanguage, "listings.pricePerDay")})`
+														: getTranslation(displayLanguage, "listings.price")
+									}
+									id="price"
+									type="number"
+									placeholder="0"
+									disabled={isLoading}
+									register={register}
+									errors={errors}
+									required
+								/>
 							</div>
 						</div>
 					</div>
@@ -1136,8 +1136,8 @@ const ListingForm = ({ initialData = null, featureType = null }) => {
 									? getTranslation(displayLanguage, "listings.saving")
 									: getTranslation(displayLanguage, "listings.creating")
 								: isEditMode
-								? getTranslation(displayLanguage, "listings.saveChanges")
-								: getTranslation(displayLanguage, "listings.createListing")}
+									? getTranslation(displayLanguage, "listings.saveChanges")
+									: getTranslation(displayLanguage, "listings.createListing")}
 						</button>
 					</div>
 				</form>

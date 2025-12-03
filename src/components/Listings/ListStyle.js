@@ -162,12 +162,12 @@ const ListStyle = ({
 										borderBottom: "1px solid #f0f0f0"
 									}}>
 										{user.image ? (
-											<img
+											<Image
 												src={user.image}
 												alt="AmberHomes User"
+												width={40}
+												height={40}
 												style={{
-													width: "40px",
-													height: "40px",
 													borderRadius: "50%",
 													objectFit: "cover",
 													border: "2px solid #FF385C"
@@ -259,11 +259,11 @@ const ListStyle = ({
 												letterSpacing: "0.5px",
 											}}
 										>
-											<img
+											<Image
 												src="https://img.icons8.com/?size=100&id=dqdDZqdX7Mb3&format=png&color=000000"
 												alt="Premium"
-												width="14"
-												height="14"
+												width={14}
+												height={14}
 												style={{ display: "block" }}
 											/>
 											{getTranslation(displayLanguage, "listings.premium")}
