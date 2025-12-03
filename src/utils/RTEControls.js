@@ -1,7 +1,9 @@
-module.exports = [
+const RTEControls = [
 	["bold", "italic", "underline"],
 	["h1", "h2", "h3", "h4"],
 	["unorderedList", "orderedList"],
 	["link"],
 	["alignLeft", "alignCenter", "alignRight"],
 ];
+
+export default RTEControls;

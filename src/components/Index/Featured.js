@@ -21,10 +21,8 @@ const Featured = ({ currentUser }) => {
 	useEffect(() => {
 		const updateListingsPerSlide = () => {
 			let newValue;
-			if (window.innerWidth <= 480) {
+			if (window.innerWidth <= 768) {
 				newValue = 1;
-			} else if (window.innerWidth <= 768) {
-				newValue = 2;
 			} else if (window.innerWidth <= 1100) {
 				newValue = 3;
 			} else if (window.innerWidth <= 1400) {
@@ -49,12 +47,12 @@ const Featured = ({ currentUser }) => {
 				console.log("📡 Fetching all listings...");
 				// Fetch all listings without category filter
 				const response = await axios.get(`/api/listings/featured?category=all`);
-				
+
 				// Check if response is an error object
 				if (response.data && response.data.error) {
 					console.error("❌ API returned error:", response.data);
 					console.error("   Error message:", response.data.message);
-					
+
 					// Show specific error message to user
 					if (response.data.message?.includes("DATABASE_URL")) {
 						toast.error("Database configuration error. Please check server configuration.");
@@ -63,54 +61,54 @@ const Featured = ({ currentUser }) => {
 					} else {
 						toast.error(response.data.message || "Failed to load listings. Please try again.");
 					}
-					
+
 					setSections([]);
 					return;
 				}
-				
+
 				const allListings = Array.isArray(response.data) ? response.data : [];
-				
+
 				console.log("✅ Received listings:", allListings.length);
 				if (allListings.length > 0) {
 					console.log("📋 Sample listing:", allListings[0]);
 				}
 
-		if (allListings.length === 0) {
-			console.warn("⚠️  No listings found in response");
-			setSections([]);
-			return;
-		}
+				if (allListings.length === 0) {
+					console.warn("⚠️  No listings found in response");
+					setSections([]);
+					return;
+				}
 
-		// Filter listings that are marked as premium in the database
-		const premiumListings = allListings.filter(listing => listing.isPremium === true);
-		
-		console.log("⭐ Premium listings found:", premiumListings.length);
-		
-		// Premium listings already have isPremium flag from database
-		const premiumListingsWithFlag = premiumListings;
-		
-		// Create two sections: Premium Properties and All Properties
-		// Store sections without titles - titles will be computed on render for instant translation
-		const newSections = [
-			{
-				titleKey: "listings.premiumProperties",
-				listings: premiumListingsWithFlag,
-				key: "premium-properties",
-			},
-			{
-				titleKey: "listings.allProperties",
-				listings: allListings,
-				key: "all-listings",
-			}
-		];
+				// Filter listings that are marked as premium in the database
+				const premiumListings = allListings.filter(listing => listing.isPremium === true);
 
-			console.log("📦 Created sections:", newSections.length);
-			setSections(newSections);
+				console.log("⭐ Premium listings found:", premiumListings.length);
+
+				// Premium listings already have isPremium flag from database
+				const premiumListingsWithFlag = premiumListings;
+
+				// Create two sections: Premium Properties and All Properties
+				// Store sections without titles - titles will be computed on render for instant translation
+				const newSections = [
+					{
+						titleKey: "listings.premiumProperties",
+						listings: premiumListingsWithFlag,
+						key: "premium-properties",
+					},
+					{
+						titleKey: "listings.allProperties",
+						listings: allListings,
+						key: "all-listings",
+					}
+				];
+
+				console.log("📦 Created sections:", newSections.length);
+				setSections(newSections);
 			} catch (error) {
 				console.error("❌ Error fetching listings:", error);
 				console.error("   Error response:", error.response?.data);
 				console.error("   Error status:", error.response?.status);
-				
+
 				// Handle different error types
 				if (error.response?.status === 503) {
 					toast.error("Database connection failed. Please check your database settings in Vercel.");
@@ -122,15 +120,15 @@ const Featured = ({ currentUser }) => {
 				} else {
 					toast.error("Failed to load listings. Please try again.");
 				}
-				
+
 				setSections([]);
 			} finally {
 				setIsLoading(false);
 			}
 		};
 
-	fetchData();
-}, []);
+		fetchData();
+	}, []);
 
 
 	return (
@@ -191,290 +189,290 @@ const Featured = ({ currentUser }) => {
 					</div>
 				)}
 
-			{/* Loaded State - Actual Listings */}
-			{!isLoading && sections.map((section, index) => {
-				const isPremiumSection = section.key === "premium-properties";
-				const totalSlides = isPremiumSection 
-					? Math.ceil(section.listings.length / listingsPerSlide)
-					: 1;
+				{/* Loaded State - Actual Listings */}
+				{!isLoading && sections.map((section, index) => {
+					const isPremiumSection = section.key === "premium-properties";
+					const totalSlides = isPremiumSection
+						? Math.ceil(section.listings.length / listingsPerSlide)
+						: 1;
 
-				return (
-				<React.Fragment key={section.key}>
-					<div>
-						{/* Section Header */}
-						<div
-							style={{
-								display: "flex",
-								justifyContent: "space-between",
-								alignItems: "center",
-								marginBottom: "32px",
-								flexWrap: "wrap",
-								gap: "16px",
-							}}
-						>
-						<h2
-							style={{
-								fontSize: "28px",
-								fontWeight: "600",
-								color: "#222222",
-								margin: 0,
-								flex: "1 1 auto",
-							}}
-						>
-							{getTranslation(displayLanguage, section.titleKey)}
-						</h2>
-						{/* Carousel Navigation Buttons - Only for Premium Section */}
-						{isPremiumSection && section.listings.length > listingsPerSlide && totalSlides > 1 && (
-							<div
-								className="premium-carousel-nav"
-								style={{
-									display: "flex",
-									gap: "8px",
-									alignItems: "center",
-									flexShrink: 0,
-								}}
-							>
-								<button
-									onClick={() => {
-										setPremiumCurrentIndex((prev) => 
-											prev > 0 ? prev - 1 : totalSlides - 1
-										);
-									}}
-									style={{
-										width: "32px",
-										height: "32px",
-										borderRadius: "50%",
-										border: "1px solid #DDDDDD",
-										backgroundColor: "#FFFFFF",
-										display: "flex",
-										alignItems: "center",
-										justifyContent: "center",
-										cursor: "pointer",
-										transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-										boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-									}}
-									onMouseEnter={(e) => {
-										e.currentTarget.style.borderColor = "#FF385C";
-										e.currentTarget.style.backgroundColor = "#FFF5F7";
-										e.currentTarget.style.transform = "scale(1.1)";
-										e.currentTarget.style.boxShadow = "0 4px 8px rgba(255, 56, 92, 0.2)";
-									}}
-									onMouseLeave={(e) => {
-										e.currentTarget.style.borderColor = "#DDDDDD";
-										e.currentTarget.style.backgroundColor = "#FFFFFF";
-										e.currentTarget.style.transform = "scale(1)";
-										e.currentTarget.style.boxShadow = "0 2px 4px rgba(0,0,0,0.1)";
-									}}
-								>
-									<ChevronLeft size={18} color="#222222" />
-								</button>
-								<button
-									onClick={() => {
-										setPremiumCurrentIndex((prev) => 
-											prev < totalSlides - 1 ? prev + 1 : 0
-										);
-									}}
-									style={{
-										width: "32px",
-										height: "32px",
-										borderRadius: "50%",
-										border: "1px solid #DDDDDD",
-										backgroundColor: "#FFFFFF",
-										display: "flex",
-										alignItems: "center",
-										justifyContent: "center",
-										cursor: "pointer",
-										transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-										boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-									}}
-									onMouseEnter={(e) => {
-										e.currentTarget.style.borderColor = "#FF385C";
-										e.currentTarget.style.backgroundColor = "#FFF5F7";
-										e.currentTarget.style.transform = "scale(1.1)";
-										e.currentTarget.style.boxShadow = "0 4px 8px rgba(255, 56, 92, 0.2)";
-									}}
-									onMouseLeave={(e) => {
-										e.currentTarget.style.borderColor = "#DDDDDD";
-										e.currentTarget.style.backgroundColor = "#FFFFFF";
-										e.currentTarget.style.transform = "scale(1)";
-										e.currentTarget.style.boxShadow = "0 2px 4px rgba(0,0,0,0.1)";
-									}}
-								>
-									<ChevronRight size={18} color="#222222" />
-								</button>
-							</div>
-						)}
-						</div>
-
-						{/* Carousel Container for Premium Section, Grid for Others */}
-						{isPremiumSection ? (
-							<div
-								ref={premiumCarouselRef}
-								className="premium-carousel-container"
-								style={{
-									position: "relative",
-									overflow: "hidden",
-									width: "100%",
-								}}
-							>
+					return (
+						<React.Fragment key={section.key}>
+							<div>
+								{/* Section Header */}
 								<div
-									className="premium-carousel-wrapper"
 									style={{
 										display: "flex",
-										transform: `translateX(-${premiumCurrentIndex * 100}%)`,
-										transition: "transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
-										willChange: "transform",
+										justifyContent: "space-between",
+										alignItems: "center",
+										marginBottom: "32px",
+										flexWrap: "wrap",
+										gap: "16px",
 									}}
 								>
-									{Array.from({ length: totalSlides }).map((_, slideIndex) => {
-										const slideListings = section.listings.slice(
-											slideIndex * listingsPerSlide,
-											(slideIndex + 1) * listingsPerSlide
-										);
-										return (
-											<div
-												key={slideIndex}
-												className="premium-carousel-slide"
+									<h2
+										style={{
+											fontSize: "28px",
+											fontWeight: "600",
+											color: "#222222",
+											margin: 0,
+											flex: "1 1 auto",
+										}}
+									>
+										{getTranslation(displayLanguage, section.titleKey)}
+									</h2>
+									{/* Carousel Navigation Buttons - Only for Premium Section */}
+									{isPremiumSection && section.listings.length > listingsPerSlide && totalSlides > 1 && (
+										<div
+											className="premium-carousel-nav"
+											style={{
+												display: "flex",
+												gap: "8px",
+												alignItems: "center",
+												flexShrink: 0,
+											}}
+										>
+											<button
+												onClick={() => {
+													setPremiumCurrentIndex((prev) =>
+														prev > 0 ? prev - 1 : totalSlides - 1
+													);
+												}}
 												style={{
-													minWidth: "100%",
-													width: "100%",
-													flexShrink: 0,
-													display: "grid",
-													gridTemplateColumns: "repeat(5, 1fr)",
-													gap: "32px",
+													width: "32px",
+													height: "32px",
+													borderRadius: "50%",
+													border: "1px solid #DDDDDD",
+													backgroundColor: "#FFFFFF",
+													display: "flex",
+													alignItems: "center",
+													justifyContent: "center",
+													cursor: "pointer",
+													transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+													boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+												}}
+												onMouseEnter={(e) => {
+													e.currentTarget.style.borderColor = "#FF385C";
+													e.currentTarget.style.backgroundColor = "#FFF5F7";
+													e.currentTarget.style.transform = "scale(1.1)";
+													e.currentTarget.style.boxShadow = "0 4px 8px rgba(255, 56, 92, 0.2)";
+												}}
+												onMouseLeave={(e) => {
+													e.currentTarget.style.borderColor = "#DDDDDD";
+													e.currentTarget.style.backgroundColor = "#FFFFFF";
+													e.currentTarget.style.transform = "scale(1)";
+													e.currentTarget.style.boxShadow = "0 2px 4px rgba(0,0,0,0.1)";
 												}}
 											>
-												{slideListings.map((list) => (
-													<FeaturedItem
-														key={list.id}
-														currentUser={currentUser}
-														{...list}
+												<ChevronLeft size={18} color="#222222" />
+											</button>
+											<button
+												onClick={() => {
+													setPremiumCurrentIndex((prev) =>
+														prev < totalSlides - 1 ? prev + 1 : 0
+													);
+												}}
+												style={{
+													width: "32px",
+													height: "32px",
+													borderRadius: "50%",
+													border: "1px solid #DDDDDD",
+													backgroundColor: "#FFFFFF",
+													display: "flex",
+													alignItems: "center",
+													justifyContent: "center",
+													cursor: "pointer",
+													transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+													boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+												}}
+												onMouseEnter={(e) => {
+													e.currentTarget.style.borderColor = "#FF385C";
+													e.currentTarget.style.backgroundColor = "#FFF5F7";
+													e.currentTarget.style.transform = "scale(1.1)";
+													e.currentTarget.style.boxShadow = "0 4px 8px rgba(255, 56, 92, 0.2)";
+												}}
+												onMouseLeave={(e) => {
+													e.currentTarget.style.borderColor = "#DDDDDD";
+													e.currentTarget.style.backgroundColor = "#FFFFFF";
+													e.currentTarget.style.transform = "scale(1)";
+													e.currentTarget.style.boxShadow = "0 2px 4px rgba(0,0,0,0.1)";
+												}}
+											>
+												<ChevronRight size={18} color="#222222" />
+											</button>
+										</div>
+									)}
+								</div>
+
+								{/* Carousel Container for Premium Section, Grid for Others */}
+								{isPremiumSection ? (
+									<div
+										ref={premiumCarouselRef}
+										className="premium-carousel-container"
+										style={{
+											position: "relative",
+											overflow: "hidden",
+											width: "100%",
+										}}
+									>
+										<div
+											className="premium-carousel-wrapper"
+											style={{
+												display: "flex",
+												transform: `translateX(-${premiumCurrentIndex * 100}%)`,
+												transition: "transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+												willChange: "transform",
+											}}
+										>
+											{Array.from({ length: totalSlides }).map((_, slideIndex) => {
+												const slideListings = section.listings.slice(
+													slideIndex * listingsPerSlide,
+													(slideIndex + 1) * listingsPerSlide
+												);
+												return (
+													<div
+														key={slideIndex}
+														className="premium-carousel-slide"
+														style={{
+															minWidth: "100%",
+															width: "100%",
+															flexShrink: 0,
+															display: "grid",
+															gridTemplateColumns: "repeat(5, 1fr)",
+															gap: "32px",
+														}}
+													>
+														{slideListings.map((list) => (
+															<FeaturedItem
+																key={list.id}
+																currentUser={currentUser}
+																{...list}
+															/>
+														))}
+													</div>
+												);
+											})}
+										</div>
+										{/* Slide Indicators */}
+										{totalSlides > 1 && (
+											<div
+												style={{
+													display: "flex",
+													justifyContent: "center",
+													gap: "8px",
+													marginTop: "24px",
+												}}
+											>
+												{Array.from({ length: totalSlides }).map((_, slideIndex) => (
+													<button
+														key={slideIndex}
+														onClick={() => setPremiumCurrentIndex(slideIndex)}
+														style={{
+															width: slideIndex === premiumCurrentIndex ? "24px" : "8px",
+															height: "8px",
+															borderRadius: "4px",
+															backgroundColor: slideIndex === premiumCurrentIndex ? "#FF385C" : "#DDDDDD",
+															border: "none",
+															cursor: "pointer",
+															transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
+															transform: slideIndex === premiumCurrentIndex ? "scale(1.2)" : "scale(1)",
+														}}
+														onMouseEnter={(e) => {
+															if (slideIndex !== premiumCurrentIndex) {
+																e.currentTarget.style.backgroundColor = "#FFB3C1";
+																e.currentTarget.style.transform = "scale(1.1)";
+															}
+														}}
+														onMouseLeave={(e) => {
+															if (slideIndex !== premiumCurrentIndex) {
+																e.currentTarget.style.backgroundColor = "#DDDDDD";
+																e.currentTarget.style.transform = "scale(1)";
+															}
+														}}
 													/>
 												))}
 											</div>
-										);
-									})}
-								</div>
-								{/* Slide Indicators */}
-								{totalSlides > 1 && (
+										)}
+									</div>
+								) : (
 									<div
+										className="featured-grid"
 										style={{
-											display: "flex",
-											justifyContent: "center",
-											gap: "8px",
-											marginTop: "24px",
+											display: "grid",
+											gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
+											gap: "32px",
 										}}
 									>
-										{Array.from({ length: totalSlides }).map((_, slideIndex) => (
-											<button
-												key={slideIndex}
-												onClick={() => setPremiumCurrentIndex(slideIndex)}
-												style={{
-													width: slideIndex === premiumCurrentIndex ? "24px" : "8px",
-													height: "8px",
-													borderRadius: "4px",
-													backgroundColor: slideIndex === premiumCurrentIndex ? "#FF385C" : "#DDDDDD",
-													border: "none",
-													cursor: "pointer",
-													transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
-													transform: slideIndex === premiumCurrentIndex ? "scale(1.2)" : "scale(1)",
-												}}
-												onMouseEnter={(e) => {
-													if (slideIndex !== premiumCurrentIndex) {
-														e.currentTarget.style.backgroundColor = "#FFB3C1";
-														e.currentTarget.style.transform = "scale(1.1)";
-													}
-												}}
-												onMouseLeave={(e) => {
-													if (slideIndex !== premiumCurrentIndex) {
-														e.currentTarget.style.backgroundColor = "#DDDDDD";
-														e.currentTarget.style.transform = "scale(1)";
-													}
-												}}
+										{section.listings.map((list) => (
+											<FeaturedItem
+												key={list.id}
+												currentUser={currentUser}
+												{...list}
 											/>
 										))}
 									</div>
 								)}
 							</div>
-						) : (
-							<div
-								className="featured-grid"
-								style={{
-									display: "grid",
-									gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
-									gap: "32px",
-								}}
-							>
-								{section.listings.map((list) => (
-									<FeaturedItem
-										key={list.id}
-										currentUser={currentUser}
-										{...list}
-									/>
-								))}
-							</div>
-						)}
-					</div>
 
-					{/* Elegant Divider Between Sections */}
-					{index < sections.length - 1 && (
-						<div style={{ 
-							margin: "80px 0", 
-							position: "relative",
-							display: "flex",
-							alignItems: "center",
-							justifyContent: "center"
-						}}>
-							{/* Gradient Line */}
-							<div style={{
-								position: "absolute",
-								width: "100%",
-								height: "2px",
-								background: "linear-gradient(to right, transparent 0%, #E0E0E0 20%, #FF385C 50%, #E0E0E0 80%, transparent 100%)",
-								opacity: 0.6
-							}} />
-							
-							{/* Center Decoration */}
-							<div style={{
-								position: "relative",
-								backgroundColor: "#FFFFFF",
-								padding: "12px 32px",
-								borderRadius: "40px",
-								border: "2px solid #FF385C",
-								boxShadow: "0 4px 12px rgba(255, 56, 92, 0.15)",
-								display: "flex",
-								alignItems: "center",
-								gap: "12px"
-							}}>
+							{/* Elegant Divider Between Sections */}
+							{index < sections.length - 1 && (
 								<div style={{
-									width: "8px",
-									height: "8px",
-									borderRadius: "50%",
-									backgroundColor: "#FF385C",
-									animation: "pulse 2s infinite"
-								}} />
-								<span style={{
-									fontSize: "14px",
-									fontWeight: "600",
-									color: "#FF385C",
-									letterSpacing: "1px",
-									textTransform: "uppercase"
+									margin: "80px 0",
+									position: "relative",
+									display: "flex",
+									alignItems: "center",
+									justifyContent: "center"
 								}}>
-									{getTranslation(displayLanguage, "listings.exploreMore")}
-								</span>
-								<div style={{
-									width: "8px",
-									height: "8px",
-									borderRadius: "50%",
-									backgroundColor: "#FF385C",
-									animation: "pulse 2s infinite 1s"
-								}} />
-							</div>
-						</div>
-					)}
-				</React.Fragment>
-				);
-			})}
+									{/* Gradient Line */}
+									<div style={{
+										position: "absolute",
+										width: "100%",
+										height: "2px",
+										background: "linear-gradient(to right, transparent 0%, #E0E0E0 20%, #FF385C 50%, #E0E0E0 80%, transparent 100%)",
+										opacity: 0.6
+									}} />
+
+									{/* Center Decoration */}
+									<div style={{
+										position: "relative",
+										backgroundColor: "#FFFFFF",
+										padding: "12px 32px",
+										borderRadius: "40px",
+										border: "2px solid #FF385C",
+										boxShadow: "0 4px 12px rgba(255, 56, 92, 0.15)",
+										display: "flex",
+										alignItems: "center",
+										gap: "12px"
+									}}>
+										<div style={{
+											width: "8px",
+											height: "8px",
+											borderRadius: "50%",
+											backgroundColor: "#FF385C",
+											animation: "pulse 2s infinite"
+										}} />
+										<span style={{
+											fontSize: "14px",
+											fontWeight: "600",
+											color: "#FF385C",
+											letterSpacing: "1px",
+											textTransform: "uppercase"
+										}}>
+											{getTranslation(displayLanguage, "listings.exploreMore")}
+										</span>
+										<div style={{
+											width: "8px",
+											height: "8px",
+											borderRadius: "50%",
+											backgroundColor: "#FF385C",
+											animation: "pulse 2s infinite 1s"
+										}} />
+									</div>
+								</div>
+							)}
+						</React.Fragment>
+					);
+				})}
 
 				{/* Empty State */}
 				{!isLoading && sections.length === 0 && (
@@ -512,7 +510,7 @@ const Featured = ({ currentUser }) => {
 					</div>
 				)}
 			</div>
-			
+
 			{/* Premium Carousel Styles */}
 			<style jsx global>{`
 				@keyframes pulse {
@@ -563,7 +561,7 @@ const Featured = ({ currentUser }) => {
 				}
 				@media (max-width: 768px) {
 					.premium-carousel-slide {
-						grid-template-columns: repeat(2, 1fr) !important;
+						grid-template-columns: repeat(1, 1fr) !important;
 						gap: 16px !important;
 					}
 				}
