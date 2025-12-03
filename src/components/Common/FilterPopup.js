@@ -15,7 +15,7 @@ const FilterPopup = ({ isOpen, onClose, onApply, featureType = "HOMES", listings
                 return '€';
             case 'nl':  // Belgian/Dutch → Euro
                 return '€';
-            case 'en':  // English → Pound
+            case 'en':  // English → British Pound
                 return '£';
             default:
                 return '$';
