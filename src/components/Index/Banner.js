@@ -289,7 +289,7 @@ const Banner = () => {
 						maxWidth: "1000px",
 						width: "100%",
 						margin: "0 auto",
-						padding: "0 10px",
+						padding: "0 11px",
 					}}
 				>
 					{/* Quote Text */}
