@@ -18,6 +18,9 @@ const ListingItem = ({
 	listing,
 	currentUser,
 }) => {
+	const { language, isDetecting } = useLanguage();
+	const displayLanguage = isDetecting ? "en" : language;
+
 	if (!listing) {
 		return null;
 	}
@@ -34,8 +37,6 @@ const ListingItem = ({
 		user,
 	} = listing;
 
-	const { language, isDetecting } = useLanguage();
-	const displayLanguage = isDetecting ? "en" : language;
 	const mainImage = getListingImage(imageSrc);
 	return (
 		<div
@@ -58,9 +59,9 @@ const ListingItem = ({
 				e.currentTarget.style.transform = "translateY(0)";
 			}}
 		>
-			<Link 
-				href={`/listing/${id}/${slug}`} 
-				style={{ 
+			<Link
+				href={`/listing/${id}/${slug}`}
+				style={{
 					position: "relative",
 					width: "100%",
 					height: "240px",
@@ -75,8 +76,8 @@ const ListingItem = ({
 						height: "100%",
 					}}
 				>
-					<ListingImageCarousel 
-						imageSrc={imageSrc} 
+					<ListingImageCarousel
+						imageSrc={imageSrc}
 						title={title}
 						listing={{ id, slug, title, location_value, price }}
 					/>
@@ -105,7 +106,7 @@ const ListingItem = ({
 						margin: "0 0 12px 0",
 						lineHeight: "1.4",
 					}}>
-						<Link 
+						<Link
 							href={`/listing/${id}/${slug}`}
 							style={{
 								color: "#222222",
@@ -186,8 +187,8 @@ const ListingItem = ({
 					justifyContent: "space-between",
 					alignItems: "center",
 				}}>
-					<Link 
-						href="/search" 
+					<Link
+						href="/search"
 						style={{
 							padding: "6px 12px",
 							backgroundColor: "#f7f7f7",
@@ -217,7 +218,7 @@ const ListingItem = ({
 						{formattedPrice(price, displayLanguage)}
 					</span>
 				</div>
-				
+
 				{/* Contact Buttons */}
 				<ContactButtons listing={{ id, slug, title, location_value, price }} />
 			</div>
