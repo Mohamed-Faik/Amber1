@@ -16,10 +16,13 @@ import dynamic from "next/dynamic";
 import useCountries from "@/hooks/useCountries";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { getTranslation } from "@/utils/translations";
-const RichTextEditor = dynamic(() => import("@mantine/rte"), {
-	ssr: false,
-	loading: () => null,
-});
+const RichTextEditor = dynamic(
+	() => import("@mantine/rte").then((mod) => mod.default || mod.RichTextEditor),
+	{
+		ssr: false,
+		loading: () => <p>Loading editor...</p>,
+	}
+);
 import RTEControls from "@/utils/RTEControls";
 
 // Experience Categories
