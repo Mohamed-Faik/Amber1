@@ -5,11 +5,14 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper";
 import { getAllListingImages } from "@/utils/getListingImage";
 import { formattedPrice } from "@/utils/formattedPrice";
+import { useLanguage } from "@/contexts/LanguageContext";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 
 const ListingImageCarousel = ({ imageSrc, title, onImageClick, listing }) => {
+	const { language, isDetecting } = useLanguage();
+	const displayLanguage = isDetecting ? "en" : language;
 	const [images, setImages] = useState([]);
 	const [activeIndex, setActiveIndex] = useState(0);
 	const swiperRef = useRef(null);
@@ -39,13 +42,13 @@ const ListingImageCarousel = ({ imageSrc, title, onImageClick, listing }) => {
 
 Property: ${listing.title || title}
 Location: ${listing.location_value || ""}
-Price: ${listing.price ? formattedPrice(listing.price) : ""}
+Price: ${listing.price ? formattedPrice(listing.price, displayLanguage) : ""}
 ${listingUrl ? `Link: ${listingUrl}` : ""}
 
 Please provide more information.`;
 		
 		return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
-	}, [baseUrl, listing, title]);
+	}, [baseUrl, listing, title, displayLanguage]);
 
 	// Check if we're on the blurred duplicate slide (last slide is the duplicate)
 	const isLastSlide = activeIndex === images.length;

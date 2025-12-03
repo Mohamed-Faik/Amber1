@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
@@ -8,6 +9,7 @@ import profileSvg from "../../../../public/images/icon/profile.svg";
 import { formatDate } from "@/utils/formatDate";
 import { formattedPrice } from "@/utils/formattedPrice";
 import { getListingImage } from "@/utils/getListingImage";
+import { useLanguage } from "@/contexts/LanguageContext";
 import HeartButton from "@/components/HeartButton";
 import ContactButtons from "@/components/Listing/ContactButtons";
 import ListingImageCarousel from "@/components/Listing/ListingImageCarousel";
@@ -32,6 +34,8 @@ const ListingItem = ({
 		user,
 	} = listing;
 
+	const { language, isDetecting } = useLanguage();
+	const displayLanguage = isDetecting ? "en" : language;
 	const mainImage = getListingImage(imageSrc);
 	return (
 		<div
@@ -210,7 +214,7 @@ const ListingItem = ({
 						fontWeight: "600",
 						color: "#FF385C",
 					}}>
-						{formattedPrice(price)}
+						{formattedPrice(price, displayLanguage)}
 					</span>
 				</div>
 				

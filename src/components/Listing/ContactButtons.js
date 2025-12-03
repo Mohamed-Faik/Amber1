@@ -26,13 +26,13 @@ const ContactButtons = ({ listing }) => {
 
 Property: ${listing.title}
 Location: ${listing.location_value}
-Price: ${formattedPrice(listing.price)}
+Price: ${formattedPrice(listing.price, displayLanguage)}
 ${listingUrl ? `Link: ${listingUrl}` : ""}
 
 Please provide more information.`;
 		
 		return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
-	}, [baseUrl, listing, whatsappNumber]);
+	}, [baseUrl, listing, whatsappNumber, displayLanguage]);
 
 	// Create email subject and body
 	const emailSubject = encodeURIComponent(`Inquiry about: ${listing.title}`);
@@ -42,7 +42,7 @@ I'm interested in this property:
 
 Property: ${listing.title}
 Location: ${listing.location_value}
-Price: ${formattedPrice(listing.price)}
+Price: ${formattedPrice(listing.price, displayLanguage)}
 Link: ${baseUrl ? `${baseUrl}/listing/${listing.id}/${listing.slug}` : ""}
 
 Please provide more information.

@@ -14,6 +14,7 @@ import { formattedPrice } from "@/utils/formattedPrice";
 import { getListingImage } from "@/utils/getListingImage";
 import ContactButtons from "@/components/Listing/ContactButtons";
 import ListingImageCarousel from "@/components/Listing/ListingImageCarousel";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const ListingItem = ({
 	id,
@@ -29,6 +30,8 @@ const ListingItem = ({
 	status,
 	listingType,
 }) => {
+	const { language, isDetecting } = useLanguage();
+	const displayLanguage = isDetecting ? "en" : language;
 	// Default to SALE if listingType is not provided (for backward compatibility)
 	const displayListingType = listingType || "SALE";
 	
@@ -311,7 +314,7 @@ const ListingItem = ({
 								fontWeight: "600",
 								color: "#FF385C",
 							}}>
-								{formattedPrice(price)}
+								{formattedPrice(price, displayLanguage)}
 							</span>
 							{displayListingType === "RENT" && (
 								<span

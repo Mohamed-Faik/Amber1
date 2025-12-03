@@ -227,7 +227,7 @@ const Banner = () => {
 						objectFit: "cover",
 					}}
 				>
-					<source src="/videos/house-interior.mp4" type="video/mp4" />
+					<source src="/videos/5138024-uhd_4096_2160_25fps.mp4" type="video/mp4" />
 					{/* Fallback image if video doesn't load */}
 					<Image
 						src="/images/banner/hero-bg-1.jpg"

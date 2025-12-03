@@ -197,9 +197,6 @@ const Featured = ({ currentUser }) => {
 				const totalSlides = isPremiumSection 
 					? Math.ceil(section.listings.length / listingsPerSlide)
 					: 1;
-				const translatePercent = isPremiumSection && listingsPerSlide > 0
-					? (premiumCurrentIndex * 100) / listingsPerSlide
-					: 0;
 
 				return (
 				<React.Fragment key={section.key}>
@@ -253,15 +250,20 @@ const Featured = ({ currentUser }) => {
 										alignItems: "center",
 										justifyContent: "center",
 										cursor: "pointer",
-										transition: "all 0.2s ease",
+										transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+										boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
 									}}
 									onMouseEnter={(e) => {
 										e.currentTarget.style.borderColor = "#FF385C";
 										e.currentTarget.style.backgroundColor = "#FFF5F7";
+										e.currentTarget.style.transform = "scale(1.1)";
+										e.currentTarget.style.boxShadow = "0 4px 8px rgba(255, 56, 92, 0.2)";
 									}}
 									onMouseLeave={(e) => {
 										e.currentTarget.style.borderColor = "#DDDDDD";
 										e.currentTarget.style.backgroundColor = "#FFFFFF";
+										e.currentTarget.style.transform = "scale(1)";
+										e.currentTarget.style.boxShadow = "0 2px 4px rgba(0,0,0,0.1)";
 									}}
 								>
 									<ChevronLeft size={18} color="#222222" />
@@ -282,15 +284,20 @@ const Featured = ({ currentUser }) => {
 										alignItems: "center",
 										justifyContent: "center",
 										cursor: "pointer",
-										transition: "all 0.2s ease",
+										transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+										boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
 									}}
 									onMouseEnter={(e) => {
 										e.currentTarget.style.borderColor = "#FF385C";
 										e.currentTarget.style.backgroundColor = "#FFF5F7";
+										e.currentTarget.style.transform = "scale(1.1)";
+										e.currentTarget.style.boxShadow = "0 4px 8px rgba(255, 56, 92, 0.2)";
 									}}
 									onMouseLeave={(e) => {
 										e.currentTarget.style.borderColor = "#DDDDDD";
 										e.currentTarget.style.backgroundColor = "#FFFFFF";
+										e.currentTarget.style.transform = "scale(1)";
+										e.currentTarget.style.boxShadow = "0 2px 4px rgba(0,0,0,0.1)";
 									}}
 								>
 									<ChevronRight size={18} color="#222222" />
@@ -314,28 +321,90 @@ const Featured = ({ currentUser }) => {
 									className="premium-carousel-wrapper"
 									style={{
 										display: "flex",
-										transform: `translateX(-${translatePercent}%)`,
-										transition: "transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)",
+										transform: `translateX(-${premiumCurrentIndex * 100}%)`,
+										transition: "transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+										willChange: "transform",
 									}}
 								>
-									{section.listings.map((list) => (
-										<div
-											key={list.id}
-											className="premium-carousel-item"
-											style={{
-												flexShrink: 0,
-												padding: "0 16px",
-												minWidth: 0,
-												boxSizing: "border-box",
-											}}
-										>
-											<FeaturedItem
-												currentUser={currentUser}
-												{...list}
-											/>
-										</div>
-									))}
+									{Array.from({ length: totalSlides }).map((_, slideIndex) => {
+										const slideListings = section.listings.slice(
+											slideIndex * listingsPerSlide,
+											(slideIndex + 1) * listingsPerSlide
+										);
+										return (
+											<div
+												key={slideIndex}
+												className="premium-carousel-slide"
+												style={{
+													minWidth: "100%",
+													width: "100%",
+													flexShrink: 0,
+													display: "grid",
+													gridTemplateColumns: "repeat(5, 1fr)",
+													gap: "32px",
+												}}
+											>
+												{slideListings.map((list) => (
+													<FeaturedItem
+														key={list.id}
+														currentUser={currentUser}
+														{...list}
+													/>
+												))}
+											</div>
+										);
+									})}
 								</div>
+								<style jsx>{`
+									.premium-carousel-wrapper {
+										display: flex;
+									}
+									
+									.premium-carousel-slide {
+										min-width: 100%;
+										width: 100%;
+										flex-shrink: 0;
+									}
+									
+									@media (max-width: 1400px) {
+										.premium-carousel-slide {
+											gridTemplateColumns: repeat(4, 1fr) !important;
+										}
+									}
+									@media (max-width: 1100px) {
+										.premium-carousel-slide {
+											gridTemplateColumns: repeat(3, 1fr) !important;
+										}
+									}
+									@media (max-width: 768px) {
+										.premium-carousel-slide {
+											gridTemplateColumns: repeat(2, 1fr) !important;
+											gap: 16px !important;
+										}
+									}
+									@media (max-width: 480px) {
+										.premium-carousel-slide {
+											gridTemplateColumns: repeat(1, 1fr) !important;
+											gap: 16px !important;
+										}
+									}
+									
+									/* Smooth fade effect for items */
+									.premium-carousel-slide > * {
+										animation: fadeInSlide 0.6s ease-out;
+									}
+									
+									@keyframes fadeInSlide {
+										from {
+											opacity: 0;
+											transform: translateY(20px);
+										}
+										to {
+											opacity: 1;
+											transform: translateY(0);
+										}
+									}
+								`}</style>
 								{/* Slide Indicators */}
 								{totalSlides > 1 && (
 									<div
@@ -357,7 +426,20 @@ const Featured = ({ currentUser }) => {
 													backgroundColor: slideIndex === premiumCurrentIndex ? "#FF385C" : "#DDDDDD",
 													border: "none",
 													cursor: "pointer",
-													transition: "all 0.3s ease",
+													transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
+													transform: slideIndex === premiumCurrentIndex ? "scale(1.2)" : "scale(1)",
+												}}
+												onMouseEnter={(e) => {
+													if (slideIndex !== premiumCurrentIndex) {
+														e.currentTarget.style.backgroundColor = "#FFB3C1";
+														e.currentTarget.style.transform = "scale(1.1)";
+													}
+												}}
+												onMouseLeave={(e) => {
+													if (slideIndex !== premiumCurrentIndex) {
+														e.currentTarget.style.backgroundColor = "#DDDDDD";
+														e.currentTarget.style.transform = "scale(1)";
+													}
 												}}
 											/>
 										))}

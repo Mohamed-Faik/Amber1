@@ -350,7 +350,7 @@ const ExperiencesPageClient = ({
 							}}
 						>
 							{listing.price
-								? `From ${formattedPrice(listing.price)}/guest`
+								? `From ${formattedPrice(listing.price, displayLanguage)}/guest`
 								: "Price on request"}
 						</div>
 					</div>
@@ -510,7 +510,7 @@ const ExperiencesPageClient = ({
 							<span>{listing.location_value || "Location"}</span>
 							<span style={{ fontWeight: "600", color: "#222222" }}>
 								{listing.price
-									? `From ${formattedPrice(listing.price)}/guest`
+									? `From ${formattedPrice(listing.price, displayLanguage)}/guest`
 									: "Price on request"}
 							</span>
 						</div>

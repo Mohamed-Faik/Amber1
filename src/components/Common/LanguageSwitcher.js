@@ -72,13 +72,13 @@ const LanguageSwitcher = () => {
           style={{
             position: "absolute",
             top: "calc(100% + 8px)",
-            right: 0,
+            left: 0,
             backgroundColor: "#FFFFFF",
             borderRadius: "12px",
             boxShadow: "0 4px 16px rgba(0, 0, 0, 0.15)",
             border: "1px solid #E0E0E0",
             minWidth: "180px",
-            zIndex: 1000,
+            zIndex: 10000,
             overflow: "hidden",
           }}
         >

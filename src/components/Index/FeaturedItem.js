@@ -36,7 +36,7 @@ const FeaturedItem = ({
 	const { language, isDetecting } = useLanguage();
 	const displayLanguage = isDetecting ? "en" : language;
 	const mainImage = getListingImage(imageSrc);
-	const displayPrice = formattedPrice(price);
+	const displayPrice = formattedPrice(price, displayLanguage);
 	const displayRating = rating || "4.8"; // Default rating if not available
 	const [imageError, setImageError] = useState(false);
 	// Default to SALE if listingType is not provided (for backward compatibility)

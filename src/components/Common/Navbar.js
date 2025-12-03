@@ -116,54 +116,6 @@ const Navbar = ({ currentUser }) => {
             transition: "height 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
           }}
         >
-          {/* Left Menu Button - Desktop Only */}
-          {!currentUser && (
-            <div
-              className="desktop-left-menu"
-              style={{
-                display: "flex",
-                alignItems: "center",
-                flex: "0 0 auto",
-              }}
-            >
-              <button
-                onClick={() => setIsLeftMenuOpen(!isLeftMenuOpen)}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  width: "44px",
-                  height: "44px",
-                  border: "none",
-                  backgroundColor: isHomePage && !isScrolled 
-                    ? "rgba(255, 255, 255, 0.2)" 
-                    : "#F7F7F7",
-                  borderRadius: "14px",
-                  cursor: "pointer",
-                  transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-                  boxShadow: isHomePage && !isScrolled 
-                    ? "0 2px 4px rgba(0, 0, 0, 0.1)" 
-                    : "0 2px 4px rgba(0, 0, 0, 0.05)",
-                  backdropFilter: isHomePage && !isScrolled ? "blur(10px)" : "none",
-                }}
-                aria-label="Toggle menu"
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = isHomePage && !isScrolled 
-                    ? "rgba(255, 255, 255, 0.3)" 
-                    : "#EBEBEB";
-                  e.currentTarget.style.transform = "scale(1.05)";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = isHomePage && !isScrolled 
-                    ? "rgba(255, 255, 255, 0.2)" 
-                    : "#F7F7F7";
-                  e.currentTarget.style.transform = "scale(1)";
-                }}
-              >
-                <Menu size={22} color={isHomePage && !isScrolled ? "#FFFFFF" : "#222222"} strokeWidth={2.5} />
-              </button>
-            </div>
-          )}
 
           {/* Left Navigation Links */}
           <div
@@ -228,6 +180,21 @@ const Navbar = ({ currentUser }) => {
               );
             })}
           </div>
+
+          {/* Language Switcher - Mobile Left (when not logged in) */}
+          {/* Language Switcher - Left Side (Desktop) - Only when not logged in */}
+          {!currentUser && (
+            <div
+              className="desktop-left-menu"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                flex: "0 0 auto",
+              }}
+            >
+              <LanguageSwitcher />
+            </div>
+          )}
 
           {/* Logo - Center */}
           {/* Mobile Logo - Left */}
@@ -457,8 +424,48 @@ const Navbar = ({ currentUser }) => {
                 : getTranslation(displayLanguage, "nav.becomeHost")}
                 </Link>
 
-                {/* Language Switcher */}
-                  <LanguageSwitcher />
+                {/* Language Switcher - Only show when logged in (desktop) */}
+            {currentUser && <LanguageSwitcher />}
+
+            {/* Menu Button - Only show when NOT logged in (desktop) */}
+            {!currentUser && (
+              <button
+                onClick={() => setIsRightMenuOpen(!isRightMenuOpen)}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  width: "44px",
+                  height: "44px",
+                  border: "none",
+                  backgroundColor: isHomePage && !isScrolled 
+                    ? "rgba(255, 255, 255, 0.2)" 
+                    : "#F7F7F7",
+                  borderRadius: "14px",
+                  cursor: "pointer",
+                  transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                  boxShadow: isHomePage && !isScrolled 
+                    ? "0 2px 4px rgba(0, 0, 0, 0.1)" 
+                    : "0 2px 4px rgba(0, 0, 0, 0.05)",
+                  backdropFilter: isHomePage && !isScrolled ? "blur(10px)" : "none",
+                }}
+                aria-label="Toggle menu"
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = isHomePage && !isScrolled 
+                    ? "rgba(255, 255, 255, 0.3)" 
+                    : "#EBEBEB";
+                  e.currentTarget.style.transform = "scale(1.05)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = isHomePage && !isScrolled 
+                    ? "rgba(255, 255, 255, 0.2)" 
+                    : "#F7F7F7";
+                  e.currentTarget.style.transform = "scale(1)";
+                }}
+              >
+                <Menu size={22} color={isHomePage && !isScrolled ? "#FFFFFF" : "#222222"} strokeWidth={2.5} />
+              </button>
+            )}
 
             {/* Notification Badge */}
             {currentUser && <NotificationBadge currentUser={currentUser} />}
@@ -478,10 +485,19 @@ const Navbar = ({ currentUser }) => {
               marginLeft: "auto",
             }}
           >
-            {/* Language Switcher - Mobile Right */}
-            <div className="mobile-language-wrapper-right">
-              <LanguageSwitcher />
-            </div>
+            {/* Language Switcher - Mobile Right (only when logged in) */}
+            {currentUser && (
+              <div className="mobile-language-wrapper-right">
+                <LanguageSwitcher />
+              </div>
+            )}
+            
+            {/* Language Switcher - Mobile Left (only when NOT logged in) */}
+            {!currentUser && (
+              <div className="mobile-language-wrapper-left">
+                <LanguageSwitcher />
+              </div>
+            )}
 
             {/* Profile/User Menu - Mobile Right */}
             {currentUser && (
@@ -1392,7 +1408,9 @@ const Navbar = ({ currentUser }) => {
           }
           
           .mobile-language-wrapper-left {
-            display: none !important;
+            display: flex !important;
+            align-items: center !important;
+            margin-right: 8px !important;
           }
           
           .mobile-nav-pills {
@@ -1476,7 +1494,9 @@ const Navbar = ({ currentUser }) => {
           }
           
           .mobile-language-wrapper-left {
-            display: none !important;
+            display: flex !important;
+            align-items: center !important;
+            margin-right: 8px !important;
           }
           
           .mobile-language-wrapper {
@@ -1563,7 +1583,9 @@ const Navbar = ({ currentUser }) => {
           }
           
           .mobile-language-wrapper-left {
-            display: none !important;
+            display: flex !important;
+            align-items: center !important;
+            margin-right: 8px !important;
           }
           .mobile-nav-pills {
             display: none !important;

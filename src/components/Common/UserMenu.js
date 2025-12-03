@@ -6,7 +6,7 @@ import { signOut } from "next-auth/react";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import ProfileImage from "./ProfileImage";
-import { LayoutDashboard, ListChecks, Plus, Heart, UserPen, Settings, Eye, LogOut } from "lucide-react";
+import { LayoutDashboard, ListChecks, Plus, Heart, UserPen, Settings, LogOut } from "lucide-react";
 import userImg from "../../../public/images/authors/author-1.jpg";
 
 const UserMenu = ({ currentUser }) => {
@@ -756,74 +756,7 @@ const UserMenu = ({ currentUser }) => {
 											)}
 										</Link>
 									</li>
-									<li>
-										<Link
-											href={`/author/${currentUser.id}`}
-											className={`user-nav-link ${
-												currentRoute === `/author/${currentUser.id}`
-													? "active"
-													: "non-active"
-												}`}
-											onClick={handleLinkClick}
-											onMouseDown={(e) => e.stopPropagation()}
-											style={{
-												display: 'flex',
-												alignItems: 'center',
-												gap: '14px',
-												padding: '12px 12px',
-												color: '#222222',
-												textDecoration: 'none',
-												fontSize: '15px',
-												fontWeight: '500',
-												borderRadius: '12px',
-												transition: 'all 0.2s ease',
-												backgroundColor: currentRoute === `/author/${currentUser.id}` ? 'rgba(255, 56, 92, 0.08)' : 'transparent',
-												margin: '4px 0',
-											}}
-											onMouseEnter={(e) => {
-												e.currentTarget.style.backgroundColor = currentRoute === `/author/${currentUser.id}` 
-													? 'rgba(255, 56, 92, 0.12)' 
-													: 'rgba(0, 0, 0, 0.04)';
-												e.currentTarget.style.transform = 'translateX(4px)';
-											}}
-											onMouseLeave={(e) => {
-												e.currentTarget.style.backgroundColor = currentRoute === `/author/${currentUser.id}` 
-													? 'rgba(255, 56, 92, 0.08)' 
-													: 'transparent';
-												e.currentTarget.style.transform = 'translateX(0)';
-											}}
-										>
-										<div style={{
-											width: '36px',
-											height: '36px',
-											borderRadius: '10px',
-											background: currentRoute === `/author/${currentUser.id}` 
-												? 'linear-gradient(135deg, #FF385C 0%, #E61E4D 100%)' 
-												: 'rgba(0, 0, 0, 0.06)',
-											display: 'flex',
-											alignItems: 'center',
-											justifyContent: 'center',
-											flexShrink: 0,
-											transition: 'all 0.2s ease',
-										}}>
-											<Eye 
-												size={18}
-												color={currentRoute === `/author/${currentUser.id}` ? '#FFFFFF' : '#717171'}
-												strokeWidth={2.5}
-											/>
-										</div>
-											<span style={{ flex: 1 }}>View My Profile</span>
-											{currentRoute === `/author/${currentUser.id}` && (
-												<div style={{
-													width: '6px',
-													height: '6px',
-													borderRadius: '50%',
-													background: 'linear-gradient(135deg, #FF385C 0%, #E61E4D 100%)',
-												}} />
-											)}
-										</Link>
-									</li>
-										
+									
 									<div style={{ 
 										height: '1px', 
 										backgroundColor: 'rgba(0, 0, 0, 0.06)', 

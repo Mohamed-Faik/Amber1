@@ -3,6 +3,7 @@ import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { formattedPrice } from "@/utils/formattedPrice";
+import { useLanguage } from "@/contexts/LanguageContext";
 import SahreAndSave from "./SahreAndSave";
 import rulerIcon from "../../../public/images/icon/ruler.svg";
 import bedIcon from "../../../public/images/icon/bed.svg";
@@ -21,6 +22,8 @@ const DetailsHead = ({
 	listingType,
 	featureType,
 }) => {
+	const { language, isDetecting } = useLanguage();
+	const displayLanguage = isDetecting ? "en" : language;
 	// Default to SALE if listingType is not provided (for backward compatibility)
 	const displayListingType = listingType || "SALE";
 	
@@ -265,7 +268,7 @@ const DetailsHead = ({
 						color: "#222222",
 					}}
 				>
-					{formattedPrice(price)}
+					{formattedPrice(price, displayLanguage)}
 					{displayListingType === "RENT" && (
 						<span
 							style={{

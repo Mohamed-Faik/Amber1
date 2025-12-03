@@ -27,7 +27,7 @@ const RightSidebar = ({ listing, user, currentUser, displayLanguage = "en" }) =>
 
 ${getTranslation(displayLanguage, "listings.propertyLabel")} ${listing.title}
 ${getTranslation(displayLanguage, "listings.location")}: ${listing.location_value}
-${getTranslation(displayLanguage, "listings.price")}: ${formattedPrice(listing.price)}
+${getTranslation(displayLanguage, "listings.price")}: ${formattedPrice(listing.price, displayLanguage)}
 ${listingUrl ? `Link: ${listingUrl}` : ""}
 
 ${getTranslation(displayLanguage, "listings.pleaseProvideInfo")}`;
@@ -153,7 +153,7 @@ ${getTranslation(displayLanguage, "listings.pleaseProvideInfo")}`;
 								marginBottom: "4px",
 							}}
 						>
-							{formattedPrice(listing.price)}
+							{formattedPrice(listing.price, displayLanguage)}
 						</div>
 					</div>
 					<HeartButton currentUser={currentUser} listingId={listing.id} />
