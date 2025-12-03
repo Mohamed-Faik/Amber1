@@ -355,56 +355,6 @@ const Featured = ({ currentUser }) => {
 										);
 									})}
 								</div>
-								<style jsx>{`
-									.premium-carousel-wrapper {
-										display: flex;
-									}
-									
-									.premium-carousel-slide {
-										min-width: 100%;
-										width: 100%;
-										flex-shrink: 0;
-									}
-									
-									@media (max-width: 1400px) {
-										.premium-carousel-slide {
-											gridTemplateColumns: repeat(4, 1fr) !important;
-										}
-									}
-									@media (max-width: 1100px) {
-										.premium-carousel-slide {
-											gridTemplateColumns: repeat(3, 1fr) !important;
-										}
-									}
-									@media (max-width: 768px) {
-										.premium-carousel-slide {
-											gridTemplateColumns: repeat(2, 1fr) !important;
-											gap: 16px !important;
-										}
-									}
-									@media (max-width: 480px) {
-										.premium-carousel-slide {
-											gridTemplateColumns: repeat(1, 1fr) !important;
-											gap: 16px !important;
-										}
-									}
-									
-									/* Smooth fade effect for items */
-									.premium-carousel-slide > * {
-										animation: fadeInSlide 0.6s ease-out;
-									}
-									
-									@keyframes fadeInSlide {
-										from {
-											opacity: 0;
-											transform: translateY(20px);
-										}
-										to {
-											opacity: 1;
-											transform: translateY(0);
-										}
-									}
-								`}</style>
 								{/* Slide Indicators */}
 								{totalSlides > 1 && (
 									<div
@@ -573,6 +523,54 @@ const Featured = ({ currentUser }) => {
 					50% {
 						opacity: 0.5;
 						transform: scale(0.8);
+					}
+				}
+				
+				@keyframes fadeInSlide {
+					from {
+						opacity: 0;
+						transform: translateY(20px);
+					}
+					to {
+						opacity: 1;
+						transform: translateY(0);
+					}
+				}
+				
+				.premium-carousel-wrapper {
+					display: flex;
+				}
+				
+				.premium-carousel-slide {
+					min-width: 100%;
+					width: 100%;
+					flex-shrink: 0;
+				}
+				
+				.premium-carousel-slide > * {
+					animation: fadeInSlide 0.6s ease-out;
+				}
+				
+				@media (max-width: 1400px) {
+					.premium-carousel-slide {
+						grid-template-columns: repeat(4, 1fr) !important;
+					}
+				}
+				@media (max-width: 1100px) {
+					.premium-carousel-slide {
+						grid-template-columns: repeat(3, 1fr) !important;
+					}
+				}
+				@media (max-width: 768px) {
+					.premium-carousel-slide {
+						grid-template-columns: repeat(2, 1fr) !important;
+						gap: 16px !important;
+					}
+				}
+				@media (max-width: 480px) {
+					.premium-carousel-slide {
+						grid-template-columns: repeat(1, 1fr) !important;
+						gap: 16px !important;
 					}
 				}
 				
