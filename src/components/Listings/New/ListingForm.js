@@ -149,14 +149,6 @@ const ListingForm = ({ initialData = null, featureType = null }) => {
 		};
 	}, [initialData]);
 
-	const setCustomValue = useCallback((id, value) => {
-		setValue(id, value, {
-			shouldDirty: true,
-			shouldTouch: true,
-			shouldValidate: true,
-		});
-	}, [setValue]);
-
 	const {
 		register,
 		handleSubmit,
@@ -169,6 +161,14 @@ const ListingForm = ({ initialData = null, featureType = null }) => {
 	} = useForm({
 		defaultValues,
 	});
+
+	const setCustomValue = (id, value) => {
+		setValue(id, value, {
+			shouldDirty: true,
+			shouldTouch: true,
+			shouldValidate: true,
+		});
+	};
 
 	useEffect(() => {
 		reset(defaultValues);

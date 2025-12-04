@@ -10,18 +10,20 @@ import { MantineProvider } from "@mantine/core";
 export default function ConditionalLayout({ currentUser, children }) {
   const pathname = usePathname();
 
-  // Hide header and footer on auth pages and admin login
+  // Hide header and footer on auth pages, admin login, and add listing page
   const isAuthPage = pathname?.startsWith("/auth") || pathname?.startsWith("/admin/login");
+  const isAddListingPage = pathname === "/listings/new";
+  const shouldHideHeaderFooter = isAuthPage || isAddListingPage;
 
   return (
     <MantineProvider withGlobalStyles withNormalizeCSS theme={{ colorScheme: 'light' }}>
       <LanguageProvider>
-        {!isAuthPage && <Navbar currentUser={currentUser} />}
+        {!shouldHideHeaderFooter && <Navbar currentUser={currentUser} />}
         <main role="main">
           {children}
         </main>
-        {!isAuthPage && <Footer key="main-footer" />}
-        {!isAuthPage && <CookieConsent />}
+        {!shouldHideHeaderFooter && <Footer key="main-footer" />}
+        {!shouldHideHeaderFooter && <CookieConsent />}
       </LanguageProvider>
     </MantineProvider>
   );

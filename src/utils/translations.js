@@ -4,7 +4,8 @@ const enTranslations = {
     homes: "Homes",
     experiences: "Experiences",
     addListing: "Add a listing",
-    becomeHost: "Become a Host"
+    becomeHost: "Become a Host",
+    quickSubmission: "Quick submission"
   },
   common: {
     search: "Search",
@@ -155,6 +156,40 @@ const enTranslations = {
     favorites: "Favorites",
     addListing: "Add Listing",
     createListing: "Create a New Listing",
+    // Multi-step form
+    step1Title: "Information about your property",
+    step2Title: "Price of the property",
+    step3Title: "Photos and documents",
+    // Step 1 - Location
+    whereIsPropertyLocated: "First of all, where is your property located?",
+    addressOfProperty: "Address of your property",
+    addressPlaceholder: "Address of your property*",
+    // Step 1 - Property Type
+    whatTypeToSell: "What type of property do you wish to sell?",
+    apartment: "Apartment",
+    villa: "Villa",
+    landForVilla: "Land for villa",
+    commercialProperty: "Commercial property",
+    riad: "Riad",
+    // Step 1 - General Characteristics
+    generalCharacteristics: "General characteristics of your property",
+    generalCharacteristicsSubtitle: "Enter the general characteristics of your property",
+    totalSurface: "Total property surface",
+    numberOfFloors: "Number of floors",
+    propertyFloor: "Floor of the property",
+    numberOfBedrooms: "Number of bedrooms",
+    numberOfBathrooms: "Number of bathrooms",
+    gatedCommunity: "Gated community",
+    elevator: "Elevator",
+    securitySystem: "Security system",
+    // Step 1 - Interior Equipment
+    interiorEquipment: "Interior equipment",
+    interiorEquipmentSubtitle: "Choose the interior equipment that completes your property",
+    heating: "Heating",
+    airConditioning: "Air conditioning",
+    equippedKitchen: "Equipped kitchen",
+    skipStep: "Skip this step",
+    suivant: "Next",
     findYourPerfectHome: "Find Your Perfect Home",
     searchAndExploreProperties: "Search & explore properties",
     availableHomes: "Available Homes",
@@ -439,7 +474,8 @@ const frTranslations = {
     homes: "Maisons",
     experiences: "Expériences",
     addListing: "Ajouter une annonce",
-    becomeHost: "Devenir hôte"
+    becomeHost: "Devenir hôte",
+    quickSubmission: "Soumission rapide"
   },
   common: {
     search: "Rechercher",
@@ -884,7 +920,8 @@ const nlTranslations = {
     homes: "Huizen",
     experiences: "Ervaringen",
     addListing: "Advertentie toevoegen",
-    becomeHost: "Word gastheer"
+    becomeHost: "Word gastheer",
+    quickSubmission: "Snelle indiening"
   },
   common: {
     search: "Zoeken",
@@ -1035,6 +1072,45 @@ const nlTranslations = {
     favorites: "Favorieten",
     addListing: "Advertentie toevoegen",
     createListing: "Nieuwe advertentie maken",
+    // Multi-step form
+    step1Title: "Informatie over uw eigendom",
+    step2Title: "Prijs van het eigendom",
+    step3Title: "Foto's en documenten",
+    // Step 1 - Location
+    whereIsPropertyLocated: "Allereerst, waar bevindt uw eigendom zich?",
+    addressOfProperty: "Adres van uw eigendom",
+    addressPlaceholder: "Adres van uw eigendom*",
+    // Step 1 - Property Type
+    whatTypeToSell: "Welk type eigendom wilt u verkopen?",
+    apartment: "Appartement",
+    villa: "Villa",
+    landForVilla: "Grond voor villa",
+    commercialProperty: "Commercieel onroerend goed",
+    riad: "Riad",
+    apartment: "Appartement",
+    villa: "Villa",
+    landForVilla: "Grond voor villa",
+    commercialProperty: "Commercieel onroerend goed",
+    riad: "Riad",
+    // Step 1 - General Characteristics
+    generalCharacteristics: "Algemene kenmerken van uw eigendom",
+    generalCharacteristicsSubtitle: "Vul de algemene kenmerken van uw eigendom in",
+    totalSurface: "Totale oppervlakte van het eigendom",
+    numberOfFloors: "Aantal verdiepingen",
+    propertyFloor: "Verdieping van het eigendom",
+    numberOfBedrooms: "Aantal slaapkamers",
+    numberOfBathrooms: "Aantal badkamers",
+    gatedCommunity: "Afgesloten gemeenschap",
+    elevator: "Lift",
+    securitySystem: "Beveiligingssysteem",
+    // Step 1 - Interior Equipment
+    interiorEquipment: "Interieur uitrusting",
+    interiorEquipmentSubtitle: "Kies de interieur uitrusting die uw eigendom compleet maakt",
+    heating: "Verwarming",
+    airConditioning: "Airconditioning",
+    equippedKitchen: "Uitgeruste keuken",
+    skipStep: "Deze stap overslaan",
+    suivant: "Volgende",
     findYourPerfectHome: "Vind uw perfecte huis",
     searchAndExploreProperties: "Zoek en verken eigendommen",
     availableHomes: "Beschikbare woningen",

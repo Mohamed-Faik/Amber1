@@ -1,0 +1,9 @@
+/* Canela Font Face Declaration */
+@font-face {
+  font-family: 'Canela';
+  src: url('/fonts/canela-light.otf') format('opentype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+

@@ -3,6 +3,7 @@ import "./styles/flaticon.css";
 import "./styles/remixicon.css";
 import "./styles/dark-mode.css";
 import "./styles/cereal-font.css";
+import "./styles/canela-font.css";
 import "swiper/css";
 import "swiper/css/pagination";
 import "react-accessible-accordion/dist/fancy-example.css";
@@ -96,6 +97,14 @@ const cereal = localFont({
   weight: "400",
 });
 
+// Canela font from local file
+const canela = localFont({
+  src: "../../public/fonts/canela-light.otf",
+  variable: "--font-canela",
+  display: "swap",
+  weight: "300",
+});
+
 // Brush-style font for hero text
 const dancingScript = Dancing_Script({
   weight: ["400", "500", "600", "700"],
@@ -116,7 +125,7 @@ export default async function RootLayout({ children }) {
   const currentUser = await getCurrentUser();
 
   return (
-    <html lang="en" className={`${cereal.variable} ${dancingScript.variable} ${satisfy.variable}`}>
+    <html lang="en" className={`${cereal.variable} ${dancingScript.variable} ${satisfy.variable} ${canela.variable}`}>
       <body suppressHydrationWarning={true}>
         <SessionProvider>
           <TosterProvider />

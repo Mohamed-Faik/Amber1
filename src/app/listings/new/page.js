@@ -1,6 +1,7 @@
 import React, { Suspense } from "react";
 import { redirect } from "next/navigation";
-import ListingForm from "@/components/Listings/New/ListingForm";
+import MultiStepListingForm from "@/components/Listings/New/MultiStepListingForm";
+import ListingHeader from "@/components/Listings/New/ListingHeader";
 import { getCurrentUser } from "@/actions/getCurrentUser";
 
 const page = async () => {
@@ -17,29 +18,7 @@ const page = async () => {
 			position: "relative",
 			overflow: "hidden",
 		}}>
-			{/* Decorative Background Elements */}
-			<div style={{
-				position: "absolute",
-				top: "-200px",
-				right: "-200px",
-				width: "600px",
-				height: "600px",
-				borderRadius: "50%",
-				background: "linear-gradient(135deg, rgba(255, 56, 92, 0.05) 0%, rgba(230, 30, 77, 0.08) 100%)",
-				zIndex: 0,
-			}} />
-			<div style={{
-				position: "absolute",
-				bottom: "-250px",
-				left: "-250px",
-				width: "700px",
-				height: "700px",
-				borderRadius: "50%",
-				background: "linear-gradient(135deg, rgba(215, 4, 102, 0.05) 0%, rgba(255, 56, 92, 0.08) 100%)",
-				zIndex: 0,
-			}} />
-			
-			<div style={{ height: "80px" }} />
+			<ListingHeader />
 			<Suspense fallback={
 				<div style={{ 
 					padding: "64px 32px", 
@@ -65,7 +44,7 @@ const page = async () => {
 				</div>
 			}>
 				<div style={{ position: "relative", zIndex: 1 }}>
-					<ListingForm currentUser={currentUser} />
+					<MultiStepListingForm currentUser={currentUser} />
 				</div>
 			</Suspense>
 		</div>
