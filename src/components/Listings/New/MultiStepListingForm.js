@@ -5,6 +5,9 @@ import Step1Location from "./Step1Location";
 import Step1PropertyType from "./Step1PropertyType";
 import Step1GeneralCharacteristics from "./Step1GeneralCharacteristics";
 import Step1InteriorEquipment from "./Step1InteriorEquipment";
+import Step1InteriorAnnex from "./Step1InteriorAnnex";
+import Step1ExteriorAnnex from "./Step1ExteriorAnnex";
+import Step1PropertyState from "./Step1PropertyState";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { getTranslation } from "@/utils/translations";
 
@@ -28,6 +31,14 @@ const MultiStepListingForm = ({ currentUser }) => {
 		heating: false,
 		airConditioning: false,
 		equippedKitchen: false,
+		balcony: false,
+		terrace: false,
+		privateGarden: false,
+		swimmingPool: false,
+		greenSpaces: false,
+		garageBox: false,
+		parkingSpaces: false,
+		propertyAge: "",
 	});
 
 	const steps = [
@@ -49,6 +60,15 @@ const MultiStepListingForm = ({ currentUser }) => {
 				// Move from general characteristics to interior equipment
 				setSubStep(4);
 			} else if (subStep === 4) {
+				// Move from interior equipment to interior annex
+				setSubStep(5);
+			} else if (subStep === 5) {
+				// Move from interior annex to exterior annex
+				setSubStep(6);
+			} else if (subStep === 6) {
+				// Move from exterior annex to property state
+				setSubStep(7);
+			} else if (subStep === 7) {
 				// Move to actual step 2 (Price)
 				setCurrentStep(2);
 				setSubStep(1);
@@ -61,7 +81,13 @@ const MultiStepListingForm = ({ currentUser }) => {
 	const handleBack = () => {
 		// If we're in step 1, handle sub-steps
 		if (currentStep === 1) {
-			if (subStep === 4) {
+			if (subStep === 7) {
+				setSubStep(6);
+			} else if (subStep === 6) {
+				setSubStep(5);
+			} else if (subStep === 5) {
+				setSubStep(4);
+			} else if (subStep === 4) {
 				setSubStep(3);
 			} else if (subStep === 3) {
 				setSubStep(2);
@@ -75,10 +101,18 @@ const MultiStepListingForm = ({ currentUser }) => {
 
 	const handleSkip = () => {
 		// Skip the current sub-step and move to next
-		if (currentStep === 1 && subStep === 4) {
-			// Skip interior equipment and move to step 2
-			setCurrentStep(2);
-			setSubStep(1);
+		if (currentStep === 1) {
+			if (subStep === 4) {
+				// Skip interior equipment and move to interior annex
+				setSubStep(5);
+			} else if (subStep === 5) {
+				// Skip interior annex and move to exterior annex
+				setSubStep(6);
+			} else if (subStep === 6) {
+				// Skip exterior annex and move to property state
+				setSubStep(7);
+			}
+			// Note: subStep 7 (property state) cannot be skipped - it's required
 		}
 	};
 
@@ -95,6 +129,7 @@ const MultiStepListingForm = ({ currentUser }) => {
 						updateFormData={updateFormData}
 						onNext={handleNext}
 						showMap={false}
+						currentSubStep={subStep}
 					/>
 				);
 			} else if (subStep === 2) {
@@ -104,6 +139,7 @@ const MultiStepListingForm = ({ currentUser }) => {
 						updateFormData={updateFormData}
 						onNext={handleNext}
 						onBack={handleBack}
+						currentSubStep={subStep}
 					/>
 				);
 			} else if (subStep === 3) {
@@ -113,6 +149,7 @@ const MultiStepListingForm = ({ currentUser }) => {
 						updateFormData={updateFormData}
 						onNext={handleNext}
 						onBack={handleBack}
+						currentSubStep={subStep}
 					/>
 				);
 			} else if (subStep === 4) {
@@ -123,11 +160,44 @@ const MultiStepListingForm = ({ currentUser }) => {
 						onNext={handleNext}
 						onBack={handleBack}
 						onSkip={handleSkip}
+						currentSubStep={subStep}
+					/>
+				);
+			} else if (subStep === 5) {
+				return (
+					<Step1InteriorAnnex
+						formData={formData}
+						updateFormData={updateFormData}
+						onNext={handleNext}
+						onBack={handleBack}
+						onSkip={handleSkip}
+						currentSubStep={subStep}
+					/>
+				);
+			} else if (subStep === 6) {
+				return (
+					<Step1ExteriorAnnex
+						formData={formData}
+						updateFormData={updateFormData}
+						onNext={handleNext}
+						onBack={handleBack}
+						onSkip={handleSkip}
+						currentSubStep={subStep}
+					/>
+				);
+			} else if (subStep === 7) {
+				return (
+					<Step1PropertyState
+						formData={formData}
+						updateFormData={updateFormData}
+						onNext={handleNext}
+						onBack={handleBack}
+						currentSubStep={subStep}
 					/>
 				);
 			}
 		}
-		
+
 		switch (currentStep) {
 			case 2:
 				return <div>Step 2 - Price (Coming soon)</div>;
@@ -201,7 +271,10 @@ const MultiStepListingForm = ({ currentUser }) => {
 				}
 				@media (max-width: 1024px) {
 					.right-column.hidden-mobile {
-						display: none;
+						display: block; /* Show map on mobile/tablet */
+						width: 100%;
+						height: 400px; /* Fixed height for map on mobile */
+						min-height: 400px;
 					}
 					.left-column.wider {
 						flex: 0 0 100%;
@@ -428,69 +501,48 @@ const MultiStepListingForm = ({ currentUser }) => {
 			`}</style>
 			{/* Left Column - Progress Bar + Form */}
 			<div className="left-column wider">
-				{/* Progress Indicator */}
+				{/* Progress Indicator - Yakee Style */}
 				<div className="progress-container">
 					<div className="progress-wrapper">
-						<div className="progress-steps">
-							{steps.map((step, index) => (
-								<React.Fragment key={step.number}>
-									<div className="progress-step">
-										<div className="progress-step-top">
-											<div
-												className="progress-step-circle"
-												style={{
-													backgroundColor:
-														currentStep >= step.number
-															? "#FF385C"
-															: "#E0E0E0",
-													color:
-														currentStep >= step.number
-															? "#FFFFFF"
-															: "#717171",
-												}}
-											>
-												{currentStep > step.number && (
-													<svg
-														viewBox="0 0 20 20"
-														fill="none"
-														xmlns="http://www.w3.org/2000/svg"
-													>
-														<path
-															d="M16.6667 5L7.50004 14.1667L3.33337 10"
-															stroke="currentColor"
-															strokeWidth="2"
-															strokeLinecap="round"
-															strokeLinejoin="round"
-														/>
-													</svg>
-												)}
-											</div>
-											{index < steps.length - 1 && (
-												<div
-													className="progress-connector"
-													style={{
-														backgroundColor:
-															currentStep > step.number
-																? "#FF385C"
-																: "#E0E0E0",
-													}}
-												/>
-											)}
-										</div>
+						<div className="progress-steps" style={{ position: "relative", justifyContent: "space-between", maxWidth: "600px", margin: "0 auto" }}>
+							{/* Background Line */}
+							<div style={{ position: "absolute", top: "12px", left: "0", right: "0", height: "2px", backgroundColor: "#E0E0E0", zIndex: 0 }}></div>
+
+							{steps.map((step, index) => {
+								const isActive = currentStep >= step.number;
+								const isCurrent = currentStep === step.number;
+								return (
+									<div key={step.number} className="progress-step" style={{ position: "relative", zIndex: 1, display: "flex", flexDirection: "column", alignItems: "center", flex: 1 }}>
+										<div
+											className="progress-step-circle"
+											style={{
+												width: "24px",
+												height: "24px",
+												borderRadius: "50%",
+												backgroundColor: isActive ? "#FF385C" : "#E0E0E0",
+												border: "4px solid white",
+												boxShadow: isActive ? "0 0 0 2px #FF385C" : "none",
+												marginBottom: "12px",
+												transition: "all 0.3s ease",
+												display: "flex",
+												alignItems: "center",
+												justifyContent: "center"
+											}}
+										/>
 										<span
 											className="progress-step-title"
 											style={{
-												color:
-													currentStep >= step.number
-														? "#222222"
-														: "#717171",
+												fontSize: "14px",
+												color: isActive ? "#222222" : "#717171",
+												fontWeight: isActive ? "600" : "400",
+												textAlign: "center"
 											}}
 										>
 											{step.title}
 										</span>
 									</div>
-								</React.Fragment>
-							))}
+								);
+							})}
 						</div>
 					</div>
 				</div>
@@ -519,4 +571,3 @@ const MultiStepListingForm = ({ currentUser }) => {
 };
 
 export default MultiStepListingForm;
-

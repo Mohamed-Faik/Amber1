@@ -5,12 +5,11 @@ import { ChevronLeft } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { getTranslation } from "@/utils/translations";
 
-const Step1InteriorEquipment = ({ formData, updateFormData, onNext, onBack, onSkip, currentSubStep = 4 }) => {
+const Step1InteriorAnnex = ({ formData, updateFormData, onNext, onBack, onSkip, currentSubStep = 5 }) => {
 	const { language, isDetecting } = useLanguage();
 	const displayLanguage = isDetecting ? "en" : language;
-	const [heating, setHeating] = useState(formData.heating || false);
-	const [airConditioning, setAirConditioning] = useState(formData.airConditioning || false);
-	const [equippedKitchen, setEquippedKitchen] = useState(formData.equippedKitchen || false);
+	const [balcony, setBalcony] = useState(formData.balcony || false);
+	const [terrace, setTerrace] = useState(formData.terrace || false);
 	const totalSteps = 7;
 	const progressPercentage = (currentSubStep / totalSteps) * 100;
 
@@ -21,9 +20,8 @@ const Step1InteriorEquipment = ({ formData, updateFormData, onNext, onBack, onSk
 
 	const handleNextClick = () => {
 		updateFormData({
-			heating,
-			airConditioning,
-			equippedKitchen,
+			balcony,
+			terrace,
 		});
 		onNext();
 	};
@@ -31,7 +29,7 @@ const Step1InteriorEquipment = ({ formData, updateFormData, onNext, onBack, onSk
 	return (
 		<>
 			<style jsx>{`
-				.step1-equipment-container {
+				.step1-annex-container {
 					display: flex;
 					flex-direction: column;
 					height: 100%;
@@ -149,13 +147,13 @@ const Step1InteriorEquipment = ({ formData, updateFormData, onNext, onBack, onSk
 					gap: 16px;
 				}
 				@media (max-width: 767px) {
-					.step1-equipment-container {
+					.step1-annex-container {
 						padding-top: 32px;
 						padding-bottom: 32px;
 					}
 				}
 			`}</style>
-			<div className="step1-equipment-container">
+			<div className="step1-annex-container">
 				<div className="content-wrapper">
 					<h1
 						style={{
@@ -168,7 +166,7 @@ const Step1InteriorEquipment = ({ formData, updateFormData, onNext, onBack, onSk
 							lineHeight: "1.2",
 						}}
 					>
-						{getTranslation(displayLanguage, "listings.interiorEquipment")}
+						{getTranslation(displayLanguage, "listings.interiorAnnex")}
 					</h1>
 					<p
 						style={{
@@ -178,17 +176,17 @@ const Step1InteriorEquipment = ({ formData, updateFormData, onNext, onBack, onSk
 							lineHeight: "1.5",
 						}}
 					>
-						{getTranslation(displayLanguage, "listings.interiorEquipmentSubtitle")}
+						{getTranslation(displayLanguage, "listings.interiorAnnexSubtitle")}
 					</p>
 
 					{/* Checkboxes */}
 					<div className="checkbox-container">
 						<div className="checkbox-field">
 							<div
-								className={`checkbox-input ${heating ? "checked" : ""}`}
-								onClick={() => handleCheckboxChange("heating", !heating, setHeating)}
+								className={`checkbox-input ${balcony ? "checked" : ""}`}
+								onClick={() => handleCheckboxChange("balcony", !balcony, setBalcony)}
 							>
-								{heating && (
+								{balcony && (
 									<svg width="14" height="14" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
 										<path d="M16.6667 5L7.50004 14.1667L3.33337 10" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
 									</svg>
@@ -196,18 +194,18 @@ const Step1InteriorEquipment = ({ formData, updateFormData, onNext, onBack, onSk
 							</div>
 							<label
 								className="checkbox-label"
-								onClick={() => handleCheckboxChange("heating", !heating, setHeating)}
+								onClick={() => handleCheckboxChange("balcony", !balcony, setBalcony)}
 							>
-								{getTranslation(displayLanguage, "listings.heating")}
+								{getTranslation(displayLanguage, "listings.balcony")}
 							</label>
 						</div>
 
 						<div className="checkbox-field">
 							<div
-								className={`checkbox-input ${airConditioning ? "checked" : ""}`}
-								onClick={() => handleCheckboxChange("airConditioning", !airConditioning, setAirConditioning)}
+								className={`checkbox-input ${terrace ? "checked" : ""}`}
+								onClick={() => handleCheckboxChange("terrace", !terrace, setTerrace)}
 							>
-								{airConditioning && (
+								{terrace && (
 									<svg width="14" height="14" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
 										<path d="M16.6667 5L7.50004 14.1667L3.33337 10" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
 									</svg>
@@ -215,28 +213,9 @@ const Step1InteriorEquipment = ({ formData, updateFormData, onNext, onBack, onSk
 							</div>
 							<label
 								className="checkbox-label"
-								onClick={() => handleCheckboxChange("airConditioning", !airConditioning, setAirConditioning)}
+								onClick={() => handleCheckboxChange("terrace", !terrace, setTerrace)}
 							>
-								{getTranslation(displayLanguage, "listings.airConditioning")}
-							</label>
-						</div>
-
-						<div className="checkbox-field">
-							<div
-								className={`checkbox-input ${equippedKitchen ? "checked" : ""}`}
-								onClick={() => handleCheckboxChange("equippedKitchen", !equippedKitchen, setEquippedKitchen)}
-							>
-								{equippedKitchen && (
-									<svg width="14" height="14" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-										<path d="M16.6667 5L7.50004 14.1667L3.33337 10" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-									</svg>
-								)}
-							</div>
-							<label
-								className="checkbox-label"
-								onClick={() => handleCheckboxChange("equippedKitchen", !equippedKitchen, setEquippedKitchen)}
-							>
-								{getTranslation(displayLanguage, "listings.equippedKitchen")}
+								{getTranslation(displayLanguage, "listings.terrace")}
 							</label>
 						</div>
 					</div>
@@ -343,5 +322,4 @@ const Step1InteriorEquipment = ({ formData, updateFormData, onNext, onBack, onSk
 	);
 };
 
-export default Step1InteriorEquipment;
-
+export default Step1InteriorAnnex;

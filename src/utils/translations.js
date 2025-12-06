@@ -157,9 +157,9 @@ const enTranslations = {
     addListing: "Add Listing",
     createListing: "Create a New Listing",
     // Multi-step form
-    step1Title: "Information about your property",
+    step1Title: "Informations",
     step2Title: "Price of the property",
-    step3Title: "Photos and documents",
+    step3Title: "Photos",
     // Step 1 - Location
     whereIsPropertyLocated: "First of all, where is your property located?",
     addressOfProperty: "Address of your property",
@@ -188,6 +188,34 @@ const enTranslations = {
     heating: "Heating",
     airConditioning: "Air conditioning",
     equippedKitchen: "Equipped kitchen",
+    // Step 1 - Interior Annex
+    interiorAnnex: "Interior annex spaces",
+    interiorAnnexSubtitle: "Choose the interior annex spaces that complete your property",
+    balcony: "Balcony",
+    terrace: "Terrace",
+    garden: "Garden",
+    garage: "Garage",
+    parking: "Parking",
+    // Step 1 - Exterior Annex
+    exteriorAnnex: "Exterior annex spaces",
+    exteriorAnnexSubtitle: "Choose the exterior annex spaces that complete your property",
+    privateGarden: "Private garden",
+    swimmingPool: "Swimming pool",
+    greenSpaces: "Green spaces",
+    garageBox: "Box",
+    parkingSpaces: "Parking spaces",
+    // Step 1 - Property State
+    propertyState: "State of the property",
+    propertyStateSubtitle: "Enter the age of your property and its current condition.",
+    propertyAge: "Age of the property",
+    propertyAgeNew: "New",
+    propertyAge1to5: "1-5 years",
+    propertyAge6to10: "6-10 years",
+    propertyAge11to15: "11-15 years",
+    propertyAge16to20: "16-20 years",
+    propertyAge21to25: "21-25 years",
+    propertyAge26to30: "26-30 years",
+    propertyAge31Plus: "31+",
     skipStep: "Skip this step",
     suivant: "Next",
     findYourPerfectHome: "Find Your Perfect Home",
@@ -626,6 +654,10 @@ const frTranslations = {
     favorites: "Favoris",
     addListing: "Ajouter une annonce",
     createListing: "Créer une nouvelle annonce",
+    // Multi-step form
+    step1Title: "Informations",
+    step2Title: "Prix de la propriété",
+    step3Title: "Photos",
     findYourPerfectHome: "Trouvez votre maison parfaite",
     searchAndExploreProperties: "Rechercher et explorer les propriétés",
     availableHomes: "Maisons disponibles",
@@ -729,6 +761,36 @@ const frTranslations = {
     groupSizePlaceholder: "ex: 10",
     serviceDuration: "Durée du service",
     serviceDurationPlaceholder: "ex: 2 heures, En cours",
+    // Step 1 - Interior Annex
+    interiorAnnex: "Espaces annexes intérieurs",
+    interiorAnnexSubtitle: "Choisissez les espaces annexes intérieurs qui complètent votre bien",
+    balcony: "Balcon",
+    terrace: "Terrasse",
+    garden: "Jardin",
+    garage: "Garage",
+    parking: "Parking",
+    // Step 1 - Exterior Annex
+    exteriorAnnex: "Espaces annexes extérieurs",
+    exteriorAnnexSubtitle: "Choisissez les espaces annexes extérieurs qui complètent votre bien",
+    privateGarden: "Jardin privatif",
+    swimmingPool: "Piscine",
+    greenSpaces: "Espaces verts",
+    garageBox: "Box",
+    parkingSpaces: "Places de parking",
+    // Step 1 - Property State
+    propertyState: "Etat du bien",
+    propertyStateSubtitle: "Renseignez l'âge de votre bien et son état actuel.",
+    propertyAge: "Âge du bien",
+    propertyAgeNew: "Neuf",
+    propertyAge1to5: "1-5 ans",
+    propertyAge6to10: "6-10 ans",
+    propertyAge11to15: "11-15 ans",
+    propertyAge16to20: "16-20 ans",
+    propertyAge21to25: "21-25 ans",
+    propertyAge26to30: "26-30 ans",
+    propertyAge31Plus: "31+",
+    skipStep: "Passer cette étape",
+    suivant: "Suivant",
     availability: "Disponibilité",
     availabilityPlaceholder: "ex: Quotidien, Hebdomadaire, Sur demande",
     serviceAreaCoverage: "Couverture de la zone de service",
@@ -1404,7 +1466,7 @@ const translations = {
 export const getTranslation = (language, key, params = {}) => {
   const keys = key.split(".");
   let value = translations[language] || translations.en;
-  
+
   for (const k of keys) {
     value = value?.[k];
     if (value === undefined) {
@@ -1416,16 +1478,16 @@ export const getTranslation = (language, key, params = {}) => {
       break;
     }
   }
-  
+
   let result = value || key;
-  
+
   // Replace placeholders like {count}, {name}, etc.
   if (typeof result === 'string' && params) {
     Object.keys(params).forEach(paramKey => {
       result = result.replace(new RegExp(`\\{${paramKey}\\}`, 'g'), params[paramKey]);
     });
   }
-  
+
   return result;
 };
 

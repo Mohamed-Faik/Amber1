@@ -1,184 +1,142 @@
 "use client";
 
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useMemo } from "react";
+import { MapContainer, TileLayer, Marker, Popup, useMap, useMapEvents } from "react-leaflet";
+import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import { MapContainer, TileLayer, Marker, useMapEvents, useMap } from "react-leaflet";
 
-let L;
-if (typeof window !== "undefined") {
-	L = require("leaflet");
-	
-	// Fix for default marker icons
-	try {
-		delete L.Icon.Default.prototype._getIconUrl;
-		const markerIcon = require("leaflet/dist/images/marker-icon.png");
-		const markerIcon2x = require("leaflet/dist/images/marker-icon-2x.png");
-		const markerShadow = require("leaflet/dist/images/marker-shadow.png");
-		
-		L.Icon.Default.mergeOptions({
-			iconUrl: markerIcon.default || markerIcon,
-			iconRetinaUrl: markerIcon2x.default || markerIcon2x,
-			shadowUrl: markerShadow.default || markerShadow,
-		});
-	} catch (e) {
-		// Icon setup failed, will use custom marker instead
-	}
-}
+// Fix for default marker icon
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+	iconRetinaUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png",
+	iconUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
+	shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
+});
+
+// Component to update map center when coordinates change
+const MapUpdater = ({ center }) => {
+	const map = useMap();
+	useEffect(() => {
+		if (center) {
+			map.flyTo(center, 13, {
+				animate: true,
+				duration: 1.5
+			});
+		}
+	}, [center, map]);
+	return null;
+};
 
 // Component to handle map clicks
-function MapClickHandler({ onMapClick }) {
+const MapClickHandler = ({ onMapClick }) => {
 	useMapEvents({
 		click: (e) => {
-			onMapClick({ lat: e.latlng.lat, lng: e.latlng.lng });
+			if (onMapClick) {
+				onMapClick({ lat: e.latlng.lat, lng: e.latlng.lng });
+			}
 		},
 	});
 	return null;
-}
+};
 
-// Component to update map view when marker position changes
-function ChangeMapView({ center, zoom }) {
-	const map = useMap();
-	const prevCenterRef = useRef(null);
-	
-	useEffect(() => {
-		if (center && Array.isArray(center) && center.length === 2) {
-			const [lat, lng] = center;
-			if (typeof lat === 'number' && typeof lng === 'number' && !isNaN(lat) && !isNaN(lng)) {
-				// Check if center actually changed
-				const currentCenter = `${lat}-${lng}`;
-				if (prevCenterRef.current !== currentCenter) {
-					prevCenterRef.current = currentCenter;
-					map.setView([lat, lng], zoom || 13, {
-						animate: true,
-						duration: 0.8
-					});
+// Draggable Marker Component
+const DraggableMarker = ({ position, onDragEnd }) => {
+	const markerRef = React.useRef(null);
+
+	const eventHandlers = useMemo(
+		() => ({
+			dragend() {
+				const marker = markerRef.current;
+				if (marker != null) {
+					const newPos = marker.getLatLng();
+					if (onDragEnd) {
+						onDragEnd({ lat: newPos.lat, lng: newPos.lng });
+					}
 				}
-			}
-		}
-	}, [center?.[0], center?.[1], zoom, map]);
-	return null;
-}
-
-// Component to handle marker drag
-function DraggableMarker({ position, onDragEnd }) {
-	const [markerPosition, setMarkerPosition] = useState([position.lat, position.lng]);
-
-	useEffect(() => {
-		setMarkerPosition([position.lat, position.lng]);
-	}, [position]);
-
-	const createGreenMarkerIcon = () => {
-		if (!L) return null;
-		
-		return L.divIcon({
-			className: "custom-marker",
-			html: `
-				<div style="
-					width: 40px;
-					height: 40px;
-					background-color: #FF385C;
-					border-radius: 50%;
-					border: 3px solid #FFFFFF;
-					box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-					display: flex;
-					align-items: center;
-					justify-content: center;
-					color: #FFFFFF;
-					font-weight: 600;
-					font-size: 18px;
-					cursor: move;
-				">K</div>
-			`,
-			iconSize: [40, 40],
-			iconAnchor: [20, 40],
-		});
-	};
+			},
+		}),
+		[onDragEnd]
+	);
 
 	return (
 		<Marker
-			position={markerPosition}
 			draggable={true}
-			icon={createGreenMarkerIcon()}
-			eventHandlers={{
-				dragend: (e) => {
-					const newPosition = e.target.getLatLng();
-					onDragEnd({ lat: newPosition.lat, lng: newPosition.lng });
-				},
-			}}
-		/>
+			eventHandlers={eventHandlers}
+			position={position}
+			ref={markerRef}
+		>
+			<Popup>Selected Location</Popup>
+		</Marker>
 	);
-}
+};
 
 const LocationMap = ({ markerPosition, onMarkerDragEnd, onMapClick }) => {
-	const [isClient, setIsClient] = useState(false);
-
-	useEffect(() => {
-		setIsClient(true);
-	}, []);
-
-	if (!isClient || typeof window === "undefined") {
-		return (
-			<div
-				style={{
-					height: "100%",
-					display: "flex",
-					alignItems: "center",
-					justifyContent: "center",
-					color: "#717171",
-				}}
-			>
-				Loading map...
-			</div>
-		);
-	}
-
-	const mapCenter = [markerPosition.lat, markerPosition.lng];
+	// Default to Marrakech if no position provided
+	const defaultCenter = [31.6295, -7.9811];
+	const center = markerPosition ? [markerPosition.lat, markerPosition.lng] : defaultCenter;
 
 	return (
-		<div style={{ position: "relative", height: "100%", width: "100%" }}>
+		<div style={{ height: "100%", width: "100%", position: "relative" }}>
 			<MapContainer
-				center={mapCenter}
+				center={center}
 				zoom={13}
-				style={{ height: "100%", width: "100%", zIndex: 1 }}
 				scrollWheelZoom={true}
+				style={{ height: "100%", width: "100%" }}
 			>
 				<TileLayer
-					url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
 					attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+					url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
 				/>
-				<ChangeMapView center={mapCenter} zoom={13} />
-				<MapClickHandler onMapClick={onMapClick} />
 				<DraggableMarker
-					position={markerPosition}
+					position={center}
 					onDragEnd={onMarkerDragEnd}
 				/>
+				<MapUpdater center={center} />
+				<MapClickHandler onMapClick={onMapClick} />
 			</MapContainer>
 
-			{/* Instruction Tooltip */}
+			{/* Yakee-style Overlay text */}
 			<div
 				style={{
 					position: "absolute",
-					top: "20px",
+					top: "50%",
 					left: "50%",
-					transform: "translateX(-50%)",
-					backgroundColor: "#FF385C",
-					color: "#FFFFFF",
-					padding: "12px 24px",
-					borderRadius: "8px",
-					fontSize: "14px",
-					fontWeight: "500",
-					boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+					transform: "translate(-50%, -50%)",
 					zIndex: 1000,
-					maxWidth: "90%",
-					textAlign: "center",
-					pointerEvents: "none",
+					pointerEvents: "none", // Let clicks pass through to map
 				}}
 			>
-				Move the map for more precision and click on 'Next'
+				<div
+					style={{
+						backgroundColor: "#222222",
+						color: "#ffffff",
+						padding: "16px 24px",
+						borderRadius: "8px",
+						fontSize: "14px",
+						fontWeight: "500",
+						textAlign: "center",
+						boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
+						maxWidth: "280px",
+						position: "relative",
+					}}
+				>
+					Déplacez la carte pour plus de précision et cliquez sur "Suivant"
+					{/* Arrow pointing down */}
+					<div style={{
+						position: "absolute",
+						bottom: "-8px",
+						left: "50%",
+						transform: "translateX(-50%)",
+						width: "0",
+						height: "0",
+						borderLeft: "8px solid transparent",
+						borderRight: "8px solid transparent",
+						borderTop: "8px solid #222222",
+					}} />
+				</div>
 			</div>
 		</div>
 	);
 };
 
 export default LocationMap;
-

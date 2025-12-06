@@ -5,12 +5,14 @@ import { ChevronLeft } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { getTranslation } from "@/utils/translations";
 
-const Step1InteriorEquipment = ({ formData, updateFormData, onNext, onBack, onSkip, currentSubStep = 4 }) => {
+const Step1ExteriorAnnex = ({ formData, updateFormData, onNext, onBack, onSkip, currentSubStep = 6 }) => {
 	const { language, isDetecting } = useLanguage();
 	const displayLanguage = isDetecting ? "en" : language;
-	const [heating, setHeating] = useState(formData.heating || false);
-	const [airConditioning, setAirConditioning] = useState(formData.airConditioning || false);
-	const [equippedKitchen, setEquippedKitchen] = useState(formData.equippedKitchen || false);
+	const [privateGarden, setPrivateGarden] = useState(formData.privateGarden || false);
+	const [swimmingPool, setSwimmingPool] = useState(formData.swimmingPool || false);
+	const [greenSpaces, setGreenSpaces] = useState(formData.greenSpaces || false);
+	const [garageBox, setGarageBox] = useState(formData.garageBox || false);
+	const [parkingSpaces, setParkingSpaces] = useState(formData.parkingSpaces || false);
 	const totalSteps = 7;
 	const progressPercentage = (currentSubStep / totalSteps) * 100;
 
@@ -21,9 +23,11 @@ const Step1InteriorEquipment = ({ formData, updateFormData, onNext, onBack, onSk
 
 	const handleNextClick = () => {
 		updateFormData({
-			heating,
-			airConditioning,
-			equippedKitchen,
+			privateGarden,
+			swimmingPool,
+			greenSpaces,
+			garageBox,
+			parkingSpaces,
 		});
 		onNext();
 	};
@@ -31,7 +35,7 @@ const Step1InteriorEquipment = ({ formData, updateFormData, onNext, onBack, onSk
 	return (
 		<>
 			<style jsx>{`
-				.step1-equipment-container {
+				.step1-exterior-annex-container {
 					display: flex;
 					flex-direction: column;
 					height: 100%;
@@ -149,13 +153,13 @@ const Step1InteriorEquipment = ({ formData, updateFormData, onNext, onBack, onSk
 					gap: 16px;
 				}
 				@media (max-width: 767px) {
-					.step1-equipment-container {
+					.step1-exterior-annex-container {
 						padding-top: 32px;
 						padding-bottom: 32px;
 					}
 				}
 			`}</style>
-			<div className="step1-equipment-container">
+			<div className="step1-exterior-annex-container">
 				<div className="content-wrapper">
 					<h1
 						style={{
@@ -168,7 +172,7 @@ const Step1InteriorEquipment = ({ formData, updateFormData, onNext, onBack, onSk
 							lineHeight: "1.2",
 						}}
 					>
-						{getTranslation(displayLanguage, "listings.interiorEquipment")}
+						{getTranslation(displayLanguage, "listings.exteriorAnnex")}
 					</h1>
 					<p
 						style={{
@@ -178,17 +182,17 @@ const Step1InteriorEquipment = ({ formData, updateFormData, onNext, onBack, onSk
 							lineHeight: "1.5",
 						}}
 					>
-						{getTranslation(displayLanguage, "listings.interiorEquipmentSubtitle")}
+						{getTranslation(displayLanguage, "listings.exteriorAnnexSubtitle")}
 					</p>
 
 					{/* Checkboxes */}
 					<div className="checkbox-container">
 						<div className="checkbox-field">
 							<div
-								className={`checkbox-input ${heating ? "checked" : ""}`}
-								onClick={() => handleCheckboxChange("heating", !heating, setHeating)}
+								className={`checkbox-input ${privateGarden ? "checked" : ""}`}
+								onClick={() => handleCheckboxChange("privateGarden", !privateGarden, setPrivateGarden)}
 							>
-								{heating && (
+								{privateGarden && (
 									<svg width="14" height="14" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
 										<path d="M16.6667 5L7.50004 14.1667L3.33337 10" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
 									</svg>
@@ -196,18 +200,18 @@ const Step1InteriorEquipment = ({ formData, updateFormData, onNext, onBack, onSk
 							</div>
 							<label
 								className="checkbox-label"
-								onClick={() => handleCheckboxChange("heating", !heating, setHeating)}
+								onClick={() => handleCheckboxChange("privateGarden", !privateGarden, setPrivateGarden)}
 							>
-								{getTranslation(displayLanguage, "listings.heating")}
+								{getTranslation(displayLanguage, "listings.privateGarden")}
 							</label>
 						</div>
 
 						<div className="checkbox-field">
 							<div
-								className={`checkbox-input ${airConditioning ? "checked" : ""}`}
-								onClick={() => handleCheckboxChange("airConditioning", !airConditioning, setAirConditioning)}
+								className={`checkbox-input ${swimmingPool ? "checked" : ""}`}
+								onClick={() => handleCheckboxChange("swimmingPool", !swimmingPool, setSwimmingPool)}
 							>
-								{airConditioning && (
+								{swimmingPool && (
 									<svg width="14" height="14" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
 										<path d="M16.6667 5L7.50004 14.1667L3.33337 10" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
 									</svg>
@@ -215,18 +219,18 @@ const Step1InteriorEquipment = ({ formData, updateFormData, onNext, onBack, onSk
 							</div>
 							<label
 								className="checkbox-label"
-								onClick={() => handleCheckboxChange("airConditioning", !airConditioning, setAirConditioning)}
+								onClick={() => handleCheckboxChange("swimmingPool", !swimmingPool, setSwimmingPool)}
 							>
-								{getTranslation(displayLanguage, "listings.airConditioning")}
+								{getTranslation(displayLanguage, "listings.swimmingPool")}
 							</label>
 						</div>
 
 						<div className="checkbox-field">
 							<div
-								className={`checkbox-input ${equippedKitchen ? "checked" : ""}`}
-								onClick={() => handleCheckboxChange("equippedKitchen", !equippedKitchen, setEquippedKitchen)}
+								className={`checkbox-input ${greenSpaces ? "checked" : ""}`}
+								onClick={() => handleCheckboxChange("greenSpaces", !greenSpaces, setGreenSpaces)}
 							>
-								{equippedKitchen && (
+								{greenSpaces && (
 									<svg width="14" height="14" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
 										<path d="M16.6667 5L7.50004 14.1667L3.33337 10" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
 									</svg>
@@ -234,9 +238,47 @@ const Step1InteriorEquipment = ({ formData, updateFormData, onNext, onBack, onSk
 							</div>
 							<label
 								className="checkbox-label"
-								onClick={() => handleCheckboxChange("equippedKitchen", !equippedKitchen, setEquippedKitchen)}
+								onClick={() => handleCheckboxChange("greenSpaces", !greenSpaces, setGreenSpaces)}
 							>
-								{getTranslation(displayLanguage, "listings.equippedKitchen")}
+								{getTranslation(displayLanguage, "listings.greenSpaces")}
+							</label>
+						</div>
+
+						<div className="checkbox-field">
+							<div
+								className={`checkbox-input ${garageBox ? "checked" : ""}`}
+								onClick={() => handleCheckboxChange("garageBox", !garageBox, setGarageBox)}
+							>
+								{garageBox && (
+									<svg width="14" height="14" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+										<path d="M16.6667 5L7.50004 14.1667L3.33337 10" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+									</svg>
+								)}
+							</div>
+							<label
+								className="checkbox-label"
+								onClick={() => handleCheckboxChange("garageBox", !garageBox, setGarageBox)}
+							>
+								{getTranslation(displayLanguage, "listings.garageBox")}
+							</label>
+						</div>
+
+						<div className="checkbox-field">
+							<div
+								className={`checkbox-input ${parkingSpaces ? "checked" : ""}`}
+								onClick={() => handleCheckboxChange("parkingSpaces", !parkingSpaces, setParkingSpaces)}
+							>
+								{parkingSpaces && (
+									<svg width="14" height="14" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+										<path d="M16.6667 5L7.50004 14.1667L3.33337 10" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+									</svg>
+								)}
+							</div>
+							<label
+								className="checkbox-label"
+								onClick={() => handleCheckboxChange("parkingSpaces", !parkingSpaces, setParkingSpaces)}
+							>
+								{getTranslation(displayLanguage, "listings.parkingSpaces")}
 							</label>
 						</div>
 					</div>
@@ -343,5 +385,5 @@ const Step1InteriorEquipment = ({ formData, updateFormData, onNext, onBack, onSk
 	);
 };
 
-export default Step1InteriorEquipment;
+export default Step1ExteriorAnnex;
 

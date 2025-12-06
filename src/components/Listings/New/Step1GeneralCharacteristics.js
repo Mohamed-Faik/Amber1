@@ -5,7 +5,7 @@ import { ChevronLeft, Info } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { getTranslation } from "@/utils/translations";
 
-const Step1GeneralCharacteristics = ({ formData, updateFormData, onNext, onBack }) => {
+const Step1GeneralCharacteristics = ({ formData, updateFormData, onNext, onBack, currentSubStep = 3 }) => {
 	const { language, isDetecting } = useLanguage();
 	const displayLanguage = isDetecting ? "en" : language;
 	const [area, setArea] = useState(formData.area || "");
@@ -16,6 +16,8 @@ const Step1GeneralCharacteristics = ({ formData, updateFormData, onNext, onBack 
 	const [gatedCommunity, setGatedCommunity] = useState(formData.gatedCommunity || false);
 	const [elevator, setElevator] = useState(formData.elevator || false);
 	const [securitySystem, setSecuritySystem] = useState(formData.securitySystem || false);
+	const totalSteps = 7;
+	const progressPercentage = (currentSubStep / totalSteps) * 100;
 
 	const handleStepperChange = (field, value, setter) => {
 		const newValue = Math.max(0, value);
@@ -203,11 +205,26 @@ const Step1GeneralCharacteristics = ({ formData, updateFormData, onNext, onBack 
 				color: #222222;
 				cursor: pointer;
 			}
+				.progress-bar-container {
+					width: 100%;
+					height: 4px;
+					background-color: #E0E0E0;
+					border-radius: 2px;
+					overflow: hidden;
+					margin-bottom: 24px;
+					margin-top: 0;
+				}
+				.progress-bar-fill {
+					height: 100%;
+					background-color: #222222;
+					border-radius: 2px;
+					transition: width 0.3s ease;
+				}
 				.navigation-buttons {
 					display: flex;
 					justify-content: space-between;
 					align-items: center;
-					margin-top: 32px;
+					margin-top: 0;
 					margin-bottom: 24px;
 					padding-bottom: 40px;
 					gap: 16px;
@@ -444,65 +461,79 @@ const Step1GeneralCharacteristics = ({ formData, updateFormData, onNext, onBack 
 						</div>
 					</div>
 
-					{/* Navigation Buttons */}
-					<div className="navigation-buttons">
-						<button
-							type="button"
-							onClick={onBack}
-							style={{
-								display: "flex",
-								alignItems: "center",
-								justifyContent: "center",
-								width: "48px",
-								height: "48px",
-								borderRadius: "50%",
-								border: "1px solid #E0E0E0",
-								backgroundColor: "#FFFFFF",
-								color: "#222222",
-								cursor: "pointer",
-								transition: "all 0.2s ease",
-							}}
-							onMouseEnter={(e) => {
-								e.target.style.backgroundColor = "#F7F7F7";
-								e.target.style.borderColor = "#FF385C";
-							}}
-							onMouseLeave={(e) => {
-								e.target.style.backgroundColor = "#FFFFFF";
-								e.target.style.borderColor = "#E0E0E0";
-							}}
-						>
-							<ChevronLeft size={20} />
-						</button>
-						<button
-							type="button"
-							onClick={handleNextClick}
-							disabled={!canProceed}
-							style={{
-								padding: "16px 48px",
-								fontSize: "16px",
-								fontWeight: "600",
-								color: "#FFFFFF",
-								backgroundColor: canProceed ? "#FF385C" : "#CCCCCC",
-								border: "none",
-								borderRadius: "8px",
-								cursor: canProceed ? "pointer" : "not-allowed",
-								transition: "all 0.2s ease",
-							}}
-							onMouseEnter={(e) => {
-								if (canProceed) {
-									e.target.style.backgroundColor = "#E61E4D";
-									e.target.style.transform = "translateY(-2px)";
-								}
-							}}
-							onMouseLeave={(e) => {
-								if (canProceed) {
-									e.target.style.backgroundColor = "#FF385C";
-									e.target.style.transform = "translateY(0)";
-								}
-							}}
-						>
-							{getTranslation(displayLanguage, "listings.suivant")}
-						</button>
+				</div>
+
+				{/* Fixed Footer with Progress Bar and Buttons */}
+				<div className="footer-navigation">
+					<div className="footer-content">
+						{/* Progress Bar */}
+						<div className="progress-bar-container">
+							<div 
+								className="progress-bar-fill"
+								style={{ width: `${progressPercentage}%` }}
+							/>
+						</div>
+
+						{/* Navigation Buttons */}
+						<div className="navigation-buttons">
+							<button
+								type="button"
+								onClick={onBack}
+								style={{
+									display: "flex",
+									alignItems: "center",
+									justifyContent: "center",
+									width: "48px",
+									height: "48px",
+									borderRadius: "50%",
+									border: "1px solid #E0E0E0",
+									backgroundColor: "#FFFFFF",
+									color: "#222222",
+									cursor: "pointer",
+									transition: "all 0.2s ease",
+								}}
+								onMouseEnter={(e) => {
+									e.target.style.backgroundColor = "#F7F7F7";
+									e.target.style.borderColor = "#FF385C";
+								}}
+								onMouseLeave={(e) => {
+									e.target.style.backgroundColor = "#FFFFFF";
+									e.target.style.borderColor = "#E0E0E0";
+								}}
+							>
+								<ChevronLeft size={20} />
+							</button>
+							<button
+								type="button"
+								onClick={handleNextClick}
+								disabled={!canProceed}
+								style={{
+									padding: "16px 48px",
+									fontSize: "16px",
+									fontWeight: "600",
+									color: "#FFFFFF",
+									backgroundColor: canProceed ? "#FF385C" : "#CCCCCC",
+									border: "none",
+									borderRadius: "8px",
+									cursor: canProceed ? "pointer" : "not-allowed",
+									transition: "all 0.2s ease",
+								}}
+								onMouseEnter={(e) => {
+									if (canProceed) {
+										e.target.style.backgroundColor = "#E61E4D";
+										e.target.style.transform = "translateY(-2px)";
+									}
+								}}
+								onMouseLeave={(e) => {
+									if (canProceed) {
+										e.target.style.backgroundColor = "#FF385C";
+										e.target.style.transform = "translateY(0)";
+									}
+								}}
+							>
+								{getTranslation(displayLanguage, "listings.suivant")}
+							</button>
+						</div>
 					</div>
 				</div>
 			</div>
