@@ -303,7 +303,8 @@ const Step1Location = ({ formData, updateFormData, onNext, showMap = false }) =>
 							value={address}
 							onChange={handleAddressChange}
 							onKeyDown={handleKeyDown}
-							onFocus={() => {
+							onFocus={(e) => {
+								e.target.style.borderColor = "#FF385C";
 								if (suggestions.length > 0) {
 									setShowSuggestions(true);
 								}
@@ -318,9 +319,6 @@ const Step1Location = ({ formData, updateFormData, onNext, showMap = false }) =>
 								outline: "none",
 								transition: "all 0.2s ease",
 								boxSizing: "border-box",
-							}}
-							onFocus={(e) => {
-								e.target.style.borderColor = "#FF385C";
 							}}
 							onBlur={(e) => {
 								e.target.style.borderColor = "#E0E0E0";

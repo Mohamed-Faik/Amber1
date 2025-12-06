@@ -106,7 +106,7 @@ const customAdapter = {
 	},
 };
 
-export const authHandler = NextAuth({
+export const authOptions = {
 	adapter: customAdapter,
 	providers: [
 		...providers,
@@ -391,6 +391,8 @@ export const authHandler = NextAuth({
 	},
 	secret: process.env.NEXTAUTH_SECRET,
 	trustHost: true, // Required for OAuth to work properly
-});
+};
+
+export const authHandler = NextAuth(authOptions);
 
 export { authHandler as GET, authHandler as POST };
