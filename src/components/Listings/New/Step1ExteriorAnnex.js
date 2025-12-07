@@ -53,20 +53,6 @@ const Step1ExteriorAnnex = ({ formData, updateFormData, onNext, onBack, onSkip, 
 					overflow-x: hidden;
 					padding-bottom: 20px;
 				}
-				.progress-bar-container {
-					width: 100%;
-					height: 4px;
-					background-color: #E0E0E0;
-					border-radius: 2px;
-					overflow: hidden;
-					margin-bottom: 24px;
-				}
-				.progress-bar-fill {
-					height: 100%;
-					background-color: #222222;
-					border-radius: 2px;
-					transition: width 0.3s ease;
-				}
 				.footer-navigation {
 					position: fixed;
 					bottom: 0;
@@ -74,15 +60,34 @@ const Step1ExteriorAnnex = ({ formData, updateFormData, onNext, onBack, onSkip, 
 					right: 0;
 					background-color: #FFFFFF;
 					border-top: 1px solid #E0E0E0;
-					padding: 24px 80px;
+					padding: 0;
 					z-index: 100;
-					max-width: 65%;
 					box-shadow: 0 -2px 4px rgba(0,0,0,0.02);
 				}
 				.footer-content {
-					max-width: 600px;
 					width: 100%;
-					margin: 0 auto;
+					padding: 16px 24px;
+					display: flex;
+					flex-direction: row;
+					align-items: center;
+					justify-content: space-between;
+					gap: 24px;
+				}
+				.progress-bar-container {
+					width: 100%;
+					height: 4px;
+					background-color: #E0E0E0;
+					border-radius: 0;
+					overflow: hidden;
+					margin: 0;
+					margin-top: -1px;
+					position: relative;
+				}
+				.progress-bar-fill {
+					height: 100%;
+					background-color: #222222;
+					border-radius: 0;
+					transition: width 0.3s ease;
 				}
 				.content-wrapper {
 					padding-bottom: 120px;
@@ -124,33 +129,29 @@ const Step1ExteriorAnnex = ({ formData, updateFormData, onNext, onBack, onSkip, 
 					color: #222222;
 					cursor: pointer;
 				}
-				.progress-bar-container {
-					width: 100%;
-					height: 4px;
-					background-color: #E0E0E0;
-					border-radius: 2px;
-					overflow: hidden;
-					margin-bottom: 24px;
-				}
-				.progress-bar-fill {
-					height: 100%;
-					background-color: #222222;
-					border-radius: 2px;
-					transition: width 0.3s ease;
-				}
-				.navigation-buttons {
-					display: flex;
-					justify-content: space-between;
-					align-items: center;
-					margin-top: 0;
-					padding-top: 0;
-					gap: 16px;
-					flex-shrink: 0;
-				}
 				.left-buttons {
 					display: flex;
 					align-items: center;
+					justify-content: flex-start;
+					flex-shrink: 0;
+				}
+				.right-buttons {
+					display: flex;
+					align-items: center;
+					justify-content: flex-end;
 					gap: 16px;
+					flex-shrink: 0;
+				}
+				.skip-link {
+					font-size: 16px;
+					color: #717171;
+					text-decoration: none;
+					cursor: pointer;
+					transition: color 0.2s ease;
+				}
+				.skip-link:hover {
+					color: #222222;
+					text-decoration: underline;
 				}
 				@media (max-width: 767px) {
 					.step1-exterior-annex-container {
@@ -287,76 +288,60 @@ const Step1ExteriorAnnex = ({ formData, updateFormData, onNext, onBack, onSkip, 
 
 				{/* Fixed Footer with Progress Bar and Buttons */}
 				<div className="footer-navigation">
+					{/* Progress Bar */}
+					<div className="progress-bar-container">
+						<div 
+							className="progress-bar-fill"
+							style={{ width: `${progressPercentage}%` }}
+						/>
+					</div>
 					<div className="footer-content">
-						{/* Progress Bar */}
-						<div className="progress-bar-container">
-							<div 
-								className="progress-bar-fill"
-								style={{ width: `${progressPercentage}%` }}
-							/>
+						{/* Back Button */}
+						<div className="left-buttons">
+							<button
+								type="button"
+								onClick={onBack}
+								style={{
+									display: "flex",
+									alignItems: "center",
+									justifyContent: "center",
+									width: "48px",
+									height: "48px",
+									borderRadius: "50%",
+									border: "1px solid #E0E0E0",
+									backgroundColor: "#FFFFFF",
+									color: "#222222",
+									cursor: "pointer",
+									transition: "all 0.2s ease",
+									flexShrink: 0,
+								}}
+								onMouseEnter={(e) => {
+									e.target.style.backgroundColor = "#F7F7F7";
+									e.target.style.borderColor = "#FF385C";
+								}}
+								onMouseLeave={(e) => {
+									e.target.style.backgroundColor = "#FFFFFF";
+									e.target.style.borderColor = "#E0E0E0";
+								}}
+							>
+								<ChevronLeft size={20} />
+							</button>
 						</div>
 
-						{/* Navigation Buttons */}
-						<div className="navigation-buttons">
-							<div className="left-buttons">
-								<button
-									type="button"
-									onClick={onBack}
-									style={{
-										display: "flex",
-										alignItems: "center",
-										justifyContent: "center",
-										width: "48px",
-										height: "48px",
-										borderRadius: "50%",
-										border: "1px solid #E0E0E0",
-										backgroundColor: "#FFFFFF",
-										color: "#222222",
-										cursor: "pointer",
-										transition: "all 0.2s ease",
-									}}
-									onMouseEnter={(e) => {
-										e.target.style.backgroundColor = "#F7F7F7";
-										e.target.style.borderColor = "#FF385C";
-									}}
-									onMouseLeave={(e) => {
-										e.target.style.backgroundColor = "#FFFFFF";
-										e.target.style.borderColor = "#E0E0E0";
-									}}
-								>
-									<ChevronLeft size={20} />
-								</button>
-								<button
-									type="button"
-									onClick={onSkip}
-									style={{
-										padding: "16px 48px",
-										fontSize: "16px",
-										fontWeight: "600",
-										color: "#FFFFFF",
-										backgroundColor: "#717171",
-										border: "none",
-										borderRadius: "8px",
-										cursor: "pointer",
-										transition: "all 0.2s ease",
-									}}
-									onMouseEnter={(e) => {
-										e.target.style.backgroundColor = "#5A5A5A";
-										e.target.style.transform = "translateY(-2px)";
-									}}
-									onMouseLeave={(e) => {
-										e.target.style.backgroundColor = "#717171";
-										e.target.style.transform = "translateY(0)";
-									}}
-								>
-									{getTranslation(displayLanguage, "listings.skipStep")}
-								</button>
-							</div>
+						{/* Skip and Next Buttons */}
+						<div className="right-buttons">
+							<a
+								className="skip-link"
+								onClick={onSkip}
+								style={{ cursor: "pointer" }}
+							>
+								{getTranslation(displayLanguage, "listings.skipStep")}
+							</a>
 							<button
 								type="button"
 								onClick={handleNextClick}
 								style={{
-									padding: "16px 48px",
+									padding: "14px 32px",
 									fontSize: "16px",
 									fontWeight: "600",
 									color: "#FFFFFF",
@@ -365,14 +350,17 @@ const Step1ExteriorAnnex = ({ formData, updateFormData, onNext, onBack, onSkip, 
 									borderRadius: "8px",
 									cursor: "pointer",
 									transition: "all 0.2s ease",
+									boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
 								}}
 								onMouseEnter={(e) => {
 									e.target.style.backgroundColor = "#E61E4D";
-									e.target.style.transform = "translateY(-2px)";
+									e.target.style.transform = "translateY(-1px)";
+									e.target.style.boxShadow = "0 4px 8px rgba(0,0,0,0.15)";
 								}}
 								onMouseLeave={(e) => {
 									e.target.style.backgroundColor = "#FF385C";
 									e.target.style.transform = "translateY(0)";
+									e.target.style.boxShadow = "0 2px 4px rgba(0,0,0,0.1)";
 								}}
 							>
 								{getTranslation(displayLanguage, "listings.suivant")}

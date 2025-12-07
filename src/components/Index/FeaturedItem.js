@@ -8,6 +8,7 @@ import ListingImageCarousel from "../Listing/ListingImageCarousel";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { getTranslation } from "@/utils/translations";
 import { useTranslatedContent } from "@/hooks/useTranslatedContent";
+import HeartButton from "../HeartButton";
 import rulerIcon from "../../../public/images/icon/ruler.svg";
 import bedIcon from "../../../public/images/icon/bed.svg";
 import bathroomIcon from "../../../public/images/icon/bathroom.svg";
@@ -186,13 +187,32 @@ const FeaturedItem = ({
 								{getTranslation(displayLanguage, "listings.sold")}
 							</div>
 						)}
+
+						{/* Favorite Icon - Top Right */}
+						<div
+							className="featured-item-favorite"
+							style={{
+								position: "absolute",
+								top: "12px",
+								right: "12px",
+								zIndex: 10,
+							}}
+							onClick={(e) => {
+								e.preventDefault();
+								e.stopPropagation();
+							}}
+						>
+							<div className="featured-heart-button-wrapper">
+								<HeartButton currentUser={currentUser} listingId={id} />
+							</div>
+						</div>
 					</div>
 
 					{/* Content Section */}
-					<div style={{ padding: "16px" }}>
+					<div className="featured-item-content" style={{ padding: "16px" }}>
 						{/* Owner Profile */}
 						{user && (
-							<div style={{
+							<div className="featured-item-owner" style={{
 								display: "flex",
 								alignItems: "center",
 								gap: "10px",
@@ -263,7 +283,7 @@ const FeaturedItem = ({
 						)}
 
 						{/* FOR SALE / FOR RENT / DAILY RENT Badge */}
-						<div style={{ marginBottom: "8px", display: "flex", gap: "8px", alignItems: "center", justifyContent: "space-between" }}>
+						<div className="featured-item-badges" style={{ marginBottom: "8px", display: "flex", gap: "8px", alignItems: "center", justifyContent: "space-between" }}>
 							<span
 								style={{
 									display: "inline-block",
@@ -308,6 +328,7 @@ const FeaturedItem = ({
 
 						{/* Price Row */}
 						<div
+							className="featured-item-price"
 							style={{
 								display: "flex",
 								justifyContent: "space-between",
@@ -350,6 +371,7 @@ const FeaturedItem = ({
 
 						{/* Listing Title */}
 						<div
+							className="featured-item-title"
 							style={{
 								fontSize: "15px",
 								fontWeight: "600",
@@ -365,8 +387,34 @@ const FeaturedItem = ({
 							{translatedTitle}
 						</div>
 
+						{/* Rating - Mobile only, shown below title like Airbnb */}
+						<div
+							className="featured-item-rating-mobile"
+							style={{
+								display: "flex",
+								alignItems: "center",
+								gap: "4px",
+								marginBottom: "8px",
+								fontSize: "14px",
+								color: "#222222",
+							}}
+						>
+							<svg
+								width="14"
+								height="14"
+								viewBox="0 0 24 24"
+								fill="#222222"
+								stroke="#222222"
+								strokeWidth="1"
+							>
+								<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+							</svg>
+							<span style={{ fontWeight: "500" }}>{displayRating}</span>
+						</div>
+
 						{/* Location with Pin Icon */}
 						<div
+							className="featured-item-location"
 							style={{
 								display: "flex",
 								alignItems: "center",
@@ -393,6 +441,7 @@ const FeaturedItem = ({
 						{/* Property Metrics */}
 						{(area || bedrooms || bathrooms) && (
 							<div
+								className="featured-item-metrics"
 								style={{
 									display: "flex",
 									alignItems: "center",
@@ -507,7 +556,7 @@ const FeaturedItem = ({
 
 			{/* Contact Buttons or SOLD message - Outside Link to prevent navigation */}
 			{status === "Sold" && featureType !== "EXPERIENCES" ? (
-				<div style={{
+				<div className="featured-item-contact" style={{
 					padding: "12px 16px 16px 16px",
 					backgroundColor: "#FFFFFF",
 					borderRadius: "0 0 12px 12px",
@@ -526,10 +575,80 @@ const FeaturedItem = ({
 					</div>
 				</div>
 			) : (
-				<div style={{ padding: "12px 16px 16px 16px", backgroundColor: "#FFFFFF", borderRadius: "0 0 12px 12px" }}>
+				<div className="featured-item-contact" style={{ padding: "12px 16px 16px 16px", backgroundColor: "#FFFFFF", borderRadius: "0 0 12px 12px" }}>
 					<ContactButtons listing={{ id, slug, title, location_value, price }} />
 				</div>
 			)}
+			
+			{/* Styles */}
+			<style jsx>{`
+				.featured-heart-button-wrapper button {
+					width: 28px !important;
+					height: 28px !important;
+				}
+				
+				.featured-heart-button-wrapper svg {
+					width: 14px !important;
+					height: 14px !important;
+				}
+				
+				@media (max-width: 768px) {
+					.featured-item-owner {
+						display: none !important;
+					}
+					.featured-item-metrics {
+						display: none !important;
+					}
+					.featured-item-contact {
+						display: none !important;
+					}
+					.featured-item-badges {
+						display: none !important;
+					}
+					.featured-item-content {
+						padding: 12px !important;
+					}
+					.featured-item-location {
+						display: none !important;
+					}
+					.featured-item-rating-mobile {
+						display: flex !important;
+					}
+					.featured-item-favorite {
+						display: block !important;
+					}
+					.featured-heart-button-wrapper button {
+						width: 24px !important;
+						height: 24px !important;
+						background-color: rgba(255, 255, 255, 0.9) !important;
+					}
+					.featured-heart-button-wrapper svg {
+						width: 12px !important;
+						height: 12px !important;
+					}
+					.featured-item-title {
+						margin-bottom: 4px !important;
+						font-size: 15px !important;
+						font-weight: 600 !important;
+					}
+					.featured-item-price {
+						margin-bottom: 4px !important;
+					}
+					.featured-item-price span {
+						font-size: 15px !important;
+						color: #222222 !important;
+						font-weight: 500 !important;
+					}
+				}
+				@media (min-width: 769px) {
+					.featured-item-rating-mobile {
+						display: none !important;
+					}
+					.featured-item-favorite {
+						display: block !important;
+					}
+				}
+			`}</style>
 		</div>
 	);
 };

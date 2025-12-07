@@ -502,63 +502,6 @@ const HomesPageClient = ({
 										endListingNumber={premiumListings.length}
 									/>
 								</div>
-
-								{/* Elegant Divider */}
-								{hasRegularListings && (
-									<div style={{
-										margin: "60px 0",
-										position: "relative",
-										display: "flex",
-										alignItems: "center",
-										justifyContent: "center"
-									}}>
-										{/* Gradient Line */}
-										<div style={{
-											position: "absolute",
-											width: "100%",
-											height: "2px",
-											background: "linear-gradient(to right, transparent 0%, #E0E0E0 20%, #FF385C 50%, #E0E0E0 80%, transparent 100%)",
-											opacity: 0.6
-										}} />
-
-										{/* Center Decoration */}
-										<div style={{
-											position: "relative",
-											backgroundColor: "#FFFFFF",
-											padding: "12px 32px",
-											borderRadius: "40px",
-											border: "2px solid #FF385C",
-											boxShadow: "0 4px 12px rgba(255, 56, 92, 0.15)",
-											display: "flex",
-											alignItems: "center",
-											gap: "12px"
-										}}>
-											<div style={{
-												width: "8px",
-												height: "8px",
-												borderRadius: "50%",
-												backgroundColor: "#FF385C",
-												animation: "pulse 2s infinite"
-											}} />
-											<span style={{
-												fontSize: "14px",
-												fontWeight: "600",
-												color: "#FF385C",
-												letterSpacing: "1px",
-												textTransform: "uppercase"
-											}}>
-												{getTranslation(displayLanguage, "listings.exploreMore")}
-											</span>
-											<div style={{
-												width: "8px",
-												height: "8px",
-												borderRadius: "50%",
-												backgroundColor: "#FF385C",
-												animation: "pulse 2s infinite 1s"
-											}} />
-										</div>
-									</div>
-								)}
 							</>
 						)}
 

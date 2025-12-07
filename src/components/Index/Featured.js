@@ -22,11 +22,7 @@ const Featured = ({ currentUser }) => {
 		const updateListingsPerSlide = () => {
 			let newValue;
 			if (window.innerWidth <= 768) {
-				newValue = 1;
-			} else if (window.innerWidth <= 1100) {
-				newValue = 3;
-			} else if (window.innerWidth <= 1400) {
-				newValue = 4;
+				newValue = 2;
 			} else {
 				newValue = 5;
 			}
@@ -198,7 +194,9 @@ const Featured = ({ currentUser }) => {
 
 					return (
 						<React.Fragment key={section.key}>
-							<div>
+							<div style={{
+								marginTop: !isPremiumSection ? "60px" : "0"
+							}}>
 								{/* Section Header */}
 								<div
 									style={{
@@ -211,9 +209,11 @@ const Featured = ({ currentUser }) => {
 									}}
 								>
 									<h2
+										className="section-heading-canela"
 										style={{
-											fontSize: "28px",
-											fontWeight: "600",
+											fontSize: "24px",
+											fontWeight: "300",
+											fontFamily: "var(--font-canela), 'Canela', serif",
 											color: "#222222",
 											margin: 0,
 											flex: "1 1 auto",
@@ -221,7 +221,7 @@ const Featured = ({ currentUser }) => {
 									>
 										{getTranslation(displayLanguage, section.titleKey)}
 									</h2>
-									{/* Carousel Navigation Buttons - Only for Premium Section */}
+									{/* Carousel Navigation Buttons - Only for Premium Section Desktop */}
 									{isPremiumSection && section.listings.length > listingsPerSlide && totalSlides > 1 && (
 										<div
 											className="premium-carousel-nav"
@@ -306,97 +306,139 @@ const Featured = ({ currentUser }) => {
 
 								{/* Carousel Container for Premium Section, Grid for Others */}
 								{isPremiumSection ? (
-									<div
-										ref={premiumCarouselRef}
-										className="premium-carousel-container"
-										style={{
-											position: "relative",
-											overflow: "hidden",
-											width: "100%",
-										}}
-									>
+									<>
+										{/* Desktop: Slide-based carousel */}
 										<div
-											className="premium-carousel-wrapper"
+											ref={premiumCarouselRef}
+											className="premium-carousel-container desktop-carousel"
 											style={{
-												display: "flex",
-												transform: `translateX(-${premiumCurrentIndex * 100}%)`,
-												transition: "transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
-												willChange: "transform",
+												position: "relative",
+												overflow: "hidden",
+												width: "100%",
 											}}
 										>
-											{Array.from({ length: totalSlides }).map((_, slideIndex) => {
-												const slideListings = section.listings.slice(
-													slideIndex * listingsPerSlide,
-													(slideIndex + 1) * listingsPerSlide
-												);
-												return (
-													<div
-														key={slideIndex}
-														className="premium-carousel-slide"
-														style={{
-															minWidth: "100%",
-															width: "100%",
-															flexShrink: 0,
-															display: "grid",
-															gridTemplateColumns: "repeat(5, 1fr)",
-															gap: "32px",
-														}}
-													>
-														{slideListings.map((list) => (
-															<FeaturedItem
-																key={list.id}
-																currentUser={currentUser}
-																{...list}
-															/>
-														))}
-													</div>
-												);
-											})}
-										</div>
-										{/* Slide Indicators */}
-										{totalSlides > 1 && (
 											<div
+												className="premium-carousel-wrapper"
 												style={{
 													display: "flex",
-													justifyContent: "center",
-													gap: "8px",
-													marginTop: "24px",
+													transform: `translateX(-${premiumCurrentIndex * 100}%)`,
+													transition: "transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+													willChange: "transform",
 												}}
 											>
-												{Array.from({ length: totalSlides }).map((_, slideIndex) => (
-													<button
-														key={slideIndex}
-														onClick={() => setPremiumCurrentIndex(slideIndex)}
+												{Array.from({ length: totalSlides }).map((_, slideIndex) => {
+													const slideListings = section.listings.slice(
+														slideIndex * listingsPerSlide,
+														(slideIndex + 1) * listingsPerSlide
+													);
+													return (
+														<div
+															key={slideIndex}
+															className="premium-carousel-slide"
+															style={{
+																minWidth: "100%",
+																width: "100%",
+																flexShrink: 0,
+																display: "grid",
+																gridTemplateColumns: `repeat(${listingsPerSlide}, 1fr)`,
+																gap: "32px",
+															}}
+														>
+															{slideListings.map((list) => (
+																<FeaturedItem
+																	key={list.id}
+																	currentUser={currentUser}
+																	{...list}
+																/>
+															))}
+														</div>
+													);
+												})}
+											</div>
+											{/* Slide Indicators */}
+											{totalSlides > 1 && (
+												<div
+													style={{
+														display: "flex",
+														justifyContent: "center",
+														gap: "8px",
+														marginTop: "24px",
+													}}
+												>
+													{Array.from({ length: totalSlides }).map((_, slideIndex) => (
+														<button
+															key={slideIndex}
+															onClick={() => setPremiumCurrentIndex(slideIndex)}
+															style={{
+																width: slideIndex === premiumCurrentIndex ? "24px" : "8px",
+																height: "8px",
+																borderRadius: "4px",
+																backgroundColor: slideIndex === premiumCurrentIndex ? "#FF385C" : "#DDDDDD",
+																border: "none",
+																cursor: "pointer",
+																transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
+																transform: slideIndex === premiumCurrentIndex ? "scale(1.2)" : "scale(1)",
+															}}
+															onMouseEnter={(e) => {
+																if (slideIndex !== premiumCurrentIndex) {
+																	e.currentTarget.style.backgroundColor = "#FFB3C1";
+																	e.currentTarget.style.transform = "scale(1.1)";
+																}
+															}}
+															onMouseLeave={(e) => {
+																if (slideIndex !== premiumCurrentIndex) {
+																	e.currentTarget.style.backgroundColor = "#DDDDDD";
+																	e.currentTarget.style.transform = "scale(1)";
+																}
+															}}
+														/>
+													))}
+												</div>
+											)}
+										</div>
+										{/* Mobile: Horizontal scrollable carousel */}
+										<div
+											className="premium-carousel-container mobile-carousel"
+											style={{
+												overflowX: "auto",
+												overflowY: "hidden",
+												width: "100%",
+												scrollBehavior: "smooth",
+												WebkitOverflowScrolling: "touch",
+												msOverflowStyle: "none",
+												scrollbarWidth: "none",
+											}}
+										>
+											<div
+												className="premium-mobile-scroll-wrapper"
+												style={{
+													display: "flex",
+													gap: "16px",
+													paddingBottom: "8px",
+												}}
+											>
+												{section.listings.map((list) => (
+													<div
+														key={list.id}
+														className="premium-mobile-item"
 														style={{
-															width: slideIndex === premiumCurrentIndex ? "24px" : "8px",
-															height: "8px",
-															borderRadius: "4px",
-															backgroundColor: slideIndex === premiumCurrentIndex ? "#FF385C" : "#DDDDDD",
-															border: "none",
-															cursor: "pointer",
-															transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
-															transform: slideIndex === premiumCurrentIndex ? "scale(1.2)" : "scale(1)",
+															minWidth: "calc(50% - 8px)",
+															width: "calc(50% - 8px)",
+															flexShrink: 0,
 														}}
-														onMouseEnter={(e) => {
-															if (slideIndex !== premiumCurrentIndex) {
-																e.currentTarget.style.backgroundColor = "#FFB3C1";
-																e.currentTarget.style.transform = "scale(1.1)";
-															}
-														}}
-														onMouseLeave={(e) => {
-															if (slideIndex !== premiumCurrentIndex) {
-																e.currentTarget.style.backgroundColor = "#DDDDDD";
-																e.currentTarget.style.transform = "scale(1)";
-															}
-														}}
-													/>
+													>
+														<FeaturedItem
+															currentUser={currentUser}
+															{...list}
+														/>
+													</div>
 												))}
 											</div>
-										)}
-									</div>
+										</div>
+									</>
 								) : (
 									<div
-										className="featured-grid"
+										className="featured-grid all-properties-grid desktop-grid"
 										style={{
 											display: "grid",
 											gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
@@ -413,63 +455,6 @@ const Featured = ({ currentUser }) => {
 									</div>
 								)}
 							</div>
-
-							{/* Elegant Divider Between Sections */}
-							{index < sections.length - 1 && (
-								<div style={{
-									margin: "80px 0",
-									position: "relative",
-									display: "flex",
-									alignItems: "center",
-									justifyContent: "center"
-								}}>
-									{/* Gradient Line */}
-									<div style={{
-										position: "absolute",
-										width: "100%",
-										height: "2px",
-										background: "linear-gradient(to right, transparent 0%, #E0E0E0 20%, #FF385C 50%, #E0E0E0 80%, transparent 100%)",
-										opacity: 0.6
-									}} />
-
-									{/* Center Decoration */}
-									<div style={{
-										position: "relative",
-										backgroundColor: "#FFFFFF",
-										padding: "12px 32px",
-										borderRadius: "40px",
-										border: "2px solid #FF385C",
-										boxShadow: "0 4px 12px rgba(255, 56, 92, 0.15)",
-										display: "flex",
-										alignItems: "center",
-										gap: "12px"
-									}}>
-										<div style={{
-											width: "8px",
-											height: "8px",
-											borderRadius: "50%",
-											backgroundColor: "#FF385C",
-											animation: "pulse 2s infinite"
-										}} />
-										<span style={{
-											fontSize: "14px",
-											fontWeight: "600",
-											color: "#FF385C",
-											letterSpacing: "1px",
-											textTransform: "uppercase"
-										}}>
-											{getTranslation(displayLanguage, "listings.exploreMore")}
-										</span>
-										<div style={{
-											width: "8px",
-											height: "8px",
-											borderRadius: "50%",
-											backgroundColor: "#FF385C",
-											animation: "pulse 2s infinite 1s"
-										}} />
-									</div>
-								</div>
-							)}
 						</React.Fragment>
 					);
 				})}
@@ -549,74 +534,80 @@ const Featured = ({ currentUser }) => {
 					animation: fadeInSlide 0.6s ease-out;
 				}
 				
-				@media (max-width: 1400px) {
-					.premium-carousel-slide {
-						grid-template-columns: repeat(4, 1fr) !important;
-					}
-				}
-				@media (max-width: 1100px) {
-					.premium-carousel-slide {
-						grid-template-columns: repeat(3, 1fr) !important;
-					}
+				.premium-carousel-slide {
+					grid-template-columns: repeat(5, 1fr) !important;
 				}
 				@media (max-width: 768px) {
 					.premium-carousel-slide {
-						grid-template-columns: repeat(1, 1fr) !important;
+						grid-template-columns: repeat(2, 1fr) !important;
 						gap: 16px !important;
 					}
 				}
 				@media (max-width: 480px) {
 					.premium-carousel-slide {
-						grid-template-columns: repeat(1, 1fr) !important;
+						grid-template-columns: repeat(2, 1fr) !important;
 						gap: 16px !important;
 					}
 				}
 				
 				.premium-carousel-container {
 					width: 100% !important;
+				}
+				
+				.desktop-carousel {
 					overflow: hidden !important;
 				}
 				
-				.premium-carousel-wrapper {
-					display: flex !important;
+				.mobile-carousel {
+					display: none;
 				}
 				
-				.premium-carousel-item {
-					flex: 0 0 20% !important;
-					width: 20% !important;
+				.premium-mobile-scroll-wrapper::-webkit-scrollbar {
+					display: none;
 				}
 				
-				@media (max-width: 1400px) {
-					.premium-carousel-item {
-						flex: 0 0 25% !important;
-						width: 25% !important;
-					}
-				}
-				@media (max-width: 1100px) {
-					.premium-carousel-item {
-						flex: 0 0 33.333% !important;
-						width: 33.333% !important;
-					}
-				}
 				@media (max-width: 768px) {
-					.premium-carousel-item {
-						flex: 0 0 50% !important;
-						width: 50% !important;
-						padding: 0 8px !important;
+					.desktop-carousel {
+						display: none !important;
 					}
+					
+					.mobile-carousel {
+						display: block !important;
+					}
+					
 					.premium-carousel-nav {
-						gap: 6px !important;
+						display: none !important;
 					}
-					.premium-carousel-nav button {
-						width: 36px !important;
-						height: 36px !important;
+					
+					.featured-container {
+						padding: 0 24px !important;
 					}
-				}
-				@media (max-width: 480px) {
-					.premium-carousel-item {
-						flex: 0 0 100% !important;
+					
+					.premium-mobile-item {
+						width: calc(50% - 8px) !important;
+						min-width: calc(50% - 8px) !important;
+					}
+					
+					.premium-mobile-scroll-wrapper {
+						padding-left: 0 !important;
+						padding-right: 0 !important;
+					}
+					
+					.all-properties-grid {
+						display: block !important;
+						column-count: 2 !important;
+						column-gap: 16px !important;
+					}
+					
+					.all-properties-grid > * {
+						break-inside: avoid !important;
+						display: inline-block !important;
 						width: 100% !important;
-						padding: 0 !important;
+						margin-bottom: 16px !important;
+					}
+					
+					.section-heading-canela {
+						font-size: 20px !important;
 					}
 				}
 			`}</style>

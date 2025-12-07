@@ -8,6 +8,8 @@ import Step1InteriorEquipment from "./Step1InteriorEquipment";
 import Step1InteriorAnnex from "./Step1InteriorAnnex";
 import Step1ExteriorAnnex from "./Step1ExteriorAnnex";
 import Step1PropertyState from "./Step1PropertyState";
+import Step2Price from "./Step2Price";
+import Step3Photos from "./Step3Photos";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { getTranslation } from "@/utils/translations";
 
@@ -39,6 +41,8 @@ const MultiStepListingForm = ({ currentUser }) => {
 		garageBox: false,
 		parkingSpaces: false,
 		propertyAge: "",
+		price: "",
+		photos: [],
 	});
 
 	const steps = [
@@ -113,6 +117,10 @@ const MultiStepListingForm = ({ currentUser }) => {
 				setSubStep(7);
 			}
 			// Note: subStep 7 (property state) cannot be skipped - it's required
+		} else if (currentStep === 3) {
+			// For step 3 (Photos), skip means proceed to next step (if there is one)
+			// For now, just proceed - you can add more steps later
+			handleNext();
 		}
 	};
 
@@ -200,9 +208,23 @@ const MultiStepListingForm = ({ currentUser }) => {
 
 		switch (currentStep) {
 			case 2:
-				return <div>Step 2 - Price (Coming soon)</div>;
+				return (
+					<Step2Price
+						formData={formData}
+						updateFormData={updateFormData}
+						onNext={handleNext}
+						onBack={handleBack}
+					/>
+				);
 			case 3:
-				return <div>Step 3 - Photos (Coming soon)</div>;
+				return (
+					<Step3Photos
+						formData={formData}
+						updateFormData={updateFormData}
+						onNext={handleNext}
+						onBack={handleBack}
+					/>
+				);
 			default:
 				return null;
 		}

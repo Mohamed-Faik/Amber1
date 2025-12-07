@@ -237,7 +237,7 @@ const Navbar = ({ currentUser }) => {
                   height={52}
                   style={{
                     height: "auto",
-                    width: "auto",
+                    width: "140px",
                     maxHeight: "52px",
                     maxWidth: "200px",
                     objectFit: "contain",
@@ -1489,8 +1489,10 @@ const Navbar = ({ currentUser }) => {
           }
           
           .navbar-left-mobile .navbar-logo {
-            maxHeight: 32px !important;
-            maxWidth: 180px !important;
+            height: auto !important;
+            width: 140px !important;
+            maxHeight: 42px !important;
+            maxWidth: 220px !important;
           }
           
           .mobile-language-wrapper-left {
@@ -1578,8 +1580,10 @@ const Navbar = ({ currentUser }) => {
           }
           
           .navbar-left-mobile .navbar-logo {
-            maxHeight: 28px !important;
-            maxWidth: 150px !important;
+            height: auto !important;
+            width: 140px !important;
+            maxHeight: 38px !important;
+            maxWidth: 190px !important;
           }
           
           .mobile-language-wrapper-left {

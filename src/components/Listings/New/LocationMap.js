@@ -94,47 +94,6 @@ const LocationMap = ({ markerPosition, onMarkerDragEnd, onMapClick }) => {
 				<MapUpdater center={center} />
 				<MapClickHandler onMapClick={onMapClick} />
 			</MapContainer>
-
-			{/* Yakee-style Overlay text */}
-			<div
-				style={{
-					position: "absolute",
-					top: "50%",
-					left: "50%",
-					transform: "translate(-50%, -50%)",
-					zIndex: 1000,
-					pointerEvents: "none", // Let clicks pass through to map
-				}}
-			>
-				<div
-					style={{
-						backgroundColor: "#222222",
-						color: "#ffffff",
-						padding: "16px 24px",
-						borderRadius: "8px",
-						fontSize: "14px",
-						fontWeight: "500",
-						textAlign: "center",
-						boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
-						maxWidth: "280px",
-						position: "relative",
-					}}
-				>
-					Déplacez la carte pour plus de précision et cliquez sur "Suivant"
-					{/* Arrow pointing down */}
-					<div style={{
-						position: "absolute",
-						bottom: "-8px",
-						left: "50%",
-						transform: "translateX(-50%)",
-						width: "0",
-						height: "0",
-						borderLeft: "8px solid transparent",
-						borderRight: "8px solid transparent",
-						borderTop: "8px solid #222222",
-					}} />
-				</div>
-			</div>
 		</div>
 	);
 };

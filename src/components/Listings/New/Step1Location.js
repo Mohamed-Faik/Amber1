@@ -288,15 +288,16 @@ const Step1Location = ({ formData, updateFormData, onNext, showMap = false, curr
 					width: 100%;
 					height: 4px;
 					background-color: #E0E0E0;
-					border-radius: 2px;
+					border-radius: 0;
 					overflow: hidden;
-					margin-bottom: 24px;
-					margin-top: 0;
+					margin: 0;
+					margin-top: -1px;
+					position: relative;
 				}
 				.progress-bar-fill {
 					height: 100%;
 					background-color: #222222;
-					border-radius: 2px;
+					border-radius: 0;
 					transition: width 0.3s ease;
 				}
 				.footer-navigation {
@@ -306,26 +307,40 @@ const Step1Location = ({ formData, updateFormData, onNext, showMap = false, curr
 					right: 0;
 					background-color: #FFFFFF;
 					border-top: 1px solid #E0E0E0;
-					padding: 24px 80px;
+					padding: 0;
 					z-index: 100;
-					max-width: 65%;
 					box-shadow: 0 -2px 4px rgba(0,0,0,0.02);
 				}
 				.footer-content {
-					max-width: 600px;
 					width: 100%;
-					margin: 0 auto;
+					padding: 16px 24px;
+					display: flex;
+					flex-direction: row;
+					align-items: center;
+					justify-content: flex-end;
+				}
+				.progress-bar-container {
+					width: 100%;
+					margin: 0;
 				}
 				.next-button-wrapper {
-					margin-top: 24px;
+					margin: 0;
 					display: flex;
-					justifyContent: flex-end;
+					justify-content: flex-end;
+					flex-shrink: 0;
+					margin-right: 0;
 				}
 				.content-wrapper {
 					padding-bottom: 120px;
 				}
 				.location-input:focus {
 					border-color: #222222 !important;
+				}
+				@media (max-width: 767px) {
+					.map-section {
+						height: 300px !important;
+						border-radius: 12px !important;
+					}
 				}
 			`}</style>
 			<div className="step1-location-container">
@@ -444,19 +459,37 @@ const Step1Location = ({ formData, updateFormData, onNext, showMap = false, curr
 					)}
 				</div>
 
+				{/* Map Section */}
+				<div 
+					className="map-section"
+					style={{ 
+						marginBottom: "32px", 
+						height: "400px",
+						borderRadius: "16px",
+						overflow: "hidden",
+						boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+						position: "relative"
+					}}
+				>
+					<LocationMap
+						markerPosition={markerPosition}
+						onMarkerDragEnd={handleMarkerDragEnd}
+						onMapClick={handleMapClick}
+					/>
+				</div>
+
 				</div>
 
 				{/* Fixed Footer with Progress Bar and Buttons */}
 				<div className="footer-navigation">
+					{/* Progress Bar */}
+					<div className="progress-bar-container">
+						<div 
+							className="progress-bar-fill"
+							style={{ width: `${progressPercentage}%` }}
+						/>
+					</div>
 					<div className="footer-content">
-						{/* Progress Bar */}
-						<div className="progress-bar-container">
-							<div 
-								className="progress-bar-fill"
-								style={{ width: `${progressPercentage}%` }}
-							/>
-						</div>
-
 						{/* Next Button */}
 						<div className="next-button-wrapper">
 							<button

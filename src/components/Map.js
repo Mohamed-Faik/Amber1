@@ -36,7 +36,6 @@ export default function Map({ latitude, longitude }) {
 	}, [latitude, longitude]);
 	return (
 		<div className="location-content">
-			<h3>Location</h3>
 			<MapContainer
 				center={[51, -0.09]}
 				zoom={center ? 4 : 2}

@@ -13,14 +13,8 @@ const Step1PropertyState = ({ formData, updateFormData, onNext, onBack, currentS
 	const progressPercentage = (currentSubStep / totalSteps) * 100;
 
 	const ageOptions = [
-		{ value: "new", translationKey: "listings.propertyAgeNew" },
-		{ value: "1-5", translationKey: "listings.propertyAge1to5" },
-		{ value: "6-10", translationKey: "listings.propertyAge6to10" },
-		{ value: "11-15", translationKey: "listings.propertyAge11to15" },
-		{ value: "16-20", translationKey: "listings.propertyAge16to20" },
-		{ value: "21-25", translationKey: "listings.propertyAge21to25" },
-		{ value: "26-30", translationKey: "listings.propertyAge26to30" },
-		{ value: "31+", translationKey: "listings.propertyAge31Plus" },
+		{ value: "new", translationKey: "listings.propertyAgeNew15" },
+		{ value: "old", translationKey: "listings.propertyAgeOld520" },
 	];
 
 	const handleAgeChange = (e) => {
@@ -59,20 +53,6 @@ const Step1PropertyState = ({ formData, updateFormData, onNext, onBack, currentS
 					overflow-x: hidden;
 					padding-bottom: 20px;
 				}
-				.progress-bar-container {
-					width: 100%;
-					height: 4px;
-					background-color: #E0E0E0;
-					border-radius: 2px;
-					overflow: hidden;
-					margin-bottom: 24px;
-				}
-				.progress-bar-fill {
-					height: 100%;
-					background-color: #222222;
-					border-radius: 2px;
-					transition: width 0.3s ease;
-				}
 				.footer-navigation {
 					position: fixed;
 					bottom: 0;
@@ -80,15 +60,34 @@ const Step1PropertyState = ({ formData, updateFormData, onNext, onBack, currentS
 					right: 0;
 					background-color: #FFFFFF;
 					border-top: 1px solid #E0E0E0;
-					padding: 24px 80px;
+					padding: 0;
 					z-index: 100;
-					max-width: 65%;
 					box-shadow: 0 -2px 4px rgba(0,0,0,0.02);
 				}
 				.footer-content {
-					max-width: 600px;
 					width: 100%;
-					margin: 0 auto;
+					padding: 16px 24px;
+					display: flex;
+					flex-direction: row;
+					align-items: center;
+					justify-content: space-between;
+					gap: 24px;
+				}
+				.progress-bar-container {
+					width: 100%;
+					height: 4px;
+					background-color: #E0E0E0;
+					border-radius: 0;
+					overflow: hidden;
+					margin: 0;
+					margin-top: -1px;
+					position: relative;
+				}
+				.progress-bar-fill {
+					height: 100%;
+					background-color: #222222;
+					border-radius: 0;
+					transition: width 0.3s ease;
 				}
 				.content-wrapper {
 					padding-bottom: 120px;
@@ -135,29 +134,18 @@ const Step1PropertyState = ({ formData, updateFormData, onNext, onBack, currentS
 					cursor: not-allowed;
 					color: #717171;
 				}
-				.progress-bar-container {
-					width: 100%;
-					height: 4px;
-					background-color: #E0E0E0;
-					border-radius: 2px;
-					overflow: hidden;
-					margin-bottom: 24px;
-				}
-				.progress-bar-fill {
-					height: 100%;
-					background-color: #222222;
-					border-radius: 2px;
-					transition: width 0.3s ease;
-				}
-				.navigation-buttons {
+				.left-buttons {
 					display: flex;
-					justify-content: space-between;
 					align-items: center;
-					margin-top: 0;
-					padding-top: 0;
+					justify-content: flex-start;
+					flex-shrink: 0;
+				}
+				.right-buttons {
+					display: flex;
+					align-items: center;
+					justify-content: flex-end;
 					gap: 16px;
 					flex-shrink: 0;
-					width: 100%;
 				}
 				@media (max-width: 767px) {
 					.step1-property-state-container {
@@ -217,17 +205,16 @@ const Step1PropertyState = ({ formData, updateFormData, onNext, onBack, currentS
 
 				{/* Fixed Footer with Progress Bar and Buttons */}
 				<div className="footer-navigation">
+					{/* Progress Bar */}
+					<div className="progress-bar-container">
+						<div 
+							className="progress-bar-fill"
+							style={{ width: `${progressPercentage}%` }}
+						/>
+					</div>
 					<div className="footer-content">
-						{/* Progress Bar */}
-						<div className="progress-bar-container">
-							<div 
-								className="progress-bar-fill"
-								style={{ width: `${progressPercentage}%` }}
-							/>
-						</div>
-
-						{/* Navigation Buttons */}
-						<div className="navigation-buttons">
+						{/* Back Button */}
+						<div className="left-buttons">
 							<button
 								type="button"
 								onClick={onBack}
@@ -256,12 +243,16 @@ const Step1PropertyState = ({ formData, updateFormData, onNext, onBack, currentS
 							>
 								<ChevronLeft size={20} />
 							</button>
+						</div>
+
+						{/* Next Button */}
+						<div className="right-buttons">
 							<button
 								type="button"
 								onClick={handleNextClick}
 								disabled={!canProceed}
 								style={{
-									padding: "16px 48px",
+									padding: "14px 32px",
 									fontSize: "16px",
 									fontWeight: "600",
 									color: "#FFFFFF",
@@ -270,22 +261,20 @@ const Step1PropertyState = ({ formData, updateFormData, onNext, onBack, currentS
 									borderRadius: "8px",
 									cursor: canProceed ? "pointer" : "not-allowed",
 									transition: "all 0.2s ease",
-									height: "48px",
-									display: "flex",
-									alignItems: "center",
-									justifyContent: "center",
-									marginLeft: "auto",
+									boxShadow: canProceed ? "0 2px 4px rgba(0,0,0,0.1)" : "none",
 								}}
 								onMouseEnter={(e) => {
 									if (canProceed) {
 										e.target.style.backgroundColor = "#E61E4D";
-										e.target.style.transform = "translateY(-2px)";
+										e.target.style.transform = "translateY(-1px)";
+										e.target.style.boxShadow = "0 4px 8px rgba(0,0,0,0.15)";
 									}
 								}}
 								onMouseLeave={(e) => {
 									if (canProceed) {
 										e.target.style.backgroundColor = "#FF385C";
 										e.target.style.transform = "translateY(0)";
+										e.target.style.boxShadow = "0 2px 4px rgba(0,0,0,0.1)";
 									}
 								}}
 							>

@@ -28,11 +28,11 @@ const ListingHeader = () => {
 				style={{
 					maxWidth: "1760px",
 					margin: "0 auto",
-					padding: "0 40px",
+					padding: "0 24px",
 					display: "flex",
 					alignItems: "center",
 					justifyContent: "space-between",
-					height: "80px",
+					height: "55px",
 				}}
 			>
 				{/* Logo */}
@@ -51,7 +51,7 @@ const ListingHeader = () => {
 						height={52}
 						style={{
 							height: "auto",
-							width: "auto",
+							width: "135px",
 							maxHeight: "52px",
 							maxWidth: "200px",
 							objectFit: "contain",
@@ -72,12 +72,13 @@ const ListingHeader = () => {
 					<LanguageSwitcher />
 					<button
 						type="button"
+						className="quick-submission-btn"
 						style={{
 							display: "flex",
 							alignItems: "center",
 							gap: "8px",
-							padding: "12px 24px",
-							fontSize: "16px",
+							padding: "10px 16px",
+							fontSize: "14px",
 							fontWeight: "500",
 							color: "#222222",
 							backgroundColor: "#FFFFFF",
@@ -95,11 +96,28 @@ const ListingHeader = () => {
 							e.target.style.borderColor = "#E0E0E0";
 						}}
 					>
-						<Phone size={18} />
-						<span>{getTranslation(displayLanguage, "nav.quickSubmission")}</span>
+						<Phone size={16} />
+						<span className="quick-submission-text-desktop">{getTranslation(displayLanguage, "nav.quickSubmission")}</span>
+						<span className="quick-submission-text-mobile">{getTranslation(displayLanguage, "nav.quickCall")}</span>
 					</button>
 				</div>
 			</div>
+			<style jsx>{`
+				.quick-submission-text-mobile {
+					display: none;
+				}
+				@media (max-width: 767px) {
+					.quick-submission-btn {
+						font-weight: 600 !important;
+					}
+					.quick-submission-text-desktop {
+						display: none;
+					}
+					.quick-submission-text-mobile {
+						display: inline;
+					}
+				}
+			`}</style>
 		</header>
 	);
 };

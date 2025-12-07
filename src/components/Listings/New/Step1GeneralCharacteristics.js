@@ -205,32 +205,56 @@ const Step1GeneralCharacteristics = ({ formData, updateFormData, onNext, onBack,
 				color: #222222;
 				cursor: pointer;
 			}
+				.footer-navigation {
+					position: fixed;
+					bottom: 0;
+					left: 0;
+					right: 0;
+					background-color: #FFFFFF;
+					border-top: 1px solid #E0E0E0;
+					padding: 0;
+					z-index: 100;
+					box-shadow: 0 -2px 4px rgba(0,0,0,0.02);
+				}
+				.footer-content {
+					width: 100%;
+					padding: 16px 24px;
+					display: flex;
+					flex-direction: row;
+					align-items: center;
+					justify-content: space-between;
+					gap: 24px;
+				}
 				.progress-bar-container {
 					width: 100%;
 					height: 4px;
 					background-color: #E0E0E0;
-					border-radius: 2px;
+					border-radius: 0;
 					overflow: hidden;
-					margin-bottom: 24px;
-					margin-top: 0;
+					margin: 0;
+					margin-top: -1px;
+					position: relative;
 				}
 				.progress-bar-fill {
 					height: 100%;
 					background-color: #222222;
-					border-radius: 2px;
+					border-radius: 0;
 					transition: width 0.3s ease;
 				}
-				.navigation-buttons {
+				.left-buttons {
 					display: flex;
-					justify-content: space-between;
 					align-items: center;
-					margin-top: 0;
-					margin-bottom: 24px;
-					padding-bottom: 40px;
-					gap: 16px;
+					justify-content: flex-start;
 					flex-shrink: 0;
-					position: relative;
-					z-index: 10;
+				}
+				.right-buttons {
+					display: flex;
+					align-items: center;
+					justify-content: flex-end;
+					flex-shrink: 0;
+				}
+				.content-wrapper {
+					padding-bottom: 120px;
 				}
 				@media (max-width: 767px) {
 					.step1-char-container {
@@ -465,17 +489,16 @@ const Step1GeneralCharacteristics = ({ formData, updateFormData, onNext, onBack,
 
 				{/* Fixed Footer with Progress Bar and Buttons */}
 				<div className="footer-navigation">
+					{/* Progress Bar */}
+					<div className="progress-bar-container">
+						<div 
+							className="progress-bar-fill"
+							style={{ width: `${progressPercentage}%` }}
+						/>
+					</div>
 					<div className="footer-content">
-						{/* Progress Bar */}
-						<div className="progress-bar-container">
-							<div 
-								className="progress-bar-fill"
-								style={{ width: `${progressPercentage}%` }}
-							/>
-						</div>
-
-						{/* Navigation Buttons */}
-						<div className="navigation-buttons">
+						{/* Back Button */}
+						<div className="left-buttons">
 							<button
 								type="button"
 								onClick={onBack}
@@ -491,6 +514,7 @@ const Step1GeneralCharacteristics = ({ formData, updateFormData, onNext, onBack,
 									color: "#222222",
 									cursor: "pointer",
 									transition: "all 0.2s ease",
+									flexShrink: 0,
 								}}
 								onMouseEnter={(e) => {
 									e.target.style.backgroundColor = "#F7F7F7";
@@ -503,31 +527,38 @@ const Step1GeneralCharacteristics = ({ formData, updateFormData, onNext, onBack,
 							>
 								<ChevronLeft size={20} />
 							</button>
+						</div>
+
+						{/* Next Button */}
+						<div className="right-buttons">
 							<button
 								type="button"
 								onClick={handleNextClick}
 								disabled={!canProceed}
 								style={{
-									padding: "16px 48px",
+									padding: "14px 32px",
 									fontSize: "16px",
 									fontWeight: "600",
 									color: "#FFFFFF",
-									backgroundColor: canProceed ? "#FF385C" : "#CCCCCC",
+									backgroundColor: canProceed ? "#FF385C" : "#DDDDDD",
 									border: "none",
 									borderRadius: "8px",
 									cursor: canProceed ? "pointer" : "not-allowed",
 									transition: "all 0.2s ease",
+									boxShadow: canProceed ? "0 2px 4px rgba(0,0,0,0.1)" : "none",
 								}}
 								onMouseEnter={(e) => {
 									if (canProceed) {
 										e.target.style.backgroundColor = "#E61E4D";
-										e.target.style.transform = "translateY(-2px)";
+										e.target.style.transform = "translateY(-1px)";
+										e.target.style.boxShadow = "0 4px 8px rgba(0,0,0,0.15)";
 									}
 								}}
 								onMouseLeave={(e) => {
 									if (canProceed) {
 										e.target.style.backgroundColor = "#FF385C";
 										e.target.style.transform = "translateY(0)";
+										e.target.style.boxShadow = "0 2px 4px rgba(0,0,0,0.1)";
 									}
 								}}
 							>
