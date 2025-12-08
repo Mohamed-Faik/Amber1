@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { getToken } from "next-auth/jwt";
 
 // Middleware for protecting routes - only runs on specific paths
 export default async function middleware(req) {
@@ -30,12 +29,13 @@ export default async function middleware(req) {
 	
 	// Only check auth for protected routes
 	try {
-		const token = await getToken({ 
-			req, 
-			secret: process.env.NEXTAUTH_SECRET 
-		});
+		// Check for next-auth session cookie (try both cookie names)
+		const sessionToken = req.cookies.get("next-auth.session-token")?.value || 
+		                     req.cookies.get("__Secure-next-auth.session-token")?.value ||
+		                     req.cookies.get("authjs.session-token")?.value ||
+		                     req.cookies.get("__Secure-authjs.session-token")?.value;
 		
-		if (!token) {
+		if (!sessionToken) {
 			// Redirect to sign in only for protected routes
 			const signInUrl = new URL("/auth/signin", req.url);
 			signInUrl.searchParams.set("callbackUrl", pathname);

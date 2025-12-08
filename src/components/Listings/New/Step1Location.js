@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import dynamic from "next/dynamic";
 import { moroccanCities, getNeighborhoodsByCity } from "@/libs/moroccanCities";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { getTranslation } from "@/utils/translations";
@@ -44,23 +43,81 @@ const findNearestLocation = (lat, lng) => {
 	return `Location (${lat.toFixed(4)}, ${lng.toFixed(4)})`;
 };
 
-// Dynamically import the entire map to avoid SSR issues
-const LocationMap = dynamic(() => import("./LocationMap"), {
-	ssr: false,
-	loading: () => (
-		<div
-			style={{
-				height: "100%",
-				display: "flex",
-				alignItems: "center",
-				justifyContent: "center",
-				color: "#717171",
-			}}
-		>
-			Loading map...
-		</div>
-	),
-});
+// Client-side only map component wrapper
+const ClientOnlyLocationMap = ({ markerPosition, onMarkerDragEnd, onMapClick }) => {
+	const [MapComponent, setMapComponent] = useState(null);
+	const [isLoading, setIsLoading] = useState(true);
+
+	useEffect(() => {
+		// Only load on client side
+		if (typeof window !== 'undefined') {
+			import("@/components/Listings/New/LocationMap")
+				.then((mod) => {
+					setMapComponent(() => mod.default);
+					setIsLoading(false);
+				})
+				.catch((err) => {
+					console.error("Failed to load LocationMap:", err);
+					setIsLoading(false);
+				});
+		}
+	}, []);
+
+	if (isLoading) {
+		return (
+			<div
+				style={{
+					height: "100%",
+					display: "flex",
+					alignItems: "center",
+					justifyContent: "center",
+					color: "#717171",
+				}}
+			>
+				Loading map...
+			</div>
+		);
+	}
+
+	if (!MapComponent) {
+		return (
+			<div
+				style={{
+					height: "100%",
+					display: "flex",
+					alignItems: "center",
+					justifyContent: "center",
+					color: "#717171",
+					flexDirection: "column",
+					gap: "10px",
+				}}
+			>
+				<div>Map failed to load</div>
+				<button
+					onClick={() => window.location.reload()}
+					style={{
+						padding: "8px 16px",
+						backgroundColor: "#FF385C",
+						color: "white",
+						border: "none",
+						borderRadius: "4px",
+						cursor: "pointer",
+					}}
+				>
+					Reload Page
+				</button>
+			</div>
+		);
+	}
+
+	return (
+		<MapComponent
+			markerPosition={markerPosition}
+			onMarkerDragEnd={onMarkerDragEnd}
+			onMapClick={onMapClick}
+		/>
+	);
+};
 
 const Step1Location = ({ formData, updateFormData, onNext, showMap = false, currentSubStep = 1 }) => {
 	const { language, isDetecting } = useLanguage();
@@ -278,7 +335,7 @@ const Step1Location = ({ formData, updateFormData, onNext, showMap = false, curr
 					width: "100%",
 				}}
 			>
-				<LocationMap
+				<ClientOnlyLocationMap
 					markerPosition={markerPosition}
 					onMarkerDragEnd={handleMarkerDragEnd}
 					onMapClick={handleMapClick}
@@ -515,7 +572,7 @@ const Step1Location = ({ formData, updateFormData, onNext, showMap = false, curr
 						position: "relative"
 					}}
 				>
-					<LocationMap
+					<ClientOnlyLocationMap
 						markerPosition={markerPosition}
 						onMarkerDragEnd={handleMarkerDragEnd}
 						onMapClick={handleMapClick}
