@@ -1,0 +1,21 @@
+{
+  "nav": {
+    "homes": "Maisons",
+    "experiences": "Expériences",
+    "services": "Services",
+    "addListing": "Ajouter une annonce",
+    "becomeHost": "Devenir hôte"
+  },
+  "common": {
+    "search": "Rechercher",
+    "login": "Se connecter",
+    "signup": "S'inscrire",
+    "logout": "Déconnexion",
+    "profile": "Profil",
+    "settings": "Paramètres"
+  },
+  "hero": {
+    "quote": "Il s'agit de personnes, pas de pierres"
+  }
+}
+
