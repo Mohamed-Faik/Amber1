@@ -279,7 +279,8 @@ const MultiStepListingForm = ({ currentUser }) => {
 					flex: 0 0 50%;
 					position: relative;
 					background: linear-gradient(135deg, #FF385C 0%, #E61E4D 50%, #D70466 100%);
-					height: calc(100vh - 80px);
+					min-height: 100vh;
+					height: 100vh;
 					overflow: hidden;
 					box-sizing: border-box;
 					flex-shrink: 0;
@@ -289,14 +290,11 @@ const MultiStepListingForm = ({ currentUser }) => {
 					flex: 0 0 35%;
 				}
 				.right-column.hidden-mobile {
-					display: block;
+					display: block; /* Show on desktop */
 				}
 				@media (max-width: 1024px) {
 					.right-column.hidden-mobile {
-						display: block; /* Show map on mobile/tablet */
-						width: 100%;
-						height: 400px; /* Fixed height for map on mobile */
-						min-height: 400px;
+						display: none; /* Hide map on mobile/tablet */
 					}
 					.left-column.wider {
 						flex: 0 0 100%;

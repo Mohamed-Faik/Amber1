@@ -51,12 +51,17 @@ const Step1InteriorAnnex = ({ formData, updateFormData, onNext, onBack, onSkip, 
 					position: fixed;
 					bottom: 0;
 					left: 0;
-					right: 0;
+					width: 65%;
 					background-color: #FFFFFF;
 					border-top: 1px solid #E0E0E0;
 					padding: 0;
 					z-index: 100;
 					box-shadow: 0 -2px 4px rgba(0,0,0,0.02);
+				}
+				@media (max-width: 1024px) {
+					.footer-navigation {
+						width: 100%;
+					}
 				}
 				.footer-content {
 					width: 100%;
@@ -66,6 +71,16 @@ const Step1InteriorAnnex = ({ formData, updateFormData, onNext, onBack, onSkip, 
 					align-items: center;
 					justify-content: space-between;
 					gap: 24px;
+				}
+				@media (max-width: 1024px) {
+					.footer-content {
+						padding: 16px 32px;
+					}
+				}
+				@media (max-width: 767px) {
+					.footer-content {
+						padding: 16px 20px;
+					}
 				}
 				.progress-bar-container {
 					width: 100%;
@@ -113,7 +128,7 @@ const Step1InteriorAnnex = ({ formData, updateFormData, onNext, onBack, onSkip, 
 				}
 				.progress-bar-container {
 					width: 100%;
-					height: 4px;
+					height: 2px;
 					background-color: #E0E0E0;
 					border-radius: 0;
 					overflow: hidden;

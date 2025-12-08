@@ -66,8 +66,23 @@ const Step1Location = ({ formData, updateFormData, onNext, showMap = false, curr
 	const { language, isDetecting } = useLanguage();
 	const displayLanguage = isDetecting ? "en" : language;
 	const [address, setAddress] = useState(formData.address || "");
+	
+	// Validate initial location or use default
+	const getValidLocation = (location) => {
+		if (location && 
+			typeof location.lat === 'number' && 
+			typeof location.lng === 'number' &&
+			!isNaN(location.lat) && 
+			!isNaN(location.lng) &&
+			isFinite(location.lat) && 
+			isFinite(location.lng)) {
+			return location;
+		}
+		return { lat: 31.6295, lng: -7.9811 }; // Default to Morocco center
+	};
+	
 	const [markerPosition, setMarkerPosition] = useState(
-		formData.location || { lat: 31.6295, lng: -7.9811 } // Default to Morocco center
+		getValidLocation(formData.location)
 	);
 	const [suggestions, setSuggestions] = useState([]);
 	const [showSuggestions, setShowSuggestions] = useState(false);
@@ -82,8 +97,18 @@ const Step1Location = ({ formData, updateFormData, onNext, showMap = false, curr
 		if (formData.address !== undefined && formData.address !== address) {
 			setAddress(formData.address);
 		}
-		if (formData.location && (formData.location.lat !== markerPosition.lat || formData.location.lng !== markerPosition.lng)) {
-			setMarkerPosition(formData.location);
+		if (formData.location) {
+			// Validate location has valid numeric values
+			const isValidLocation = typeof formData.location.lat === 'number' && 
+				typeof formData.location.lng === 'number' &&
+				!isNaN(formData.location.lat) && 
+				!isNaN(formData.location.lng) &&
+				isFinite(formData.location.lat) && 
+				isFinite(formData.location.lng);
+			
+			if (isValidLocation && (formData.location.lat !== markerPosition.lat || formData.location.lng !== markerPosition.lng)) {
+				setMarkerPosition(formData.location);
+			}
 		}
 	}, [formData.address, formData.location]);
 
@@ -286,7 +311,7 @@ const Step1Location = ({ formData, updateFormData, onNext, showMap = false, curr
 				}
 				.progress-bar-container {
 					width: 100%;
-					height: 4px;
+					height: 2px;
 					background-color: #E0E0E0;
 					border-radius: 0;
 					overflow: hidden;
@@ -304,12 +329,17 @@ const Step1Location = ({ formData, updateFormData, onNext, showMap = false, curr
 					position: fixed;
 					bottom: 0;
 					left: 0;
-					right: 0;
+					width: 65%;
 					background-color: #FFFFFF;
 					border-top: 1px solid #E0E0E0;
 					padding: 0;
 					z-index: 100;
 					box-shadow: 0 -2px 4px rgba(0,0,0,0.02);
+				}
+				@media (max-width: 1024px) {
+					.footer-navigation {
+						width: 100%;
+					}
 				}
 				.footer-content {
 					width: 100%;
@@ -318,6 +348,16 @@ const Step1Location = ({ formData, updateFormData, onNext, showMap = false, curr
 					flex-direction: row;
 					align-items: center;
 					justify-content: flex-end;
+				}
+				@media (max-width: 1024px) {
+					.footer-content {
+						padding: 16px 32px;
+					}
+				}
+				@media (max-width: 767px) {
+					.footer-content {
+						padding: 16px 20px;
+					}
 				}
 				.progress-bar-container {
 					width: 100%;
@@ -336,8 +376,12 @@ const Step1Location = ({ formData, updateFormData, onNext, showMap = false, curr
 				.location-input:focus {
 					border-color: #222222 !important;
 				}
+				.map-section {
+					display: none; /* Hide by default on desktop */
+				}
 				@media (max-width: 767px) {
 					.map-section {
+						display: block; /* Show only on mobile */
 						height: 300px !important;
 						border-radius: 12px !important;
 					}

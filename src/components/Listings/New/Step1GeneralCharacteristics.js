@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { ChevronLeft, Info } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { getTranslation } from "@/utils/translations";
 
@@ -209,12 +209,17 @@ const Step1GeneralCharacteristics = ({ formData, updateFormData, onNext, onBack,
 					position: fixed;
 					bottom: 0;
 					left: 0;
-					right: 0;
+					width: 65%;
 					background-color: #FFFFFF;
 					border-top: 1px solid #E0E0E0;
 					padding: 0;
 					z-index: 100;
 					box-shadow: 0 -2px 4px rgba(0,0,0,0.02);
+				}
+				@media (max-width: 1024px) {
+					.footer-navigation {
+						width: 100%;
+					}
 				}
 				.footer-content {
 					width: 100%;
@@ -225,9 +230,19 @@ const Step1GeneralCharacteristics = ({ formData, updateFormData, onNext, onBack,
 					justify-content: space-between;
 					gap: 24px;
 				}
+				@media (max-width: 1024px) {
+					.footer-content {
+						padding: 16px 32px;
+					}
+				}
+				@media (max-width: 767px) {
+					.footer-content {
+						padding: 16px 20px;
+					}
+				}
 				.progress-bar-container {
 					width: 100%;
-					height: 4px;
+					height: 2px;
 					background-color: #E0E0E0;
 					border-radius: 0;
 					overflow: hidden;
@@ -274,7 +289,7 @@ const Step1GeneralCharacteristics = ({ formData, updateFormData, onNext, onBack,
 							fontWeight: "300",
 							fontFamily: "var(--font-canela), serif",
 							color: "#222222",
-							paddingTop: "20px",
+							paddingTop: "0px",
 							marginBottom: "12px",
 							lineHeight: "1.2",
 						}}
@@ -298,7 +313,6 @@ const Step1GeneralCharacteristics = ({ formData, updateFormData, onNext, onBack,
 							<label className="field-label">
 								{getTranslation(displayLanguage, "listings.totalSurface")} <span className="required">*</span>
 							</label>
-							<Info size={18} className="info-icon" />
 						</div>
 						<div className="input-wrapper">
 							<input
@@ -400,7 +414,6 @@ const Step1GeneralCharacteristics = ({ formData, updateFormData, onNext, onBack,
 								<label className="field-label">
 									{getTranslation(displayLanguage, "listings.numberOfBathrooms")} <span className="required">*</span>
 								</label>
-								<Info size={18} className="info-icon" />
 							</div>
 							<div className="stepper-container">
 								<button
