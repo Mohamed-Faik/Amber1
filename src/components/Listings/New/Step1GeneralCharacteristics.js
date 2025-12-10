@@ -1,13 +1,36 @@
 "use client";
 
 import React, { useState } from "react";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, Info } from "lucide-react";
+import Select from "react-select";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { getTranslation } from "@/utils/translations";
 
 const Step1GeneralCharacteristics = ({ formData, updateFormData, onNext, onBack, currentSubStep = 3 }) => {
 	const { language, isDetecting } = useLanguage();
 	const displayLanguage = isDetecting ? "en" : language;
+	const isVilla = formData.category === "Villa" || formData.category === "Riad";
+	const isLand = formData.category === "Land";
+	const isCommercial = formData.category === "Commercial";
+	
+	// Levels above ground options (defined early for use in state initialization)
+	const levelsOptions = [
+		{ value: "plain-pied", label: getTranslation(displayLanguage, "listings.plainPied") },
+		{ value: "1", label: getTranslation(displayLanguage, "listings.oneLevel") },
+		{ value: "2", label: getTranslation(displayLanguage, "listings.twoLevels") },
+		{ value: "3", label: getTranslation(displayLanguage, "listings.threeLevels") },
+		{ value: "4", label: getTranslation(displayLanguage, "listings.fourLevels") },
+		{ value: "5", label: getTranslation(displayLanguage, "listings.fiveLevels") },
+	];
+	
+	// Villa type options (for Land category)
+	const villaTypeOptions = [
+		{ value: "semi-detached", label: getTranslation(displayLanguage, "listings.semiDetached") },
+		{ value: "terraced", label: getTranslation(displayLanguage, "listings.terraced") },
+		{ value: "detached", label: getTranslation(displayLanguage, "listings.detached") },
+	];
+	
+	// Regular fields
 	const [area, setArea] = useState(formData.area || "");
 	const [floors, setFloors] = useState(formData.floors || 1);
 	const [propertyFloor, setPropertyFloor] = useState(formData.propertyFloor || 1);
@@ -16,6 +39,28 @@ const Step1GeneralCharacteristics = ({ formData, updateFormData, onNext, onBack,
 	const [gatedCommunity, setGatedCommunity] = useState(formData.gatedCommunity || false);
 	const [elevator, setElevator] = useState(formData.elevator || false);
 	const [securitySystem, setSecuritySystem] = useState(formData.securitySystem || false);
+	
+	// Villa-specific fields
+	const [landArea, setLandArea] = useState(formData.landArea || "");
+	const [basement, setBasement] = useState(formData.basement || false);
+	const [levelsAboveGround, setLevelsAboveGround] = useState(
+		formData.levelsAboveGround 
+			? levelsOptions.find(opt => opt.value === formData.levelsAboveGround) || null
+			: null
+	);
+	
+	// Land-specific fields
+	const [landAreaForLand, setLandAreaForLand] = useState(formData.area || "");
+	const [villaType, setVillaType] = useState(() => {
+		if (formData.villaType) {
+			return villaTypeOptions.find(opt => opt.value === formData.villaType) || null;
+		}
+		return null;
+	});
+	
+	// Commercial-specific fields
+	const [commercialType, setCommercialType] = useState(formData.commercialType || "");
+	
 	const totalSteps = 7;
 	const progressPercentage = (currentSubStep / totalSteps) * 100;
 
@@ -36,21 +81,74 @@ const Step1GeneralCharacteristics = ({ formData, updateFormData, onNext, onBack,
 		updateFormData({ area: value });
 	};
 
+	const handleLandAreaChange = (e) => {
+		const value = e.target.value;
+		setLandArea(value);
+		updateFormData({ landArea: value });
+	};
+
+	const handleLevelsChange = (selectedOption) => {
+		setLevelsAboveGround(selectedOption);
+		updateFormData({ levelsAboveGround: selectedOption ? selectedOption.value : null });
+	};
+
+	const handleLandAreaForLandChange = (e) => {
+		const value = e.target.value;
+		setLandAreaForLand(value);
+		updateFormData({ area: value });
+	};
+
+	const handleVillaTypeChange = (selectedOption) => {
+		setVillaType(selectedOption);
+		updateFormData({ villaType: selectedOption ? selectedOption.value : null });
+	};
+
+	const handleCommercialTypeChange = (type) => {
+		setCommercialType(type);
+		updateFormData({ commercialType: type });
+	};
+
 	const handleNextClick = () => {
-		updateFormData({
-			area,
-			floors,
-			propertyFloor,
-			bedrooms,
-			bathrooms,
-			gatedCommunity,
-			elevator,
-			securitySystem,
-		});
+		if (isVilla) {
+			updateFormData({
+				landArea,
+				basement,
+				levelsAboveGround: levelsAboveGround ? levelsAboveGround.value : null,
+				bedrooms,
+				bathrooms,
+				gatedCommunity,
+			});
+		} else if (isLand) {
+			updateFormData({
+				area: landAreaForLand,
+				villaType: villaType ? villaType.value : null,
+			});
+		} else if (isCommercial) {
+			updateFormData({
+				commercialType,
+			});
+		} else {
+			updateFormData({
+				area,
+				floors,
+				propertyFloor,
+				bedrooms,
+				bathrooms,
+				gatedCommunity,
+				elevator,
+				securitySystem,
+			});
+		}
 		onNext();
 	};
 
-	const canProceed = area.trim().length > 0;
+	const canProceed = isVilla 
+		? landArea.trim().length > 0 && levelsAboveGround !== null
+		: isLand
+		? landAreaForLand.trim().length > 0 && villaType !== null
+		: isCommercial
+		? commercialType.trim().length > 0
+		: area.trim().length > 0;
 
 	return (
 		<>
@@ -205,6 +303,93 @@ const Step1GeneralCharacteristics = ({ formData, updateFormData, onNext, onBack,
 				color: #222222;
 				cursor: pointer;
 			}
+			.select-wrapper {
+				width: 100%;
+			}
+			.select-wrapper :global(.select__control) {
+				border: 2px solid #E0E0E0;
+				border-radius: 8px;
+				min-height: 56px;
+				transition: all 0.2s ease;
+			}
+			.select-wrapper :global(.select__control:hover) {
+				border-color: #FF385C;
+			}
+			.select-wrapper :global(.select__control--is-focused) {
+				border-color: #FF385C;
+				box-shadow: 0 0 0 3px rgba(255, 56, 92, 0.1);
+			}
+			.select-wrapper :global(.select__placeholder) {
+				color: #717171;
+				font-size: 16px;
+			}
+			.select-wrapper :global(.select__single-value) {
+				color: #222222;
+				font-size: 16px;
+			}
+			.select-wrapper :global(.select__menu) {
+				border-radius: 8px;
+				box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+				border: 1px solid #e0e0e0;
+			}
+			.select-wrapper :global(.select__option--is-focused) {
+				background-color: #FFF5F7;
+			}
+			.select-wrapper :global(.select__option--is-selected) {
+				background-color: #FF385C;
+				color: white;
+			}
+			.radio-options-container {
+				display: flex;
+				flex-direction: column;
+				gap: 12px;
+			}
+			.radio-option {
+				width: 100%;
+				padding: 16px 20px;
+				border: 2px solid #E0E0E0;
+				border-radius: 8px;
+				background-color: #FFFFFF;
+				cursor: pointer;
+				transition: all 0.2s ease;
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+			}
+			.radio-option:hover {
+				border-color: #FF385C;
+				box-shadow: 0 2px 8px rgba(255, 56, 92, 0.1);
+			}
+			.radio-option.selected {
+				border-color: #FF385C;
+				background-color: #FFF5F7;
+			}
+			.radio-button-circle {
+				width: 24px;
+				height: 24px;
+				border-radius: 50%;
+				border: 2px solid #E0E0E0;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				flex-shrink: 0;
+				transition: all 0.2s ease;
+			}
+			.radio-option.selected .radio-button-circle {
+				border-color: #FF385C;
+				background-color: #FF385C;
+			}
+			.radio-button-inner {
+				width: 10px;
+				height: 10px;
+				border-radius: 50%;
+				background-color: #FFFFFF;
+			}
+			.radio-option-label {
+				font-size: 16px;
+				font-weight: 500;
+				color: #222222;
+			}
 				.footer-navigation {
 					position: fixed;
 					bottom: 0;
@@ -307,196 +492,511 @@ const Step1GeneralCharacteristics = ({ formData, updateFormData, onNext, onBack,
 						{getTranslation(displayLanguage, "listings.generalCharacteristicsSubtitle")}
 					</p>
 
-					{/* Surface totale */}
-					<div className="form-field">
-						<div className="field-label-wrapper">
-							<label className="field-label">
-								{getTranslation(displayLanguage, "listings.totalSurface")} <span className="required">*</span>
-							</label>
-						</div>
-						<div className="input-wrapper">
-							<input
-								type="number"
-								value={area}
-								onChange={handleAreaChange}
-								placeholder={`${getTranslation(displayLanguage, "listings.totalSurface")} *`}
-								className="input-field"
-							/>
-							<span className="unit-text">m²</span>
-						</div>
-					</div>
-
-					{/* Nombre d'étages */}
-					<div className="form-field">
-						<div className="stepper-field-wrapper">
-							<label className="field-label">
-								{getTranslation(displayLanguage, "listings.numberOfFloors")} <span className="required">*</span>
-							</label>
-							<div className="stepper-container">
-								<button
-									type="button"
-									className="stepper-button"
-									onClick={() => handleStepperChange("floors", floors - 1, setFloors)}
-									disabled={floors <= 0}
-								>
-									-
-								</button>
-								<span className="stepper-value">{floors}</span>
-								<button
-									type="button"
-									className="stepper-button"
-									onClick={() => handleStepperChange("floors", floors + 1, setFloors)}
-								>
-									+
-								</button>
-							</div>
-						</div>
-					</div>
-
-					{/* Étage du bien */}
-					<div className="form-field">
-						<div className="stepper-field-wrapper">
-							<label className="field-label">
-								{getTranslation(displayLanguage, "listings.propertyFloor")} <span className="required">*</span>
-							</label>
-							<div className="stepper-container">
-								<button
-									type="button"
-									className="stepper-button"
-									onClick={() => handleStepperChange("propertyFloor", propertyFloor - 1, setPropertyFloor)}
-									disabled={propertyFloor <= 0}
-								>
-									-
-								</button>
-								<span className="stepper-value">{propertyFloor}</span>
-								<button
-									type="button"
-									className="stepper-button"
-									onClick={() => handleStepperChange("propertyFloor", propertyFloor + 1, setPropertyFloor)}
-								>
-									+
-								</button>
-							</div>
-						</div>
-					</div>
-
-					{/* Nombre de chambres */}
-					<div className="form-field">
-						<div className="stepper-field-wrapper">
-							<label className="field-label">
-								{getTranslation(displayLanguage, "listings.numberOfBedrooms")} <span className="required">*</span>
-							</label>
-							<div className="stepper-container">
-								<button
-									type="button"
-									className="stepper-button"
-									onClick={() => handleStepperChange("bedrooms", bedrooms - 1, setBedrooms)}
-									disabled={bedrooms <= 0}
-								>
-									-
-								</button>
-								<span className="stepper-value">{bedrooms}</span>
-								<button
-									type="button"
-									className="stepper-button"
-									onClick={() => handleStepperChange("bedrooms", bedrooms + 1, setBedrooms)}
-								>
-									+
-								</button>
-							</div>
-						</div>
-					</div>
-
-					{/* Nombre de salles d'eau */}
-					<div className="form-field">
-						<div className="stepper-field-wrapper">
-							<div className="stepper-label-wrapper">
-								<label className="field-label">
-									{getTranslation(displayLanguage, "listings.numberOfBathrooms")} <span className="required">*</span>
-								</label>
-							</div>
-							<div className="stepper-container">
-								<button
-									type="button"
-									className="stepper-button"
-									onClick={() => handleStepperChange("bathrooms", bathrooms - 1, setBathrooms)}
-									disabled={bathrooms <= 0}
-								>
-									-
-								</button>
-								<span className="stepper-value">{bathrooms}</span>
-								<button
-									type="button"
-									className="stepper-button"
-									onClick={() => handleStepperChange("bathrooms", bathrooms + 1, setBathrooms)}
-								>
-									+
-								</button>
-							</div>
-						</div>
-					</div>
-
-					{/* Checkboxes */}
-					<div className="form-field">
-						<div className="checkbox-container">
-							<div className="checkbox-field">
-								<div
-									className={`checkbox-input ${gatedCommunity ? "checked" : ""}`}
-									onClick={() => handleCheckboxChange("gatedCommunity", !gatedCommunity, setGatedCommunity)}
-								>
-									{gatedCommunity && (
-										<svg width="14" height="14" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-											<path d="M16.6667 5L7.50004 14.1667L3.33337 10" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-										</svg>
-									)}
+					{isVilla ? (
+						<>
+							{/* Surface totale du terrain - Villa */}
+							<div className="form-field">
+								<div className="field-label-wrapper">
+									<label className="field-label">
+										{getTranslation(displayLanguage, "listings.totalLandArea")} <span className="required">*</span>
+									</label>
 								</div>
-							<label
-								className="checkbox-label"
-								onClick={() => handleCheckboxChange("gatedCommunity", !gatedCommunity, setGatedCommunity)}
-							>
-								{getTranslation(displayLanguage, "listings.gatedCommunity")}
-							</label>
+								<div className="input-wrapper">
+									<input
+										type="number"
+										value={landArea}
+										onChange={handleLandAreaChange}
+										placeholder={`${getTranslation(displayLanguage, "listings.totalLandArea")} *`}
+										className="input-field"
+									/>
+									<span className="unit-text">m²</span>
+								</div>
 							</div>
 
-							<div className="checkbox-field">
-								<div
-									className={`checkbox-input ${elevator ? "checked" : ""}`}
-									onClick={() => handleCheckboxChange("elevator", !elevator, setElevator)}
-								>
-									{elevator && (
-										<svg width="14" height="14" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-											<path d="M16.6667 5L7.50004 14.1667L3.33337 10" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-										</svg>
-									)}
+							{/* Sous-sol - Villa */}
+							<div className="form-field">
+								<div className="checkbox-container">
+									<div className="checkbox-field">
+										<div
+											className={`checkbox-input ${basement ? "checked" : ""}`}
+											onClick={() => handleCheckboxChange("basement", !basement, setBasement)}
+										>
+											{basement && (
+												<svg width="14" height="14" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+													<path d="M16.6667 5L7.50004 14.1667L3.33337 10" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+												</svg>
+											)}
+										</div>
+										<label
+											className="checkbox-label"
+											onClick={() => handleCheckboxChange("basement", !basement, setBasement)}
+										>
+											{getTranslation(displayLanguage, "listings.basement")}
+										</label>
+									</div>
 								</div>
-							<label
-								className="checkbox-label"
-								onClick={() => handleCheckboxChange("elevator", !elevator, setElevator)}
-							>
-								{getTranslation(displayLanguage, "listings.elevator")}
-							</label>
 							</div>
 
-							<div className="checkbox-field">
-								<div
-									className={`checkbox-input ${securitySystem ? "checked" : ""}`}
-									onClick={() => handleCheckboxChange("securitySystem", !securitySystem, setSecuritySystem)}
-								>
-									{securitySystem && (
-										<svg width="14" height="14" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-											<path d="M16.6667 5L7.50004 14.1667L3.33337 10" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-										</svg>
-									)}
+							{/* Nombre de niveaux hors sous-sol - Villa */}
+							<div className="form-field">
+								<div className="field-label-wrapper">
+									<label className="field-label">
+										{getTranslation(displayLanguage, "listings.numberOfLevelsAboveGround")} <span className="required">*</span>
+									</label>
 								</div>
-							<label
-								className="checkbox-label"
-								onClick={() => handleCheckboxChange("securitySystem", !securitySystem, setSecuritySystem)}
-							>
-								{getTranslation(displayLanguage, "listings.securitySystem")}
-							</label>
+								<div className="select-wrapper">
+									<Select
+										value={levelsAboveGround}
+										onChange={handleLevelsChange}
+										options={levelsOptions}
+										placeholder={getTranslation(displayLanguage, "listings.numberOfLevelsAboveGround")}
+										isSearchable={false}
+										menuPortalTarget={typeof document !== "undefined" ? document.body : null}
+										menuPosition="fixed"
+										styles={{
+											control: (base, state) => ({
+												...base,
+												border: state.isFocused ? "2px solid #FF385C" : "2px solid #E0E0E0",
+												borderRadius: "8px",
+												boxShadow: state.isFocused ? "0 0 0 3px rgba(255, 56, 92, 0.1)" : "none",
+												minHeight: "56px",
+												"&:hover": {
+													borderColor: state.isFocused ? "#FF385C" : "#FF385C",
+												},
+											}),
+											placeholder: (base) => ({
+												...base,
+												color: "#717171",
+												fontSize: "16px",
+											}),
+											singleValue: (base) => ({
+												...base,
+												color: "#222222",
+												fontSize: "16px",
+											}),
+											menu: (base) => ({
+												...base,
+												borderRadius: "8px",
+												boxShadow: "0 8px 24px rgba(0, 0, 0, 0.15), 0 2px 8px rgba(0, 0, 0, 0.1)",
+												border: "1px solid #e0e0e0",
+												zIndex: 9999,
+											}),
+											menuPortal: (base) => ({
+												...base,
+												zIndex: 9999,
+											}),
+											option: (base, state) => ({
+												...base,
+												backgroundColor: state.isSelected
+													? "#FF385C"
+													: state.isFocused
+													? "#FFF5F7"
+													: "white",
+												color: state.isSelected ? "white" : "#222222",
+												"&:hover": {
+													backgroundColor: state.isSelected ? "#FF385C" : "#FFF5F7",
+												},
+											}),
+										}}
+									/>
+								</div>
 							</div>
-						</div>
-					</div>
+
+							{/* Nombre de chambres - Villa */}
+							<div className="form-field">
+								<div className="stepper-field-wrapper">
+									<label className="field-label">
+										{getTranslation(displayLanguage, "listings.numberOfBedrooms")} <span className="required">*</span>
+									</label>
+									<div className="stepper-container">
+										<button
+											type="button"
+											className="stepper-button"
+											onClick={() => handleStepperChange("bedrooms", bedrooms - 1, setBedrooms)}
+											disabled={bedrooms <= 0}
+										>
+											-
+										</button>
+										<span className="stepper-value">{bedrooms}</span>
+										<button
+											type="button"
+											className="stepper-button"
+											onClick={() => handleStepperChange("bedrooms", bedrooms + 1, setBedrooms)}
+										>
+											+
+										</button>
+									</div>
+								</div>
+							</div>
+
+							{/* Nombre de salles d'eau - Villa */}
+							<div className="form-field">
+								<div className="stepper-field-wrapper">
+									<div className="stepper-label-wrapper">
+										<label className="field-label">
+											{getTranslation(displayLanguage, "listings.numberOfBathrooms")} <span className="required">*</span>
+										</label>
+										<Info className="info-icon" size={18} />
+									</div>
+									<div className="stepper-container">
+										<button
+											type="button"
+											className="stepper-button"
+											onClick={() => handleStepperChange("bathrooms", bathrooms - 1, setBathrooms)}
+											disabled={bathrooms <= 0}
+										>
+											-
+										</button>
+										<span className="stepper-value">{bathrooms}</span>
+										<button
+											type="button"
+											className="stepper-button"
+											onClick={() => handleStepperChange("bathrooms", bathrooms + 1, setBathrooms)}
+										>
+											+
+										</button>
+									</div>
+								</div>
+							</div>
+
+							{/* Résidence fermée - Villa */}
+							<div className="form-field">
+								<div className="checkbox-container">
+									<div className="checkbox-field">
+										<div
+											className={`checkbox-input ${gatedCommunity ? "checked" : ""}`}
+											onClick={() => handleCheckboxChange("gatedCommunity", !gatedCommunity, setGatedCommunity)}
+										>
+											{gatedCommunity && (
+												<svg width="14" height="14" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+													<path d="M16.6667 5L7.50004 14.1667L3.33337 10" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+												</svg>
+											)}
+										</div>
+										<label
+											className="checkbox-label"
+											onClick={() => handleCheckboxChange("gatedCommunity", !gatedCommunity, setGatedCommunity)}
+										>
+											{getTranslation(displayLanguage, "listings.gatedCommunity")}
+										</label>
+									</div>
+								</div>
+							</div>
+						</>
+					) : isLand ? (
+						<>
+							{/* Surface totale du bien - Land */}
+							<div className="form-field">
+								<div className="field-label-wrapper">
+									<label className="field-label">
+										{getTranslation(displayLanguage, "listings.totalSurface")} <span className="required">*</span>
+									</label>
+								</div>
+								<div className="input-wrapper">
+									<input
+										type="number"
+										value={landAreaForLand}
+										onChange={handleLandAreaForLandChange}
+										placeholder={`${getTranslation(displayLanguage, "listings.totalSurface")} *`}
+										className="input-field"
+									/>
+									<span className="unit-text">m²</span>
+								</div>
+							</div>
+
+							{/* Type de villa - Land */}
+							<div className="form-field">
+								<div className="field-label-wrapper">
+									<label className="field-label">
+										{getTranslation(displayLanguage, "listings.villaType")} <span className="required">*</span>
+									</label>
+								</div>
+								<div className="select-wrapper">
+									<Select
+										value={villaType}
+										onChange={handleVillaTypeChange}
+										options={villaTypeOptions}
+										placeholder={getTranslation(displayLanguage, "listings.villaType")}
+										isSearchable={false}
+										menuPortalTarget={typeof document !== "undefined" ? document.body : null}
+										menuPosition="fixed"
+										styles={{
+											control: (base, state) => ({
+												...base,
+												border: state.isFocused ? "2px solid #FF385C" : "2px solid #E0E0E0",
+												borderRadius: "8px",
+												boxShadow: state.isFocused ? "0 0 0 3px rgba(255, 56, 92, 0.1)" : "none",
+												minHeight: "56px",
+												"&:hover": {
+													borderColor: state.isFocused ? "#FF385C" : "#FF385C",
+												},
+											}),
+											placeholder: (base) => ({
+												...base,
+												color: "#717171",
+												fontSize: "16px",
+											}),
+											singleValue: (base) => ({
+												...base,
+												color: "#222222",
+												fontSize: "16px",
+											}),
+											menu: (base) => ({
+												...base,
+												borderRadius: "8px",
+												boxShadow: "0 8px 24px rgba(0, 0, 0, 0.15), 0 2px 8px rgba(0, 0, 0, 0.1)",
+												border: "1px solid #e0e0e0",
+												zIndex: 9999,
+											}),
+											menuPortal: (base) => ({
+												...base,
+												zIndex: 9999,
+											}),
+											option: (base, state) => ({
+												...base,
+												backgroundColor: state.isSelected
+													? "#FF385C"
+													: state.isFocused
+													? "#FFF5F7"
+													: "white",
+												color: state.isSelected ? "white" : "#222222",
+												"&:hover": {
+													backgroundColor: state.isSelected ? "#FF385C" : "#FFF5F7",
+												},
+											}),
+										}}
+									/>
+								</div>
+							</div>
+						</>
+					) : isCommercial ? (
+						<>
+							{/* Commercial type selection - Commercial */}
+							<div className="form-field">
+								<div className="radio-options-container">
+									<div
+										className={`radio-option ${commercialType === "commercial-premises" ? "selected" : ""}`}
+										onClick={() => handleCommercialTypeChange("commercial-premises")}
+									>
+										<span className="radio-option-label">
+											{getTranslation(displayLanguage, "listings.commercialPremises")}
+										</span>
+										<div className="radio-button-circle">
+											{commercialType === "commercial-premises" && (
+												<div className="radio-button-inner" />
+											)}
+										</div>
+									</div>
+									<div
+										className={`radio-option ${commercialType === "offices" ? "selected" : ""}`}
+										onClick={() => handleCommercialTypeChange("offices")}
+									>
+										<span className="radio-option-label">
+											{getTranslation(displayLanguage, "listings.offices")}
+										</span>
+										<div className="radio-button-circle">
+											{commercialType === "offices" && (
+												<div className="radio-button-inner" />
+											)}
+										</div>
+									</div>
+								</div>
+							</div>
+						</>
+					) : (
+						<>
+							{/* Surface totale */}
+							<div className="form-field">
+								<div className="field-label-wrapper">
+									<label className="field-label">
+										{getTranslation(displayLanguage, "listings.totalSurface")} <span className="required">*</span>
+									</label>
+								</div>
+								<div className="input-wrapper">
+									<input
+										type="number"
+										value={area}
+										onChange={handleAreaChange}
+										placeholder={`${getTranslation(displayLanguage, "listings.totalSurface")} *`}
+										className="input-field"
+									/>
+									<span className="unit-text">m²</span>
+								</div>
+							</div>
+
+							{/* Nombre d'étages */}
+							<div className="form-field">
+								<div className="stepper-field-wrapper">
+									<label className="field-label">
+										{getTranslation(displayLanguage, "listings.numberOfFloors")} <span className="required">*</span>
+									</label>
+									<div className="stepper-container">
+										<button
+											type="button"
+											className="stepper-button"
+											onClick={() => handleStepperChange("floors", floors - 1, setFloors)}
+											disabled={floors <= 0}
+										>
+											-
+										</button>
+										<span className="stepper-value">{floors}</span>
+										<button
+											type="button"
+											className="stepper-button"
+											onClick={() => handleStepperChange("floors", floors + 1, setFloors)}
+										>
+											+
+										</button>
+									</div>
+								</div>
+							</div>
+
+							{/* Étage du bien */}
+							<div className="form-field">
+								<div className="stepper-field-wrapper">
+									<label className="field-label">
+										{getTranslation(displayLanguage, "listings.propertyFloor")} <span className="required">*</span>
+									</label>
+									<div className="stepper-container">
+										<button
+											type="button"
+											className="stepper-button"
+											onClick={() => handleStepperChange("propertyFloor", propertyFloor - 1, setPropertyFloor)}
+											disabled={propertyFloor <= 0}
+										>
+											-
+										</button>
+										<span className="stepper-value">{propertyFloor}</span>
+										<button
+											type="button"
+											className="stepper-button"
+											onClick={() => handleStepperChange("propertyFloor", propertyFloor + 1, setPropertyFloor)}
+										>
+											+
+										</button>
+									</div>
+								</div>
+							</div>
+
+							{/* Nombre de chambres */}
+							<div className="form-field">
+								<div className="stepper-field-wrapper">
+									<label className="field-label">
+										{getTranslation(displayLanguage, "listings.numberOfBedrooms")} <span className="required">*</span>
+									</label>
+									<div className="stepper-container">
+										<button
+											type="button"
+											className="stepper-button"
+											onClick={() => handleStepperChange("bedrooms", bedrooms - 1, setBedrooms)}
+											disabled={bedrooms <= 0}
+										>
+											-
+										</button>
+										<span className="stepper-value">{bedrooms}</span>
+										<button
+											type="button"
+											className="stepper-button"
+											onClick={() => handleStepperChange("bedrooms", bedrooms + 1, setBedrooms)}
+										>
+											+
+										</button>
+									</div>
+								</div>
+							</div>
+
+							{/* Nombre de salles d'eau */}
+							<div className="form-field">
+								<div className="stepper-field-wrapper">
+									<div className="stepper-label-wrapper">
+										<label className="field-label">
+											{getTranslation(displayLanguage, "listings.numberOfBathrooms")} <span className="required">*</span>
+										</label>
+									</div>
+									<div className="stepper-container">
+										<button
+											type="button"
+											className="stepper-button"
+											onClick={() => handleStepperChange("bathrooms", bathrooms - 1, setBathrooms)}
+											disabled={bathrooms <= 0}
+										>
+											-
+										</button>
+										<span className="stepper-value">{bathrooms}</span>
+										<button
+											type="button"
+											className="stepper-button"
+											onClick={() => handleStepperChange("bathrooms", bathrooms + 1, setBathrooms)}
+										>
+											+
+										</button>
+									</div>
+								</div>
+							</div>
+
+							{/* Checkboxes */}
+							<div className="form-field">
+								<div className="checkbox-container">
+									<div className="checkbox-field">
+										<div
+											className={`checkbox-input ${gatedCommunity ? "checked" : ""}`}
+											onClick={() => handleCheckboxChange("gatedCommunity", !gatedCommunity, setGatedCommunity)}
+										>
+											{gatedCommunity && (
+												<svg width="14" height="14" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+													<path d="M16.6667 5L7.50004 14.1667L3.33337 10" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+												</svg>
+											)}
+										</div>
+									<label
+										className="checkbox-label"
+										onClick={() => handleCheckboxChange("gatedCommunity", !gatedCommunity, setGatedCommunity)}
+									>
+										{getTranslation(displayLanguage, "listings.gatedCommunity")}
+									</label>
+									</div>
+
+									<div className="checkbox-field">
+										<div
+											className={`checkbox-input ${elevator ? "checked" : ""}`}
+											onClick={() => handleCheckboxChange("elevator", !elevator, setElevator)}
+										>
+											{elevator && (
+												<svg width="14" height="14" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+													<path d="M16.6667 5L7.50004 14.1667L3.33337 10" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+												</svg>
+											)}
+										</div>
+									<label
+										className="checkbox-label"
+										onClick={() => handleCheckboxChange("elevator", !elevator, setElevator)}
+									>
+										{getTranslation(displayLanguage, "listings.elevator")}
+									</label>
+									</div>
+
+									<div className="checkbox-field">
+										<div
+											className={`checkbox-input ${securitySystem ? "checked" : ""}`}
+											onClick={() => handleCheckboxChange("securitySystem", !securitySystem, setSecuritySystem)}
+										>
+											{securitySystem && (
+												<svg width="14" height="14" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+													<path d="M16.6667 5L7.50004 14.1667L3.33337 10" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+												</svg>
+											)}
+										</div>
+									<label
+										className="checkbox-label"
+										onClick={() => handleCheckboxChange("securitySystem", !securitySystem, setSecuritySystem)}
+									>
+										{getTranslation(displayLanguage, "listings.securitySystem")}
+									</label>
+									</div>
+								</div>
+							</div>
+						</>
+					)}
 
 				</div>
 
