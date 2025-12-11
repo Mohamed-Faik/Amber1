@@ -37,6 +37,7 @@ const Banner = () => {
 	const [locationSearchTerm, setLocationSearchTerm] = useState("");
 	const [locations, setLocations] = useState([]);
 	const [locSuggest, setLocSuggest] = useState(false);
+	const [isPageLoaded, setIsPageLoaded] = useState(false);
 	const categoryInputRef = useRef(null);
 	const saleTypeInputRef = useRef(null);
 	const locationInputRef = useRef(null);
@@ -144,6 +145,31 @@ const Banner = () => {
 				});
 			setLocSuggest(true);
 		}
+	}, []);
+
+	// Check if page is fully loaded
+	useEffect(() => {
+		// Check if already loaded
+		if (document.readyState === 'complete') {
+			// Add a small delay to ensure styles are fully applied
+			const timer = setTimeout(() => {
+				setIsPageLoaded(true);
+			}, 100);
+			return () => clearTimeout(timer);
+		}
+
+		// Wait for load event
+		const handleLoad = () => {
+			// Add a small delay to ensure styles are fully applied, especially on mobile
+			setTimeout(() => {
+				setIsPageLoaded(true);
+			}, 100);
+		};
+
+		window.addEventListener('load', handleLoad);
+		return () => {
+			window.removeEventListener('load', handleLoad);
+		};
 	}, []);
 
 	// Close dropdowns when clicking outside
@@ -431,6 +457,9 @@ const Banner = () => {
 							border: "2px solid rgba(255, 255, 255, 0.9)",
 							background: "linear-gradient(135deg, #FFFFFF 0%, #FAFAFA 100%)",
 							animation: "fadeInUp 1s ease-out 0.2s both",
+							opacity: isPageLoaded ? 1 : 0,
+							visibility: isPageLoaded ? "visible" : "hidden",
+							transition: "opacity 0.3s ease-in-out, visibility 0.3s ease-in-out",
 						}}
 					>
 						<form onSubmit={handleSearch}>

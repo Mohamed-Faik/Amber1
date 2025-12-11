@@ -18,6 +18,7 @@ const Navbar = ({ currentUser }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isRightMenuOpen, setIsRightMenuOpen] = useState(false);
   const [isLeftMenuOpen, setIsLeftMenuOpen] = useState(false);
+  const [isPageLoaded, setIsPageLoaded] = useState(false);
 
   const displayLanguage = isDetecting ? "en" : language;
   const isHomePage = pathname === "/";
@@ -28,6 +29,31 @@ const Navbar = ({ currentUser }) => {
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Check if page is fully loaded
+  useEffect(() => {
+    // Check if already loaded
+    if (document.readyState === 'complete') {
+      // Add a small delay to ensure styles are fully applied
+      const timer = setTimeout(() => {
+        setIsPageLoaded(true);
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+
+    // Wait for load event
+    const handleLoad = () => {
+      // Add a small delay to ensure styles are fully applied, especially on mobile
+      setTimeout(() => {
+        setIsPageLoaded(true);
+      }, 100);
+    };
+
+    window.addEventListener('load', handleLoad);
+    return () => {
+      window.removeEventListener('load', handleLoad);
+    };
   }, []);
 
   useEffect(() => {
@@ -190,6 +216,9 @@ const Navbar = ({ currentUser }) => {
                 display: "flex",
                 alignItems: "center",
                 flex: "0 0 auto",
+                opacity: isPageLoaded ? 1 : 0,
+                visibility: isPageLoaded ? "visible" : "hidden",
+                transition: "opacity 0.3s ease-in-out, visibility 0.3s ease-in-out",
               }}
             >
               <LanguageSwitcher />
@@ -209,6 +238,9 @@ const Navbar = ({ currentUser }) => {
               left: "0",
               transform: "none",
               zIndex: 10,
+              opacity: isPageLoaded ? 1 : 0,
+              visibility: isPageLoaded ? "visible" : "hidden",
+              transition: "opacity 0.3s ease-in-out, visibility 0.3s ease-in-out",
             }}
           >
             <div 
@@ -260,6 +292,9 @@ const Navbar = ({ currentUser }) => {
               left: "calc(50% - 80px)",
               transform: "translateX(-50%)",
               zIndex: 10,
+              opacity: isPageLoaded ? 1 : 0,
+              visibility: isPageLoaded ? "visible" : "hidden",
+              transition: "opacity 0.3s ease-in-out, visibility 0.3s ease-in-out",
             }}
           >
             <Link
@@ -379,6 +414,9 @@ const Navbar = ({ currentUser }) => {
               gap: "12px",
               flex: "0 0 auto",
               marginLeft: "auto",
+              opacity: isPageLoaded ? 1 : 0,
+              visibility: isPageLoaded ? "visible" : "hidden",
+              transition: "opacity 0.3s ease-in-out, visibility 0.3s ease-in-out",
             }}
           >
             {/* Become a Host / Add Listing */}
@@ -483,6 +521,9 @@ const Navbar = ({ currentUser }) => {
               gap: "8px",
               flex: "0 0 auto",
               marginLeft: "auto",
+              opacity: isPageLoaded ? 1 : 0,
+              visibility: isPageLoaded ? "visible" : "hidden",
+              transition: "opacity 0.3s ease-in-out, visibility 0.3s ease-in-out",
             }}
           >
             {/* Language Switcher - Mobile Right (only when logged in) */}
