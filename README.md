@@ -2,7 +2,7 @@
 
 A modern, full-featured property listing platform built with Next.js 14, featuring property listings, user management, reviews, and an admin dashboard. Perfect for real estate, property sales, and property rentals.
 
-**Latest Update:** Fixed notification icon alignment on mobile navbar.
+**Latest Update:** Fixed.notification icon alignment on mobile navbar.
 
 ![Next.js](https://img.shields.io/badge/Next.js-14.2.3-black)
 ![React](https://img.shields.io/badge/React-18.2.0-blue)
