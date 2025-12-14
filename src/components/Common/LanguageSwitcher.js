@@ -8,11 +8,24 @@ import { languages } from "@/utils/translations";
 const LanguageSwitcher = () => {
   const { language, changeLanguage } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const dropdownRef = useRef(null);
+  const buttonRef = useRef(null);
 
   const currentLanguage = languages.find((lang) => lang.code === language) || languages[0];
 
-  // Close dropdown when clicking outside
+  // Detect mobile on mount and resize
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // Close dropdown when clicking outside - works on both mobile and desktop
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -20,9 +33,13 @@ const LanguageSwitcher = () => {
       }
     };
 
-    document.addEventListener("mousedown", handleClickOutside);
+    // Use both click and touchstart for mobile compatibility
+    document.addEventListener("click", handleClickOutside, true);
+    document.addEventListener("touchstart", handleClickOutside, true);
+    
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("click", handleClickOutside, true);
+      document.removeEventListener("touchstart", handleClickOutside, true);
     };
   }, []);
 
@@ -30,6 +47,12 @@ const LanguageSwitcher = () => {
     changeLanguage(langCode);
     setIsOpen(false);
     // Language change will trigger re-render automatically via context
+  };
+
+  const handleToggle = (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+    setIsOpen(!isOpen);
   };
 
   return (
@@ -41,7 +64,8 @@ const LanguageSwitcher = () => {
       }}
     >
       <button
-        onClick={() => setIsOpen(!isOpen)}
+        ref={buttonRef}
+        onClick={handleToggle}
         style={{
           display: "flex",
           alignItems: "center",
@@ -54,12 +78,18 @@ const LanguageSwitcher = () => {
           transition: "all 0.2s ease",
           width: "42px",
           height: "42px",
+          WebkitTapHighlightColor: "transparent",
+          touchAction: "manipulation",
         }}
         onMouseEnter={(e) => {
-          e.currentTarget.style.backgroundColor = "#EBEBEB";
+          if (!isMobile) {
+            e.currentTarget.style.backgroundColor = "#EBEBEB";
+          }
         }}
         onMouseLeave={(e) => {
-          e.currentTarget.style.backgroundColor = "#FFFFFF";
+          if (!isMobile) {
+            e.currentTarget.style.backgroundColor = "#FFFFFF";
+          }
         }}
         aria-label="Change language"
         aria-expanded={isOpen}
@@ -72,20 +102,26 @@ const LanguageSwitcher = () => {
           style={{
             position: "absolute",
             top: "calc(100% + 8px)",
-            left: 0,
+            left: isMobile ? "auto" : 0,
+            right: isMobile ? 0 : "auto",
             backgroundColor: "#FFFFFF",
             borderRadius: "12px",
             boxShadow: "0 4px 16px rgba(0, 0, 0, 0.15)",
             border: "1px solid #E0E0E0",
             minWidth: "180px",
-            zIndex: 10000,
+            zIndex: 10001,
             overflow: "hidden",
+            touchAction: "manipulation",
           }}
         >
           {languages.map((lang) => (
             <button
               key={lang.code}
-              onClick={() => handleLanguageChange(lang.code)}
+              onClick={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                handleLanguageChange(lang.code);
+              }}
               style={{
                 width: "100%",
                 padding: "12px 16px",
@@ -101,14 +137,16 @@ const LanguageSwitcher = () => {
                 fontWeight: language === lang.code ? "600" : "400",
                 color: "#222222",
                 fontFamily: "inherit",
+                WebkitTapHighlightColor: "transparent",
+                touchAction: "manipulation",
               }}
               onMouseEnter={(e) => {
-                if (language !== lang.code) {
+                if (!isMobile && language !== lang.code) {
                   e.currentTarget.style.backgroundColor = "#F7F7F7";
                 }
               }}
               onMouseLeave={(e) => {
-                if (language !== lang.code) {
+                if (!isMobile && language !== lang.code) {
                   e.currentTarget.style.backgroundColor = "transparent";
                 }
               }}
