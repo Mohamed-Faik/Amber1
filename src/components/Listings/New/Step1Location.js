@@ -123,21 +123,21 @@ const Step1Location = ({ formData, updateFormData, onNext, showMap = false, curr
 	const { language, isDetecting } = useLanguage();
 	const displayLanguage = isDetecting ? "en" : language;
 	const [address, setAddress] = useState(formData.address || "");
-	
+
 	// Validate initial location or use default
 	const getValidLocation = (location) => {
-		if (location && 
-			typeof location.lat === 'number' && 
+		if (location &&
+			typeof location.lat === 'number' &&
 			typeof location.lng === 'number' &&
-			!isNaN(location.lat) && 
+			!isNaN(location.lat) &&
 			!isNaN(location.lng) &&
-			isFinite(location.lat) && 
+			isFinite(location.lat) &&
 			isFinite(location.lng)) {
 			return location;
 		}
 		return { lat: 31.6295, lng: -7.9811 }; // Default to Morocco center
 	};
-	
+
 	const [markerPosition, setMarkerPosition] = useState(
 		getValidLocation(formData.location)
 	);
@@ -156,13 +156,13 @@ const Step1Location = ({ formData, updateFormData, onNext, showMap = false, curr
 		}
 		if (formData.location) {
 			// Validate location has valid numeric values
-			const isValidLocation = typeof formData.location.lat === 'number' && 
+			const isValidLocation = typeof formData.location.lat === 'number' &&
 				typeof formData.location.lng === 'number' &&
-				!isNaN(formData.location.lat) && 
+				!isNaN(formData.location.lat) &&
 				!isNaN(formData.location.lng) &&
-				isFinite(formData.location.lat) && 
+				isFinite(formData.location.lat) &&
 				isFinite(formData.location.lng);
-			
+
 			if (isValidLocation && (formData.location.lat !== markerPosition.lat || formData.location.lng !== markerPosition.lng)) {
 				setMarkerPosition(formData.location);
 			}
@@ -446,138 +446,138 @@ const Step1Location = ({ formData, updateFormData, onNext, showMap = false, curr
 			`}</style>
 			<div className="step1-location-container">
 				<div className="content-wrapper">
-				<h1
-					style={{
-						fontSize: "clamp(24px, 4vw, 32px)",
-						fontWeight: "500",
-						fontFamily: "'Times New Roman', serif",
-						color: "#222222",
-						paddingTop: "20px",
-						marginBottom: "32px",
-						lineHeight: "1.2",
-					}}
-				>
-					{getTranslation(displayLanguage, "listings.whereIsPropertyLocated")}
-				</h1>
-
-				<div style={{ marginBottom: "32px", position: "relative" }}>
-					<input
-						ref={inputRef}
-						type="text"
-						value={address}
-						onChange={handleAddressChange}
-						onKeyDown={handleKeyDown}
-						onFocus={(e) => {
-							if (suggestions.length > 0) {
-								setShowSuggestions(true);
-							}
-						}}
-						placeholder={getTranslation(displayLanguage, "listings.addressPlaceholder")}
+					<h1
 						style={{
-							width: "100%",
-							padding: "16px",
-							fontSize: "16px",
-							border: "1px solid #e0e0e0",
-							borderRadius: "8px",
-							outline: "none",
-							backgroundColor: "white",
-							transition: "border-color 0.2s",
-							boxShadow: "none",
+							fontSize: "clamp(24px, 4vw, 32px)",
+							fontWeight: "500",
+							fontFamily: "'Times New Roman', serif",
+							color: "#222222",
+							paddingTop: "20px",
+							marginBottom: "32px",
+							lineHeight: "1.2",
 						}}
-						className="location-input"
-					/>
+					>
+						{getTranslation(displayLanguage, "listings.whereIsPropertyLocated")}
+					</h1>
 
-					{showSuggestions && suggestions.length > 0 && (
-						<div
-							ref={suggestionsRef}
-							style={{
-								position: "absolute",
-								top: "100%",
-								left: 0,
-								right: 0,
-								backgroundColor: "#FFFFFF",
-								border: "1px solid #E0E0E0",
-								borderRadius: "8px",
-								boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
-								zIndex: 1000,
-								maxHeight: "300px",
-								overflowY: "auto",
-								marginTop: "4px",
+					<div style={{ marginBottom: "32px", position: "relative" }}>
+						<input
+							ref={inputRef}
+							type="text"
+							value={address}
+							onChange={handleAddressChange}
+							onKeyDown={handleKeyDown}
+							onFocus={(e) => {
+								if (suggestions.length > 0) {
+									setShowSuggestions(true);
+								}
 							}}
-						>
-							{suggestions.map((suggestion, index) => (
-								<div
-									key={`${suggestion.value}-${index}`}
-									onClick={() => handleSuggestionSelect(suggestion)}
-									style={{
-										padding: "12px 16px",
-										cursor: "pointer",
-										backgroundColor: selectedIndex === index ? "#FFF5F7" : "transparent",
-										borderBottom: index < suggestions.length - 1 ? "1px solid #F0F0F0" : "none",
-										transition: "background-color 0.2s ease",
-										display: "flex",
-										alignItems: "center",
-										gap: "12px"
-									}}
-									onMouseEnter={() => setSelectedIndex(index)}
-									onMouseLeave={() => setSelectedIndex(-1)}
-								>
-									<div style={{
-										backgroundColor: "#f0f0f0",
-										padding: "8px",
-										borderRadius: "50%",
-										display: "flex",
-										alignItems: "center",
-										justifyContent: "center"
-									}}>
-										<MapPin size={16} color="#222222" />
-									</div>
-									<div>
-										<div
-											style={{
-												fontSize: "14px",
-												color: "#222222",
-												fontWeight: "500",
-											}}
-										>
-											{suggestion.label}
+							placeholder={getTranslation(displayLanguage, "listings.addressPlaceholder")}
+							style={{
+								width: "100%",
+								padding: "16px",
+								fontSize: "16px",
+								border: "1px solid #e0e0e0",
+								borderRadius: "8px",
+								outline: "none",
+								backgroundColor: "white",
+								transition: "border-color 0.2s",
+								boxShadow: "none",
+							}}
+							className="location-input"
+						/>
+
+						{showSuggestions && suggestions.length > 0 && (
+							<div
+								ref={suggestionsRef}
+								style={{
+									position: "absolute",
+									top: "100%",
+									left: 0,
+									right: 0,
+									backgroundColor: "#FFFFFF",
+									border: "1px solid #E0E0E0",
+									borderRadius: "8px",
+									boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+									zIndex: 9999,
+									maxHeight: "300px",
+									overflowY: "auto",
+									marginTop: "4px",
+								}}
+							>
+								{suggestions.map((suggestion, index) => (
+									<div
+										key={`${suggestion.value}-${index}`}
+										onClick={() => handleSuggestionSelect(suggestion)}
+										style={{
+											padding: "12px 16px",
+											cursor: "pointer",
+											backgroundColor: selectedIndex === index ? "#FFF5F7" : "transparent",
+											borderBottom: index < suggestions.length - 1 ? "1px solid #F0F0F0" : "none",
+											transition: "background-color 0.2s ease",
+											display: "flex",
+											alignItems: "center",
+											gap: "12px"
+										}}
+										onMouseEnter={() => setSelectedIndex(index)}
+										onMouseLeave={() => setSelectedIndex(-1)}
+									>
+										<div style={{
+											backgroundColor: "#f0f0f0",
+											padding: "8px",
+											borderRadius: "50%",
+											display: "flex",
+											alignItems: "center",
+											justifyContent: "center"
+										}}>
+											<MapPin size={16} color="#222222" />
 										</div>
-										{suggestion.type && (
+										<div>
 											<div
 												style={{
-													fontSize: "12px",
-													color: "#717171",
-													marginTop: "2px",
+													fontSize: "14px",
+													color: "#222222",
+													fontWeight: "500",
 												}}
 											>
-												{suggestion.type === "city" ? "City" : "Neighborhood"}
+												{suggestion.label}
 											</div>
-										)}
+											{suggestion.type && (
+												<div
+													style={{
+														fontSize: "12px",
+														color: "#717171",
+														marginTop: "2px",
+													}}
+												>
+													{suggestion.type === "city" ? "City" : "Neighborhood"}
+												</div>
+											)}
+										</div>
 									</div>
-								</div>
-							))}
-						</div>
-					)}
-				</div>
+								))}
+							</div>
+						)}
+					</div>
 
-				{/* Map Section */}
-				<div 
-					className="map-section"
-					style={{ 
-						marginBottom: "32px", 
-						height: "400px",
-						borderRadius: "16px",
-						overflow: "hidden",
-						boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-						position: "relative"
-					}}
-				>
-					<ClientOnlyLocationMap
-						markerPosition={markerPosition}
-						onMarkerDragEnd={handleMarkerDragEnd}
-						onMapClick={handleMapClick}
-					/>
-				</div>
+					{/* Map Section */}
+					<div
+						className="map-section"
+						style={{
+							marginBottom: "32px",
+							height: "400px",
+							borderRadius: "16px",
+							overflow: "hidden",
+							boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+							position: "relative"
+						}}
+					>
+						<ClientOnlyLocationMap
+							markerPosition={markerPosition}
+							onMarkerDragEnd={handleMarkerDragEnd}
+							onMapClick={handleMapClick}
+						/>
+					</div>
 
 				</div>
 
@@ -585,7 +585,7 @@ const Step1Location = ({ formData, updateFormData, onNext, showMap = false, curr
 				<div className="footer-navigation">
 					{/* Progress Bar */}
 					<div className="progress-bar-container">
-						<div 
+						<div
 							className="progress-bar-fill"
 							style={{ width: `${progressPercentage}%` }}
 						/>
