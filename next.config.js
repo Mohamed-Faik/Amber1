@@ -42,7 +42,7 @@ const nextConfig = {
 	},
 	env: {
 		NEXTAUTH_SECRET: "b51afa1ed38dde0d5d8f218a7fe48e1a",
-		NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: "dev", // Update here your NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME
+		// NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: "dev", // Use value from .env
 		NEXT_CLOUDINARY_PRESET: "vikings",
 	},
 };

@@ -38,6 +38,12 @@ export async function POST(request) {
 		const uploadType = formData.get("type") || "listings";
 		const folder = uploadType === "profile" ? "profiles" : "listings";
 
+		console.log("Starting Cloudinary upload...", {
+			cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
+			has_api_key: !!process.env.CLOUDINARY_API_KEY,
+			has_api_secret: !!process.env.CLOUDINARY_API_SECRET
+		});
+
 		// Upload to Cloudinary
 		const result = await new Promise((resolve, reject) => {
 			cloudinary.uploader.upload_stream(
@@ -47,6 +53,7 @@ export async function POST(request) {
 				},
 				(error, result) => {
 					if (error) {
+						console.error("Cloudinary Upload Error Details:", error);
 						reject(error);
 					} else {
 						resolve(result);
@@ -63,9 +70,12 @@ export async function POST(request) {
 		});
 
 	} catch (error) {
-		console.error("Upload error:", error);
+		console.error("Upload API Error:", error);
 		return NextResponse.json(
-			{ error: error.message || "Upload failed" },
+			{
+				error: error.message || "Upload failed",
+				details: error
+			},
 			{ status: 500 }
 		);
 	}
