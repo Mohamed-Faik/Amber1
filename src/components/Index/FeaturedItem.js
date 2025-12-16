@@ -144,6 +144,7 @@ const FeaturedItem = ({
 							</div>
 						) : isNew && (
 							<div
+								className="featured-item-new-badge"
 								style={{
 									position: "absolute",
 									bottom: "16px",
@@ -642,6 +643,15 @@ const FeaturedItem = ({
 						font-size: 15px !important;
 						color: #222222 !important;
 						font-weight: 500 !important;
+					}
+						color: #222222 !important;
+						font-weight: 500 !important;
+					}
+					.featured-item-new-badge {
+						padding: 4px 10px !important;
+						font-size: 11px !important;
+						bottom: 12px !important;
+						left: 12px !important;
 					}
 				}
 				@media (min-width: 769px) {
