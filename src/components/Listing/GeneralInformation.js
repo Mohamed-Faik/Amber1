@@ -22,7 +22,7 @@ const GeneralInformation = ({ listing, displayLanguage }) => {
 			>
 				{getTranslation(displayLanguage, "listings.generalInformation")}
 			</h2>
-			
+
 			<div
 				style={{
 					display: "grid",
@@ -111,7 +111,7 @@ const GeneralInformation = ({ listing, displayLanguage }) => {
 						)}
 					</div>
 				</div>
-				
+
 				{/* Surfaces */}
 				<div
 					style={{
@@ -174,7 +174,7 @@ const GeneralInformation = ({ listing, displayLanguage }) => {
 						)}
 					</div>
 				</div>
-				
+
 				{/* Construction */}
 				<div
 					style={{
@@ -235,7 +235,7 @@ const GeneralInformation = ({ listing, displayLanguage }) => {
 						</div>
 					</div>
 				</div>
-				
+
 				{/* Cadre et situation */}
 				<div
 					style={{

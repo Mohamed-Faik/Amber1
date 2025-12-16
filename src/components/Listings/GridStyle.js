@@ -152,7 +152,11 @@ const GridStyle = ({
 											style={{
 												borderRadius: "50%",
 												objectFit: "cover",
-												border: "2px solid #FF385C"
+												border: "2px solid #FF385C",
+												width: "40px",
+												height: "40px",
+												minWidth: "40px",
+												minHeight: "40px"
 											}}
 										/>
 									) : (

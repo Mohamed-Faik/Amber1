@@ -229,7 +229,11 @@ const FeaturedItem = ({
 										style={{
 											borderRadius: "50%",
 											objectFit: "cover",
-											border: "2px solid #FF385C"
+											border: "2px solid #FF385C",
+											width: "40px",
+											height: "40px",
+											minWidth: "40px",
+											minHeight: "40px"
 										}}
 									/>
 								) : (
@@ -579,7 +583,7 @@ const FeaturedItem = ({
 					<ContactButtons listing={{ id, slug, title, location_value, price }} />
 				</div>
 			)}
-			
+
 			{/* Styles */}
 			<style jsx>{`
 				.featured-heart-button-wrapper button {

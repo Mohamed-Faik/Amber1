@@ -19,22 +19,22 @@ import HeartButton from "../HeartButton";
 const Index = ({ currentUser, listing, reviews }) => {
 	const { language, isDetecting } = useLanguage();
 	const displayLanguage = isDetecting ? "en" : language;
-	
+
 	const { translatedContent: translatedTitle } = useTranslatedContent(listing.title, displayLanguage, false);
 	const { translatedContent: translatedDescription } = useTranslatedContent(listing.description, displayLanguage, true);
-	
+
 	const [images, setImages] = useState([]);
 	const [currentImageIndex, setCurrentImageIndex] = useState(0);
 	const [showImageModal, setShowImageModal] = useState(false);
-	
+
 	const phoneNumber = "+212638204811";
 	const whatsappNumber = "212638204811";
-	
+
 	useEffect(() => {
 		const allImages = getAllListingImages(listing.imageSrc);
 		setImages(allImages);
 	}, [listing.imageSrc]);
-	
+
 	const calculateMonthlyPayment = (price) => {
 		const interestRate = 0.05;
 		const years = 20;
@@ -43,194 +43,194 @@ const Index = ({ currentUser, listing, reviews }) => {
 		const monthlyPayment = (price * monthlyRate * Math.pow(1 + monthlyRate, numPayments)) / (Math.pow(1 + monthlyRate, numPayments) - 1);
 		return Math.round(monthlyPayment);
 	};
-	
+
 	const monthlyPayment = calculateMonthlyPayment(listing.price);
-	
+
 	const whatsappLink = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
 		`${getTranslation(displayLanguage, "listings.interestedMessage")}\n\n${getTranslation(displayLanguage, "listings.propertyLabel")} ${translatedTitle}\n${getTranslation(displayLanguage, "listings.location")}: ${listing.location_value}\n${getTranslation(displayLanguage, "listings.price")}: ${formattedPrice(listing.price, displayLanguage)}`
 	)}`;
-	
+
 	const locationParts = listing.location_value?.split(",") || [];
 	const city = locationParts[locationParts.length - 1]?.trim() || listing.location_value;
 	const neighborhood = locationParts.length > 1 ? locationParts[0]?.trim() : "";
 	const referenceNumber = `C${String(listing.id).padStart(7, "0")}`;
-	
+
 	return (
 		<div style={{ backgroundColor: "#FFFFFF", minHeight: "100vh" }}>
 			{/* Hero Image Section */}
 			<div style={{ maxWidth: "1200px", margin: "80px auto 0", padding: "0 24px" }}>
-				<div 
+				<div
 					className="hero-image-container"
-					style={{ 
-						position: "relative", 
-						width: "100%", 
-						height: "70vh", 
-						minHeight: "500px", 
+					style={{
+						position: "relative",
+						width: "100%",
+						height: "70vh",
+						minHeight: "500px",
 						maxHeight: "800px",
 						borderRadius: "24px",
 						overflow: "hidden",
 						boxShadow: "0 20px 60px rgba(0, 0, 0, 0.15), 0 8px 24px rgba(0, 0, 0, 0.1)",
 					}}
 				>
-				{images.length > 0 && (
-					<>
-						<Image
-							src={images[currentImageIndex]}
-							alt={translatedTitle}
-							fill
-							style={{ objectFit: "cover" }}
-							unoptimized
-							priority
-						/>
-						
-						{/* Image Navigation */}
-						{images.length > 1 && (
-							<>
-								<button
-									onClick={() => setCurrentImageIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1))}
-									style={{
-										position: "absolute",
-										left: "24px",
-										top: "50%",
-										transform: "translateY(-50%)",
-										width: "48px",
-										height: "48px",
-										borderRadius: "50%",
-										backgroundColor: "rgba(255, 255, 255, 0.9)",
-										border: "none",
-										cursor: "pointer",
-										display: "flex",
-										alignItems: "center",
-										justifyContent: "center",
-										boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
-										transition: "all 0.2s ease",
-									}}
-									onMouseEnter={(e) => {
-										e.currentTarget.style.backgroundColor = "#FFFFFF";
-										e.currentTarget.style.transform = "translateY(-50%) scale(1.1)";
-									}}
-									onMouseLeave={(e) => {
-										e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.9)";
-										e.currentTarget.style.transform = "translateY(-50%)";
-									}}
-								>
-									<ChevronRight size={24} style={{ transform: "rotate(180deg)", color: "#222222" }} />
-								</button>
-								<button
-									onClick={() => setCurrentImageIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1))}
-									style={{
-										position: "absolute",
-										right: "24px",
-										top: "50%",
-										transform: "translateY(-50%)",
-										width: "48px",
-										height: "48px",
-										borderRadius: "50%",
-										backgroundColor: "rgba(255, 255, 255, 0.9)",
-										border: "none",
-										cursor: "pointer",
-										display: "flex",
-										alignItems: "center",
-										justifyContent: "center",
-										boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
-										transition: "all 0.2s ease",
-									}}
-									onMouseEnter={(e) => {
-										e.currentTarget.style.backgroundColor = "#FFFFFF";
-										e.currentTarget.style.transform = "translateY(-50%) scale(1.1)";
-									}}
-									onMouseLeave={(e) => {
-										e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.9)";
-										e.currentTarget.style.transform = "translateY(-50%)";
-									}}
-								>
-									<ChevronRight size={24} style={{ color: "#222222" }} />
-								</button>
-							</>
-						)}
-						
-						{/* Image Thumbnails */}
-						{images.length > 1 && (
-							<div
-								style={{
-									position: "absolute",
-									bottom: "24px",
-									left: "50%",
-									transform: "translateX(-50%)",
-									display: "flex",
-									gap: "8px",
-									backgroundColor: "rgba(0, 0, 0, 0.5)",
-									padding: "8px 16px",
-									borderRadius: "24px",
-									backdropFilter: "blur(10px)",
-								}}
-							>
-								{images.slice(0, 5).map((img, index) => (
+					{images.length > 0 && (
+						<>
+							<Image
+								src={images[currentImageIndex]}
+								alt={translatedTitle}
+								fill
+								style={{ objectFit: "cover" }}
+								unoptimized
+								priority
+							/>
+
+							{/* Image Navigation */}
+							{images.length > 1 && (
+								<>
 									<button
-										key={index}
-										onClick={() => setCurrentImageIndex(index)}
+										onClick={() => setCurrentImageIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1))}
 										style={{
-											width: "60px",
-											height: "60px",
-											borderRadius: "8px",
-											overflow: "hidden",
-											border: currentImageIndex === index ? "3px solid #FFFFFF" : "3px solid transparent",
-											cursor: "pointer",
-											opacity: currentImageIndex === index ? 1 : 0.7,
-											transition: "all 0.2s ease",
-										}}
-										onMouseEnter={(e) => {
-											e.currentTarget.style.opacity = "1";
-										}}
-										onMouseLeave={(e) => {
-											if (currentImageIndex !== index) {
-												e.currentTarget.style.opacity = "0.7";
-											}
-										}}
-									>
-										<Image
-											src={img}
-											alt={`Thumbnail ${index + 1}`}
-											width={60}
-											height={60}
-											style={{ objectFit: "cover", width: "100%", height: "100%" }}
-											unoptimized
-										/>
-									</button>
-								))}
-								{images.length > 5 && (
-									<button
-										onClick={() => setShowImageModal(true)}
-										style={{
-											width: "60px",
-											height: "60px",
-											borderRadius: "8px",
-											backgroundColor: "rgba(255, 255, 255, 0.2)",
-											border: "2px solid rgba(255, 255, 255, 0.5)",
-											color: "#FFFFFF",
-											fontSize: "14px",
-											fontWeight: "600",
+											position: "absolute",
+											left: "24px",
+											top: "50%",
+											transform: "translateY(-50%)",
+											width: "48px",
+											height: "48px",
+											borderRadius: "50%",
+											backgroundColor: "rgba(255, 255, 255, 0.9)",
+											border: "none",
 											cursor: "pointer",
 											display: "flex",
 											alignItems: "center",
 											justifyContent: "center",
+											boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
 											transition: "all 0.2s ease",
 										}}
 										onMouseEnter={(e) => {
-											e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.3)";
+											e.currentTarget.style.backgroundColor = "#FFFFFF";
+											e.currentTarget.style.transform = "translateY(-50%) scale(1.1)";
 										}}
 										onMouseLeave={(e) => {
-											e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.2)";
+											e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.9)";
+											e.currentTarget.style.transform = "translateY(-50%)";
 										}}
 									>
-										+{images.length - 5}
+										<ChevronRight size={24} style={{ transform: "rotate(180deg)", color: "#222222" }} />
 									</button>
-								)}
-							</div>
-						)}
-					</>
-				)}
-				
+									<button
+										onClick={() => setCurrentImageIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1))}
+										style={{
+											position: "absolute",
+											right: "24px",
+											top: "50%",
+											transform: "translateY(-50%)",
+											width: "48px",
+											height: "48px",
+											borderRadius: "50%",
+											backgroundColor: "rgba(255, 255, 255, 0.9)",
+											border: "none",
+											cursor: "pointer",
+											display: "flex",
+											alignItems: "center",
+											justifyContent: "center",
+											boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+											transition: "all 0.2s ease",
+										}}
+										onMouseEnter={(e) => {
+											e.currentTarget.style.backgroundColor = "#FFFFFF";
+											e.currentTarget.style.transform = "translateY(-50%) scale(1.1)";
+										}}
+										onMouseLeave={(e) => {
+											e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.9)";
+											e.currentTarget.style.transform = "translateY(-50%)";
+										}}
+									>
+										<ChevronRight size={24} style={{ color: "#222222" }} />
+									</button>
+								</>
+							)}
+
+							{/* Image Thumbnails */}
+							{images.length > 1 && (
+								<div
+									style={{
+										position: "absolute",
+										bottom: "24px",
+										left: "50%",
+										transform: "translateX(-50%)",
+										display: "flex",
+										gap: "8px",
+										backgroundColor: "rgba(0, 0, 0, 0.5)",
+										padding: "8px 16px",
+										borderRadius: "24px",
+										backdropFilter: "blur(10px)",
+									}}
+								>
+									{images.slice(0, 5).map((img, index) => (
+										<button
+											key={index}
+											onClick={() => setCurrentImageIndex(index)}
+											style={{
+												width: "60px",
+												height: "60px",
+												borderRadius: "8px",
+												overflow: "hidden",
+												border: currentImageIndex === index ? "3px solid #FFFFFF" : "3px solid transparent",
+												cursor: "pointer",
+												opacity: currentImageIndex === index ? 1 : 0.7,
+												transition: "all 0.2s ease",
+											}}
+											onMouseEnter={(e) => {
+												e.currentTarget.style.opacity = "1";
+											}}
+											onMouseLeave={(e) => {
+												if (currentImageIndex !== index) {
+													e.currentTarget.style.opacity = "0.7";
+												}
+											}}
+										>
+											<Image
+												src={img}
+												alt={`Thumbnail ${index + 1}`}
+												width={60}
+												height={60}
+												style={{ objectFit: "cover", width: "100%", height: "100%" }}
+												unoptimized
+											/>
+										</button>
+									))}
+									{images.length > 5 && (
+										<button
+											onClick={() => setShowImageModal(true)}
+											style={{
+												width: "60px",
+												height: "60px",
+												borderRadius: "8px",
+												backgroundColor: "rgba(255, 255, 255, 0.2)",
+												border: "2px solid rgba(255, 255, 255, 0.5)",
+												color: "#FFFFFF",
+												fontSize: "14px",
+												fontWeight: "600",
+												cursor: "pointer",
+												display: "flex",
+												alignItems: "center",
+												justifyContent: "center",
+												transition: "all 0.2s ease",
+											}}
+											onMouseEnter={(e) => {
+												e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.3)";
+											}}
+											onMouseLeave={(e) => {
+												e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.2)";
+											}}
+										>
+											+{images.length - 5}
+										</button>
+									)}
+								</div>
+							)}
+						</>
+					)}
+
 					{/* Gradient Overlay */}
 					<div
 						style={{
@@ -244,7 +244,7 @@ const Index = ({ currentUser, listing, reviews }) => {
 					/>
 				</div>
 			</div>
-			
+
 			{/* Main Content */}
 			<div style={{ maxWidth: "1200px", margin: "0 auto", padding: "48px 24px" }}>
 				{/* Title and Header Info */}
@@ -275,7 +275,7 @@ const Index = ({ currentUser, listing, reviews }) => {
 								</span>
 							</div>
 						</div>
-						
+
 						{/* Action Buttons */}
 						<div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
 							<HeartButton currentUser={currentUser} listingId={listing.id} />
@@ -314,7 +314,7 @@ const Index = ({ currentUser, listing, reviews }) => {
 							</button>
 						</div>
 					</div>
-					
+
 					{/* Key Stats */}
 					<div
 						style={{
@@ -343,9 +343,9 @@ const Index = ({ currentUser, listing, reviews }) => {
 								</div>
 								<div>
 									<div style={{ fontSize: "20px", fontWeight: "700", color: "#222222" }}>
-									{listing.area} m²
-								</div>
-								<div style={{ fontSize: "14px", color: "#717171" }}>{getTranslation(displayLanguage, "listings.area")}</div>
+										{listing.area} m²
+									</div>
+									<div style={{ fontSize: "14px", color: "#717171" }}>{getTranslation(displayLanguage, "listings.area")}</div>
 								</div>
 							</div>
 						)}
@@ -401,7 +401,7 @@ const Index = ({ currentUser, listing, reviews }) => {
 						)}
 					</div>
 				</div>
-				
+
 				{/* Main Content Grid */}
 				<div
 					style={{
@@ -427,11 +427,9 @@ const Index = ({ currentUser, listing, reviews }) => {
 									{formattedPrice(listing.price, displayLanguage)}
 								</div>
 							</div>
-							<div style={{ fontSize: "16px", color: "#717171", marginBottom: "16px" }}>
-								{getTranslation(displayLanguage, "listings.estimatedMonthly")}: <strong style={{ color: "#222222" }}>{monthlyPayment.toLocaleString("fr-FR")} DH{getTranslation(displayLanguage, "listings.perMonth")}</strong>
-							</div>
+
 						</div>
-						
+
 						{/* Description */}
 						{translatedDescription && (
 							<div style={{ marginBottom: "48px" }}>
@@ -455,10 +453,10 @@ const Index = ({ currentUser, listing, reviews }) => {
 								/>
 							</div>
 						)}
-						
+
 						{/* General Information */}
 						<GeneralInformation listing={listing} displayLanguage={displayLanguage} />
-						
+
 						{/* Address and Map */}
 						<div style={{ marginBottom: "48px" }}>
 							<h2
@@ -512,7 +510,7 @@ const Index = ({ currentUser, listing, reviews }) => {
 								</div>
 							</div>
 						</div>
-						
+
 						{/* Similar Properties */}
 						<SimilarListings
 							currentListingId={listing.id}
@@ -522,7 +520,7 @@ const Index = ({ currentUser, listing, reviews }) => {
 							currentUser={currentUser}
 						/>
 					</div>
-					
+
 					{/* Right Column - Sticky Sidebar */}
 					<div style={{ position: "sticky", top: "100px", height: "fit-content" }}>
 						<div
@@ -538,11 +536,9 @@ const Index = ({ currentUser, listing, reviews }) => {
 								<div style={{ fontSize: "36px", fontWeight: "700", color: "#222222", marginBottom: "8px" }}>
 									{formattedPrice(listing.price, displayLanguage)}
 								</div>
-								<div style={{ fontSize: "16px", color: "#717171" }}>
-									{monthlyPayment.toLocaleString("fr-FR")} DH{getTranslation(displayLanguage, "listings.perMonth")} {getTranslation(displayLanguage, "listings.estimatedMonthly").toLowerCase()}
-								</div>
+
 							</div>
-							
+
 							<div style={{ display: "flex", flexDirection: "column", gap: "12px", marginBottom: "24px" }}>
 								<a
 									href={whatsappLink}
@@ -604,7 +600,7 @@ const Index = ({ currentUser, listing, reviews }) => {
 									{getTranslation(displayLanguage, "listings.call")}
 								</a>
 							</div>
-							
+
 							<div
 								style={{
 									paddingTop: "24px",
@@ -628,7 +624,7 @@ const Index = ({ currentUser, listing, reviews }) => {
 					</div>
 				</div>
 			</div>
-			
+
 			{/* Image Modal */}
 			{showImageModal && (
 				<div
@@ -699,7 +695,7 @@ const Index = ({ currentUser, listing, reviews }) => {
 					</div>
 				</div>
 			)}
-			
+
 			<style jsx>{`
 				@media (max-width: 968px) {
 					div[style*="grid-template-columns: 1fr 400px"] {
