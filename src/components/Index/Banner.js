@@ -863,7 +863,7 @@ const Banner = () => {
 											border: showLocationDropdown ? "3px solid #FF385C" : "2px solid #E0E0E0",
 											borderRadius: "32px",
 											backgroundColor: showLocationDropdown ? "#FFF5F7" : "#F8F8F8",
-											fontSize: "14px",
+											fontSize: "16px",
 											fontWeight: "600",
 											outline: "none",
 											cursor: "text",
@@ -1108,7 +1108,7 @@ const Banner = () => {
 											border: "2px solid #E0E0E0",
 											borderRadius: "32px",
 											backgroundColor: "#F8F8F8",
-											fontSize: "14px",
+											fontSize: "16px",
 											fontWeight: "600",
 											outline: "none",
 											cursor: "text",
@@ -1497,7 +1497,7 @@ const Banner = () => {
 					.banner-form-top-row input,
 					.banner-form-top-row div[style*="padding"],
 					.banner-form-bottom-row input {
-						font-size: 13px !important;
+						font-size: 16px !important;
 					}
 
 					/* Icon adjustments */

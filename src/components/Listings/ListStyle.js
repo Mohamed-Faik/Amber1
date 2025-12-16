@@ -142,6 +142,7 @@ const ListStyle = ({
 
 						{/* Content */}
 						<div
+							className="list-item-content"
 							style={{
 								flex: 1,
 								padding: "20px",
@@ -153,20 +154,23 @@ const ListStyle = ({
 							<div>
 								{/* Owner Profile */}
 								{user && (
-									<div style={{
-										display: "flex",
-										alignItems: "center",
-										gap: "10px",
-										marginBottom: "12px",
-										paddingBottom: "12px",
-										borderBottom: "1px solid #f0f0f0"
-									}}>
+									<div
+										className="list-item-owner"
+										style={{
+											display: "flex",
+											alignItems: "center",
+											gap: "10px",
+											marginBottom: "12px",
+											paddingBottom: "12px",
+											borderBottom: "1px solid #f0f0f0"
+										}}>
 										{user.image ? (
 											<Image
 												src={user.image}
 												alt="AmberHomes User"
 												width={40}
 												height={40}
+												className="list-item-owner-image"
 												style={{
 													borderRadius: "50%",
 													objectFit: "cover",
@@ -519,43 +523,59 @@ const ListStyle = ({
 					</div>
 				)}
 			</div>
+			<style jsx>{`
+				/* Mobile Override Styles */
+				@media (max-width: 767px) {
+					.listing-card-list-style {
+						flex-direction: column !important;
+					}
+					
+					.listing-card-content-wrapper {
+						flex-direction: column !important;
+					}
+					
+					.listing-card-image-container {
+						width: 100% !important;
+						min-width: 100% !important;
+						aspect-ratio: 4 / 3 !important;
+					}
+
+					.list-item-content {
+						padding: 12px !important;
+					}
+
+					.list-item-owner {
+						padding-bottom: 6px !important;
+						margin-bottom: 6px !important;
+						gap: 6px !important;
+					}
+
+					.list-item-owner :global(img.list-item-owner-image) {
+						width: 28px !important;
+						height: 28px !important;
+						min-width: 28px !important;
+						min-height: 28px !important;
+						border-width: 1px !important;
+					}
+
+					/* Owner Name */
+					.list-item-owner > div > div:first-child {
+						font-size: 12px !important;
+					}
+					/* Listed by ... */
+					.list-item-owner > div > div:last-child {
+						font-size: 10px !important;
+					}
+
+					/* Badges */
+					.list-item-content span {
+						font-size: 10px !important;
+						padding: 2px 8px !important;
+					}
+				}
+			`}</style>
 		</div>
 	);
 };
 
 export default ListStyle;
-
-// Add mobile responsive styles
-if (typeof document !== 'undefined') {
-	const style = document.createElement('style');
-	style.textContent = `
-		/* Mobile: < 768px - Stack listing cards vertically */
-		@media (max-width: 767px) {
-			.listing-card-list-style {
-				flex-direction: column !important;
-			}
-			
-			.listing-card-content-wrapper {
-				flex-direction: column !important;
-			}
-			
-			.listing-card-image-container {
-				width: 100% !important;
-				min-width: 100% !important;
-				aspect-ratio: 4 / 3 !important;
-			}
-			
-			.listing-card-image-container > div {
-				min-height: 100% !important;
-			}
-		}
-		
-		/* Small Mobile: < 480px - Better image sizing */
-		@media (max-width: 480px) {
-			.listing-card-image-container {
-				aspect-ratio: 1 / 1 !important;
-			}
-		}
-	`;
-	document.head.appendChild(style);
-}

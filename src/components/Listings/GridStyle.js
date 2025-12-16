@@ -50,8 +50,9 @@ const GridStyle = ({
 	};
 
 	return (
-		<div className="col-lg-4 col-md-6" style={{ marginBottom: "32px" }}>
+		<div className="col-lg-4 col-md-6 grid-style-card-container" style={{ marginBottom: "32px" }}>
 			<div
+				className="grid-style-card-content"
 				style={{
 					position: "relative",
 					width: "100%",
@@ -141,14 +142,16 @@ const GridStyle = ({
 									gap: "10px",
 									marginBottom: "12px",
 									paddingBottom: "12px",
+									paddingBottom: "12px",
 									borderBottom: "1px solid #f0f0f0"
-								}}>
+								}} className="grid-item-owner">
 									{user.image ? (
 										<Image
 											src={user.image}
 											alt="AmberHomes User"
 											width={40}
 											height={40}
+											className="grid-item-owner-image"
 											style={{
 												borderRadius: "50%",
 												objectFit: "cover",
@@ -510,8 +513,51 @@ const GridStyle = ({
 					</div>
 				)}
 			</div>
+			<style jsx>{`
+				@media (max-width: 768px) {
+					.grid-style-card-container {
+						margin-bottom: 16px !important;
+						padding-left: 8px !important;
+						padding-right: 8px !important;
+					}
+					.grid-style-card-content {
+						/* Optimize padding if needed, currently inline styles might block this without !important */
+					}
+					.grid-item-owner {
+						padding-bottom: 6px !important;
+						margin-bottom: 6px !important;
+						gap: 6px !important;
+					}
+					.grid-item-owner :global(img.grid-item-owner-image) {
+						width: 28px !important;
+						height: 28px !important;
+						min-width: 28px !important;
+						min-height: 28px !important;
+					}
+					/* Target the owner name text - first child div of the flex container */
+					.grid-item-owner > div > div:first-child {
+						font-size: 12px !important;
+					}
+					/* Target the "Listed by owner" text - second child div */
+					.grid-item-owner > div > div:last-child {
+						font-size: 10px !important;
+					}
+					
+					/* Adjust badge spacing */
+					.grid-style-card-content > div[style*="marginBottom: \"8px\""] {
+						margin-bottom: 6px !important;
+					}
+					
+					/* Adjust badge text sizes */
+					.grid-style-card-content span {
+						font-size: 10px !important;
+						padding: 2px 6px !important;
+					}
+				}
+			`}</style>
 		</div>
 	);
 };
 
 export default GridStyle;
+
