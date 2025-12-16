@@ -19,6 +19,8 @@ const getCategoryIcon = (categoryLabel) => {
 		"Apartment": Building2,
 		"House": Home,
 		"Land": Trees,
+		"Commercial": Building2,
+		"Riad": Castle,
 	};
 	return iconMap[categoryLabel] || Home;
 };
@@ -706,7 +708,7 @@ const Banner = () => {
 											}
 										}}
 									>
-										<span>{category ? (getTranslation(displayLanguage, `categories.${category.toLowerCase()}`) || category) : getTranslation(displayLanguage, "hero.category")}</span>
+										<span>{category ? (() => { const k = `categories.${category.toLowerCase()}`; const t = getTranslation(displayLanguage, k); return t !== k ? t : category; })() : getTranslation(displayLanguage, "hero.category")}</span>
 										<ChevronDown
 											size={16}
 											color={showCategoryDropdown ? "#FF385C" : "#717171"}
@@ -819,7 +821,7 @@ const Banner = () => {
 															);
 														})()}
 													</div>
-													<span style={{ flex: 1 }}>{getTranslation(displayLanguage, `categories.${cat.label.toLowerCase()}`) || cat.label}</span>
+													<span style={{ flex: 1 }}>{(() => { const k = `categories.${cat.label.toLowerCase()}`; const t = getTranslation(displayLanguage, k); return t !== k ? t : cat.label; })()}</span>
 													{category === cat.label && (
 														<div style={{
 															width: "6px",

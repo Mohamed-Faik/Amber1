@@ -1,57 +1,32 @@
 export const categories = [
 	{
-		value: "Villa",
-		label: "Villa",
-		imageSrc: require("../public/images/category/real-estate.png"),
-	},
-	{
-		value: "Apartment",
 		label: "Apartment",
-		imageSrc: require("../public/images/category/real-estate.png"),
+		value: "Apartment",
+		imageSrc: "/images/category/apartment.jpg",
 	},
 	{
-		value: "House",
-		label: "House",
-		imageSrc: require("../public/images/category/real-estate.png"),
+		label: "Villa",
+		value: "Villa",
+		imageSrc: "/images/category/villa.jpg",
 	},
 	{
-		value: "Land",
 		label: "Land",
-		imageSrc: require("../public/images/category/countryside.png"),
+		value: "Land",
+		imageSrc: "/images/category/land.jpg",
 	},
 	{
-		value: "Dwelling",
-		label: "Dwelling",
-		imageSrc: require("../public/images/category/real-estate.png"),
-	},
-	{
-		value: "Riads",
-		label: "Riads",
-		imageSrc: require("../public/images/category/real-estate.png"),
-	},
-	{
-		value: "Soil",
-		label: "Soil",
-		imageSrc: require("../public/images/category/countryside.png"),
-	},
-	{
-		value: "Office",
-		label: "Office",
-		imageSrc: require("../public/images/category/real-estate.png"),
-	},
-	{
-		value: "Commercial",
 		label: "Commercial",
-		imageSrc: require("../public/images/category/real-estate.png"),
+		value: "Commercial",
+		imageSrc: "/images/category/commercial.jpg",
 	},
 	{
-		value: "Industrial",
-		label: "Industrial",
-		imageSrc: require("../public/images/category/real-estate.png"),
+		label: "Riad",
+		value: "Riad",
+		imageSrc: "/images/category/riad.jpg",
 	},
 	{
-		value: "Investment property",
-		label: "Investment property",
-		imageSrc: require("../public/images/category/real-estate.png"),
+		label: "House",
+		value: "House",
+		imageSrc: "/images/category/house.jpg",
 	},
 ];

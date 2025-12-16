@@ -342,6 +342,39 @@ const FilterPopup = ({ isOpen, onClose, onApply, featureType = "HOMES", listings
                                 <Counter label={getTranslation(displayLanguage, "Bedrooms") || "Bedrooms"} value={beds} setValue={setBeds} />
                                 <Counter label={getTranslation(displayLanguage, "Bathrooms") || "Bathrooms"} value={baths} setValue={setBaths} />
                             </section>
+
+
+                            <div className="divider" />
+
+                            {/* Property Type */}
+                            <section style={{ marginBottom: "32px" }}>
+                                <h4 style={{ fontSize: "22px", fontWeight: "600", marginBottom: "24px" }}>
+                                    {getTranslation(displayLanguage, "filters.propertyType") || "Property type"}
+                                </h4>
+                                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+                                    {[
+                                        "Apartment",
+                                        "Villa",
+                                        "Land",
+                                        "Commercial",
+                                        "Riad",
+                                        "House"
+                                    ].map((type) => (
+                                        <label key={type} style={{ display: "flex", alignItems: "center", gap: "12px", cursor: "pointer" }}>
+                                            <input
+                                                type="checkbox"
+                                                className="airbnb-checkbox"
+                                                checked={propertyType.includes(type)}
+                                                onChange={() => handleCheckboxChange(type, propertyType, setPropertyType)}
+                                                style={{ width: "18px", height: "18px" }}
+                                            />
+                                            <span style={{ fontSize: "16px", color: "#222" }}>
+                                                {getTranslation(displayLanguage, `categories.${type.toLowerCase()}`) || type}
+                                            </span>
+                                        </label>
+                                    ))}
+                                </div>
+                            </section>
                         </>
                     )}
 
@@ -489,7 +522,7 @@ const FilterPopup = ({ isOpen, onClose, onApply, featureType = "HOMES", listings
                     border-color: #222;
                 }
 			`}</style>
-        </div>
+        </div >
     );
 };
 
