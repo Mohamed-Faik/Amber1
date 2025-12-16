@@ -241,7 +241,7 @@ const enTranslations = {
     choosePriceSubtitle: "Amberhomes suggests a selling price that you can modify according to your preferences.",
     desiredPrice: "Desired price",
     desiredPricePlaceholder: "Enter your desired price",
-    commissionAlert: "Amberhomes service fees at the seller's expense",
+    commissionAlert: "Amberhomes Fees",
     commissionAmount: "{amount} DH (2%)",
     confirmPrice: "Confirm the price",
     // Step 2 - Price (additional)
@@ -981,7 +981,7 @@ const frTranslations = {
     choosePriceSubtitle: "Amberhomes vous suggère un prix de vente que vous pouvez modifier selon vos préférences.",
     desiredPrice: "Prix souhaité",
     desiredPricePlaceholder: "Entrez votre prix souhaité",
-    commissionAlert: "Frais de service Amberhomes à la charge du vendeur",
+    commissionAlert: "Frais Amberhomes",
     commissionAmount: "{amount} DH (2%)",
     confirmPrice: "Confirmer le prix",
     availability: "Disponibilité",

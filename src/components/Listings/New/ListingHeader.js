@@ -70,36 +70,7 @@ const ListingHeader = () => {
 					}}
 				>
 					<LanguageSwitcher />
-					<button
-						type="button"
-						className="quick-submission-btn"
-						style={{
-							display: "flex",
-							alignItems: "center",
-							gap: "8px",
-							padding: "10px 16px",
-							fontSize: "14px",
-							fontWeight: "500",
-							color: "#222222",
-							backgroundColor: "#FFFFFF",
-							border: "1px solid #E0E0E0",
-							borderRadius: "8px",
-							cursor: "pointer",
-							transition: "all 0.2s ease",
-						}}
-						onMouseEnter={(e) => {
-							e.target.style.backgroundColor = "#F7F7F7";
-							e.target.style.borderColor = "#FF385C";
-						}}
-						onMouseLeave={(e) => {
-							e.target.style.backgroundColor = "#FFFFFF";
-							e.target.style.borderColor = "#E0E0E0";
-						}}
-					>
-						<Phone size={16} />
-						<span className="quick-submission-text-desktop">{getTranslation(displayLanguage, "nav.quickSubmission")}</span>
-						<span className="quick-submission-text-mobile">{getTranslation(displayLanguage, "nav.quickCall")}</span>
-					</button>
+
 				</div>
 			</div>
 			<style jsx>{`
