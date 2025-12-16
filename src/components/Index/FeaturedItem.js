@@ -38,8 +38,6 @@ const FeaturedItem = ({
 	const displayLanguage = isDetecting ? "en" : language;
 	const mainImage = getListingImage(imageSrc);
 	const displayPrice = formattedPrice(price, displayLanguage);
-	const displayRating = rating || "4.8"; // Default rating if not available
-	const [imageError, setImageError] = useState(false);
 	// Default to SALE if listingType is not provided (for backward compatibility)
 	const displayListingType = listingType || "SALE";
 
@@ -394,30 +392,7 @@ const FeaturedItem = ({
 							{translatedTitle}
 						</div>
 
-						{/* Rating - Mobile only, shown below title like Airbnb */}
-						<div
-							className="featured-item-rating-mobile"
-							style={{
-								display: "flex",
-								alignItems: "center",
-								gap: "4px",
-								marginBottom: "8px",
-								fontSize: "14px",
-								color: "#222222",
-							}}
-						>
-							<svg
-								width="14"
-								height="14"
-								viewBox="0 0 24 24"
-								fill="#222222"
-								stroke="#222222"
-								strokeWidth="1"
-							>
-								<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-							</svg>
-							<span style={{ fontWeight: "500" }}>{displayRating}</span>
-						</div>
+
 
 						{/* Location with Pin Icon */}
 						<div
