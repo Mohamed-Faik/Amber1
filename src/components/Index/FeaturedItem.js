@@ -627,14 +627,19 @@ const FeaturedItem = ({
 					.featured-item-favorite {
 						display: block !important;
 					}
-					.featured-heart-button-wrapper button {
-						width: 20px !important;
-						height: 20px !important;
+					.featured-heart-button-wrapper :global(button) {
+						width: 19px !important;
+						height: 19px !important;
 						background-color: rgba(255, 255, 255, 0.9) !important;
+						min-width: 19px !important; /* Ensure min-width doesn't override */
+						min-height: 19px !important;
+						padding: 0 !important;
 					}
-					.featured-heart-button-wrapper svg {
+					.featured-heart-button-wrapper :global(svg) {
 						width: 10px !important;
 						height: 10px !important;
+						min-width: 10px !important;
+						min-height: 10px !important;
 					}
 					.featured-item-title {
 						margin-bottom: 4px !important;
