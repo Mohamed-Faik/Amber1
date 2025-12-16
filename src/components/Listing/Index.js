@@ -404,11 +404,9 @@ const Index = ({ currentUser, listing, reviews }) => {
 
 				{/* Main Content Grid */}
 				<div
+					className="content-grid"
 					style={{
-						display: "grid",
-						gridTemplateColumns: "1fr 400px",
-						gap: "48px",
-						marginBottom: "48px",
+						// gridTemplateColumns and gap handled by class for responsive
 					}}
 				>
 					{/* Left Column - Main Content */}
@@ -522,7 +520,7 @@ const Index = ({ currentUser, listing, reviews }) => {
 					</div>
 
 					{/* Right Column - Sticky Sidebar */}
-					<div style={{ position: "sticky", top: "100px", height: "fit-content" }}>
+					<div className="sidebar-container">
 						<div
 							style={{
 								border: "1px solid #E0E0E0",
@@ -697,11 +695,22 @@ const Index = ({ currentUser, listing, reviews }) => {
 			)}
 
 			<style jsx>{`
+				.content-grid {
+					display: grid;
+					grid-template-columns: 1fr 400px;
+					gap: 48px;
+					margin-bottom: 48px;
+				}
+				.sidebar-container {
+					position: sticky;
+					top: 100px;
+					height: fit-content;
+				}
 				@media (max-width: 968px) {
-					div[style*="grid-template-columns: 1fr 400px"] {
+					.content-grid {
 						grid-template-columns: 1fr !important;
 					}
-					div[style*="position: sticky"] {
+					.sidebar-container {
 						position: relative !important;
 						top: 0 !important;
 					}
