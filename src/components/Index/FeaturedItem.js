@@ -628,13 +628,13 @@ const FeaturedItem = ({
 						display: block !important;
 					}
 					.featured-heart-button-wrapper button {
-						width: 22px !important;
-						height: 22px !important;
+						width: 20px !important;
+						height: 20px !important;
 						background-color: rgba(255, 255, 255, 0.9) !important;
 					}
 					.featured-heart-button-wrapper svg {
-						width: 12px !important;
-						height: 12px !important;
+						width: 10px !important;
+						height: 10px !important;
 					}
 					.featured-item-title {
 						margin-bottom: 4px !important;
