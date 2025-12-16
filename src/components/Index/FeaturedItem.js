@@ -622,8 +622,8 @@ const FeaturedItem = ({
 						display: block !important;
 					}
 					.featured-heart-button-wrapper button {
-						width: 24px !important;
-						height: 24px !important;
+						width: 22px !important;
+						height: 22px !important;
 						background-color: rgba(255, 255, 255, 0.9) !important;
 					}
 					.featured-heart-button-wrapper svg {

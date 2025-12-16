@@ -34,10 +34,10 @@ const ListingImageCarousel = ({ imageSrc, title, onImageClick, listing }) => {
 	// Create WhatsApp link with listing details
 	const whatsappLink = useMemo(() => {
 		if (!listing) return null;
-		
+
 		const whatsappNumber = "212638204811"; // Without + for WhatsApp link
 		const listingUrl = baseUrl ? `${baseUrl}/listing/${listing.id}/${listing.slug}` : "";
-		
+
 		const message = `Hello, I'm interested in this property:
 
 Property: ${listing.title || title}
@@ -46,7 +46,7 @@ Price: ${listing.price ? formattedPrice(listing.price, displayLanguage) : ""}
 ${listingUrl ? `Link: ${listingUrl}` : ""}
 
 Please provide more information.`;
-		
+
 		return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
 	}, [baseUrl, listing, title, displayLanguage]);
 
@@ -251,7 +251,7 @@ Please provide more information.`;
 						</div>
 					</SwiperSlide>
 				))}
-				
+
 				{/* Blurred duplicate of final image with WhatsApp overlay */}
 				{images.length > 0 && whatsappLink && (
 					<SwiperSlide>
@@ -273,7 +273,7 @@ Please provide more information.`;
 								}}
 								unoptimized
 							/>
-							
+
 							{/* WhatsApp Overlay */}
 							<div
 								className="whatsapp-overlay"
@@ -348,7 +348,7 @@ Please provide more information.`;
 					</SwiperSlide>
 				)}
 			</Swiper>
-			
+
 			{/* Custom styles for navigation arrows */}
 			<style jsx global>{`
 				.swiper-button-next,
@@ -389,8 +389,7 @@ Please provide more information.`;
 				@media (max-width: 767px) {
 					.swiper-button-next,
 					.swiper-button-prev {
-						width: 40px !important;
-						height: 40px !important;
+						display: none !important;
 					}
 					.swiper-button-next:after,
 					.swiper-button-prev:after {

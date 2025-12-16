@@ -128,7 +128,7 @@ const Banner = () => {
 
 	// Filter cities and neighborhoods based on search term
 	const lowerSearchTerm = locationSearchTerm.toLowerCase();
-	
+
 	// Filter cities based on search term
 	const filteredCities = moroccanCities.filter((city) =>
 		city.label.toLowerCase().includes(lowerSearchTerm)
@@ -136,7 +136,7 @@ const Banner = () => {
 		...city,
 		isNeighborhood: false,
 	}));
-	
+
 	// Get neighborhoods from all cities when user is actively searching
 	let filteredNeighborhoods = [];
 	if (lowerSearchTerm.length > 0) {
@@ -379,8 +379,8 @@ const Banner = () => {
 							}}
 						>
 							{/* Opening Quote Mark */}
-							<span 
-								style={{ 
+							<span
+								style={{
 									color: "#FF385C",
 									fontSize: "clamp(64px, 9vw, 128px)",
 									fontWeight: "400",
@@ -392,7 +392,7 @@ const Banner = () => {
 									alignSelf: "flex-start",
 								}}
 							>"</span>
-							
+
 							<div
 								style={{
 									fontSize: "clamp(40px, 6vw, 80px)",
@@ -418,7 +418,7 @@ const Banner = () => {
 								})()}
 							</div>
 						</div>
-						
+
 						{/* Second Line - Lower Right, Slightly Indented with Closing Quote */}
 						<div
 							style={{
@@ -455,10 +455,10 @@ const Banner = () => {
 									return quote;
 								})()}
 							</div>
-							
+
 							{/* Closing Quote Mark */}
-							<span 
-								style={{ 
+							<span
+								style={{
 									color: "#FF385C",
 									fontSize: "clamp(64px, 9vw, 128px)",
 									fontWeight: "400",
@@ -478,9 +478,9 @@ const Banner = () => {
 						className="banner-search-form"
 						style={{
 							backgroundColor: "#FFFFFF",
-						borderRadius: "56px",
-						padding: "24px",
-						boxShadow: "0 24px 80px rgba(0, 0, 0, 0.16), 0 8px 32px rgba(0, 0, 0, 0.12)",
+							borderRadius: "56px",
+							padding: "24px",
+							boxShadow: "0 24px 80px rgba(0, 0, 0, 0.16), 0 8px 32px rgba(0, 0, 0, 0.12)",
 							width: "85%",
 							maxWidth: "800px",
 							margin: "0 auto",
@@ -515,8 +515,8 @@ const Banner = () => {
 											width: "100%",
 											padding: "12px 16px 12px 44px",
 											border: showSaleTypeDropdown ? "3px solid #FF385C" : "2px solid #E0E0E0",
-									borderRadius: "32px",
-									backgroundColor: showSaleTypeDropdown ? "#FFF5F7" : "#F8F8F8",
+											borderRadius: "32px",
+											backgroundColor: showSaleTypeDropdown ? "#FFF5F7" : "#F8F8F8",
 											fontSize: "14px",
 											fontWeight: "600",
 											outline: "none",
@@ -526,8 +526,8 @@ const Banner = () => {
 											justifyContent: "space-between",
 											color: saleType ? "#1A1A1A" : "#666666",
 											transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-											boxShadow: showSaleTypeDropdown 
-												? "0 12px 32px rgba(255, 56, 92, 0.25), 0 4px 12px rgba(255, 56, 92, 0.15)" 
+											boxShadow: showSaleTypeDropdown
+												? "0 12px 32px rgba(255, 56, 92, 0.25), 0 4px 12px rgba(255, 56, 92, 0.15)"
 												: "0 4px 8px rgba(0, 0, 0, 0.06)",
 										}}
 										onMouseEnter={(e) => {
@@ -674,8 +674,8 @@ const Banner = () => {
 											width: "100%",
 											padding: "12px 16px 12px 44px",
 											border: showCategoryDropdown ? "3px solid #FF385C" : "2px solid #E0E0E0",
-									borderRadius: "32px",
-									backgroundColor: showCategoryDropdown ? "#FFF5F7" : "#F8F8F8",
+											borderRadius: "32px",
+											backgroundColor: showCategoryDropdown ? "#FFF5F7" : "#F8F8F8",
 											fontSize: "14px",
 											fontWeight: "600",
 											outline: "none",
@@ -685,8 +685,8 @@ const Banner = () => {
 											justifyContent: "space-between",
 											color: category ? "#1A1A1A" : "#666666",
 											transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-											boxShadow: showCategoryDropdown 
-												? "0 12px 32px rgba(255, 56, 92, 0.25), 0 4px 12px rgba(255, 56, 92, 0.15)" 
+											boxShadow: showCategoryDropdown
+												? "0 12px 32px rgba(255, 56, 92, 0.25), 0 4px 12px rgba(255, 56, 92, 0.15)"
 												: "0 4px 8px rgba(0, 0, 0, 0.06)",
 										}}
 										onMouseEnter={(e) => {
@@ -840,7 +840,7 @@ const Banner = () => {
 								className="banner-form-bottom-row"
 								style={{
 									display: "grid",
-					gridTemplateColumns: "1fr 1fr auto",
+									gridTemplateColumns: "1fr 1fr auto",
 									gap: "12px",
 									alignItems: "end",
 								}}
@@ -861,16 +861,16 @@ const Banner = () => {
 											width: "100%",
 											padding: "12px 16px 12px 44px",
 											border: showLocationDropdown ? "3px solid #FF385C" : "2px solid #E0E0E0",
-									borderRadius: "32px",
-									backgroundColor: showLocationDropdown ? "#FFF5F7" : "#F8F8F8",
+											borderRadius: "32px",
+											backgroundColor: showLocationDropdown ? "#FFF5F7" : "#F8F8F8",
 											fontSize: "14px",
 											fontWeight: "600",
 											outline: "none",
 											cursor: "text",
 											color: locationSearchTerm ? "#1A1A1A" : "#666666",
 											transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-											boxShadow: showLocationDropdown 
-												? "0 12px 32px rgba(255, 56, 92, 0.25), 0 4px 12px rgba(255, 56, 92, 0.15)" 
+											boxShadow: showLocationDropdown
+												? "0 12px 32px rgba(255, 56, 92, 0.25), 0 4px 12px rgba(255, 56, 92, 0.15)"
 												: "0 4px 8px rgba(0, 0, 0, 0.06)",
 										}}
 										onMouseEnter={(e) => {
@@ -996,7 +996,7 @@ const Banner = () => {
 													</div>
 												))
 											) : null}
-											
+
 											{/* Show neighborhoods only when user is searching (has typed something) */}
 											{filteredNeighborhoods.length > 0 && (
 												<>
@@ -1071,7 +1071,7 @@ const Banner = () => {
 													))}
 												</>
 											)}
-											
+
 											{/* Show message if no results */}
 											{filteredCities.length === 0 && filteredNeighborhoods.length === 0 && (
 												<div
@@ -1099,9 +1099,6 @@ const Banner = () => {
 											setStreet(e.target.value);
 											setShowStreetDropdown(true);
 										}}
-										onFocus={() => {
-											if (streetOptions.length > 0) setShowStreetDropdown(true);
-										}}
 										onClick={() => {
 											if (streetOptions.length > 0) setShowStreetDropdown(true);
 										}}
@@ -1120,6 +1117,7 @@ const Banner = () => {
 											boxShadow: "0 4px 8px rgba(0, 0, 0, 0.06)",
 										}}
 										onFocus={(e) => {
+											if (streetOptions.length > 0) setShowStreetDropdown(true);
 											e.currentTarget.style.border = "3px solid #FF385C";
 											e.currentTarget.style.backgroundColor = "#FFF5F7";
 										}}
@@ -1260,9 +1258,9 @@ const Banner = () => {
 									type="submit"
 									style={{
 										padding: "14px 32px",
-								borderRadius: "32px",
-								background: "linear-gradient(135deg, #FF385C 0%, #E61E4D 100%)",
-								color: "#FFFFFF",
+										borderRadius: "32px",
+										background: "linear-gradient(135deg, #FF385C 0%, #E61E4D 100%)",
+										color: "#FFFFFF",
 										border: "none",
 										fontSize: "15px",
 										fontWeight: "700",
