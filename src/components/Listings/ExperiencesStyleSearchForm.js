@@ -5,17 +5,12 @@ import { moroccanCities } from "@/libs/moroccanCities";
 
 // Property Categories
 const propertyCategories = [
-	{ value: "Villa", label: "Villa" },
 	{ value: "Apartment", label: "Apartment" },
-	{ value: "House", label: "House" },
+	{ value: "Villa", label: "Villa" },
 	{ value: "Land", label: "Land" },
-	{ value: "Dwelling", label: "Dwelling" },
-	{ value: "Riads", label: "Riads" },
-	{ value: "Soil", label: "Soil" },
-	{ value: "Office", label: "Office" },
 	{ value: "Commercial", label: "Commercial" },
-	{ value: "Industrial", label: "Industrial" },
-	{ value: "Investment property", label: "Investment property" },
+	{ value: "Riad", label: "Riad" },
+	{ value: "House", label: "House" },
 ];
 
 const ExperiencesStyleSearchForm = ({ searchParams }) => {
@@ -66,17 +61,17 @@ const ExperiencesStyleSearchForm = ({ searchParams }) => {
 			e.preventDefault();
 		}
 		const params = new URLSearchParams();
-		
+
 		// Add location
 		if (whereValue) {
 			params.append("location_value", whereValue);
 		}
-		
+
 		// Add property type/category
 		if (propertyType) {
 			params.append("category", propertyType);
 		}
-		
+
 		// Navigate to listings page with search params
 		router.push(`/listings?${params.toString()}`);
 	};
