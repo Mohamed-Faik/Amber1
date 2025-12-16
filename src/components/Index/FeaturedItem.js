@@ -189,24 +189,26 @@ const FeaturedItem = ({
 							</div>
 						)}
 
-						{/* Favorite Icon - Top Right */}
-						<div
-							className="featured-item-favorite"
-							style={{
-								position: "absolute",
-								top: "12px",
-								right: "12px",
-								zIndex: 10,
-							}}
-							onClick={(e) => {
-								e.preventDefault();
-								e.stopPropagation();
-							}}
-						>
-							<div className="featured-heart-button-wrapper">
-								<HeartButton currentUser={currentUser} listingId={id} />
+						{/* Favorite Icon - Top Right - Hidden if SOLD */}
+						{status !== "Sold" && (
+							<div
+								className="featured-item-favorite"
+								style={{
+									position: "absolute",
+									top: "12px",
+									right: "12px",
+									zIndex: 10,
+								}}
+								onClick={(e) => {
+									e.preventDefault();
+									e.stopPropagation();
+								}}
+							>
+								<div className="featured-heart-button-wrapper">
+									<HeartButton currentUser={currentUser} listingId={id} />
+								</div>
 							</div>
-						</div>
+						)}
 					</div>
 
 					{/* Content Section */}
@@ -599,16 +601,21 @@ const FeaturedItem = ({
 				
 				@media (max-width: 768px) {
 					.featured-item-owner {
-						display: none !important;
+						display: flex !important;
+						margin-bottom: 8px !important;
+						padding-bottom: 8px !important;
 					}
 					.featured-item-metrics {
-						display: none !important;
+						display: flex !important;
+						margin-top: 8px !important;
+						padding-top: 8px !important;
 					}
 					.featured-item-contact {
 						display: none !important;
 					}
 					.featured-item-badges {
-						display: none !important;
+						display: flex !important;
+						margin-bottom: 8px !important;
 					}
 					.featured-item-content {
 						padding: 12px !important;
