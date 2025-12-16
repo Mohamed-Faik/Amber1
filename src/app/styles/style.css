@@ -5900,3 +5900,31 @@ Shimmer/Skeleton Loading Animation
   ) !important;
   background-size: 1000px 100% !important;
 }
+
+/* Ensure all profile pictures are circular */
+.user-profile-picture img,
+.user-profile-picture > img,
+[class*="profile"] img,
+[class*="avatar"] img,
+img[alt*="user" i],
+img[alt*="User"],
+img[alt*="Profile"],
+img[alt*="profile" i],
+.single-review-item img {
+  border-radius: 50% !important;
+  object-fit: cover !important;
+}
+
+/* Ensure profile picture containers are circular */
+.user-profile-picture,
+[class*="profile-picture"],
+[class*="avatar"] {
+  border-radius: 50% !important;
+  overflow: hidden !important;
+}
+
+/* Force Next.js Image components to be circular when in circular containers */
+div[style*="borderRadius: \"50%\""] img,
+div[style*="border-radius: 50%"] img {
+  border-radius: 50% !important;
+}

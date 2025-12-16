@@ -27,6 +27,10 @@ const BlogDetails = ({ post }) => {
 											height={25}
 											alt="user"
 											className="me-2"
+											style={{
+												borderRadius: "50%",
+												objectFit: "cover"
+											}}
 											unoptimized
 										/>
 									</Link>

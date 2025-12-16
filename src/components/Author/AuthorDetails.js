@@ -43,7 +43,7 @@ const AuthorDetails = ({ user }) => {
 						<div style={{
 							width: "240px",
 							height: "240px",
-							borderRadius: "16px",
+							borderRadius: "50%",
 							overflow: "hidden",
 							position: "relative",
 							flexShrink: 0,
@@ -53,7 +53,11 @@ const AuthorDetails = ({ user }) => {
 								src={user?.image ? user.image : userImg}
 								alt="AmberHomes-User"
 								fill
-								style={{ objectFit: "cover", objectPosition: "center" }}
+								style={{ 
+									objectFit: "cover", 
+									objectPosition: "center",
+									borderRadius: "50%"
+								}}
 								sizes="240px"
 								unoptimized
 							/>

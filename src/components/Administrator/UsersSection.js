@@ -180,7 +180,12 @@ const UsersSection = ({ users, displayLanguage = "en" }) => {
 									alt={user.name || "User"}
 									width={60}
 									height={60}
-									style={{ objectFit: "cover" }}
+									style={{ 
+										objectFit: "cover",
+										borderRadius: "50%",
+										width: "100%",
+										height: "100%"
+									}}
 									unoptimized
 								/>
 							) : (
@@ -364,7 +369,12 @@ const UsersSection = ({ users, displayLanguage = "en" }) => {
 											alt={selectedUser.name || "User"}
 											width={100}
 											height={100}
-											style={{ objectFit: "cover" }}
+											style={{ 
+												objectFit: "cover",
+												borderRadius: "50%",
+												width: "100%",
+												height: "100%"
+											}}
 											unoptimized
 										/>
 									) : (

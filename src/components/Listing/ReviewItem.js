@@ -13,6 +13,10 @@ const ReviewItem = ({ id, rating, comment, created_at, user }) => {
 				alt="Image"
 				width={80}
 				height={80}
+				style={{
+					borderRadius: "50%",
+					objectFit: "cover",
+				}}
 				unoptimized
 			/>
 			<h4>

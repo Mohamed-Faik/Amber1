@@ -79,7 +79,10 @@ ${getTranslation(displayLanguage, "listings.pleaseProvideInfo")}`;
 								src={user.image}
 								alt="AmberHomes-User"
 								fill
-								style={{ objectFit: "cover" }}
+								style={{ 
+									objectFit: "cover",
+									borderRadius: "50%"
+								}}
 								unoptimized
 							/>
 						) : (
@@ -87,7 +90,10 @@ ${getTranslation(displayLanguage, "listings.pleaseProvideInfo")}`;
 								src={userImg}
 								alt="AmberHomes-User"
 								fill
-								style={{ objectFit: "cover" }}
+								style={{ 
+									objectFit: "cover",
+									borderRadius: "50%"
+								}}
 								unoptimized
 							/>
 						)}

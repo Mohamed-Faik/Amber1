@@ -31,6 +31,8 @@ const Banner = () => {
 	const [category, setCategory] = useState("");
 	const [location, setLocation] = useState("");
 	const [street, setStreet] = useState("");
+	const [streetOptions, setStreetOptions] = useState([]);
+	const [showStreetDropdown, setShowStreetDropdown] = useState(false);
 	const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
 	const [showSaleTypeDropdown, setShowSaleTypeDropdown] = useState(false);
 	const [showLocationDropdown, setShowLocationDropdown] = useState(false);
@@ -41,15 +43,18 @@ const Banner = () => {
 	const categoryInputRef = useRef(null);
 	const saleTypeInputRef = useRef(null);
 	const locationInputRef = useRef(null);
+	const streetInputRef = useRef(null);
 	const dropdownRef = useRef(null);
 	const saleTypeDropdownRef = useRef(null);
 	const locationDropdownRef = useRef(null);
+	const streetDropdownRef = useRef(null);
 
 	const handleSearch = (e) => {
 		e.preventDefault();
 		const params = new URLSearchParams();
 		if (category) params.append("category", category);
 		if (location) params.append("location_value", location);
+		if (street) params.append("street", street);
 
 		// Map saleType to listingType
 		if (saleType === "forSale") {
@@ -91,10 +96,29 @@ const Banner = () => {
 		setShowLocationDropdown((prev) => !prev);
 	};
 
+	const getCityByLabel = (label) =>
+		moroccanCities.find((city) => city.label.toLowerCase() === label.toLowerCase());
+
 	const handleLocationCitySelect = (cityLabel) => {
+		const city = getCityByLabel(cityLabel);
+		const neighborhoods = city ? getNeighborhoodsByCity(city.value) : [];
 		setLocation(cityLabel);
 		setLocationSearchTerm(cityLabel);
+		setStreet("");
+		setStreetOptions(neighborhoods);
 		setShowLocationDropdown(false);
+		setShowStreetDropdown(false);
+	};
+
+	const handleNeighborhoodSelect = (cityLabel, neighborhoodLabel) => {
+		const city = getCityByLabel(cityLabel);
+		const neighborhoods = city ? getNeighborhoodsByCity(city.value) : [];
+		setLocation(cityLabel);
+		setLocationSearchTerm(cityLabel);
+		setStreet(neighborhoodLabel);
+		setStreetOptions(neighborhoods);
+		setShowLocationDropdown(false);
+		setShowStreetDropdown(false);
 	};
 
 	const handleLocationSelect = (loc) => {
@@ -199,15 +223,23 @@ const Banner = () => {
 			) {
 				setShowLocationDropdown(false);
 			}
+			if (
+				streetDropdownRef.current &&
+				!streetDropdownRef.current.contains(event.target) &&
+				streetInputRef.current &&
+				!streetInputRef.current.contains(event.target)
+			) {
+				setShowStreetDropdown(false);
+			}
 		};
 
-		if (showCategoryDropdown || showSaleTypeDropdown || showLocationDropdown) {
+		if (showCategoryDropdown || showSaleTypeDropdown || showLocationDropdown || showStreetDropdown) {
 			document.addEventListener("mousedown", handleClickOutside);
 		}
 		return () => {
 			document.removeEventListener("mousedown", handleClickOutside);
 		};
-	}, [showCategoryDropdown, showSaleTypeDropdown, showLocationDropdown]);
+	}, [showCategoryDropdown, showSaleTypeDropdown, showLocationDropdown, showStreetDropdown]);
 
 	const saleTypes = [
 		{ key: "forSale", label: getTranslation(displayLanguage, "hero.forSale") },
@@ -808,7 +840,7 @@ const Banner = () => {
 								className="banner-form-bottom-row"
 								style={{
 									display: "grid",
-									gridTemplateColumns: "1fr auto",
+					gridTemplateColumns: "1fr 1fr auto",
 									gap: "12px",
 									alignItems: "end",
 								}}
@@ -817,7 +849,7 @@ const Banner = () => {
 								<div style={{ position: "relative", zIndex: showLocationDropdown ? 1001 : 1 }} ref={locationInputRef}>
 									<input
 										type="text"
-										placeholder="Search neighborhoods (e.g. Issil, Gueliz) or cities..."
+										placeholder={getTranslation(displayLanguage, "hero.locationPlaceholder")}
 										value={locationSearchTerm}
 										onChange={(e) => {
 											setLocationSearchTerm(e.target.value);
@@ -979,7 +1011,7 @@ const Banner = () => {
 													{filteredNeighborhoods.map((neighborhood, index) => (
 														<div
 															key={`neighborhood-${neighborhood.value}`}
-															onClick={() => handleLocationCitySelect(neighborhood.label)}
+															onClick={() => handleNeighborhoodSelect(neighborhood.city, neighborhood.label.split(",")[0])}
 															style={{
 																padding: "10px 18px",
 																margin: "3px 6px",
@@ -1054,6 +1086,172 @@ const Banner = () => {
 												</div>
 											)}
 										</div>
+									</div>
+								</div>
+
+								{/* Street Input */}
+								<div style={{ position: "relative" }} ref={streetInputRef}>
+									<input
+										type="text"
+										placeholder={getTranslation(displayLanguage, "hero.streetPlaceholder")}
+										value={street}
+										onChange={(e) => {
+											setStreet(e.target.value);
+											setShowStreetDropdown(true);
+										}}
+										onFocus={() => {
+											if (streetOptions.length > 0) setShowStreetDropdown(true);
+										}}
+										onClick={() => {
+											if (streetOptions.length > 0) setShowStreetDropdown(true);
+										}}
+										style={{
+											width: "100%",
+											padding: "12px 16px 12px 44px",
+											border: "2px solid #E0E0E0",
+											borderRadius: "32px",
+											backgroundColor: "#F8F8F8",
+											fontSize: "14px",
+											fontWeight: "600",
+											outline: "none",
+											cursor: "text",
+											color: street ? "#1A1A1A" : "#666666",
+											transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+											boxShadow: "0 4px 8px rgba(0, 0, 0, 0.06)",
+										}}
+										onFocus={(e) => {
+											e.currentTarget.style.border = "3px solid #FF385C";
+											e.currentTarget.style.backgroundColor = "#FFF5F7";
+										}}
+										onBlur={(e) => {
+											e.currentTarget.style.border = "2px solid #E0E0E0";
+											e.currentTarget.style.backgroundColor = "#F8F8F8";
+										}}
+										onMouseEnter={(e) => {
+											e.currentTarget.style.borderColor = "#FF385C";
+											e.currentTarget.style.backgroundColor = "#FFFFFF";
+										}}
+										onMouseLeave={(e) => {
+											e.currentTarget.style.borderColor = "#E0E0E0";
+											e.currentTarget.style.backgroundColor = "#F7F7F7";
+										}}
+									/>
+									<div
+										style={{
+											position: "absolute",
+											left: "16px",
+											top: "50%",
+											transform: "translateY(-50%)",
+											pointerEvents: "none",
+											zIndex: 1,
+											display: "flex",
+											alignItems: "center",
+											justifyContent: "center",
+											width: "20px",
+											height: "20px",
+											backgroundColor: "rgba(0, 0, 0, 0.05)",
+											borderRadius: "8px",
+											transition: "all 0.3s ease",
+										}}
+									>
+										<Navigation size={18} color="#666666" strokeWidth={2.5} />
+									</div>
+									{/* Street Dropdown */}
+									<div
+										ref={streetDropdownRef}
+										style={{
+											position: "absolute",
+											top: "calc(100% + 8px)",
+											left: 0,
+											right: 0,
+											backgroundColor: "#FFFFFF",
+											border: "1px solid rgba(0, 0, 0, 0.06)",
+											borderRadius: "16px",
+											boxShadow: "0 20px 60px rgba(0, 0, 0, 0.15), 0 8px 24px rgba(0, 0, 0, 0.1)",
+											zIndex: 1002,
+											maxHeight: "320px",
+											overflowY: "auto",
+											marginTop: "4px",
+											opacity: showStreetDropdown ? 1 : 0,
+											transform: showStreetDropdown ? "translateY(0)" : "translateY(-10px)",
+											visibility: showStreetDropdown ? "visible" : "hidden",
+											transition: "opacity 0.2s ease-out, transform 0.2s ease-out, visibility 0.2s ease-out",
+											pointerEvents: showStreetDropdown ? "auto" : "none",
+										}}
+									>
+										{streetOptions
+											.filter((option) =>
+												option.label.toLowerCase().includes(street.toLowerCase())
+											)
+											.map((option) => (
+												<div
+													key={option.value}
+													onClick={() => {
+														setStreet(option.label);
+														setShowStreetDropdown(false);
+													}}
+													style={{
+														padding: "10px 18px",
+														margin: "3px 6px",
+														cursor: "pointer",
+														transition: "all 0.2s ease",
+														fontSize: "14px",
+														fontWeight: "500",
+														color: "#222222",
+														backgroundColor: street === option.label ? "rgba(255, 56, 92, 0.08)" : "transparent",
+														display: "flex",
+														alignItems: "center",
+														gap: "12px",
+														borderRadius: "10px",
+													}}
+													onMouseEnter={(e) => {
+														e.currentTarget.style.backgroundColor = street === option.label
+															? "rgba(255, 56, 92, 0.12)"
+															: "rgba(0, 0, 0, 0.04)";
+														e.currentTarget.style.transform = "translateX(2px)";
+													}}
+													onMouseLeave={(e) => {
+														e.currentTarget.style.backgroundColor = street === option.label
+															? "rgba(255, 56, 92, 0.08)"
+															: "transparent";
+														e.currentTarget.style.transform = "translateX(0)";
+													}}
+												>
+													<div style={{
+														width: "32px",
+														height: "32px",
+														borderRadius: "8px",
+														background: street === option.label
+															? "linear-gradient(135deg, #FF385C 0%, #E61E4D 100%)"
+															: "rgba(0, 0, 0, 0.06)",
+														display: "flex",
+														alignItems: "center",
+														justifyContent: "center",
+														flexShrink: 0,
+														transition: "all 0.2s ease",
+													}}>
+														<Navigation
+															size={14}
+															color={street === option.label ? "#FFFFFF" : "#717171"}
+															strokeWidth={2.5}
+														/>
+													</div>
+													<span style={{ flex: 1 }}>{option.label}</span>
+													{street === option.label && (
+														<div style={{
+															width: "6px",
+															height: "6px",
+															borderRadius: "50%",
+															background: "linear-gradient(135deg, #FF385C 0%, #E61E4D 100%)",
+														}} />
+													)}
+												</div>
+											))}
+										{streetOptions.length === 0 && (
+											<div style={{ padding: "10px 18px", color: "#777", fontSize: "13px" }}>
+												Select a city to load neighborhoods
+											</div>
+										)}
 									</div>
 								</div>
 

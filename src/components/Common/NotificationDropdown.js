@@ -255,7 +255,7 @@ const NotificationDropdown = ({ isOpen, position, onClose, notifications = [] })
 										position: "relative",
 										width: "40px",
 										height: "40px",
-										borderRadius: "10px",
+										borderRadius: "50%",
 										overflow: "hidden",
 										flexShrink: 0,
 										border: "2px solid #E5E7EB",
@@ -266,7 +266,10 @@ const NotificationDropdown = ({ isOpen, position, onClose, notifications = [] })
 										src={notification.userImage}
 										alt={notification.userName || "User"}
 										fill
-										style={{ objectFit: "cover" }}
+										style={{ 
+											objectFit: "cover",
+											borderRadius: "50%"
+										}}
 										sizes="40px"
 										unoptimized
 									/>
@@ -276,7 +279,7 @@ const NotificationDropdown = ({ isOpen, position, onClose, notifications = [] })
 									style={{
 										width: "40px",
 										height: "40px",
-										borderRadius: "10px",
+										borderRadius: "50%",
 										backgroundColor: getNotificationColor(notification.type),
 										display: "flex",
 										alignItems: "center",

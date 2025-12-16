@@ -44,7 +44,9 @@ const enTranslations = {
     forRentDaily: "For rent (Daily)",
     category: "What type are you looking for?",
     location: "Where",
-    search: "Search"
+    search: "Search",
+    locationPlaceholder: "Search City",
+    streetPlaceholder: "Neighborhood"
   },
   auth: {
     loginTitle: "Log in to your account",
@@ -627,7 +629,9 @@ const frTranslations = {
     forRentDaily: "À louer (Journalier)",
     category: "Quel type recherchez-vous?",
     location: "Où",
-    search: "Rechercher"
+    search: "Rechercher",
+    locationPlaceholder: "Rechercher une ville",
+    streetPlaceholder: "Quartier"
   },
   auth: {
     loginTitle: "Connectez-vous à votre compte",
@@ -1203,7 +1207,9 @@ const nlTranslations = {
     forRentDaily: "Te huur (Dagelijks)",
     category: "Welk type zoekt u?",
     location: "Waar",
-    search: "Zoeken"
+    search: "Zoeken",
+    locationPlaceholder: "Zoek stad",
+    streetPlaceholder: "Wijk"
   },
   auth: {
     loginTitle: "Log in op uw account",
