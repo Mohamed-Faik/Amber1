@@ -11,9 +11,9 @@ export const formattedPrice = (price, language = 'en') => {
 			currency = 'EUR';
 			locale = 'nl-BE';
 			break;
-		case 'en':  // English → Pound
-			currency = 'GBP';
-			locale = 'en-GB';
+		case 'en':  // English → Dollar
+			currency = 'USD';
+			locale = 'en-US';
 			break;
 		default:    // Default → Dollar
 			currency = 'USD';

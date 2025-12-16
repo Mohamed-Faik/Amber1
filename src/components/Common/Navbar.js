@@ -109,17 +109,17 @@ const Navbar = ({ currentUser }) => {
           left: 0,
           right: 0,
           zIndex: isHomePage ? 100 : 1000,
-          backgroundColor: isHomePage 
+          backgroundColor: isHomePage
             ? (isScrolled ? "#FFFFFF" : "transparent")
-            : isScrolled 
-              ? "#FFFFFF" 
+            : isScrolled
+              ? "#FFFFFF"
               : "rgba(255, 255, 255, 0.95)",
-          borderBottom: isHomePage 
+          borderBottom: isHomePage
             ? (isScrolled ? "2px solid #F0F0F0" : "none")
-            : isScrolled 
-              ? "2px solid #F0F0F0" 
+            : isScrolled
+              ? "2px solid #F0F0F0"
               : "1px solid rgba(0,0,0,0.04)",
-          boxShadow: isHomePage 
+          boxShadow: isHomePage
             ? (isScrolled ? "0 12px 40px rgba(0,0,0,0.1), 0 4px 16px rgba(0,0,0,0.06)" : "none")
             : isScrolled
               ? "0 12px 40px rgba(0,0,0,0.1), 0 4px 16px rgba(0,0,0,0.06)"
@@ -160,7 +160,7 @@ const Navbar = ({ currentUser }) => {
             {leftNavLinks.map((link) => {
               const isActive =
                 link.href === "/" ? pathname === "/" : pathname?.startsWith(link.href);
-              const textColor = isHomePage 
+              const textColor = isHomePage
                 ? (isScrolled ? (isActive ? "#1A1A1A" : "#666666") : "#FFFFFF")
                 : (isActive ? "#1A1A1A" : "#666666");
               return (
@@ -227,9 +227,9 @@ const Navbar = ({ currentUser }) => {
 
           {/* Logo - Center */}
           {/* Mobile Logo - Left */}
-          <div 
+          <div
             className="navbar-left-mobile"
-            style={{ 
+            style={{
               display: "none",
               flex: "0 0 auto",
               alignItems: "center",
@@ -243,9 +243,9 @@ const Navbar = ({ currentUser }) => {
               transition: "opacity 0.3s ease-in-out, visibility 0.3s ease-in-out",
             }}
           >
-            <div 
+            <div
               className="navbar-logo-container"
-              style={{ 
+              style={{
                 flex: "0 0 auto",
                 position: "relative",
                 left: "0",
@@ -284,7 +284,7 @@ const Navbar = ({ currentUser }) => {
           </div>
 
           {/* Desktop Logo - Centered */}
-          <div 
+          <div
             className="navbar-logo-container"
             style={{
               flex: "0 0 auto",
@@ -326,56 +326,56 @@ const Navbar = ({ currentUser }) => {
             </Link>
           </div>
 
-            {/* Right Navigation Links */}
-            <div
-              className="desktop-nav-right"
-              style={{
-                display: "flex",
-                alignItems: "center",
+          {/* Right Navigation Links */}
+          <div
+            className="desktop-nav-right"
+            style={{
+              display: "flex",
+              alignItems: "center",
               gap: "44px",
               flex: "0 0 auto",
               position: "absolute",
               left: "calc(50% - 80px)",
               transform: "translateX(calc(-50% + 300px))",
               zIndex: 9,
-              }}
-            >
-              {rightNavLinks.map((link) => {
+            }}
+          >
+            {rightNavLinks.map((link) => {
               const isActive =
                 link.href === "/" ? pathname === "/" : pathname?.startsWith(link.href);
-              const textColor = isHomePage 
+              const textColor = isHomePage
                 ? (isScrolled ? (isActive ? "#1A1A1A" : "#666666") : "#FFFFFF")
                 : (isActive ? "#1A1A1A" : "#666666");
-                return (
-                    <Link
+              return (
+                <Link
                   key={link.href}
-                      href={link.href}
-                      style={{
-                        fontSize: "15px",
+                  href={link.href}
+                  style={{
+                    fontSize: "15px",
                     fontWeight: isActive ? "600" : "500",
                     color: textColor,
-                        textDecoration: "none",
+                    textDecoration: "none",
                     transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-                        whiteSpace: "nowrap",
+                    whiteSpace: "nowrap",
                     padding: "0",
                     borderRadius: "0",
                     backgroundColor: "transparent",
                     position: "relative",
                     border: "none",
                     boxShadow: "none",
-                          display: "flex",
-                          alignItems: "center",
+                    display: "flex",
+                    alignItems: "center",
                     gap: "8px",
-                        }}
-                        onMouseEnter={(e) => {
+                  }}
+                  onMouseEnter={(e) => {
                     if (isHomePage && !isScrolled) {
                       e.currentTarget.style.color = "#FFFFFF";
                       e.currentTarget.style.opacity = "0.8";
                     } else {
                       e.currentTarget.style.color = "#FF385C";
                     }
-                        }}
-                        onMouseLeave={(e) => {
+                  }}
+                  onMouseLeave={(e) => {
                     if (isHomePage && !isScrolled) {
                       e.currentTarget.style.color = "#FFFFFF";
                       e.currentTarget.style.opacity = "1";
@@ -401,9 +401,9 @@ const Navbar = ({ currentUser }) => {
                   )}
                   {link.label}
                 </Link>
-                );
-              })}
-            </div>
+              );
+            })}
+          </div>
 
           {/* Desktop Right Actions */}
           <div
@@ -420,16 +420,16 @@ const Navbar = ({ currentUser }) => {
             }}
           >
             {/* Become a Host / Add Listing */}
-                <Link
-                  href="/listings/new"
+            <Link
+              href="/listings/new"
               className="host-button-desktop"
-                  style={{
+              style={{
                 padding: "14px 24px",
                 borderRadius: "16px",
                 fontSize: "14px",
                 fontWeight: "600",
                 color: "#FFFFFF",
-                    textDecoration: "none",
+                textDecoration: "none",
                 transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
                 whiteSpace: "nowrap",
                 background: "linear-gradient(135deg, #FF385C 0%, #E61E4D 100%)",
@@ -437,32 +437,32 @@ const Navbar = ({ currentUser }) => {
                 boxShadow: "0 6px 20px rgba(255, 56, 92, 0.3), 0 2px 8px rgba(255, 56, 92, 0.2)",
                 position: "relative",
                 overflow: "hidden",
-                  }}
-                  onMouseEnter={(e) => {
+              }}
+              onMouseEnter={(e) => {
                 e.currentTarget.style.background = "linear-gradient(135deg, #E61E4D 0%, #D91A3D 100%)";
                 e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.3)";
                 e.currentTarget.style.transform = "translateY(-2px) scale(1.02)";
                 e.currentTarget.style.boxShadow = "0 10px 32px rgba(255, 56, 92, 0.4), 0 4px 12px rgba(255, 56, 92, 0.3)";
-                  }}
-                  onMouseLeave={(e) => {
+              }}
+              onMouseLeave={(e) => {
                 e.currentTarget.style.background = "linear-gradient(135deg, #FF385C 0%, #E61E4D 100%)";
                 e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.2)";
                 e.currentTarget.style.transform = "translateY(0) scale(1)";
                 e.currentTarget.style.boxShadow = "0 6px 20px rgba(255, 56, 92, 0.3), 0 2px 8px rgba(255, 56, 92, 0.2)";
-                  }}
-                  onMouseDown={(e) => {
+              }}
+              onMouseDown={(e) => {
                 e.currentTarget.style.transform = "translateY(0) scale(0.98)";
-                  }}
-                  onMouseUp={(e) => {
+              }}
+              onMouseUp={(e) => {
                 e.currentTarget.style.transform = "translateY(-2px) scale(1.02)";
-                  }}
-                >
+              }}
+            >
               {currentUser
                 ? getTranslation(displayLanguage, "nav.addListing")
                 : getTranslation(displayLanguage, "nav.becomeHost")}
-                </Link>
+            </Link>
 
-                {/* Language Switcher - Only show when logged in (desktop) */}
+            {/* Language Switcher - Only show when logged in (desktop) */}
             {currentUser && <LanguageSwitcher />}
 
             {/* Menu Button - Only show when NOT logged in (desktop) */}
@@ -476,27 +476,27 @@ const Navbar = ({ currentUser }) => {
                   width: "44px",
                   height: "44px",
                   border: "none",
-                  backgroundColor: isHomePage && !isScrolled 
-                    ? "rgba(255, 255, 255, 0.2)" 
+                  backgroundColor: isHomePage && !isScrolled
+                    ? "rgba(255, 255, 255, 0.2)"
                     : "#F7F7F7",
                   borderRadius: "14px",
                   cursor: "pointer",
                   transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-                  boxShadow: isHomePage && !isScrolled 
-                    ? "0 2px 4px rgba(0, 0, 0, 0.1)" 
+                  boxShadow: isHomePage && !isScrolled
+                    ? "0 2px 4px rgba(0, 0, 0, 0.1)"
                     : "0 2px 4px rgba(0, 0, 0, 0.05)",
                   backdropFilter: isHomePage && !isScrolled ? "blur(10px)" : "none",
                 }}
                 aria-label="Toggle menu"
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = isHomePage && !isScrolled 
-                    ? "rgba(255, 255, 255, 0.3)" 
+                  e.currentTarget.style.backgroundColor = isHomePage && !isScrolled
+                    ? "rgba(255, 255, 255, 0.3)"
                     : "#EBEBEB";
                   e.currentTarget.style.transform = "scale(1.05)";
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = isHomePage && !isScrolled 
-                    ? "rgba(255, 255, 255, 0.2)" 
+                  e.currentTarget.style.backgroundColor = isHomePage && !isScrolled
+                    ? "rgba(255, 255, 255, 0.2)"
                     : "#F7F7F7";
                   e.currentTarget.style.transform = "scale(1)";
                 }}
@@ -510,7 +510,7 @@ const Navbar = ({ currentUser }) => {
 
             {/* User Menu - Only show when logged in */}
             {currentUser && <UserMenu currentUser={currentUser} />}
-                </div>
+          </div>
 
           {/* Mobile Right Actions */}
           <div
@@ -532,7 +532,7 @@ const Navbar = ({ currentUser }) => {
                 <LanguageSwitcher />
               </div>
             )}
-            
+
             {/* Language Switcher - Mobile Left (only when NOT logged in) */}
             {!currentUser && (
               <div className="mobile-language-wrapper-left">
@@ -549,23 +549,23 @@ const Navbar = ({ currentUser }) => {
 
             {/* Menu Button */}
             <button
-                  className="mobile-menu-btn"
-                  onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
+              className="mobile-menu-btn"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
                 width: "44px",
                 height: "44px",
-                    border: "none",
-                    backgroundColor: isHomePage ? "rgba(255, 255, 255, 0.2)" : "#F7F7F7",
+                border: "none",
+                backgroundColor: isHomePage ? "rgba(255, 255, 255, 0.2)" : "#F7F7F7",
                 borderRadius: "14px",
-                    cursor: "pointer",
+                cursor: "pointer",
                 transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
                 boxShadow: isHomePage ? "0 2px 4px rgba(0, 0, 0, 0.1)" : "0 2px 4px rgba(0, 0, 0, 0.05)",
-                    backdropFilter: isHomePage ? "blur(10px)" : "none",
-                  }}
-                  aria-label="Toggle menu"
+                backdropFilter: isHomePage ? "blur(10px)" : "none",
+              }}
+              aria-label="Toggle menu"
               onMouseEnter={(e) => {
                 e.currentTarget.style.backgroundColor = isHomePage ? "rgba(255, 255, 255, 0.3)" : "#EBEBEB";
                 e.currentTarget.style.transform = "scale(1.05)";
@@ -574,15 +574,15 @@ const Navbar = ({ currentUser }) => {
                 e.currentTarget.style.backgroundColor = isHomePage ? "rgba(255, 255, 255, 0.2)" : "#F7F7F7";
                 e.currentTarget.style.transform = "scale(1)";
               }}
-                  onMouseDown={(e) => {
-                    e.currentTarget.style.transform = "scale(0.95)";
-                  }}
-                  onMouseUp={(e) => {
+              onMouseDown={(e) => {
+                e.currentTarget.style.transform = "scale(0.95)";
+              }}
+              onMouseUp={(e) => {
                 e.currentTarget.style.transform = "scale(1.05)";
-                  }}
-                >
-                  <Menu size={22} color="#000000" strokeWidth={2.5} />
-                </button>
+              }}
+            >
+              <Menu size={22} color="#000000" strokeWidth={2.5} />
+            </button>
           </div>
         </nav>
 
@@ -751,42 +751,42 @@ const Navbar = ({ currentUser }) => {
               {/* User Actions */}
               {currentUser ? (
                 <>
-                <div style={{
+                  <div style={{
                     marginBottom: "24px",
-                  paddingBottom: "24px",
-                  borderBottom: "1px solid #F0F0F0"
-                }}>
-                  <Link
-                    href="/listings/new"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      gap: "12px",
-                      padding: "14px 18px",
-                      fontSize: "16px",
-                      fontWeight: "600",
+                    paddingBottom: "24px",
+                    borderBottom: "1px solid #F0F0F0"
+                  }}>
+                    <Link
+                      href="/listings/new"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        gap: "12px",
+                        padding: "14px 18px",
+                        fontSize: "16px",
+                        fontWeight: "600",
                         color: "#FFFFFF",
-                      textDecoration: "none",
+                        textDecoration: "none",
                         background: "linear-gradient(135deg, #FF385C 0%, #E61E4D 100%)",
-                      borderRadius: "12px",
-                      transition: "all 0.2s ease",
+                        borderRadius: "12px",
+                        transition: "all 0.2s ease",
                         boxShadow: "0 4px 12px rgba(255, 56, 92, 0.3)",
-                    }}
-                    onMouseEnter={(e) => {
+                      }}
+                      onMouseEnter={(e) => {
                         e.currentTarget.style.background = "linear-gradient(135deg, #E61E4D 0%, #D91A3D 100%)";
                         e.currentTarget.style.boxShadow = "0 6px 16px rgba(255, 56, 92, 0.4)";
-                    }}
-                    onMouseLeave={(e) => {
+                      }}
+                      onMouseLeave={(e) => {
                         e.currentTarget.style.background = "linear-gradient(135deg, #FF385C 0%, #E61E4D 100%)";
                         e.currentTarget.style.boxShadow = "0 4px 12px rgba(255, 56, 92, 0.3)";
-                    }}
-                  >
-                    <span>{getTranslation(displayLanguage, "nav.addListing")}</span>
-                  </Link>
-                </div>
-                  
+                      }}
+                    >
+                      <span>{getTranslation(displayLanguage, "nav.addListing")}</span>
+                    </Link>
+                  </div>
+
                   {/* User Profile Section */}
                   <div style={{
                     marginBottom: "32px",
@@ -990,97 +990,97 @@ const Navbar = ({ currentUser }) => {
               </div>
 
               {/* Menu Links */}
-                <div style={{
+              <div style={{
                 display: "flex",
                 flexDirection: "column",
                 gap: "12px",
               }}>
                 {/* Become a Host */}
-                  <Link
-                    href="/listings/new"
+                <Link
+                  href="/listings/new"
                   onClick={() => setIsRightMenuOpen(false)}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      padding: "14px 18px",
-                      fontSize: "16px",
-                      fontWeight: "600",
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    padding: "14px 18px",
+                    fontSize: "16px",
+                    fontWeight: "600",
                     color: "#FFFFFF",
-                      textDecoration: "none",
+                    textDecoration: "none",
                     background: "linear-gradient(135deg, #FF385C 0%, #E61E4D 100%)",
-                      borderRadius: "12px",
-                      transition: "all 0.2s ease",
+                    borderRadius: "12px",
+                    transition: "all 0.2s ease",
                     boxShadow: "0 4px 12px rgba(255, 56, 92, 0.3)",
-                    }}
-                    onMouseEnter={(e) => {
+                  }}
+                  onMouseEnter={(e) => {
                     e.currentTarget.style.background = "linear-gradient(135deg, #E61E4D 0%, #D91A3D 100%)";
                     e.currentTarget.style.boxShadow = "0 6px 16px rgba(255, 56, 92, 0.4)";
-                    }}
-                    onMouseLeave={(e) => {
+                  }}
+                  onMouseLeave={(e) => {
                     e.currentTarget.style.background = "linear-gradient(135deg, #FF385C 0%, #E61E4D 100%)";
                     e.currentTarget.style.boxShadow = "0 4px 12px rgba(255, 56, 92, 0.3)";
-                    }}
-                  >
+                  }}
+                >
                   {getTranslation(displayLanguage, "nav.becomeHost")}
-                  </Link>
+                </Link>
 
                 {/* Login */}
-                  <Link
-                    href="/auth/signin"
+                <Link
+                  href="/auth/signin"
                   onClick={() => setIsRightMenuOpen(false)}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      padding: "14px 18px",
-                      fontSize: "16px",
-                      fontWeight: "600",
-                      color: "#FFFFFF",
-                      textDecoration: "none",
-                      backgroundColor: "#222222",
-                      borderRadius: "12px",
-                      transition: "all 0.2s ease",
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor = "#000000";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.backgroundColor = "#222222";
-                    }}
-                  >
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    padding: "14px 18px",
+                    fontSize: "16px",
+                    fontWeight: "600",
+                    color: "#FFFFFF",
+                    textDecoration: "none",
+                    backgroundColor: "#222222",
+                    borderRadius: "12px",
+                    transition: "all 0.2s ease",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = "#000000";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = "#222222";
+                  }}
+                >
                   {getTranslation(displayLanguage, "common.login")}
-                  </Link>
+                </Link>
 
                 {/* Signup */}
-                  <Link
-                    href="/auth/signup"
+                <Link
+                  href="/auth/signup"
                   onClick={() => setIsRightMenuOpen(false)}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      padding: "14px 18px",
-                      fontSize: "16px",
-                      fontWeight: "600",
-                      color: "#222222",
-                      textDecoration: "none",
-                      backgroundColor: "#F7F7F7",
-                      borderRadius: "12px",
-                      transition: "all 0.2s ease",
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    padding: "14px 18px",
+                    fontSize: "16px",
+                    fontWeight: "600",
+                    color: "#222222",
+                    textDecoration: "none",
+                    backgroundColor: "#F7F7F7",
+                    borderRadius: "12px",
+                    transition: "all 0.2s ease",
                     border: "1px solid #DDDDDD",
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor = "#EBEBEB";
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = "#EBEBEB";
                     e.currentTarget.style.borderColor = "#CCCCCC";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.backgroundColor = "#F7F7F7";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = "#F7F7F7";
                     e.currentTarget.style.borderColor = "#DDDDDD";
-                    }}
-                  >
+                  }}
+                >
                   {getTranslation(displayLanguage, "common.signup")}
-                  </Link>
+                </Link>
               </div>
             </div>
           </div>
@@ -1092,7 +1092,7 @@ const Navbar = ({ currentUser }) => {
         <div
           className="left-menu-overlay"
           onClick={() => setIsLeftMenuOpen(false)}
-                    style={{
+          style={{
             position: "fixed",
             top: 0,
             left: 0,
@@ -1134,9 +1134,9 @@ const Navbar = ({ currentUser }) => {
                 <button
                   onClick={() => setIsLeftMenuOpen(false)}
                   style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
                     width: "40px",
                     height: "40px",
                     border: "none",
@@ -1167,7 +1167,7 @@ const Navbar = ({ currentUser }) => {
               <div style={{
                 display: "flex",
                 flexDirection: "column",
-                      gap: "12px",
+                gap: "12px",
               }}>
                 {/* Login */}
                 <Link
@@ -1204,28 +1204,28 @@ const Navbar = ({ currentUser }) => {
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                      padding: "14px 18px",
-                      fontSize: "16px",
-                      fontWeight: "600",
-                      color: "#222222",
-                      textDecoration: "none",
+                    padding: "14px 18px",
+                    fontSize: "16px",
+                    fontWeight: "600",
+                    color: "#222222",
+                    textDecoration: "none",
                     backgroundColor: "#F7F7F7",
-                      borderRadius: "12px",
-                      transition: "all 0.2s ease",
+                    borderRadius: "12px",
+                    transition: "all 0.2s ease",
                     border: "1px solid #DDDDDD",
-                    }}
-                    onMouseEnter={(e) => {
+                  }}
+                  onMouseEnter={(e) => {
                     e.currentTarget.style.backgroundColor = "#EBEBEB";
-                      e.currentTarget.style.borderColor = "#CCCCCC";
-                    }}
-                    onMouseLeave={(e) => {
+                    e.currentTarget.style.borderColor = "#CCCCCC";
+                  }}
+                  onMouseLeave={(e) => {
                     e.currentTarget.style.backgroundColor = "#F7F7F7";
-                      e.currentTarget.style.borderColor = "#DDDDDD";
-                    }}
-                  >
+                    e.currentTarget.style.borderColor = "#DDDDDD";
+                  }}
+                >
                   {getTranslation(displayLanguage, "common.signup")}
-                  </Link>
-                  </div>
+                </Link>
+              </div>
             </div>
           </div>
         </div>
