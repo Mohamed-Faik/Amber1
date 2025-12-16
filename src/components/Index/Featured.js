@@ -422,8 +422,8 @@ const Featured = ({ currentUser }) => {
 														key={list.id}
 														className="premium-mobile-item"
 														style={{
-															minWidth: "calc(50% - 8px)",
-															width: "calc(50% - 8px)",
+															minWidth: "260px",
+															width: "260px",
 															flexShrink: 0,
 														}}
 													>
@@ -584,8 +584,8 @@ const Featured = ({ currentUser }) => {
 					}
 					
 					.premium-mobile-item {
-						width: calc(50% - 8px) !important;
-						min-width: calc(50% - 8px) !important;
+						width: 260px !important;
+						min-width: 260px !important;
 					}
 					
 					.premium-mobile-scroll-wrapper {

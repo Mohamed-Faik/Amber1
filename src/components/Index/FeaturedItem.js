@@ -255,7 +255,7 @@ const FeaturedItem = ({
 										A
 									</div>
 								)}
-								<div style={{ flex: 1 }}>
+								<div style={{ flex: 1, minWidth: 0 }}>
 									<div style={{
 										fontSize: "14px",
 										fontWeight: "600",
@@ -602,23 +602,46 @@ const FeaturedItem = ({
 				@media (max-width: 768px) {
 					.featured-item-owner {
 						display: flex !important;
-						margin-bottom: 8px !important;
-						padding-bottom: 8px !important;
+						margin-bottom: 6px !important;
+						padding-bottom: 6px !important;
+						gap: 6px !important;
+					}
+					/* Scale down profile image for mobile 2-col layout */
+					.featured-item-owner img {
+						width: 28px !important;
+						height: 28px !important;
+						min-width: 28px !important;
+						min-height: 28px !important;
+					}
+					/* Profile placeholder */
+					.featured-item-owner > div:first-child:not(img) {
+						width: 28px !important;
+						height: 28px !important;
+						font-size: 12px !important;
 					}
 					.featured-item-metrics {
 						display: flex !important;
-						margin-top: 8px !important;
-						padding-top: 8px !important;
+						flex-wrap: wrap !important;
+						gap: 8px !important;
+						margin-top: 6px !important;
+						padding-top: 6px !important;
+						font-size: 11px !important;
 					}
 					.featured-item-contact {
 						display: none !important;
 					}
 					.featured-item-badges {
 						display: flex !important;
-						margin-bottom: 8px !important;
+						flex-wrap: wrap !important;
+						gap: 4px !important;
+						margin-bottom: 6px !important;
+					}
+					.featured-item-badges span {
+						font-size: 10px !important;
+						padding: 2px 6px !important;
 					}
 					.featured-item-content {
-						padding: 12px !important;
+						padding: 8px !important;
 					}
 					.featured-item-location {
 						display: none !important;
@@ -640,8 +663,16 @@ const FeaturedItem = ({
 					}
 					.featured-item-title {
 						margin-bottom: 4px !important;
-						font-size: 15px !important;
+						font-size: 13px !important;
 						font-weight: 600 !important;
+						line-height: 1.2 !important;
+					}
+					/* Scale down owner text */
+					.featured-item-owner > div:last-child > div:first-child {
+						font-size: 12px !important;
+					}
+					.featured-item-owner > div:last-child > div:last-child {
+						font-size: 10px !important;
 					}
 					.featured-item-price {
 						margin-bottom: 4px !important;
@@ -651,9 +682,7 @@ const FeaturedItem = ({
 						color: #222222 !important;
 						font-weight: 500 !important;
 					}
-						color: #222222 !important;
-						font-weight: 500 !important;
-					}
+
 					.featured-item-new-badge {
 						padding: 4px 10px !important;
 						font-size: 11px !important;
