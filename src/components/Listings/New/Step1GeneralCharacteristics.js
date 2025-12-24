@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { ChevronLeft, Info } from "lucide-react";
+import { ChevronLeft, ChevronRight, Info } from "lucide-react";
 import Select from "react-select";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { getTranslation } from "@/utils/translations";
@@ -12,7 +12,7 @@ const Step1GeneralCharacteristics = ({ formData, updateFormData, onNext, onBack,
 	const isVilla = formData.category === "Villa" || formData.category === "Riad";
 	const isLand = formData.category === "Land";
 	const isCommercial = formData.category === "Commercial";
-	
+
 	// Levels above ground options (defined early for use in state initialization)
 	const levelsOptions = [
 		{ value: "plain-pied", label: getTranslation(displayLanguage, "listings.plainPied") },
@@ -22,14 +22,14 @@ const Step1GeneralCharacteristics = ({ formData, updateFormData, onNext, onBack,
 		{ value: "4", label: getTranslation(displayLanguage, "listings.fourLevels") },
 		{ value: "5", label: getTranslation(displayLanguage, "listings.fiveLevels") },
 	];
-	
+
 	// Villa type options (for Land category)
 	const villaTypeOptions = [
 		{ value: "semi-detached", label: getTranslation(displayLanguage, "listings.semiDetached") },
 		{ value: "terraced", label: getTranslation(displayLanguage, "listings.terraced") },
 		{ value: "detached", label: getTranslation(displayLanguage, "listings.detached") },
 	];
-	
+
 	// Regular fields
 	const [area, setArea] = useState(formData.area || "");
 	const [floors, setFloors] = useState(formData.floors || 1);
@@ -39,16 +39,16 @@ const Step1GeneralCharacteristics = ({ formData, updateFormData, onNext, onBack,
 	const [gatedCommunity, setGatedCommunity] = useState(formData.gatedCommunity || false);
 	const [elevator, setElevator] = useState(formData.elevator || false);
 	const [securitySystem, setSecuritySystem] = useState(formData.securitySystem || false);
-	
+
 	// Villa-specific fields
 	const [landArea, setLandArea] = useState(formData.landArea || "");
 	const [basement, setBasement] = useState(formData.basement || false);
 	const [levelsAboveGround, setLevelsAboveGround] = useState(
-		formData.levelsAboveGround 
+		formData.levelsAboveGround
 			? levelsOptions.find(opt => opt.value === formData.levelsAboveGround) || null
 			: null
 	);
-	
+
 	// Land-specific fields
 	const [landAreaForLand, setLandAreaForLand] = useState(formData.area || "");
 	const [villaType, setVillaType] = useState(() => {
@@ -57,10 +57,10 @@ const Step1GeneralCharacteristics = ({ formData, updateFormData, onNext, onBack,
 		}
 		return null;
 	});
-	
+
 	// Commercial-specific fields
 	const [commercialType, setCommercialType] = useState(formData.commercialType || "");
-	
+
 	const totalSteps = 7;
 	const progressPercentage = (currentSubStep / totalSteps) * 100;
 
@@ -142,13 +142,13 @@ const Step1GeneralCharacteristics = ({ formData, updateFormData, onNext, onBack,
 		onNext();
 	};
 
-	const canProceed = isVilla 
+	const canProceed = isVilla
 		? landArea.trim().length > 0 && levelsAboveGround !== null
 		: isLand
-		? landAreaForLand.trim().length > 0 && villaType !== null
-		: isCommercial
-		? commercialType.trim().length > 0
-		: area.trim().length > 0;
+			? landAreaForLand.trim().length > 0 && villaType !== null
+			: isCommercial
+				? commercialType.trim().length > 0
+				: area.trim().length > 0;
 
 	return (
 		<>
@@ -590,8 +590,8 @@ const Step1GeneralCharacteristics = ({ formData, updateFormData, onNext, onBack,
 												backgroundColor: state.isSelected
 													? "#FF385C"
 													: state.isFocused
-													? "#FFF5F7"
-													: "white",
+														? "#FFF5F7"
+														: "white",
 												color: state.isSelected ? "white" : "#222222",
 												"&:hover": {
 													backgroundColor: state.isSelected ? "#FF385C" : "#FFF5F7",
@@ -757,8 +757,8 @@ const Step1GeneralCharacteristics = ({ formData, updateFormData, onNext, onBack,
 												backgroundColor: state.isSelected
 													? "#FF385C"
 													: state.isFocused
-													? "#FFF5F7"
-													: "white",
+														? "#FFF5F7"
+														: "white",
 												color: state.isSelected ? "white" : "#222222",
 												"&:hover": {
 													backgroundColor: state.isSelected ? "#FF385C" : "#FFF5F7",
@@ -948,12 +948,12 @@ const Step1GeneralCharacteristics = ({ formData, updateFormData, onNext, onBack,
 												</svg>
 											)}
 										</div>
-									<label
-										className="checkbox-label"
-										onClick={() => handleCheckboxChange("gatedCommunity", !gatedCommunity, setGatedCommunity)}
-									>
-										{getTranslation(displayLanguage, "listings.gatedCommunity")}
-									</label>
+										<label
+											className="checkbox-label"
+											onClick={() => handleCheckboxChange("gatedCommunity", !gatedCommunity, setGatedCommunity)}
+										>
+											{getTranslation(displayLanguage, "listings.gatedCommunity")}
+										</label>
 									</div>
 
 									<div className="checkbox-field">
@@ -967,12 +967,12 @@ const Step1GeneralCharacteristics = ({ formData, updateFormData, onNext, onBack,
 												</svg>
 											)}
 										</div>
-									<label
-										className="checkbox-label"
-										onClick={() => handleCheckboxChange("elevator", !elevator, setElevator)}
-									>
-										{getTranslation(displayLanguage, "listings.elevator")}
-									</label>
+										<label
+											className="checkbox-label"
+											onClick={() => handleCheckboxChange("elevator", !elevator, setElevator)}
+										>
+											{getTranslation(displayLanguage, "listings.elevator")}
+										</label>
 									</div>
 
 									<div className="checkbox-field">
@@ -986,12 +986,12 @@ const Step1GeneralCharacteristics = ({ formData, updateFormData, onNext, onBack,
 												</svg>
 											)}
 										</div>
-									<label
-										className="checkbox-label"
-										onClick={() => handleCheckboxChange("securitySystem", !securitySystem, setSecuritySystem)}
-									>
-										{getTranslation(displayLanguage, "listings.securitySystem")}
-									</label>
+										<label
+											className="checkbox-label"
+											onClick={() => handleCheckboxChange("securitySystem", !securitySystem, setSecuritySystem)}
+										>
+											{getTranslation(displayLanguage, "listings.securitySystem")}
+										</label>
 									</div>
 								</div>
 							</div>
@@ -1004,7 +1004,7 @@ const Step1GeneralCharacteristics = ({ formData, updateFormData, onNext, onBack,
 				<div className="footer-navigation">
 					{/* Progress Bar */}
 					<div className="progress-bar-container">
-						<div 
+						<div
 							className="progress-bar-fill"
 							style={{ width: `${progressPercentage}%` }}
 						/>
@@ -1038,7 +1038,7 @@ const Step1GeneralCharacteristics = ({ formData, updateFormData, onNext, onBack,
 									e.target.style.borderColor = "#E0E0E0";
 								}}
 							>
-								<ChevronLeft size={20} />
+								{language === 'ar' ? <ChevronRight size={20} /> : <ChevronLeft size={20} />}
 							</button>
 						</div>
 

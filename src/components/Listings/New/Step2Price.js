@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
-import { ChevronLeft, Info } from "lucide-react";
+import { ChevronLeft, ChevronRight, Info } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { getTranslation } from "@/utils/translations";
 
@@ -16,19 +16,19 @@ const Step2Price = ({ formData, updateFormData, onNext, onBack }) => {
 			const priceValue = parseFloat(price);
 			const commissionAmount = priceValue * 0.02;
 			const netPriceValue = priceValue - commissionAmount;
-			
+
 			return {
-				commission: commissionAmount.toLocaleString('fr-FR', { 
-					minimumFractionDigits: 0, 
-					maximumFractionDigits: 0 
+				commission: commissionAmount.toLocaleString('fr-FR', {
+					minimumFractionDigits: 0,
+					maximumFractionDigits: 0
 				}),
-				salePrice: priceValue.toLocaleString('fr-FR', { 
-					minimumFractionDigits: 0, 
-					maximumFractionDigits: 0 
+				salePrice: priceValue.toLocaleString('fr-FR', {
+					minimumFractionDigits: 0,
+					maximumFractionDigits: 0
 				}),
-				netPrice: netPriceValue.toLocaleString('fr-FR', { 
-					minimumFractionDigits: 0, 
-					maximumFractionDigits: 0 
+				netPrice: netPriceValue.toLocaleString('fr-FR', {
+					minimumFractionDigits: 0,
+					maximumFractionDigits: 0
 				})
 			};
 		}
@@ -341,7 +341,7 @@ const Step2Price = ({ formData, updateFormData, onNext, onBack }) => {
 				<div className="footer-navigation">
 					{/* Progress Bar */}
 					<div className="progress-bar-container">
-						<div 
+						<div
 							className="progress-bar-fill"
 							style={{ width: "100%" }}
 						/>
@@ -375,7 +375,7 @@ const Step2Price = ({ formData, updateFormData, onNext, onBack }) => {
 									e.target.style.borderColor = "#E0E0E0";
 								}}
 							>
-								<ChevronLeft size={20} />
+								{language === 'ar' ? <ChevronRight size={20} /> : <ChevronLeft size={20} />}
 							</button>
 						</div>
 

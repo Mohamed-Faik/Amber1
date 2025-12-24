@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { getTranslation } from "@/utils/translations";
 
@@ -305,7 +305,7 @@ const Step1ExteriorAnnex = ({ formData, updateFormData, onNext, onBack, onSkip, 
 				<div className="footer-navigation">
 					{/* Progress Bar */}
 					<div className="progress-bar-container">
-						<div 
+						<div
 							className="progress-bar-fill"
 							style={{ width: `${progressPercentage}%` }}
 						/>
@@ -339,7 +339,7 @@ const Step1ExteriorAnnex = ({ formData, updateFormData, onNext, onBack, onSkip, 
 									e.target.style.borderColor = "#E0E0E0";
 								}}
 							>
-								<ChevronLeft size={20} />
+								{language === 'ar' ? <ChevronRight size={20} /> : <ChevronLeft size={20} />}
 							</button>
 						</div>
 

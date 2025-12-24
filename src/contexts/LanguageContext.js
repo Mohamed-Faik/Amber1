@@ -30,7 +30,7 @@ export const LanguageProvider = ({ children, defaultLanguage = "en" }) => {
 
       // Check localStorage first
       const savedLang = localStorage.getItem("userLanguage");
-      if (savedLang && ["en", "fr", "nl"].includes(savedLang)) {
+      if (savedLang && ["en", "fr", "nl", "ar"].includes(savedLang)) {
         console.log("[Language Context] Using saved language:", savedLang);
         setLanguage(savedLang);
         setIsDetecting(false);
@@ -76,7 +76,7 @@ export const LanguageProvider = ({ children, defaultLanguage = "en" }) => {
   }, [defaultLanguage]);
 
   const changeLanguage = (lang) => {
-    if (["en", "fr", "nl"].includes(lang)) {
+    if (["en", "fr", "nl", "ar"].includes(lang)) {
       setLanguage(lang);
       localStorage.setItem("userLanguage", lang);
     }

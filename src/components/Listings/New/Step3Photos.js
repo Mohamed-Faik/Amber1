@@ -2,7 +2,7 @@
 
 import React, { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { ChevronLeft, Info, Upload, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, Info, Upload, X } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { getTranslation } from "@/utils/translations";
 import { toast } from "react-hot-toast";
@@ -45,30 +45,30 @@ const Step3Photos = ({ formData, updateFormData, onNext, onBack }) => {
 	// Upload photos to server
 	const uploadPhotos = async () => {
 		const uploadedUrls = [];
-		
+
 		// Filter out null/undefined photos and only upload valid ones
 		const validPhotos = photos.filter(p => p && p.file);
-		
+
 		if (validPhotos.length === 0) {
 			throw new Error("No photos to upload");
 		}
-		
+
 		for (let i = 0; i < validPhotos.length; i++) {
 			try {
 				const formData = new FormData();
 				formData.append("file", validPhotos[i].file);
 				formData.append("type", "listings");
-				
+
 				const response = await fetch("/api/upload", {
 					method: "POST",
 					body: formData,
 				});
-				
+
 				if (!response.ok) {
 					const errorData = await response.json().catch(() => ({ error: "Upload failed" }));
 					throw new Error(errorData.error || "Upload failed");
 				}
-				
+
 				const data = await response.json();
 				if (data.url) {
 					uploadedUrls.push(data.url);
@@ -78,7 +78,7 @@ const Step3Photos = ({ formData, updateFormData, onNext, onBack }) => {
 				throw error;
 			}
 		}
-		
+
 		return uploadedUrls;
 	};
 
@@ -87,7 +87,7 @@ const Step3Photos = ({ formData, updateFormData, onNext, onBack }) => {
 		const category = formData.category || "";
 		const area = formData.area ? `${formData.area} m²` : "";
 		const location = formData.address || "";
-		
+
 		const parts = [category, area, location].filter(Boolean);
 		return parts.join(" - ") || "Property Listing";
 	};
@@ -95,27 +95,27 @@ const Step3Photos = ({ formData, updateFormData, onNext, onBack }) => {
 	// Generate description from form data
 	const generateDescription = () => {
 		const parts = [];
-		
+
 		if (formData.category) {
 			parts.push(`${formData.category}`);
 		}
-		
+
 		if (formData.area) {
 			parts.push(`Area: ${formData.area} m²`);
 		}
-		
+
 		if (formData.bedrooms) {
 			parts.push(`Bedrooms: ${formData.bedrooms}`);
 		}
-		
+
 		if (formData.bathrooms) {
 			parts.push(`Bathrooms: ${formData.bathrooms}`);
 		}
-		
+
 		if (formData.propertyAge) {
 			parts.push(`Property Age: ${formData.propertyAge}`);
 		}
-		
+
 		// Add features
 		const features = [];
 		if (formData.elevator) features.push("Elevator");
@@ -130,22 +130,22 @@ const Step3Photos = ({ formData, updateFormData, onNext, onBack }) => {
 		if (formData.swimmingPool) features.push("Swimming Pool");
 		if (formData.garageBox) features.push("Garage/Box");
 		if (formData.parkingSpaces) features.push("Parking Spaces");
-		
+
 		if (features.length > 0) {
 			parts.push(`Features: ${features.join(", ")}`);
 		}
-		
+
 		if (formData.address) {
 			parts.push(`Location: ${formData.address}`);
 		}
-		
+
 		return parts.join("\n") || "Property listing";
 	};
 
 	// Generate features string
 	const generateFeatures = () => {
 		const features = [];
-		
+
 		if (formData.elevator) features.push("Elevator");
 		if (formData.gatedCommunity) features.push("Gated Community");
 		if (formData.securitySystem) features.push("Security System");
@@ -158,7 +158,7 @@ const Step3Photos = ({ formData, updateFormData, onNext, onBack }) => {
 		if (formData.swimmingPool) features.push("Swimming Pool");
 		if (formData.garageBox) features.push("Garage/Box");
 		if (formData.parkingSpaces) features.push("Parking Spaces");
-		
+
 		return features.join(", ") || "";
 	};
 
@@ -192,7 +192,7 @@ const Step3Photos = ({ formData, updateFormData, onNext, onBack }) => {
 		try {
 			// Upload photos first
 			const uploadedUrls = await uploadPhotos();
-			
+
 			if (uploadedUrls.length === 0) {
 				throw new Error("No photos were uploaded successfully");
 			}
@@ -241,12 +241,12 @@ const Step3Photos = ({ formData, updateFormData, onNext, onBack }) => {
 			}
 
 			const listing = await response.json();
-			
+
 			toast.success(
-				getTranslation(displayLanguage, "listings.listingCreatedSuccess") || 
+				getTranslation(displayLanguage, "listings.listingCreatedSuccess") ||
 				"Listing created! It is pending admin approval and will be visible once approved."
 			);
-			
+
 			// Redirect to my listings page
 			router.push("/listings/my-listings");
 			router.refresh();
@@ -570,7 +570,7 @@ const Step3Photos = ({ formData, updateFormData, onNext, onBack }) => {
 				<div className="footer-navigation">
 					{/* Progress Bar */}
 					<div className="progress-bar-container">
-						<div 
+						<div
 							className="progress-bar-fill"
 							style={{ width: "100%" }}
 						/>
@@ -604,7 +604,7 @@ const Step3Photos = ({ formData, updateFormData, onNext, onBack }) => {
 									e.target.style.borderColor = "#E0E0E0";
 								}}
 							>
-								<ChevronLeft size={20} />
+								{language === 'ar' ? <ChevronRight size={20} /> : <ChevronLeft size={20} />}
 							</button>
 						</div>
 
@@ -641,7 +641,7 @@ const Step3Photos = ({ formData, updateFormData, onNext, onBack }) => {
 									}
 								}}
 							>
-								{isLoading 
+								{isLoading
 									? (getTranslation(displayLanguage, "listings.publishing") || "Publishing...")
 									: getTranslation(displayLanguage, "listings.publish")
 								}

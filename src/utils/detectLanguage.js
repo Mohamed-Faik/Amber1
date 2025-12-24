@@ -20,7 +20,7 @@ export const detectUserLanguage = async () => {
       const data = await response.json();
       const detectedLang = data.language || "en";
       console.log("[Client] Language detected via API:", detectedLang, "Country:", data.country, "IP:", data.ip, "Service:", data.service);
-      
+
       // If we got a valid detection (not "unknown"), use it
       if (data.country && data.country !== "unknown") {
         return detectedLang;
@@ -62,8 +62,9 @@ export const detectUserLanguage = async () => {
           if (countryCode) {
             let language = "en";
             if (countryCode === "FR") language = "fr";
-            else if (countryCode === "US") language = "en";
+            else if (countryCode === "US" || countryCode === "GB") language = "en";
             else if (countryCode === "BE") language = "nl";
+            else if (["MA", "AE", "SA", "EG", "QA", "KW", "OM", "BH", "LB", "JO", "DZ", "TN", "LY", "IQ", "YE", "SY"].includes(countryCode)) language = "ar";
 
             console.log("[Client] ✅ Client-side detection successful:", language, "for country:", countryCode);
             return language;

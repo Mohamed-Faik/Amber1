@@ -1365,8 +1365,8 @@ const Banner = () => {
 			/* Tablet: 768px - 991px */
 			@media (max-width: 991px) {
 					.hero-banner-container {
-						height: auto !important;
-						min-height: 700px !important;
+						height: 1118px !important;
+						min-height: 1118px !important;
 					}
 
 					.banner-content-container {
@@ -1376,7 +1376,7 @@ const Banner = () => {
 					}
 
 					.banner-quote-text {
-						margin-top: 40px !important;
+						margin-top: 225px !important;
 						margin-bottom: 32px !important;
 					}
 
@@ -1413,9 +1413,9 @@ const Banner = () => {
 
 				/* Mobile: < 768px */
 				@media (max-width: 767px) {
-					.hero-banner-container {
-						height: auto !important;
-						min-height: 700px !important;
+	.hero-banner-container {
+						height: 922px !important;
+						min-height: 922px !important;
 					}
 
 					.banner-content-container {
