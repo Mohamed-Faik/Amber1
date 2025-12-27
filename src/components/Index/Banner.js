@@ -343,6 +343,7 @@ const Banner = () => {
 					overflow: "visible",
 				}}
 			>
+
 				<div
 					className="banner-content-wrapper"
 					style={{
@@ -384,7 +385,7 @@ const Banner = () => {
 							<span
 								style={{
 									color: "#FF385C",
-									fontSize: "clamp(64px, 9vw, 128px)",
+									fontSize: "clamp(54px, 9vw, 128px)",
 									fontWeight: "400",
 									lineHeight: "0.7",
 									display: "inline-block",
@@ -397,7 +398,7 @@ const Banner = () => {
 
 							<div
 								style={{
-									fontSize: "clamp(40px, 6vw, 80px)",
+									fontSize: "clamp(32px, 6vw, 80px)",
 									fontWeight: "700",
 									color: "#FFFFFF",
 									fontFamily: "var(--font-satisfy), 'Satisfy', cursive",
@@ -435,7 +436,7 @@ const Banner = () => {
 						>
 							<div
 								style={{
-									fontSize: "clamp(40px, 6vw, 80px)",
+									fontSize: "clamp(32px, 6vw, 80px)",
 									fontWeight: "700",
 									color: "#FFFFFF",
 									fontFamily: "var(--font-satisfy), 'Satisfy', cursive",
@@ -462,7 +463,7 @@ const Banner = () => {
 							<span
 								style={{
 									color: "#FF385C",
-									fontSize: "clamp(64px, 9vw, 128px)",
+									fontSize: "clamp(54px, 9vw, 128px)",
 									fontWeight: "400",
 									lineHeight: "0.7",
 									display: "inline-block",
@@ -1554,6 +1555,7 @@ const Banner = () => {
 				}
 			}
 			`}</style>
+
 		</div>
 	);
 };

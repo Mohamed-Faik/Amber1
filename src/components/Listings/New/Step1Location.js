@@ -317,13 +317,12 @@ const Step1Location = ({ formData, updateFormData, onNext, showMap = false, curr
 	};
 
 	const handleNextClick = () => {
-		if (address.trim()) {
-			updateFormData({ address, location: markerPosition });
-			onNext();
-		}
+		updateFormData({ address, location: markerPosition });
+		onNext();
 	};
 
-	const canProceed = address.trim().length > 0;
+	const canProceed = true; // Always allow proceeding, location is optional
+
 
 	// If showMap is true, only render the map
 	if (showMap) {
@@ -385,7 +384,7 @@ const Step1Location = ({ formData, updateFormData, onNext, showMap = false, curr
 				.footer-navigation {
 					position: fixed;
 					bottom: 0;
-					left: 0;
+					inset-inline-start: 0;
 					width: 65%;
 					background-color: #FFFFFF;
 					border-top: 1px solid #E0E0E0;

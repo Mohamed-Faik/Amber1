@@ -416,7 +416,7 @@ const Step3Photos = ({ formData, updateFormData, onNext, onBack }) => {
 				.footer-navigation {
 					position: fixed;
 					bottom: 0;
-					left: 0;
+					inset-inline-start: 0;
 					width: 65%;
 					background-color: #FFFFFF;
 					border-top: 1px solid #E0E0E0;

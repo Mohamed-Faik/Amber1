@@ -7,9 +7,12 @@ import { usePathname } from "next/navigation";
 import Image from "next/image";
 import ProfileImage from "./ProfileImage";
 import { LayoutDashboard, ListChecks, Plus, Heart, UserPen, Settings, LogOut } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { getTranslation } from "@/utils/translations";
 import userImg from "../../../public/images/authors/author-1.jpg";
 
 const UserMenu = ({ currentUser }) => {
+	const { language } = useLanguage();
 	const [isOpen, setIsOpen] = useState(false);
 	const [dropdownPosition, setDropdownPosition] = useState({ right: 0, top: 0 });
 	const [mounted, setMounted] = useState(false);
@@ -28,7 +31,7 @@ const UserMenu = ({ currentUser }) => {
 
 		const handleClickOutside = (event) => {
 			if (
-				dropdownRef.current && 
+				dropdownRef.current &&
 				!dropdownRef.current.contains(event.target) &&
 				buttonRef.current &&
 				!buttonRef.current.contains(event.target)
@@ -178,9 +181,9 @@ const UserMenu = ({ currentUser }) => {
 				}
 			`}</style>
 			{!currentUser ? (
-				<div style={{ 
-					display: "flex", 
-					alignItems: "center", 
+				<div style={{
+					display: "flex",
+					alignItems: "center",
 					gap: "12px",
 				}}>
 					<Link
@@ -232,32 +235,32 @@ const UserMenu = ({ currentUser }) => {
 				</div>
 			) : (
 				<>
-					<div 
+					<div
 						className={`user-menu-dropdown ${isOpen ? "active" : ""}`}
-						style={{ 
+						style={{
 							position: "relative",
 							top: 0,
 							marginTop: 0,
 						}}
 					>
-					<div 
-						ref={buttonRef}
-						className={`user-menu-button ${isOpen ? "active" : ""}`}
-						style={{
-							display: "flex",
-							alignItems: "center",
-							justifyContent: "center",
-							gap: "15px",
-							padding: "4px 10px 4px 13px",
-							borderRadius: "50%",
-							border: "none",
-							cursor: "pointer",
-							transition: "all 0.2s ease",
-							backgroundColor: "#FFFFFF",
-							width: "42px",
-							height: "42px",
-							marginTop: 0,
-						}}
+						<div
+							ref={buttonRef}
+							className={`user-menu-button ${isOpen ? "active" : ""}`}
+							style={{
+								display: "flex",
+								alignItems: "center",
+								justifyContent: "center",
+								gap: "15px",
+								padding: "4px 10px 4px 13px",
+								borderRadius: "50%",
+								border: "none",
+								cursor: "pointer",
+								transition: "all 0.2s ease",
+								backgroundColor: "#FFFFFF",
+								width: "42px",
+								height: "42px",
+								marginTop: 0,
+							}}
 							onClick={toggleDropdown}
 							onMouseDown={(e) => e.stopPropagation()}
 							onMouseEnter={(e) => {
@@ -324,7 +327,7 @@ const UserMenu = ({ currentUser }) => {
 						</div>
 
 						{mounted && isOpen && typeof document !== 'undefined' && createPortal(
-							<div 
+							<div
 								ref={dropdownRef}
 								className="dropdown show user-menu-dropdown-content"
 								style={{
@@ -354,13 +357,12 @@ const UserMenu = ({ currentUser }) => {
 								<ul style={{ margin: 0, padding: '8px 0', listStyle: 'none' }}>
 									{isAdmin && (
 										<li>
-											<Link 
+											<Link
 												href="/administrator"
-												className={`user-nav-link ${
-													currentRoute === "/administrator"
+												className={`user-nav-link ${currentRoute === "/administrator"
 														? "active"
 														: "non-active"
-												}`}
+													}`}
 												onClick={handleLinkClick}
 												onMouseDown={(e) => e.stopPropagation()}
 												style={{
@@ -378,38 +380,38 @@ const UserMenu = ({ currentUser }) => {
 													margin: '4px 0',
 												}}
 												onMouseEnter={(e) => {
-													e.currentTarget.style.backgroundColor = currentRoute === "/administrator" 
-														? 'rgba(255, 56, 92, 0.12)' 
+													e.currentTarget.style.backgroundColor = currentRoute === "/administrator"
+														? 'rgba(255, 56, 92, 0.12)'
 														: 'rgba(0, 0, 0, 0.04)';
 													e.currentTarget.style.transform = 'translateX(4px)';
 												}}
 												onMouseLeave={(e) => {
-													e.currentTarget.style.backgroundColor = currentRoute === "/administrator" 
-														? 'rgba(255, 56, 92, 0.08)' 
+													e.currentTarget.style.backgroundColor = currentRoute === "/administrator"
+														? 'rgba(255, 56, 92, 0.08)'
 														: 'transparent';
 													e.currentTarget.style.transform = 'translateX(0)';
 												}}
 											>
-											<div style={{
-												width: '36px',
-												height: '36px',
-												borderRadius: '10px',
-												background: currentRoute === "/administrator" 
-													? 'linear-gradient(135deg, #FF385C 0%, #E61E4D 100%)' 
-													: 'rgba(0, 0, 0, 0.06)',
-												display: 'flex',
-												alignItems: 'center',
-												justifyContent: 'center',
-												flexShrink: 0,
-												transition: 'all 0.2s ease',
-											}}>
-												<LayoutDashboard 
-													size={18}
-													color={currentRoute === "/administrator" ? '#FFFFFF' : '#717171'}
-													strokeWidth={2.5}
-												/>
-											</div>
-												<span style={{ flex: 1 }}>Administrator</span>
+												<div style={{
+													width: '36px',
+													height: '36px',
+													borderRadius: '10px',
+													background: currentRoute === "/administrator"
+														? 'linear-gradient(135deg, #FF385C 0%, #E61E4D 100%)'
+														: 'rgba(0, 0, 0, 0.06)',
+													display: 'flex',
+													alignItems: 'center',
+													justifyContent: 'center',
+													flexShrink: 0,
+													transition: 'all 0.2s ease',
+												}}>
+													<LayoutDashboard
+														size={18}
+														color={currentRoute === "/administrator" ? '#FFFFFF' : '#717171'}
+														strokeWidth={2.5}
+													/>
+												</div>
+												<span style={{ flex: 1 }}>{getTranslation(language, "dashboard.administrator")}</span>
 												{currentRoute === "/administrator" && (
 													<div style={{
 														width: '6px',
@@ -422,13 +424,12 @@ const UserMenu = ({ currentUser }) => {
 										</li>
 									)}
 									<li>
-										<Link 
+										<Link
 											href="/listings/my-listings"
-											className={`user-nav-link ${
-												currentRoute === "/listings/my-listings"
+											className={`user-nav-link ${currentRoute === "/listings/my-listings"
 													? "active"
 													: "non-active"
-											}`}
+												}`}
 											onClick={handleLinkClick}
 											onMouseDown={(e) => e.stopPropagation()}
 											style={{
@@ -446,38 +447,38 @@ const UserMenu = ({ currentUser }) => {
 												margin: '4px 0',
 											}}
 											onMouseEnter={(e) => {
-												e.currentTarget.style.backgroundColor = currentRoute === "/listings/my-listings" 
-													? 'rgba(255, 56, 92, 0.12)' 
+												e.currentTarget.style.backgroundColor = currentRoute === "/listings/my-listings"
+													? 'rgba(255, 56, 92, 0.12)'
 													: 'rgba(0, 0, 0, 0.04)';
 												e.currentTarget.style.transform = 'translateX(4px)';
 											}}
 											onMouseLeave={(e) => {
-												e.currentTarget.style.backgroundColor = currentRoute === "/listings/my-listings" 
-													? 'rgba(255, 56, 92, 0.08)' 
+												e.currentTarget.style.backgroundColor = currentRoute === "/listings/my-listings"
+													? 'rgba(255, 56, 92, 0.08)'
 													: 'transparent';
 												e.currentTarget.style.transform = 'translateX(0)';
 											}}
 										>
-										<div style={{
-											width: '36px',
-											height: '36px',
-											borderRadius: '10px',
-											background: currentRoute === "/listings/my-listings" 
-												? 'linear-gradient(135deg, #FF385C 0%, #E61E4D 100%)' 
-												: 'rgba(0, 0, 0, 0.06)',
-											display: 'flex',
-											alignItems: 'center',
-											justifyContent: 'center',
-											flexShrink: 0,
-											transition: 'all 0.2s ease',
-										}}>
-											<ListChecks 
-												size={18}
-												color={currentRoute === "/listings/my-listings" ? '#FFFFFF' : '#717171'}
-												strokeWidth={2.5}
-											/>
-										</div>
-											<span style={{ flex: 1 }}>My Listings</span>
+											<div style={{
+												width: '36px',
+												height: '36px',
+												borderRadius: '10px',
+												background: currentRoute === "/listings/my-listings"
+													? 'linear-gradient(135deg, #FF385C 0%, #E61E4D 100%)'
+													: 'rgba(0, 0, 0, 0.06)',
+												display: 'flex',
+												alignItems: 'center',
+												justifyContent: 'center',
+												flexShrink: 0,
+												transition: 'all 0.2s ease',
+											}}>
+												<ListChecks
+													size={18}
+													color={currentRoute === "/listings/my-listings" ? '#FFFFFF' : '#717171'}
+													strokeWidth={2.5}
+												/>
+											</div>
+											<span style={{ flex: 1 }}>{getTranslation(language, "dashboard.myListings")}</span>
 											{currentRoute === "/listings/my-listings" && (
 												<div style={{
 													width: '6px',
@@ -489,13 +490,12 @@ const UserMenu = ({ currentUser }) => {
 										</Link>
 									</li>
 									<li>
-										<Link 
+										<Link
 											href="/listings/new"
-											className={`user-nav-link ${
-												currentRoute === "/listings/new"
+											className={`user-nav-link ${currentRoute === "/listings/new"
 													? "active"
 													: "non-active"
-											}`}
+												}`}
 											onClick={handleLinkClick}
 											onMouseDown={(e) => e.stopPropagation()}
 											style={{
@@ -513,38 +513,38 @@ const UserMenu = ({ currentUser }) => {
 												margin: '4px 0',
 											}}
 											onMouseEnter={(e) => {
-												e.currentTarget.style.backgroundColor = currentRoute === "/listings/new" 
-													? 'rgba(255, 56, 92, 0.12)' 
+												e.currentTarget.style.backgroundColor = currentRoute === "/listings/new"
+													? 'rgba(255, 56, 92, 0.12)'
 													: 'rgba(0, 0, 0, 0.04)';
 												e.currentTarget.style.transform = 'translateX(4px)';
 											}}
 											onMouseLeave={(e) => {
-												e.currentTarget.style.backgroundColor = currentRoute === "/listings/new" 
-													? 'rgba(255, 56, 92, 0.08)' 
+												e.currentTarget.style.backgroundColor = currentRoute === "/listings/new"
+													? 'rgba(255, 56, 92, 0.08)'
 													: 'transparent';
 												e.currentTarget.style.transform = 'translateX(0)';
 											}}
 										>
-										<div style={{
-											width: '36px',
-											height: '36px',
-											borderRadius: '10px',
-											background: currentRoute === "/listings/new" 
-												? 'linear-gradient(135deg, #FF385C 0%, #E61E4D 100%)' 
-												: 'rgba(0, 0, 0, 0.06)',
-											display: 'flex',
-											alignItems: 'center',
-											justifyContent: 'center',
-											flexShrink: 0,
-											transition: 'all 0.2s ease',
-										}}>
-											<Plus 
-												size={20}
-												color={currentRoute === "/listings/new" ? '#FFFFFF' : '#717171'}
-												strokeWidth={2.5}
-											/>
-										</div>
-											<span style={{ flex: 1 }}>Add Listings</span>
+											<div style={{
+												width: '36px',
+												height: '36px',
+												borderRadius: '10px',
+												background: currentRoute === "/listings/new"
+													? 'linear-gradient(135deg, #FF385C 0%, #E61E4D 100%)'
+													: 'rgba(0, 0, 0, 0.06)',
+												display: 'flex',
+												alignItems: 'center',
+												justifyContent: 'center',
+												flexShrink: 0,
+												transition: 'all 0.2s ease',
+											}}>
+												<Plus
+													size={20}
+													color={currentRoute === "/listings/new" ? '#FFFFFF' : '#717171'}
+													strokeWidth={2.5}
+												/>
+											</div>
+											<span style={{ flex: 1 }}>{getTranslation(language, "dashboard.addListings")}</span>
 											{currentRoute === "/listings/new" && (
 												<div style={{
 													width: '6px',
@@ -556,13 +556,12 @@ const UserMenu = ({ currentUser }) => {
 										</Link>
 									</li>
 									<li>
-										<Link 
+										<Link
 											href="/listings/favourites"
-											className={`user-nav-link ${
-												currentRoute === "/listings/favourites"
+											className={`user-nav-link ${currentRoute === "/listings/favourites"
 													? "active"
 													: "non-active"
-											}`}
+												}`}
 											onClick={handleLinkClick}
 											onMouseDown={(e) => e.stopPropagation()}
 											style={{
@@ -580,38 +579,38 @@ const UserMenu = ({ currentUser }) => {
 												margin: '4px 0',
 											}}
 											onMouseEnter={(e) => {
-												e.currentTarget.style.backgroundColor = currentRoute === "/listings/favourites" 
-													? 'rgba(255, 56, 92, 0.12)' 
+												e.currentTarget.style.backgroundColor = currentRoute === "/listings/favourites"
+													? 'rgba(255, 56, 92, 0.12)'
 													: 'rgba(0, 0, 0, 0.04)';
 												e.currentTarget.style.transform = 'translateX(4px)';
 											}}
 											onMouseLeave={(e) => {
-												e.currentTarget.style.backgroundColor = currentRoute === "/listings/favourites" 
-													? 'rgba(255, 56, 92, 0.08)' 
+												e.currentTarget.style.backgroundColor = currentRoute === "/listings/favourites"
+													? 'rgba(255, 56, 92, 0.08)'
 													: 'transparent';
 												e.currentTarget.style.transform = 'translateX(0)';
 											}}
 										>
-										<div style={{
-											width: '36px',
-											height: '36px',
-											borderRadius: '10px',
-											background: currentRoute === "/listings/favourites" 
-												? 'linear-gradient(135deg, #FF385C 0%, #E61E4D 100%)' 
-												: 'rgba(0, 0, 0, 0.06)',
-											display: 'flex',
-											alignItems: 'center',
-											justifyContent: 'center',
-											flexShrink: 0,
-											transition: 'all 0.2s ease',
-										}}>
-											<Heart 
-												size={18}
-												color={currentRoute === "/listings/favourites" ? '#FFFFFF' : '#717171'}
-												strokeWidth={2.5}
-											/>
-										</div>
-											<span style={{ flex: 1 }}>Favourites</span>
+											<div style={{
+												width: '36px',
+												height: '36px',
+												borderRadius: '10px',
+												background: currentRoute === "/listings/favourites"
+													? 'linear-gradient(135deg, #FF385C 0%, #E61E4D 100%)'
+													: 'rgba(0, 0, 0, 0.06)',
+												display: 'flex',
+												alignItems: 'center',
+												justifyContent: 'center',
+												flexShrink: 0,
+												transition: 'all 0.2s ease',
+											}}>
+												<Heart
+													size={18}
+													color={currentRoute === "/listings/favourites" ? '#FFFFFF' : '#717171'}
+													strokeWidth={2.5}
+												/>
+											</div>
+											<span style={{ flex: 1 }}>{getTranslation(language, "dashboard.favorites")}</span>
 											{currentRoute === "/listings/favourites" && (
 												<div style={{
 													width: '6px',
@@ -623,13 +622,12 @@ const UserMenu = ({ currentUser }) => {
 										</Link>
 									</li>
 									<li>
-										<Link 
+										<Link
 											href="/profile/edit-my-info"
-											className={`user-nav-link ${
-											currentRoute === "/profile/edit-my-info"
-												? "active"
-												: "non-active"
-											}`}
+											className={`user-nav-link ${currentRoute === "/profile/edit-my-info"
+													? "active"
+													: "non-active"
+												}`}
 											onClick={handleLinkClick}
 											onMouseDown={(e) => e.stopPropagation()}
 											style={{
@@ -647,38 +645,38 @@ const UserMenu = ({ currentUser }) => {
 												margin: '4px 0',
 											}}
 											onMouseEnter={(e) => {
-												e.currentTarget.style.backgroundColor = currentRoute === "/profile/edit-my-info" 
-													? 'rgba(255, 56, 92, 0.12)' 
+												e.currentTarget.style.backgroundColor = currentRoute === "/profile/edit-my-info"
+													? 'rgba(255, 56, 92, 0.12)'
 													: 'rgba(0, 0, 0, 0.04)';
 												e.currentTarget.style.transform = 'translateX(4px)';
 											}}
 											onMouseLeave={(e) => {
-												e.currentTarget.style.backgroundColor = currentRoute === "/profile/edit-my-info" 
-													? 'rgba(255, 56, 92, 0.08)' 
+												e.currentTarget.style.backgroundColor = currentRoute === "/profile/edit-my-info"
+													? 'rgba(255, 56, 92, 0.08)'
 													: 'transparent';
 												e.currentTarget.style.transform = 'translateX(0)';
 											}}
 										>
-										<div style={{
-											width: '36px',
-											height: '36px',
-											borderRadius: '10px',
-											background: currentRoute === "/profile/edit-my-info" 
-												? 'linear-gradient(135deg, #FF385C 0%, #E61E4D 100%)' 
-												: 'rgba(0, 0, 0, 0.06)',
-											display: 'flex',
-											alignItems: 'center',
-											justifyContent: 'center',
-											flexShrink: 0,
-											transition: 'all 0.2s ease',
-										}}>
-											<UserPen 
-												size={18}
-												color={currentRoute === "/profile/edit-my-info" ? '#FFFFFF' : '#717171'}
-												strokeWidth={2.5}
-											/>
-										</div>
-											<span style={{ flex: 1 }}>Update Profile Info</span>
+											<div style={{
+												width: '36px',
+												height: '36px',
+												borderRadius: '10px',
+												background: currentRoute === "/profile/edit-my-info"
+													? 'linear-gradient(135deg, #FF385C 0%, #E61E4D 100%)'
+													: 'rgba(0, 0, 0, 0.06)',
+												display: 'flex',
+												alignItems: 'center',
+												justifyContent: 'center',
+												flexShrink: 0,
+												transition: 'all 0.2s ease',
+											}}>
+												<UserPen
+													size={18}
+													color={currentRoute === "/profile/edit-my-info" ? '#FFFFFF' : '#717171'}
+													strokeWidth={2.5}
+												/>
+											</div>
+											<span style={{ flex: 1 }}>{getTranslation(language, "dashboard.updateProfile")}</span>
 											{currentRoute === "/profile/edit-my-info" && (
 												<div style={{
 													width: '6px',
@@ -690,13 +688,12 @@ const UserMenu = ({ currentUser }) => {
 										</Link>
 									</li>
 									<li>
-										<Link 
+										<Link
 											href="/profile/settings"
-											className={`user-nav-link ${
-											currentRoute === "/profile/settings"
-												? "active"
-												: "non-active"
-											}`}
+											className={`user-nav-link ${currentRoute === "/profile/settings"
+													? "active"
+													: "non-active"
+												}`}
 											onClick={handleLinkClick}
 											onMouseDown={(e) => e.stopPropagation()}
 											style={{
@@ -714,38 +711,38 @@ const UserMenu = ({ currentUser }) => {
 												margin: '4px 0',
 											}}
 											onMouseEnter={(e) => {
-												e.currentTarget.style.backgroundColor = currentRoute === "/profile/settings" 
-													? 'rgba(255, 56, 92, 0.12)' 
+												e.currentTarget.style.backgroundColor = currentRoute === "/profile/settings"
+													? 'rgba(255, 56, 92, 0.12)'
 													: 'rgba(0, 0, 0, 0.04)';
 												e.currentTarget.style.transform = 'translateX(4px)';
 											}}
 											onMouseLeave={(e) => {
-												e.currentTarget.style.backgroundColor = currentRoute === "/profile/settings" 
-													? 'rgba(255, 56, 92, 0.08)' 
+												e.currentTarget.style.backgroundColor = currentRoute === "/profile/settings"
+													? 'rgba(255, 56, 92, 0.08)'
 													: 'transparent';
 												e.currentTarget.style.transform = 'translateX(0)';
 											}}
 										>
-										<div style={{
-											width: '36px',
-											height: '36px',
-											borderRadius: '10px',
-											background: currentRoute === "/profile/settings" 
-												? 'linear-gradient(135deg, #FF385C 0%, #E61E4D 100%)' 
-												: 'rgba(0, 0, 0, 0.06)',
-											display: 'flex',
-											alignItems: 'center',
-											justifyContent: 'center',
-											flexShrink: 0,
-											transition: 'all 0.2s ease',
-										}}>
-											<Settings 
-												size={18}
-												color={currentRoute === "/profile/settings" ? '#FFFFFF' : '#717171'}
-												strokeWidth={2.5}
-											/>
-										</div>
-											<span style={{ flex: 1 }}>Settings</span>
+											<div style={{
+												width: '36px',
+												height: '36px',
+												borderRadius: '10px',
+												background: currentRoute === "/profile/settings"
+													? 'linear-gradient(135deg, #FF385C 0%, #E61E4D 100%)'
+													: 'rgba(0, 0, 0, 0.06)',
+												display: 'flex',
+												alignItems: 'center',
+												justifyContent: 'center',
+												flexShrink: 0,
+												transition: 'all 0.2s ease',
+											}}>
+												<Settings
+													size={18}
+													color={currentRoute === "/profile/settings" ? '#FFFFFF' : '#717171'}
+													strokeWidth={2.5}
+												/>
+											</div>
+											<span style={{ flex: 1 }}>{getTranslation(language, "dashboard.settings")}</span>
 											{currentRoute === "/profile/settings" && (
 												<div style={{
 													width: '6px',
@@ -756,11 +753,11 @@ const UserMenu = ({ currentUser }) => {
 											)}
 										</Link>
 									</li>
-									
-									<div style={{ 
-										height: '1px', 
-										backgroundColor: 'rgba(0, 0, 0, 0.06)', 
-										margin: '12px 0' 
+
+									<div style={{
+										height: '1px',
+										backgroundColor: 'rgba(0, 0, 0, 0.06)',
+										margin: '12px 0'
 									}} />
 
 									<li>
@@ -799,32 +796,32 @@ const UserMenu = ({ currentUser }) => {
 												e.currentTarget.style.transform = 'translateX(0)';
 											}}
 										>
-										<div style={{
-											width: '36px',
-											height: '36px',
-											borderRadius: '10px',
-											background: 'rgba(220, 38, 38, 0.1)',
-											display: 'flex',
-											alignItems: 'center',
-											justifyContent: 'center',
-											flexShrink: 0,
-											transition: 'all 0.2s ease',
-										}}>
-											<LogOut 
-												size={18}
-												color="#DC2626"
-												strokeWidth={2.5}
-											/>
-										</div>
-											<span style={{ flex: 1 }}>Logout</span>
+											<div style={{
+												width: '36px',
+												height: '36px',
+												borderRadius: '10px',
+												background: 'rgba(220, 38, 38, 0.1)',
+												display: 'flex',
+												alignItems: 'center',
+												justifyContent: 'center',
+												flexShrink: 0,
+												transition: 'all 0.2s ease',
+											}}>
+												<LogOut
+													size={18}
+													color="#DC2626"
+													strokeWidth={2.5}
+												/>
+											</div>
+											<span style={{ flex: 1 }}>{getTranslation(language, "dashboard.logout")}</span>
 										</button>
 									</li>
-									</ul>
-								</div>,
-								document.body
-							)}
-						</div>
-					</>
+								</ul>
+							</div>,
+							document.body
+						)}
+					</div>
+				</>
 			)}
 		</>
 	);

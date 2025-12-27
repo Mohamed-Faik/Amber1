@@ -20,6 +20,7 @@ const Navbar = ({ currentUser }) => {
   const [isLeftMenuOpen, setIsLeftMenuOpen] = useState(false);
   const [isPageLoaded, setIsPageLoaded] = useState(false);
 
+  const isRTL = language === "ar";
   const displayLanguage = isDetecting ? "en" : language;
   const isHomePage = pathname === "/";
 
@@ -80,22 +81,22 @@ const Navbar = ({ currentUser }) => {
   const leftNavLinks = [
     {
       href: "/listings?listingType=SALE",
-      label: displayLanguage === "nl" ? "TE KOOP" : displayLanguage === "fr" ? "À VENDRE" : "FOR SALE",
+      label: getTranslation(displayLanguage, "hero.forSale").toUpperCase(),
     },
     {
       href: "/listings?listingType=RENT",
-      label: displayLanguage === "nl" ? "TE HUUR" : displayLanguage === "fr" ? "À LOUER" : "FOR RENT",
+      label: getTranslation(displayLanguage, "hero.forRent").toUpperCase(),
     },
   ];
 
   const rightNavLinks = [
     {
       href: "/about-us",
-      label: displayLanguage === "nl" ? "OVER ONS" : displayLanguage === "fr" ? "À PROPOS" : "ABOUT US",
+      label: getTranslation(displayLanguage, "pages.aboutUs").toUpperCase(),
     },
     {
       href: "/experiences",
-      label: displayLanguage === "nl" ? "ERVARING" : displayLanguage === "fr" ? "EXPÉRIENCE" : "EXPERIENCE",
+      label: getTranslation(displayLanguage, "nav.experiences").toUpperCase(),
       icon: "https://img.icons8.com/?size=100&id=PhN968WBxlkp&format=png&color=000000",
     },
   ];
@@ -130,20 +131,22 @@ const Navbar = ({ currentUser }) => {
         }}
       >
         <nav
+          className="navbar-container"
           style={{
             maxWidth: "1760px",
             margin: "0 auto",
-            padding: "0 40px",
+            padding: "0 20px",
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
             height: isScrolled ? "70px" : "80px",
             position: "relative",
-            transition: "height 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
+            transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
           }}
         >
 
-          {/* Left Navigation Links */}
+
+          {/* Left Navigation Links (Mirrored in RTL) */}
           <div
             className="desktop-nav-left"
             style={{
@@ -153,7 +156,10 @@ const Navbar = ({ currentUser }) => {
               flex: "0 0 auto",
               position: "absolute",
               left: "calc(50% - 80px)",
-              transform: "translateX(calc(-50% - 300px))",
+              // LTR: Move left (-300px), RTL: Move right (+300px)
+              transform: isRTL
+                ? "translateX(calc(-50% + 300px))"
+                : "translateX(calc(-50% - 300px))",
               zIndex: 9,
             }}
           >
@@ -207,7 +213,6 @@ const Navbar = ({ currentUser }) => {
             })}
           </div>
 
-          {/* Language Switcher - Mobile Left (when not logged in) */}
           {/* Language Switcher - Left Side (Desktop) - Only when not logged in */}
           {!currentUser && (
             <div
@@ -219,6 +224,8 @@ const Navbar = ({ currentUser }) => {
                 opacity: isPageLoaded ? 1 : 0,
                 visibility: isPageLoaded ? "visible" : "hidden",
                 transition: "opacity 0.3s ease-in-out, visibility 0.3s ease-in-out",
+                // In RTL, marginInlineEnd auto pushes it to the far start (right visually)
+                marginInlineEnd: "auto",
               }}
             >
               <LanguageSwitcher />
@@ -226,7 +233,7 @@ const Navbar = ({ currentUser }) => {
           )}
 
           {/* Logo - Center */}
-          {/* Mobile Logo - Left */}
+          {/* Mobile Logo - Left (Start) */}
           <div
             className="navbar-left-mobile"
             style={{
@@ -235,8 +242,7 @@ const Navbar = ({ currentUser }) => {
               alignItems: "center",
               justifyContent: "flex-start",
               position: "relative",
-              left: "0",
-              transform: "none",
+              // Use logical start/end for mobile alignment if needed, but currently hidden on desktop
               zIndex: 10,
               opacity: isPageLoaded ? 1 : 0,
               visibility: isPageLoaded ? "visible" : "hidden",
@@ -248,8 +254,6 @@ const Navbar = ({ currentUser }) => {
               style={{
                 flex: "0 0 auto",
                 position: "relative",
-                left: "0",
-                transform: "none",
                 zIndex: 10,
               }}
             >
@@ -326,7 +330,7 @@ const Navbar = ({ currentUser }) => {
             </Link>
           </div>
 
-          {/* Right Navigation Links */}
+          {/* Right Navigation Links (Mirrored in RTL) */}
           <div
             className="desktop-nav-right"
             style={{
@@ -336,7 +340,10 @@ const Navbar = ({ currentUser }) => {
               flex: "0 0 auto",
               position: "absolute",
               left: "calc(50% - 80px)",
-              transform: "translateX(calc(-50% + 300px))",
+              // LTR: Move right (+300px), RTL: Move left (-300px)
+              transform: isRTL
+                ? "translateX(calc(-50% - 300px))"
+                : "translateX(calc(-50% + 300px))",
               zIndex: 9,
             }}
           >
@@ -405,7 +412,7 @@ const Navbar = ({ currentUser }) => {
             })}
           </div>
 
-          {/* Desktop Right Actions */}
+          {/* Desktop Right Actions (Mirrored to Left in RTL) */}
           <div
             className="desktop-actions"
             style={{
@@ -413,7 +420,8 @@ const Navbar = ({ currentUser }) => {
               alignItems: "center",
               gap: "12px",
               flex: "0 0 auto",
-              marginLeft: "auto",
+              // Use marginInlineStart to push to the 'end' (Right in LTR, Left in RTL)
+              marginInlineStart: "auto",
               opacity: isPageLoaded ? 1 : 0,
               visibility: isPageLoaded ? "visible" : "hidden",
               transition: "opacity 0.3s ease-in-out, visibility 0.3s ease-in-out",
@@ -520,7 +528,8 @@ const Navbar = ({ currentUser }) => {
               alignItems: "center",
               gap: "8px",
               flex: "0 0 auto",
-              marginLeft: "auto",
+              // Use marginInlineStart to push to the 'end' (Right in LTR, Left in RTL)
+              marginInlineStart: "auto",
               opacity: isPageLoaded ? 1 : 0,
               visibility: isPageLoaded ? "visible" : "hidden",
               transition: "opacity 0.3s ease-in-out, visibility 0.3s ease-in-out",
@@ -594,6 +603,20 @@ const Navbar = ({ currentUser }) => {
           }}
         />
       </header>
+
+      {/* Responsive Padding Styles */}
+      <style jsx global>{`
+        @media (min-width: 768px) {
+          .navbar-container {
+            padding: 0 40px !important;
+          }
+        }
+        @media (max-width: 767px) {
+          .navbar-container {
+            padding: 0 16px !important;
+          }
+        }
+      `}</style>
 
       {/* Mobile Menu Overlay */}
       {isMobileMenuOpen && (
