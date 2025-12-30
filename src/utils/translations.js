@@ -1762,7 +1762,7 @@ const arTranslations = {
     viewAll: "عرض الكل"
   },
   hero: {
-    quote: "نربطك بأشخاص، لا مجرد أماكن",
+    quote: "نربطك بأشخاص",
     forSale: "للبيع",
     forRent: "للكراء (شهري)",
     forRentDaily: "للكراء (يومي)",
