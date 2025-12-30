@@ -412,16 +412,15 @@ const Navbar = ({ currentUser }) => {
             })}
           </div>
 
-          {/* Desktop Right Actions (Mirrored to Left in RTL) */}
+          {/* Desktop Add Listing Button - Always on Right */}
           <div
-            className="desktop-actions"
+            className="desktop-add-listing-wrapper"
             style={{
               display: "flex",
               alignItems: "center",
-              gap: "12px",
               flex: "0 0 auto",
-              // Use marginInlineStart to push to the 'end' (Right in LTR, Left in RTL)
-              marginInlineStart: "auto",
+              // Always keep on the RIGHT side (visual) in both LTR and RTL
+              ...(isRTL ? { marginInlineEnd: "auto" } : { marginInlineStart: "auto" }),
               opacity: isPageLoaded ? 1 : 0,
               visibility: isPageLoaded ? "visible" : "hidden",
               transition: "opacity 0.3s ease-in-out, visibility 0.3s ease-in-out",
@@ -469,7 +468,22 @@ const Navbar = ({ currentUser }) => {
                 ? getTranslation(displayLanguage, "nav.addListing")
                 : getTranslation(displayLanguage, "nav.becomeHost")}
             </Link>
+          </div>
 
+          {/* Desktop Icons - Language, Menu, Notifications, User Menu */}
+          <div
+            className="desktop-actions"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "12px",
+              flex: "0 0 auto",
+              marginLeft: "12px",
+              opacity: isPageLoaded ? 1 : 0,
+              visibility: isPageLoaded ? "visible" : "hidden",
+              transition: "opacity 0.3s ease-in-out, visibility 0.3s ease-in-out",
+            }}
+          >
             {/* Language Switcher - Only show when logged in (desktop) */}
             {currentUser && <LanguageSwitcher />}
 
@@ -528,8 +542,10 @@ const Navbar = ({ currentUser }) => {
               alignItems: "center",
               gap: "8px",
               flex: "0 0 auto",
-              // Use marginInlineStart to push to the 'end' (Right in LTR, Left in RTL)
-              marginInlineStart: "auto",
+              // In RTL (Arabic): position at far LEFT edge of screen
+              // In LTR: position at far RIGHT edge of screen
+              position: isRTL ? "absolute" : "relative",
+              ...(isRTL ? { left: "16px" } : { marginInlineStart: "auto" }),
               opacity: isPageLoaded ? 1 : 0,
               visibility: isPageLoaded ? "visible" : "hidden",
               transition: "opacity 0.3s ease-in-out, visibility 0.3s ease-in-out",
@@ -590,7 +606,7 @@ const Navbar = ({ currentUser }) => {
                 e.currentTarget.style.transform = "scale(1.05)";
               }}
             >
-              <Menu size={22} color="#000000" strokeWidth={2.5} />
+              <Menu size={22} color={isHomePage && !isScrolled ? "#FFFFFF" : "#000000"} strokeWidth={2.5} />
             </button>
           </div>
         </nav>
@@ -1372,6 +1388,9 @@ const Navbar = ({ currentUser }) => {
         .desktop-actions {
           display: flex;
         }
+        .desktop-add-listing-wrapper {
+          display: flex;
+        }
         .mobile-actions {
           display: none;
         }
@@ -1418,10 +1437,12 @@ const Navbar = ({ currentUser }) => {
           .desktop-actions {
             display: none !important;
           }
+          .desktop-add-listing-wrapper {
+            display: none !important;
+          }
           .mobile-actions {
             display: flex !important;
             gap: 10px !important;
-            margin-left: auto !important;
           }
           .mobile-logged-in-icons {
             margin-left: auto !important;
@@ -1579,10 +1600,12 @@ const Navbar = ({ currentUser }) => {
           .desktop-actions {
             display: none !important;
           }
+          .desktop-add-listing-wrapper {
+            display: none !important;
+          }
           .mobile-actions {
             display: flex !important;
             gap: 4px !important;
-            margin-left: auto !important;
           }
           .mobile-logged-in-icons {
             margin-left: auto !important;
