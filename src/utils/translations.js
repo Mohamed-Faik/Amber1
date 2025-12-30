@@ -1762,7 +1762,7 @@ const arTranslations = {
     viewAll: "عرض الكل"
   },
   hero: {
-    quote: "الأمر يتعلق بالناس، وليس بالأحجار",
+    quote: "نربطك بأشخاص، لا مجرد أماكن",
     forSale: "للبيع",
     forRent: "للكراء (شهري)",
     forRentDaily: "للكراء (يومي)",
