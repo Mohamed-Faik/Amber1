@@ -18,6 +18,21 @@ export default async function getListings(params) {
 			pageSize = 9,
 			status, // For admin filtering
 			showAll = false, // For admin to see all listings
+			// Dynamic filters
+			gatedCommunity,
+			elevator,
+			securitySystem,
+			heating,
+			airConditioning,
+			equippedKitchen,
+			balcony,
+			terrace,
+			privateGarden,
+			swimmingPool,
+			greenSpaces,
+			garageBox,
+			parkingSpaces,
+			basement,
 		} = params;
 
 		// Support both min_price and minPrice for backward compatibility
@@ -58,56 +73,73 @@ export default async function getListings(params) {
 		}
 		// Note: If no featureType is specified, show all types (for backward compatibility)
 
-	// Price filter
-	if (min_price || max_price) {
-		whereClause.price = {};
-		if (min_price) {
-			const minPrice = parseInt(min_price, 10);
-			if (!isNaN(minPrice)) {
-				whereClause.price.gte = minPrice;
-			}
-		}
-		if (max_price) {
-			const maxPrice = parseInt(max_price, 10);
-			if (!isNaN(maxPrice)) {
-				whereClause.price.lte = maxPrice;
-			}
-		}
-	}
 
-	// Bedrooms filter
-	if (bedrooms) {
-		if (bedrooms === "5+") {
-			whereClause.bedrooms = { gte: 5 };
-		} else {
-			const bedroomsCount = parseInt(bedrooms, 10);
-			if (!isNaN(bedroomsCount)) {
-				whereClause.bedrooms = bedroomsCount;
+		// Dynamic Boolean Filters
+		if (gatedCommunity === "true") whereClause.gatedCommunity = true;
+		if (elevator === "true") whereClause.elevator = true;
+		if (securitySystem === "true") whereClause.securitySystem = true;
+		if (heating === "true") whereClause.heating = true;
+		if (airConditioning === "true") whereClause.airConditioning = true;
+		if (equippedKitchen === "true") whereClause.equippedKitchen = true;
+		if (balcony === "true") whereClause.balcony = true;
+		if (terrace === "true") whereClause.terrace = true;
+		if (privateGarden === "true") whereClause.privateGarden = true;
+		if (swimmingPool === "true") whereClause.swimmingPool = true;
+		if (greenSpaces === "true") whereClause.greenSpaces = true;
+		if (garageBox === "true") whereClause.garageBox = true;
+		if (parkingSpaces === "true") whereClause.parkingSpaces = true;
+		if (basement === "true") whereClause.basement = true;
+
+		// Price filter
+		if (min_price || max_price) {
+			whereClause.price = {};
+			if (min_price) {
+				const minPrice = parseInt(min_price, 10);
+				if (!isNaN(minPrice)) {
+					whereClause.price.gte = minPrice;
+				}
+			}
+			if (max_price) {
+				const maxPrice = parseInt(max_price, 10);
+				if (!isNaN(maxPrice)) {
+					whereClause.price.lte = maxPrice;
+				}
 			}
 		}
-	}
 
-	// Bathrooms filter
-	if (bathrooms) {
-		if (bathrooms === "5+") {
-			whereClause.bathrooms = { gte: 5 };
-		} else {
-			const bathroomsCount = parseInt(bathrooms, 10);
-			if (!isNaN(bathroomsCount)) {
-				whereClause.bathrooms = bathroomsCount;
+		// Bedrooms filter
+		if (bedrooms) {
+			if (bedrooms === "5+") {
+				whereClause.bedrooms = { gte: 5 };
+			} else {
+				const bedroomsCount = parseInt(bedrooms, 10);
+				if (!isNaN(bedroomsCount)) {
+					whereClause.bedrooms = bedroomsCount;
+				}
 			}
 		}
-	}
 
-	// Status filter - only show approved and sold for public, unless admin wants to see all
-	// For public users, show Approved and Sold listings
-	if (!showAll && !status) {
-		whereClause.status = { in: ["Approved", "Sold"] }; // Show approved and sold listings to public users
-	} else if (status) {
-		// Admin filtering by specific status
-		whereClause.status = status;
-	}
-	// If showAll is true and no status filter, admin sees all (including null/undefined status)
+		// Bathrooms filter
+		if (bathrooms) {
+			if (bathrooms === "5+") {
+				whereClause.bathrooms = { gte: 5 };
+			} else {
+				const bathroomsCount = parseInt(bathrooms, 10);
+				if (!isNaN(bathroomsCount)) {
+					whereClause.bathrooms = bathroomsCount;
+				}
+			}
+		}
+
+		// Status filter - only show approved and sold for public, unless admin wants to see all
+		// For public users, show Approved and Sold listings
+		if (!showAll && !status) {
+			whereClause.status = { in: ["Approved", "Sold"] }; // Show approved and sold listings to public users
+		} else if (status) {
+			// Admin filtering by specific status
+			whereClause.status = status;
+		}
+		// If showAll is true and no status filter, admin sees all (including null/undefined status)
 
 		const skip = (parsedPage - 1) * parsedPageSize;
 		const totalListings = await prisma.listing.count({
@@ -166,10 +198,10 @@ export default async function getListings(params) {
 		console.error("   Error message:", error.message);
 		console.error("   Error code:", error.code);
 		console.error("   Error stack:", error.stack);
-		
+
 		// Database connection error - return empty result instead of crashing
-		if (error.message?.includes("Can't reach database server") || 
-		    error.code === "P1001") {
+		if (error.message?.includes("Can't reach database server") ||
+			error.code === "P1001") {
 			console.warn("⚠️  Database connection error - returning empty result");
 			return {
 				listings: [],
@@ -179,7 +211,7 @@ export default async function getListings(params) {
 				totalListings: 0,
 			};
 		}
-		
+
 		// For other errors, also return empty result to prevent app crash
 		console.warn("⚠️  Failed to fetch listings - returning empty result");
 		return {

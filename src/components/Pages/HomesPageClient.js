@@ -116,7 +116,7 @@ const HomesPageClient = ({
 		@media (max-width: 768px) {
 			/* Search Section */
 			.homes-search-section {
-				z-index: 100 !important;
+				z-index: 9998 !important;
 			}
 			
 			.homes-search-wrapper,

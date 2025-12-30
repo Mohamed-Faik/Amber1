@@ -1,7 +1,8 @@
 import React from "react";
 import { Search, LayoutGrid } from "lucide-react";
-import Listings from "@/components/Listings/Index";
+import ListingsWithLoading from "@/components/Listings/ListingsWithLoading";
 import ExperiencesStyleSearchForm from "@/components/Listings/ExperiencesStyleSearchForm";
+import ListingFilters from "@/components/Listings/ListingFilters";
 import getListings from "@/actions/getListings";
 import { getCurrentUser } from "@/actions/getCurrentUser";
 
@@ -45,13 +46,13 @@ const page = async ({ searchParams }) => {
 				background: "linear-gradient(135deg, rgba(215, 4, 102, 0.05) 0%, rgba(255, 56, 92, 0.08) 100%)",
 				zIndex: 0,
 			}} />
-			
+
 			<div style={{ height: "80px" }} />
-			
+
 			{/* Search Form Section - Styled */}
 			<div className="listings-search-section" style={{
 				position: "relative",
-				zIndex: 100,
+				zIndex: 10,
 				marginBottom: "48px",
 			}}>
 				<div className="listings-search-wrapper" style={{
@@ -87,34 +88,38 @@ const page = async ({ searchParams }) => {
 						<div style={{
 							display: "flex",
 							alignItems: "center",
-							gap: "16px",
+							justifyContent: "space-between",
 							marginBottom: "32px",
 							paddingBottom: "24px",
 							borderBottom: "1px solid #E0E0E0",
 						}}>
-							<div style={{
-								width: "44px",
-								height: "44px",
-								borderRadius: "12px",
-								background: "linear-gradient(135deg, #FF385C 0%, #E61E4D 50%, #D70466 100%)",
-								display: "flex",
-								alignItems: "center",
-								justifyContent: "center",
-							}}>
-								<LayoutGrid size={22} color="#FFFFFF" strokeWidth={2.5} />
+							<div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+								<div style={{
+									width: "44px",
+									height: "44px",
+									borderRadius: "12px",
+									background: "linear-gradient(135deg, #FF385C 0%, #E61E4D 50%, #D70466 100%)",
+									display: "flex",
+									alignItems: "center",
+									justifyContent: "center",
+								}}>
+									<LayoutGrid size={22} color="#FFFFFF" strokeWidth={2.5} />
+								</div>
+								<h2 style={{
+									fontSize: "28px",
+									fontWeight: "700",
+									color: "#222222",
+									margin: "0",
+									letterSpacing: "-0.5px",
+								}}>
+									Available Properties
+								</h2>
 							</div>
-							<h2 style={{
-								fontSize: "28px",
-								fontWeight: "700",
-								color: "#222222",
-								margin: "0",
-								letterSpacing: "-0.5px",
-							}}>
-								Available Properties
-							</h2>
+
+							<ListingFilters searchParams={searchParams} />
 						</div>
 
-						<Listings
+						<ListingsWithLoading
 							currentUser={currentUser}
 							totalPages={totalPages}
 							listings={listings}
@@ -125,8 +130,8 @@ const page = async ({ searchParams }) => {
 						/>
 					</div>
 				</div>
-			</div>
-		</div>
+			</div >
+		</div >
 	);
 };
 

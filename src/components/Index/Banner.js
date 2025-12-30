@@ -29,6 +29,7 @@ const Banner = () => {
 	const router = useRouter();
 	const { language, isDetecting } = useLanguage();
 	const displayLanguage = isDetecting ? "en" : language;
+	const isRTL = language === 'ar';
 	const [saleType, setSaleType] = useState("forSale");
 	const [category, setCategory] = useState("");
 	const [location, setLocation] = useState("");
@@ -516,7 +517,7 @@ const Banner = () => {
 										onClick={handleSaleTypeClick}
 										style={{
 											width: "100%",
-											padding: "12px 16px 12px 44px",
+											padding: isRTL ? "12px 44px 12px 16px" : "12px 16px 12px 44px",
 											border: showSaleTypeDropdown ? "3px solid #FF385C" : "2px solid #E0E0E0",
 											borderRadius: "32px",
 											backgroundColor: showSaleTypeDropdown ? "#FFF5F7" : "#F8F8F8",
@@ -563,7 +564,7 @@ const Banner = () => {
 									<div
 										style={{
 											position: "absolute",
-											left: "16px",
+											[isRTL ? "right" : "left"]: "16px",
 											top: "50%",
 											transform: "translateY(-50%)",
 											pointerEvents: "none",
@@ -675,7 +676,7 @@ const Banner = () => {
 										onClick={handleCategoryClick}
 										style={{
 											width: "100%",
-											padding: "12px 16px 12px 44px",
+											padding: isRTL ? "12px 44px 12px 16px" : "12px 16px 12px 44px",
 											border: showCategoryDropdown ? "3px solid #FF385C" : "2px solid #E0E0E0",
 											borderRadius: "32px",
 											backgroundColor: showCategoryDropdown ? "#FFF5F7" : "#F8F8F8",
@@ -722,7 +723,7 @@ const Banner = () => {
 									<div
 										style={{
 											position: "absolute",
-											left: "16px",
+											[isRTL ? "right" : "left"]: "16px",
 											top: "50%",
 											transform: "translateY(-50%)",
 											pointerEvents: "none",
@@ -862,7 +863,7 @@ const Banner = () => {
 										onClick={handleLocationClick}
 										style={{
 											width: "100%",
-											padding: "12px 16px 12px 44px",
+											padding: isRTL ? "12px 44px 12px 16px" : "12px 16px 12px 44px",
 											border: showLocationDropdown ? "3px solid #FF385C" : "2px solid #E0E0E0",
 											borderRadius: "32px",
 											backgroundColor: showLocationDropdown ? "#FFF5F7" : "#F8F8F8",
@@ -870,6 +871,7 @@ const Banner = () => {
 											fontWeight: "600",
 											outline: "none",
 											cursor: "text",
+											textAlign: isRTL ? "right" : "left",
 											color: locationSearchTerm ? "#1A1A1A" : "#666666",
 											transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
 											boxShadow: showLocationDropdown
@@ -892,7 +894,7 @@ const Banner = () => {
 									<div
 										style={{
 											position: "absolute",
-											left: "16px",
+											[isRTL ? "right" : "left"]: "16px",
 											top: "50%",
 											transform: "translateY(-50%)",
 											pointerEvents: "none",
@@ -1107,7 +1109,7 @@ const Banner = () => {
 										}}
 										style={{
 											width: "100%",
-											padding: "12px 16px 12px 44px",
+											padding: isRTL ? "12px 44px 12px 16px" : "12px 16px 12px 44px",
 											border: "2px solid #E0E0E0",
 											borderRadius: "32px",
 											backgroundColor: "#F8F8F8",
@@ -1115,6 +1117,7 @@ const Banner = () => {
 											fontWeight: "600",
 											outline: "none",
 											cursor: "text",
+											textAlign: isRTL ? "right" : "left",
 											color: street ? "#1A1A1A" : "#666666",
 											transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
 											boxShadow: "0 4px 8px rgba(0, 0, 0, 0.06)",
@@ -1140,7 +1143,7 @@ const Banner = () => {
 									<div
 										style={{
 											position: "absolute",
-											left: "16px",
+											[isRTL ? "right" : "left"]: "16px",
 											top: "50%",
 											transform: "translateY(-50%)",
 											pointerEvents: "none",

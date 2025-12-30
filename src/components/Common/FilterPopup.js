@@ -104,14 +104,14 @@ const FilterPopup = ({ isOpen, onClose, onApply, featureType = "HOMES", listings
     return (
         <div className="filter-backdrop" style={{
             position: "fixed", top: 0, left: 0, width: "100%", height: "100%",
-            backgroundColor: "rgba(0, 0, 0, 0.5)", zIndex: 2000,
+            backgroundColor: "rgba(0, 0, 0, 0.5)", zIndex: 9999,
             display: "flex", alignItems: "center", justifyContent: "center",
             padding: "24px", opacity: isOpen ? 1 : 0, transition: "opacity 0.3s ease",
         }} onClick={onClose}>
             <div className="filter-modal" style={{
                 backgroundColor: "#fff", width: "100%", maxWidth: "780px", height: "auto", maxHeight: "85vh",
                 borderRadius: "12px", display: "flex", flexDirection: "column", position: "relative",
-                boxShadow: "0 8px 28px rgba(0,0,0,0.28)", animation: "slideUp 0.3s ease-out",
+                boxShadow: "0 8px 28px rgba(0,0,0,0.28)", animation: "slideUp 0.3s ease-out", zIndex: 10000,
             }} onClick={e => e.stopPropagation()}>
 
                 {/* Header */}
